@@ -1,0 +1,7 @@
+; SoulScenePlug.def : Declares the module parameters for the DLL.
+
+LIBRARY      "SoulScenePlug"
+DESCRIPTION  'SoulScenePlug Windows Dynamic Link Library'
+
+EXPORTS
+    Plug_CreateObject	@1
