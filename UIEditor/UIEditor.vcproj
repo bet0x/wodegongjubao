@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\Shared\Math\Include;..\..\Shared\Common\Include;..\..\Shared\Media\Sound\Include;..\..\Shared\UI\Include;..\..\Shared\IO\FileIO\Include;..\..\Shared\IO\tinyxml;..\..\Shared\Render\RenderSystem\Include;..\..\Shared\Render\RenderSystemDX9\Include;..\..\Shared\EngineCore\Include;..\..\Shared\EngineCore\C3_CORE;..\..\Shared\Model\Include"
+				AdditionalIncludeDirectories="..\..\Shared\Math\Include;..\..\Shared\Common\Include;..\..\Shared\IO\FileIO\Include;..\..\Shared\IO\tinyxml;..\..\engine\Render\RenderSystem\Include;..\..\engine\Render\RenderSystemDX9\Include;..\..\engine\Media\Sound\Include;..\..\engine\UI\Include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -63,7 +63,7 @@
 				AdditionalDependencies="uid.lib rendersystemdx9d.lib fileiod.lib winmm.lib comctl32.lib"
 				OutputFile="..\..\bin\UIEditor\$(ProjectName)_Debug.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Shared\lib;..\..\Shared\Render\DX9SDK\Lib\x86;..\..\Shared\Media\FMOD\api\lib"
+				AdditionalLibraryDirectories="..\..\Shared\lib;..\..\engine\lib;..\..\engine\Render\DX9SDK\Lib\x86;..\..\engine\Media\FMOD\api\lib"
 				IgnoreDefaultLibraryNames="LIBCMTD.lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -119,10 +119,10 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\Engine;..\Engine\3DMath;..\Lua\LuaPlus"
+				AdditionalIncludeDirectories="..\..\Shared\Math\Include;..\..\Shared\Common\Include;..\..\Shared\IO\FileIO\Include;..\..\Shared\IO\tinyxml;..\..\engine\Render\RenderSystem\Include;..\..\engine\Render\RenderSystemDX9\Include;..\..\engine\Media\Sound\Include;..\..\engine\UI\Include"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
-				UsePrecompiledHeader="2"
+				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
@@ -138,10 +138,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="dxerr.lib dxguid.lib d3dx9.lib d3d9.lib strmiids.lib winmm.lib comctl32.lib"
+				AdditionalDependencies="ui.lib rendersystemdx9.lib fileio.lib winmm.lib comctl32.lib"
 				OutputFile="$(SolutionDir)Clinet\$(ProjectName)_Release.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(SolutionDir)$(ConfigurationName)&quot;"
+				AdditionalLibraryDirectories="..\..\Shared\lib;..\..\engine\lib;..\..\engine\Render\DX9SDK\Lib\x86;..\..\engine\Media\FMOD\api\lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"

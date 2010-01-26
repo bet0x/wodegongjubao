@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\Shared\Math\Include;..\..\Shared\Common\Include;..\..\Shared\Media\Sound\Include;..\..\Shared\UI\Include;..\..\Shared\IO\FileIO\Include;..\..\Shared\IO\tinyxml;..\..\Shared\Render\RenderSystem\Include;..\..\Shared\Render\RenderSystemDX9\Include;..\..\Shared\EngineCore\Include;..\..\Shared\EngineCore\C3_CORE;..\..\Shared\Model\Include;../../OpenCV/cxcore/include;../../OpenCV/cv/include;../../OpenCV/otherlibs/highgui"
+				AdditionalIncludeDirectories="..\..\Shared\Math\Include;..\..\Shared\Common\Include;..\..\Shared\IO\FileIO\Include;..\..\Shared\IO\tinyxml;..\..\engine\Media\Sound\Include;..\..\engine\UI\Include;..\..\engine\Render\RenderSystem\Include;..\..\engine\Render\RenderSystemDX9\Include;..\..\engine\EngineCore\Include;..\..\engine\Model\Include;../../OpenCV/cxcore/include;../../OpenCV/cv/include;../../OpenCV/otherlibs/highgui"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -63,7 +63,7 @@
 				AdditionalDependencies="rendersystemdx9d.lib modeld.lib enginecored.lib uid.lib fileiod.lib soundd.lib"
 				OutputFile="..\..\bin\ModelView\$(ProjectName)_Debug.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="..\..\Shared\lib;..\..\Shared\Render\DX9SDK\Lib\x86;..\..\Shared\Media\FMOD\api\lib"
+				AdditionalLibraryDirectories="..\..\Shared\lib;..\..\engine\lib;..\..\engine\Render\DX9SDK\Lib\x86;..\..\engine\Media\FMOD\api\lib"
 				IgnoreDefaultLibraryNames="LIBCMTD.lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -119,7 +119,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="..\..\Shared\Math\Include;..\..\Shared\Common\Include;..\..\Shared\Media\Sound\Include;..\..\Shared\UI\Include;..\..\Shared\IO\FileIO\Include;..\..\Shared\IO\tinyxml;..\..\Shared\Render\RenderSystem\Include;..\..\Shared\Render\RenderSystemDX9\Include;..\..\Shared\EngineCore\Include;..\..\Shared\EngineCore\C3_CORE;..\..\Shared\Model\Include;../../OpenCV/cxcore/include;../../OpenCV/cv/include;../../OpenCV/otherlibs/highgui"
+				AdditionalIncludeDirectories="..\..\Shared\Math\Include;..\..\Shared\Common\Include;..\..\Shared\IO\FileIO\Include;..\..\Shared\IO\tinyxml;..\..\engine\Media\Sound\Include;..\..\engine\UI\Include;..\..\engine\Render\RenderSystem\Include;..\..\engine\Render\RenderSystemDX9\Include;..\..\engine\EngineCore\Include;..\..\engine\Model\Include;../../OpenCV/cxcore/include;../../OpenCV/cv/include;../../OpenCV/otherlibs/highgui"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -141,8 +141,8 @@
 				AdditionalDependencies="rendersystemdx9.lib model.lib enginecore.lib ui.lib fileio.lib sound.lib"
 				OutputFile="..\..\bin\ModelView\$(ProjectName).exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="..\..\Shared\lib;..\..\Shared\Render\DX9SDK\Lib\x86;..\..\Shared\Media\FMOD\api\lib"
-				IgnoreDefaultLibraryNames=""
+				AdditionalLibraryDirectories="..\..\Shared\lib;..\..\engine\lib;..\..\engine\Render\DX9SDK\Lib\x86;..\..\engine\Media\FMOD\api\lib"
+				IgnoreDefaultLibraryNames="LIBCMTD.lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"

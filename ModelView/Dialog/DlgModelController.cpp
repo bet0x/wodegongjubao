@@ -3,7 +3,7 @@
 #include "mpq/mpq_libmpq.h"
 #include "database.h"
 #include "CsvFile.h"
-
+#include "IORead.h"
 #include "DlgModelMain.h"
 
 CDlgModelController::CDlgModelController()
