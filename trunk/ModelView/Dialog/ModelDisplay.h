@@ -3,7 +3,7 @@
 #include "Camera.h"
 #include "SkyBox.h"
 #include "ModelComplex.h"
-#include "C3Model.h"
+//#include "C3Model.h"
 #include "RECT.h"
 #include "DlgColEdit.h"
 //#include <d3d9.h>

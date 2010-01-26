@@ -2,6 +2,7 @@
 #include "IORead.h"
 #include "FileSystem.h"
 #include "Jpeg.h"
+#include "3DMapSceneObj.h"
 
 /*#define   VMBEGIN 
 __asm //标记开始处.
@@ -527,7 +528,7 @@ bool CMyPlug::exportObjectResourcesFormDir(iScene * pScene,const std::string& st
 {
 	return true;
 }
-#include "3DMapSceneObj.h"
+
 bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 {
 	FILE* f=fopen(strFilename.c_str(),"wb");

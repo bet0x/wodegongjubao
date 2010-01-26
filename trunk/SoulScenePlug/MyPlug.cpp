@@ -1,6 +1,8 @@
 #include "MyPlug.h"
 #include "IORead.h"
 #include "FileSystem.h"
+#include "LumpFile.h"
+#include "3DMapSceneObj.h"
 
 CMyPlug::CMyPlug(void)
 {
@@ -175,7 +177,7 @@ bool CMyPlug::importObject(iScene * pScene, const std::string& strFilename)
 			Vec3D vPos = Vec3D(pObjInfo->p.x,pObjInfo->p.z,pObjInfo->p.y)*0.01f;
 			Vec3D vRotate = Vec3D(pObjInfo->rotate.x,pObjInfo->rotate.z,pObjInfo->rotate.y)*PI/180.0f;
 
-			if (false==pScene->addObject(pObjInfo->id,vPos,vRotate,pObjInfo->fScale))
+			if (false==pScene->add3DMapSceneObj(pObjInfo->id,vPos,vRotate,pObjInfo->fScale))
 			{
 				//MessageBoxA(NULL,"cannot find ID!","Error",0);
 			}
@@ -261,12 +263,12 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 	if (f)
 	{
 		std::vector<ObjInfo> setObjInfo;
-		std::vector<CSceneObject*> setObject;
+		DEQUE_MAPOBJ setObject;
 		pScene->getAllObjects(setObject);
-		for (std::vector<CSceneObject*>::iterator it=setObject.begin();it!=setObject.end();it++)
+		for (DEQUE_MAPOBJ::iterator it=setObject.begin();it!=setObject.end();it++)
 		{
 			ObjInfo objInfo;
-			CSceneObject* pObj = *it;
+			C3DMapSceneObj* pObj = (C3DMapSceneObj*)(*it);
 			Vec3D vPos = pObj->getPos();
 			vPos = Vec3D(vPos.x,vPos.z,vPos.y)*100.0f;
 			Vec3D vRotate = pObj->getRotate();
