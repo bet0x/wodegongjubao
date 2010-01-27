@@ -55,6 +55,7 @@ public:
 
 	const std::wstring& GetFilename(){return m_wstrFilename;}
 	void setFileType(const std::wstring& wstrFileType);
+	const std::wstring& getFileType(){return m_wstrFileType;}
 
 	bool OpenPath(const std::wstring& wstrPath);
 	void NewFile(const std::wstring& wstrPath);
