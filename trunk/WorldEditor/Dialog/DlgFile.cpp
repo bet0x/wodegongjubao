@@ -225,6 +225,7 @@ bool CDlgFile::OpenPath(const std::wstring& wstrPath)
 void CDlgFile::setFileType(const std::wstring& wstrFileType)
 {
 	m_ComboBoxFileType.RemoveAllItems();
+	m_setFileType.clear();
 	TokenizerW(wstrFileType,m_setFileType,L"|");
 	for (size_t i=0;i<m_setFileType.size();++i)
 	{

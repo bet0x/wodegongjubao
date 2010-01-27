@@ -6,7 +6,6 @@
 
 CDlgWorldEditor::CDlgWorldEditor()
 {
-	m_wstrFileType = L".map";
 }
 
 CDlgWorldEditor::~CDlgWorldEditor()
@@ -104,7 +103,8 @@ void CDlgWorldEditor::OnBtnNewFile()
 	{
 		wstrPath=getCurrentDirectory();
 	}
-	m_DlgFile.NewFile(wstrPath,m_wstrFileType);
+	m_DlgFile.setFileType(m_wstrFileType);
+	m_DlgFile.NewFile(wstrPath);
 }
 
 void CDlgWorldEditor::OnBtnOpenFile()
@@ -114,7 +114,8 @@ void CDlgWorldEditor::OnBtnOpenFile()
 	{
 		wstrPath=getCurrentDirectory();
 	}
-	m_DlgFile.OpenFile(wstrPath,m_wstrFileType);
+	m_DlgFile.setFileType(m_wstrFileType);
+	m_DlgFile.OpenFile(wstrPath);
 }
 
 void CDlgWorldEditor::OnBtnSaveFile()
@@ -124,7 +125,8 @@ void CDlgWorldEditor::OnBtnSaveFile()
 	{
 		wstrPath=getCurrentDirectory();
 	}
-	m_DlgFile.SaveFile(wstrPath,m_wstrFileType);
+	m_DlgFile.setFileType(m_wstrFileType);
+	m_DlgFile.SaveFile(wstrPath);
 }
 
 void CDlgWorldEditor::OnBtnToolbar()
@@ -155,9 +157,12 @@ void CDlgWorldEditor::OnFileOpen()
 {
 	std::string strFilename = ws2s(m_DlgFile.GetFilename());
 	GetConfig().m_strLastPath = GetParentPath(strFilename);
-	if(m_arrPlugObj.size()>0)
+	for (size_t i=0;i<m_arrPlugObj.size();++i)
 	{
-		m_arrPlugObj[0].pObj->importData(&getDisplay().getScene(),strFilename);
+		if (s2ws(m_arrPlugObj[i].pObj->GetFormat())==m_DlgFile.getFileType())
+		{
+			m_arrPlugObj[i].pObj->importData(&getDisplay().getScene(),strFilename);
+		}
 	}
 	// Update UI
 	m_DlgToolbar.reset();
@@ -166,9 +171,13 @@ void CDlgWorldEditor::OnFileOpen()
 void CDlgWorldEditor::OnFileSave()
 {
 	std::string strFilename = ws2s(m_DlgFile.GetFilename());
-	if(m_arrPlugObj.size()>0)
+
+	for (size_t i=0;i<m_arrPlugObj.size();++i)
 	{
-		m_arrPlugObj[0].pObj->exportData(&getDisplay().getScene(),strFilename);
+		if (s2ws(m_arrPlugObj[i].pObj->GetFormat())==m_DlgFile.getFileType())
+		{
+			m_arrPlugObj[i].pObj->exportData(&getDisplay().getScene(),strFilename);
+		}
 	}
 }
 
@@ -183,7 +192,8 @@ bool CDlgWorldEditor::loadPlugFromPath(const std::string& strPath)
 
 	WIN32_FIND_DATAA wfd;
 	HANDLE hf = FindFirstFileA(strFindFile.c_str(), &wfd);
-	if (INVALID_HANDLE_VALUE != hf){
+	if (INVALID_HANDLE_VALUE != hf)
+	{
 		createPlug(strPath + wfd.cFileName);
 		while (FindNextFileA(hf, &wfd))
 		{
@@ -208,14 +218,15 @@ bool CDlgWorldEditor::createPlug(const std::string& strFilename)
 	ZeroMemory(&stPs, sizeof(stPs));
 
 	stPs.hIns = LoadLibraryA(strFilename.c_str());
-	if (stPs.hIns){
+	if (stPs.hIns)
+	{
 		PFN_Plug_CreateObject pFunc = (PFN_Plug_CreateObject)GetProcAddress(
 			stPs.hIns, "Plug_CreateObject");
 		if (pFunc){
 			if (pFunc((void **)&stPs.pObj)){
 				brt =true;
 				m_arrPlugObj.push_back(stPs);
-				m_wstrFileType=s2ws(stPs.pObj->GetFormat());
+				//m_wstrFileType=s2ws(stPs.pObj->GetFormat());
 			}
 		}
 	}
@@ -226,6 +237,14 @@ bool CDlgWorldEditor::createPlug(const std::string& strFilename)
 		if (stPs.hIns){
 			FreeLibrary(stPs.hIns);
 		}
+	}
+	for (size_t i=0;i<m_arrPlugObj.size();++i)
+	{
+		if (0!=i)
+		{
+			m_wstrFileType+=L"|";
+		}
+		m_wstrFileType+=s2ws(m_arrPlugObj[i].pObj->GetFormat());
 	}
 	return brt;
 }
