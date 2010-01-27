@@ -44,15 +44,22 @@ public:
 	void OnListBoxFileSelection();
 	void OnListBoxFileDblClk();
 
+	void OnBtnUp();
+	void OnBtnBack();
+
 	void OnBtnNew();
 	void OnBtnOpen();
 	void OnBtnSave();
 	void OnBtnCancel();
+	void OnCmbFileTypeSelect();
+
 	const std::wstring& GetFilename(){return m_wstrFilename;}
+	void setFileType(const std::wstring& wstrFileType);
+
 	bool OpenPath(const std::wstring& wstrPath);
-	void NewFile(const std::wstring& wstrPath, const std::wstring& wstrFileType=L"*.*");
-	void OpenFile(const std::wstring& wstrPath, const std::wstring& wstrFileType=L"*.*");
-	void SaveFile(const std::wstring& wstrPath, const std::wstring& wstrFileType);
+	void NewFile(const std::wstring& wstrPath);
+	void OpenFile(const std::wstring& wstrPath);
+	void SaveFile(const std::wstring& wstrPath);
 	bool IsOpenFile(){return OPERATING_TYPE_OPEN==m_eOperatingType;}
 	bool IsSaveFile(){return OPERATING_TYPE_SAVE==m_eOperatingType;}
 protected:
@@ -63,7 +70,10 @@ private:
 	CUIButton m_BtnNew;
 	CUIButton m_BtnOpen;
 	CUIButton m_BtnSave;
+	CUIComboBox m_ComboBoxFileType;
 	std::wstring	m_wstrPath;
+	std::vector<std::wstring> m_setRecentPath;
+	std::vector<std::wstring> m_setFileType;
 	std::wstring	m_wstrFilename;
 	std::wstring	m_wstrFileType;
 	OPERATING_TYPE	m_eOperatingType;
