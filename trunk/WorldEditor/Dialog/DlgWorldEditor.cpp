@@ -201,6 +201,14 @@ bool CDlgWorldEditor::loadPlugFromPath(const std::string& strPath)
 		}
 		FindClose(hf);
 	}
+	for (size_t i=0;i<m_arrPlugObj.size();++i)
+	{
+		if (0!=i)
+		{
+			m_wstrFileType+=L"|";
+		}
+		m_wstrFileType+=s2ws(m_arrPlugObj[i].pObj->GetFormat());
+	}
 	return TRUE;
 }
 
@@ -237,14 +245,6 @@ bool CDlgWorldEditor::createPlug(const std::string& strFilename)
 		if (stPs.hIns){
 			FreeLibrary(stPs.hIns);
 		}
-	}
-	for (size_t i=0;i<m_arrPlugObj.size();++i)
-	{
-		if (0!=i)
-		{
-			m_wstrFileType+=L"|";
-		}
-		m_wstrFileType+=s2ws(m_arrPlugObj[i].pObj->GetFormat());
 	}
 	return brt;
 }
