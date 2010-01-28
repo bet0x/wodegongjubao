@@ -45,7 +45,6 @@ public:
 	CSkyBox				m_SkyBox;
 	Vec3D				m_vEye;
 	CSceneEffect		m_SceneEffect;
-	//CTerrainEditor	m_Terrain;
 public:
 	POINT				m_ptLastMousePosition;
 	bool m_bShowBones;
