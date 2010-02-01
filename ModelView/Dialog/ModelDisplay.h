@@ -3,11 +3,7 @@
 #include "Camera.h"
 #include "SkyBox.h"
 #include "ModelComplex.h"
-//#include "C3Model.h"
 #include "RECT.h"
-#include "DlgColEdit.h"
-//#include <d3d9.h>
-//#include <d3dx9math.h>
 #include "SceneEffect.h"
 
 // œ‘ æ¿‡
@@ -61,8 +57,6 @@ public:
 	
 	Vec3D m_vPickRectLeft;
 	Vec3D m_vPickRectBottom;
-
-	std::vector<sFrameRect> m_vecColRect;
 
 	VERTEX_XYZ_DIF m_PickPlane[5];
 

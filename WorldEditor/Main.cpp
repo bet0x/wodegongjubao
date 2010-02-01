@@ -1,36 +1,5 @@
 #include "MainRoot.h"
-
-#include <windows.h>
-#include <wininet.h>
-#define MAXBLOCKSIZE 1024
 #pragma comment(lib, "wininet.lib")
-void download(const char *szUrl,const char *szDest)
-{
-	HINTERNET hSession = InternetOpenA("RookIE/1.0", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
-	if (hSession != NULL)
-	{
-		HINTERNET handle2 = InternetOpenUrlA(hSession, szUrl, NULL, 0, INTERNET_FLAG_DONT_CACHE, 0);
-		if (handle2 != NULL)
-		{
-			byte Temp[MAXBLOCKSIZE];
-			ULONG Number = 1;
-			FILE *stream;
-			if( (stream = fopen(szDest, "wb")) != NULL )
-			{
-				while (Number > 0)
-				{
-					InternetReadFile(handle2, Temp, MAXBLOCKSIZE - 1, &Number);
-					fwrite(Temp, sizeof(char), Number, stream);
-				}
-				fclose(stream);
-			}
-			InternetCloseHandle(handle2);
-			handle2 = NULL;
-		}
-		InternetCloseHandle(hSession);
-		hSession = NULL;
-	}
-}
 
 //--------------------------------------------------------------------------------------
 // Initialize everything and go into a render loop
@@ -41,7 +10,6 @@ INT WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 	CMainRoot app;
 	try
 	{
-	//	download("http://www.rpgsky.com/muworldeditor/update.inf","update.inf");
 		app.Run();
 	}
 	catch( std::exception& e )

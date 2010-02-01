@@ -92,23 +92,3 @@ CModelConfig::CModelConfig()
 CModelConfig::~CModelConfig()
 {
 }
-
-CString GetFileTitleFromFileName(CString FileName,CString& ExtendName,CString &strPath) //获取文件名和扩展名
-{
-	int Where;
-	Where=FileName.ReverseFind('\\');
-	if(Where==-1)
-	{
-		Where=FileName.ReverseFind('/');
-	}
-	CString FileTitle=FileName.Right(FileName.GetLength()-1-Where);
-	strPath = FileName.Left(FileName.GetLength()-1-FileTitle.GetLength());
-
-	int Which=FileTitle.ReverseFind('.');
-	ExtendName=FileTitle.Right(FileTitle.GetLength()-Which-1);
-	if (Which!=-1)
-	{
-		FileTitle=FileTitle.Left(Which);
-	}
-	return FileTitle;
-}

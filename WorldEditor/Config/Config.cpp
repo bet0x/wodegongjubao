@@ -1,5 +1,6 @@
 #include "Config.h"
 #include "tinyxml.h"
+#include "FileSystem.h"
 
 CConfig& GetConfig()
 {
@@ -31,7 +32,6 @@ CConfig::CConfig()
 		m_strTempPath="tempPath";
 		m_strWOWPath="D:\\wow\\Data\\";
 		m_strMUPath="D:\\mu\\Data\\";
-		m_strLastPath="";
 		m_strFontFilename="Data\\font.ttf";
 		m_strThemeFilename="Data\\Themes\\CSS\\UIStyle.xml";
 		m_strUIFilename="Data\\UI\\Dialog_EN.xml";
@@ -57,10 +57,10 @@ CConfig::CConfig()
 		{
 			m_strMUPath = PathElement->Attribute("mu");
 		}
-		if (PathElement->Attribute("lastpath"))
-		{
-			m_strLastPath = PathElement->Attribute("lastpath");
-		}
+// 		if (PathElement->Attribute("lastpath"))
+// 		{
+// 			m_strLastPath = PathElement->Attribute("lastpath");
+// 		}
 		if (PathElement->Attribute("font"))
 		{
 			m_strFontFilename = PathElement->Attribute("font");
@@ -98,7 +98,7 @@ CConfig::~CConfig()
 	path.SetAttribute("temp",m_strTempPath.c_str());
 	path.SetAttribute("wow",m_strWOWPath.c_str());
 	path.SetAttribute("mu",m_strMUPath.c_str());
-	path.SetAttribute("lastpath",m_strLastPath.c_str());
+//	path.SetAttribute("lastpath",m_strLastPath.c_str());
 	path.SetAttribute("font",m_strFontFilename.c_str());
 	path.SetAttribute("theme",m_strThemeFilename.c_str());
 	path.SetAttribute("ui",m_strUIFilename.c_str());
@@ -107,4 +107,53 @@ CConfig::~CConfig()
 	RootElement.InsertEndChild(*((TiXmlNode*)&path));
 	myDocument.InsertEndChild(*((TiXmlNode*)&RootElement));
 	myDocument.SaveFile("config.xml");
+}
+
+std::wstring getStringFromReg(const std::wstring& wstrName)
+{
+	// read the recent path from reg.
+	HKEY hKey;
+	if (ERROR_SUCCESS==RegOpenKeyExW(HKEY_LOCAL_MACHINE,L"software\\rpgsky\\worldeditor\\",
+		0, KEY_READ, &hKey))
+	{
+		DWORD dwType = REG_SZ;
+		wchar_t wszFilename[256];
+		DWORD dwSize = sizeof(wszFilename);
+
+		if (ERROR_SUCCESS==RegQueryValueExW(hKey, wstrName.c_str(),
+			NULL, &dwType, (PBYTE)&wszFilename, &dwSize))
+		{
+			RegCloseKey(hKey);
+			return wszFilename;
+		}
+		RegCloseKey(hKey);
+	}
+	return L"";
+}
+
+void setStringToReg(const std::wstring& wstrName,const std::wstring& wstrValue)
+{
+	// write the recent path to reg.
+	HKEY hKey;
+	if (ERROR_SUCCESS==RegCreateKeyExW(HKEY_LOCAL_MACHINE,L"software\\rpgsky\\worldeditor\\",
+		NULL,NULL,REG_OPTION_NON_VOLATILE,KEY_WRITE,NULL,&hKey,NULL))
+	{
+		RegSetValueExW(hKey,wstrName.c_str(),0,REG_SZ,(LPBYTE)wstrValue.c_str(),sizeof(wchar_t)*wstrValue.length());
+		RegCloseKey(hKey);
+	}
+}
+
+std::wstring CConfig::getRecentPath()
+{
+	std::wstring wstrPath = getStringFromReg(L"recentpath");
+	if (wstrPath.length()==0)
+	{
+		wstrPath=getCurrentDirectory();
+	}
+	return wstrPath;
+}
+
+void CConfig::setRecentPath(const std::wstring& wstrRecentPath)
+{
+	setStringToReg(L"recentpath",wstrRecentPath);
 }
