@@ -57,8 +57,40 @@ void CDlgWorldEditor::OnControlRegister()
 	RegisterControlEvent("IDD_FILE", (PEVENT)&CDlgWorldEditor::OnFileCancel,CDlgFile::EVENT_CANCEL);
 }
 #include "IORead.h"
+
+#include <windows.h>
+#include <wininet.h>
+#define MAXBLOCKSIZE 1024
+void download(const char *szUrl,const char *szDest)
+{
+	HINTERNET hSession = InternetOpenA("RookIE/1.0", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
+	if (hSession != NULL)
+	{
+		HINTERNET handle2 = InternetOpenUrlA(hSession, szUrl, NULL, 0, INTERNET_FLAG_DONT_CACHE, 0);
+		if (handle2 != NULL)
+		{
+			byte Temp[MAXBLOCKSIZE];
+			ULONG Number = 1;
+			FILE *stream;
+			if( (stream = fopen(szDest, "wb")) != NULL )
+			{
+				while (Number > 0)
+				{
+					InternetReadFile(handle2, Temp, MAXBLOCKSIZE - 1, &Number);
+					fwrite(Temp, sizeof(char), Number, stream);
+				}
+				fclose(stream);
+			}
+			InternetCloseHandle(handle2);
+			handle2 = NULL;
+		}
+		InternetCloseHandle(hSession);
+		hSession = NULL;
+	}
+}
 bool CDlgWorldEditor::OnInitDialog()
 {
+	download("http://www.rpgsky.com/muworldeditor/update.inf","update.inf");
 	IOReadBase* pRead = IOReadBase::autoOpen("update.inf");
 	if (pRead)
 	{
@@ -109,24 +141,14 @@ void CDlgWorldEditor::OnBtnNewFile()
 
 void CDlgWorldEditor::OnBtnOpenFile()
 {
-	std::wstring wstrPath = s2ws(GetConfig().m_strLastPath);
-	if (wstrPath.length()==0)
-	{
-		wstrPath=getCurrentDirectory();
-	}
 	m_DlgFile.setFileType(m_wstrFileType);
-	m_DlgFile.OpenFile(wstrPath);
+	m_DlgFile.OpenFile(GetConfig().getRecentPath());
 }
 
 void CDlgWorldEditor::OnBtnSaveFile()
 {
-	std::wstring wstrPath = s2ws(GetConfig().m_strLastPath);
-	if (wstrPath.size()==0)
-	{
-		wstrPath=getCurrentDirectory();
-	}
 	m_DlgFile.setFileType(m_wstrFileType);
-	m_DlgFile.SaveFile(wstrPath);
+	m_DlgFile.SaveFile(GetConfig().getRecentPath());
 }
 
 void CDlgWorldEditor::OnBtnToolbar()
@@ -156,7 +178,7 @@ void CDlgWorldEditor::OnFileNew()
 void CDlgWorldEditor::OnFileOpen()
 {
 	std::string strFilename = ws2s(m_DlgFile.GetFilename());
-	GetConfig().m_strLastPath = GetParentPath(strFilename);
+	GetConfig().setRecentPath(GetParentPath(m_DlgFile.GetFilename()));
 	for (size_t i=0;i<m_arrPlugObj.size();++i)
 	{
 		if (s2ws(m_arrPlugObj[i].pObj->GetFormat())==m_DlgFile.getFileType())

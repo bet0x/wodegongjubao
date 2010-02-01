@@ -184,10 +184,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\FrameRectMgr.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\Main.cpp"
 				>
 			</File>
@@ -201,10 +197,6 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<File
-				RelativePath=".\FrameRectMgr.h"
-				>
-			</File>
 			<File
 				RelativePath=".\MainRoot.h"
 				>
@@ -231,14 +223,6 @@
 		<Filter
 			Name="Dialog"
 			>
-			<File
-				RelativePath=".\Dialog\DlgColEdit.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Dialog\DlgColEdit.h"
-				>
-			</File>
 			<File
 				RelativePath=".\Dialog\DlgFaceDetect.cpp"
 				>

@@ -21,8 +21,6 @@ void CDlgModelMain::OnControlRegister()
 
 	m_DlgModelController.Create("IDD_MODEL_CONTROLLER", this);
 	//m_DlgFaceDetect.Create("IDD_FACE_DETECT", this);
-	//m_dlgColEdit.Create("IDD_COLEDIT",this);
-
 
 	RegisterControlEvent("IDC_BTN_SHOW",		(PEVENT)&CDlgModelMain::OnBtnShowController);
 	RegisterControlEvent("IDC_BTN_FACE_DETECT",	(PEVENT)&CDlgModelMain::OnBtnFaceDetect);

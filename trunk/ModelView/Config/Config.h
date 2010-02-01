@@ -17,5 +17,3 @@ public:
 	int			m_nFontSize;
 };
 CModelConfig& GetModelConfig();
-
-extern CString GetFileTitleFromFileName(CString FileName,CString& ExtendName,CString &strPath);
