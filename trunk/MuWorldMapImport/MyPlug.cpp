@@ -40,8 +40,9 @@ CMyPlug::~CMyPlug(void)
 #define MAP_FILE_SIZE 65536*3+2
 #define HEIGHT_HEAD_SIZE 1082
 #define HEIGHT_BUFFER_SIZE 65536
-#define ATT_FILE_SIZE_1 65536*2+4
-#define ATT_FILE_SIZE_2 65536*1+4
+#define ATT_FILE_129KB_SIZE 65536*2+4
+#define ATT_FILE_65KB_SIZE 65536+4
+#define ATT_FILE_SERVER_SIZE 65536+3
 
 inline void decrypt2(char* buffer, size_t size)
 {
@@ -148,12 +149,12 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 		pRead = IOReadBase::autoOpen(ChangeExtension(strFilename,".att"));
 		if (pRead)
 		{
-			if (ATT_FILE_SIZE_1==pRead->GetSize())
+			if (ATT_FILE_129KB_SIZE==pRead->GetSize())
 			{
-				char buffer[ATT_FILE_SIZE_1];
-				pRead->Read(buffer,ATT_FILE_SIZE_1);
-				decrypt(buffer,ATT_FILE_SIZE_1);
-				decrypt2(buffer,ATT_FILE_SIZE_1);
+				char buffer[ATT_FILE_129KB_SIZE];
+				pRead->Read(buffer,ATT_FILE_129KB_SIZE);
+				decrypt(buffer,ATT_FILE_129KB_SIZE);
+				decrypt2(buffer,ATT_FILE_129KB_SIZE);
 				char* p = buffer;
 				m_uMuFlgAtt = *((uint32*)p);
 				p+=4;
@@ -167,12 +168,12 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 					p+=6;
 				}
 			}
-			else if (ATT_FILE_SIZE_2==pRead->GetSize())
+			else if (ATT_FILE_65KB_SIZE==pRead->GetSize())
 			{
-				char buffer[ATT_FILE_SIZE_2];
-				pRead->Read(buffer,ATT_FILE_SIZE_2);
-				decrypt(buffer,ATT_FILE_SIZE_2);
-				decrypt2(buffer,ATT_FILE_SIZE_2);
+				char buffer[ATT_FILE_65KB_SIZE];
+				pRead->Read(buffer,ATT_FILE_65KB_SIZE);
+				decrypt(buffer,ATT_FILE_65KB_SIZE);
+				decrypt2(buffer,ATT_FILE_65KB_SIZE);
 				char* p = buffer;
 				m_uMuFlgAtt = *((uint32*)p);
 				p+=4;
@@ -405,14 +406,16 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 
 bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& strFilename)
 {
+	// Calc MU's map id from filename.
+	int nMapID = getMapIDFromFilename(strFilename);
 	// map
 	FILE* f=fopen(strFilename.c_str(),"wb");
 	if (f)
 	{
 		char buffer[MAP_FILE_SIZE];
 		char* p = buffer;
-		*((uint16*)p)=1;//m_uMuFlgMap;
-		p+=2;
+		*((unsigned char*)p)=0;++p;
+		*((unsigned char*)p)=nMapID;++p;
 		// tile
 		for (size_t layer=0;layer<2;++layer)
 		{
@@ -454,34 +457,114 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 		fclose(f);
 	}
 	// att
-	// EncTerrain.att
-	f=fopen(ChangeExtension(strFilename,".att").c_str(),"wb+");
+	// for server.att
+	f=fopen(ChangeExtension(strFilename,"ForServer.att").c_str(),"wb+");
 	if (f)
 	{
-		char buffer[ATT_FILE_SIZE_2];
+		char buffer[ATT_FILE_SERVER_SIZE];
 		char* p = buffer;
-		*((uint32*)p)=1;//m_uMuFlgAtt;
-		p+=4;
+		*((unsigned char*)p)=0x0;++p;
+		*((unsigned char*)p)=0xFF;++p;
+		*((unsigned char*)p)=0xFF;++p;
+		for (int y=0; y<253; ++y)
 		{
-			for (int y=0; y<253; ++y)
+			for (int x=0; x<253; ++x)
 			{
-				for (int x=0; x<253; ++x)
-				{
-					*p = pTerrainData->getCellAttribute(Pos2D(x,y));
-					p++;
-				}
-				*p =0;++p;
-				*p =0;++p;
-				*p =0;++p;
+				*p = pTerrainData->getCellAttribute(Pos2D(x,y));
+				p++;
 			}
-			for (int x=0; x<256*3; ++x)
+			for (int x=253; x<256; ++x)
 			{
 				*p =0;++p;
 			}
 		}
-		decrypt2(buffer,ATT_FILE_SIZE_2);
-		encrypt(buffer,ATT_FILE_SIZE_2);
-		fwrite(buffer,ATT_FILE_SIZE_2,1,f);
+		for (int x=0; x<256*3; ++x)
+		{
+			*p =0;++p;
+		}
+		fwrite(buffer,ATT_FILE_SERVER_SIZE,1,f);
+		fclose(f);
+	}
+	// EncTerrain.att
+	f=fopen(ChangeExtension(strFilename,".att").c_str(),"wb+");
+	if (f)
+	{
+		switch(nMapID)
+		{
+		case 2:
+		case 4:
+		case 5:
+		case 6:
+		case 7:
+		case 10:
+		case 11:
+		case 12:
+		case 19:
+
+			{
+				char buffer[ATT_FILE_65KB_SIZE];
+				char* p = buffer;
+				*((unsigned char*)p)=0x0;++p;
+				*((unsigned char*)p)=nMapID;++p;
+				*((unsigned char*)p)=0xFF;++p;
+				*((unsigned char*)p)=0xFF;++p;
+				{
+					for (int y=0; y<253; ++y)
+					{
+						for (int x=0; x<253; ++x)
+						{
+							*p = pTerrainData->getCellAttribute(Pos2D(x,y));
+							p++;
+						}
+						for (int x=253; x<256; ++x)
+						{
+							*p =0;++p;
+						}
+					}
+					for (int x=0; x<256*3; ++x)
+					{
+						*p =0;++p;
+					}
+				}
+				decrypt2(buffer,ATT_FILE_65KB_SIZE);
+				encrypt(buffer,ATT_FILE_65KB_SIZE);
+				fwrite(buffer,ATT_FILE_65KB_SIZE,1,f);
+			}
+			break;
+		default:
+			{
+				char buffer[ATT_FILE_129KB_SIZE];
+				char* p = buffer;
+				*((unsigned char*)p)=0x0;++p;
+				*((unsigned char*)p)=nMapID;++p;
+				*((unsigned char*)p)=0xFF;++p;
+				*((unsigned char*)p)=0xFF;++p;
+				{
+					for (int y=0; y<253; ++y)
+					{
+						for (int x=0; x<253; ++x)
+						{
+							*p = pTerrainData->getCellAttribute(Pos2D(x,y));
+							p++;
+							*p =0;++p;
+						}
+						for (int x=253; x<256; ++x)
+						{
+							*p =0;++p;
+							*p =0;++p;
+						}
+					}
+					for (int x=0; x<256*6; ++x)
+					{
+						*p =0;++p;
+					}
+				}
+				decrypt2(buffer,ATT_FILE_129KB_SIZE);
+				encrypt(buffer,ATT_FILE_129KB_SIZE);
+				fwrite(buffer,ATT_FILE_129KB_SIZE,1,f);
+			}
+			break;
+		}
 		fclose(f);
 	}
 	// Height
