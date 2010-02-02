@@ -67,9 +67,9 @@ void CDlgModelAnim::ResetAnim()
 {
 	int nSelected = m_ComboBoxAnim.GetSelectedItemIndex();
 	m_ComboBoxAnim.RemoveAllItems();
-	if (getModelDisplay().m_pModelObject&&getModelDisplay().m_pModelObject->m_pModel)
+	if (getModelDisplay().m_pModelObject&&getModelDisplay().m_pModelObject->m_pModelData)
 	{
-		size_t uAnimSize = getModelDisplay().m_pModelObject->m_pModel->m_AnimList.size();
+		size_t uAnimSize = getModelDisplay().m_pModelObject->m_pModelData->m_AnimList.size();
 		if (uAnimSize>0)
 		{
 			for (size_t i=0; i<uAnimSize; ++i)
