@@ -30,7 +30,7 @@
 
 
 #include "Vec3D.h"
-#include "Model.h"
+#include "ModelData.h"
 #include "CsvFile.h"
 
 #include <set>
@@ -158,12 +158,12 @@ class Max2009ModelExporter : public SceneExport {
 		}
 		int				DoExport(const TCHAR *name,ExpInterface *ei,Interface *i, BOOL suppressPrompts=FALSE, DWORD options=0);
 
-		//void ExportMaterials( CModel& model );
-		void DumpMaterial( CModel& model, IGameMaterial * mat, int index, int matID = -1 );
+		//void ExportMaterials( CModelData& model );
+		void DumpMaterial( CModelData& model, IGameMaterial * mat, int index, int matID = -1 );
 
 		void DumpChildBone(IGameNode * child, CSkeleton& skeleton);
 
-		void DumpChildNodeInfo( IGameNode * child, CModel& model );
+		void DumpChildNodeInfo( IGameNode * child, CModelData& model );
 		//void ExportPositionControllers(BoneAnim& boneAnim, IGameControl * pGameControl, Point3 pos);
 		void DumpSampleKeys(IGameControl * pGameControl,BoneAnim& boneAnim, IGameControlType Type);
 		bool DumpTCBKeys(IGameControl * pGameControl,BoneAnim& boneAnim, IGameControlType Type);
@@ -176,7 +176,7 @@ class Max2009ModelExporter : public SceneExport {
 
 		bool DumpAnim(IGameControl * pGameControl,BoneAnim& boneAnim);
 		void DumpSampleKeys(IGameControl * sc,BoneAnim& boneAnim, IGameControlType Type, bool quick, Point3 pos);
-		void DumpMesh(IGameNode * child, IGameMesh *gm, CModel& model );
+		void DumpMesh(IGameNode * child, IGameMesh *gm, CModelData& model );
 
 		//Constructor/Destructor
 		Max2009ModelExporter();
@@ -450,7 +450,7 @@ int	Max2009ModelExporter::DoExport(const TCHAR *name,ExpInterface *ei,Interface 
 	int n4=m_pIgame->GetSceneTicks();
 
 	// 初始化模型
-	CModel model;
+	CModelData model;
 	// Set the anim list.
 	ReadAnimList(model.m_AnimList);
 	model.m_Mesh.m_Lods.resize(1);
@@ -535,7 +535,7 @@ int	Max2009ModelExporter::DoExport(const TCHAR *name,ExpInterface *ei,Interface 
 	return FALSE;
 }
 
-void Max2009ModelExporter::DumpMaterial( CModel& model, IGameMaterial * mat, int index, int matID )
+void Max2009ModelExporter::DumpMaterial( CModelData& model, IGameMaterial * mat, int index, int matID )
 {
 	TSTR buf;
 	IGameProperty *prop;
@@ -711,7 +711,7 @@ void Max2009ModelExporter::DumpChildBone(IGameNode * child, CSkeleton& skeleton 
 }
 
 
-void Max2009ModelExporter::DumpChildNodeInfo( IGameNode * child, CModel& model )
+void Max2009ModelExporter::DumpChildNodeInfo( IGameNode * child, CModelData& model )
 {
 	TSTR buf,data;
 
@@ -1565,7 +1565,7 @@ void Max2009ModelExporter::DumpBezierSclKeys(IGameKeyTab Keys, BoneAnim& boneAni
 //{
 //}
 //
-//void Max2009ModelExporter::ExportRotationControllers(CModel& model, IGameControl * pGameControl)
+//void Max2009ModelExporter::ExportRotationControllers(CModelData& model, IGameControl * pGameControl)
 //{
 //	IGameKeyTab rotkeys;
 //	//rotation
@@ -1605,7 +1605,7 @@ void Max2009ModelExporter::DumpBezierSclKeys(IGameKeyTab Keys, BoneAnim& boneAni
 //	}
 //}
 
-//void IGameExporter::ExportScaleControllers(CModel& model, IGameControl * pGameControl)
+//void IGameExporter::ExportScaleControllers(CModelData& model, IGameControl * pGameControl)
 //{
 	/*IGameKeyTab scalekeys;
 
@@ -1622,7 +1622,7 @@ void Max2009ModelExporter::DumpBezierSclKeys(IGameKeyTab Keys, BoneAnim& boneAni
 
 //}
 
-void Max2009ModelExporter::DumpMesh(IGameNode * child, IGameMesh * gm, CModel& model )
+void Max2009ModelExporter::DumpMesh(IGameNode * child, IGameMesh * gm, CModelData& model )
 {
 	bool vcSet = false;
 	bool nSet = false;
