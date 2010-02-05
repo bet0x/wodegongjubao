@@ -31,7 +31,6 @@ CConfig::CConfig()
 	{
 		m_strTempPath="tempPath";
 		m_strWOWPath="D:\\wow\\Data\\";
-		m_strMUPath="D:\\mu\\Data\\";
 		m_strFontFilename="Data\\font.ttf";
 		m_strThemeFilename="Data\\Themes\\CSS\\UIStyle.xml";
 		m_strUIFilename="Data\\UI\\Dialog_EN.xml";
@@ -52,10 +51,6 @@ CConfig::CConfig()
 		if (PathElement->Attribute("wow"))
 		{
 			m_strWOWPath = PathElement->Attribute("wow");
-		}
-		if (PathElement->Attribute("mu"))
-		{
-			m_strMUPath = PathElement->Attribute("mu");
 		}
 // 		if (PathElement->Attribute("lastpath"))
 // 		{
@@ -97,7 +92,6 @@ CConfig::~CConfig()
 	TiXmlElement path("path");
 	path.SetAttribute("temp",m_strTempPath.c_str());
 	path.SetAttribute("wow",m_strWOWPath.c_str());
-	path.SetAttribute("mu",m_strMUPath.c_str());
 //	path.SetAttribute("lastpath",m_strLastPath.c_str());
 	path.SetAttribute("font",m_strFontFilename.c_str());
 	path.SetAttribute("theme",m_strThemeFilename.c_str());

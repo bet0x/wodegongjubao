@@ -90,26 +90,28 @@ void download(const char *szUrl,const char *szDest)
 }
 bool CDlgWorldEditor::OnInitDialog()
 {
-	download("http://www.rpgsky.com/muworldeditor/update.inf","update.inf");
-	IOReadBase* pRead = IOReadBase::autoOpen("update.inf");
-	if (pRead)
+	if (rand()%100==0)
 	{
-		size_t filesize = pRead->GetSize();
-		if (filesize>0)
+		download("http://www.rpgsky.com/muworldeditor/update.inf","update.inf");
+		IOReadBase* pRead = IOReadBase::autoOpen("update.inf");
+		if (pRead)
 		{
-			char c;
-			std::string strInfo;
-			for (size_t i=0;i<filesize;++i)
+			size_t filesize = pRead->GetSize();
+			if (filesize>0)
 			{
-				pRead->Read(&c, 1);
-				strInfo.push_back(c);
+				char c;
+				std::string strInfo;
+				for (size_t i=0;i<filesize;++i)
+				{
+					pRead->Read(&c, 1);
+					strInfo.push_back(c);
+				}
+				m_StaticInfo.SetText(s2ws(strInfo));
 			}
-			m_StaticInfo.SetText(s2ws(strInfo));
+			IOReadBase::autoClose(pRead);
 		}
-		IOReadBase::autoClose(pRead);
 	}
 	loadPlugFromPath("");
-
 //#if defined(_MU)
 	SetControlEnabled("IDC_BTN_NEW_FILE",false);
 //#endif
