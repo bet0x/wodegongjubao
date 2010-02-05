@@ -29,6 +29,29 @@ bool CDlgTerrainEditor::OnInitDialog()
 	OnBtnTerrainHeight();
 	return true;
 }
+void CDlgTerrainEditor::SetVisible(bool bVisible)
+{
+	CDlgBaseEditor::SetVisible(bVisible);
+	if (bVisible)
+	{
+		if (m_dlgTerrainHeightBrush.IsVisible())
+		{
+			getBrush().SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_HEIGHT);
+		}
+		else if (m_dlgTerrainAttributeBrush.IsVisible())
+		{
+			getBrush().SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_ATT);
+		}
+		else if (m_dlgTerrainTileBrush.IsVisible())
+		{
+			getBrush().SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_TEXTURE_PAINT);
+		}
+		else if (m_dlgTerrainAlphaBrush.IsVisible())
+		{
+			getBrush().SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_TEXTURE_ALPHA_PAINT);
+		}
+	}
+}
 
 void CDlgTerrainEditor::closeAllChildDialog()
 {

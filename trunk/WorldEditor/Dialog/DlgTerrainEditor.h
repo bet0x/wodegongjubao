@@ -12,6 +12,7 @@ public:
 public:
 	virtual void OnControlRegister();
 	virtual bool OnInitDialog();
+	virtual void SetVisible(bool bVisible);
 
 	void OnBtnTerrainHeight();
 	void OnBtnTerrainAttribute();

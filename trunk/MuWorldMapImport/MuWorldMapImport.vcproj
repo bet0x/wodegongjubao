@@ -78,7 +78,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="mathd.lib commond.lib fileiod.lib"
-				OutputFile="..\..\bin\WorldEditor\$(ProjectName).dll"
+				OutputFile="..\..\bin\WorldEditor\$(ProjectName)d.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\Shared\lib;..\..\engine\lib"
@@ -229,7 +229,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\$(ProjectName).def"
+				RelativePath=".\MuWorldMapPlugin.def"
 				>
 			</File>
 			<File

@@ -13,7 +13,6 @@ public:
 public:
 	std::string m_strTempPath;
 	std::string m_strWOWPath;
-	std::string m_strMUPath;
 
 	std::string m_strFontFilename;
 	std::string m_strThemeFilename;
