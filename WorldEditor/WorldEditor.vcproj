@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\Shared\Math\Include;..\..\Shared\Common\Include;..\..\Shared\IO\FileIO\Include;..\..\Shared\IO\tinyxml;..\..\engine\Render\RenderSystem\Include;..\..\engine\Render\RenderSystemDX9\Include;..\..\engine\EngineCore\Include;..\..\engine\Media\Sound\Include;..\..\engine\Model\Include;..\..\engine\UI\Include;..\..\Shared\Protection\src"
-				PreprocessorDefinitions="WIN32;_DEBUG"
+				PreprocessorDefinitions="WIN32;_DEBUG;_AUTO_FONT"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -121,7 +121,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\..\Shared\Math\Include;..\..\Shared\Common\Include;..\..\Shared\IO\FileIO\Include;..\..\Shared\IO\tinyxml;..\..\engine\Render\RenderSystem\Include;..\..\engine\Render\RenderSystemDX9\Include;..\..\engine\EngineCore\Include;..\..\engine\Media\Sound\Include;..\..\engine\Model\Include;..\..\engine\UI\Include;..\..\Shared\Protection\src"
-				PreprocessorDefinitions="WIN32;NDEBUG;_AUTO_FONT"
+				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
