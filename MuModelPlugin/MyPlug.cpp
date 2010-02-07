@@ -20,9 +20,9 @@ int CMyPlug::Execute(iModelData * pModelData, bool bShowDlg, bool bSpecifyFileNa
 	return -1;
 }
 
-
 int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
 {
+	assert(pModelData);
 	static CMUBmd* pPlayerBmd;
 	CMUBmd bmd;
 	bool bIsPlayerPart = false;
@@ -199,8 +199,8 @@ int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
 		strParFilename=strMyPath+ChangeExtension(GetFilename(strFilename),".par.csv");
 	}
 
-	//loadMaterial(strMatFilename,GetParentPath(strFilename));
-	//loadParticleEmitters(strParFilename,GetParentPath(strFilename));
+	pModelData->loadMaterial(strMatFilename,GetParentPath(strFilename));
+	pModelData->loadParticleEmitters(strParFilename,GetParentPath(strFilename));
 	return true;
 }
 
