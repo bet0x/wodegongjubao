@@ -1628,7 +1628,7 @@ void Max2009ModelExporter::DumpMesh(IGameNode * child, IGameMesh * gm, CModelDat
 	bool nSet = false;
 	bool tvSet = false;
 
-	size_t uStartSubset = model.m_Passes.size();
+	size_t uStartSubset = model.m_mapPasses.size();
 	size_t uStartPos = model.m_Mesh.pos.size();
 	size_t uStartNormal = model.m_Mesh.normal.size();
 	size_t uStartUV1 = model.m_Mesh.texcoord.size();
@@ -1953,7 +1953,7 @@ void Max2009ModelExporter::DumpMesh(IGameNode * child, IGameMesh * gm, CModelDat
 					pass.material.bAlphaTest = true;
 				}
 
-				model.m_Passes.push_back( pass );
+				model.m_mapPasses[nMatID]=pass;
 			}
 		}
 	}

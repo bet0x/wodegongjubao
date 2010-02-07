@@ -149,11 +149,11 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="0"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="..\..\Shared\Common\Include;..\..\Shared\Math\Include;..\..\Shared\IO\FileIO\Include;..\..\Shared\IO\tinyxml;..\..\engine\Render\RenderSystem\Include;..\..\engine\Render\RenderSystemDX9\Include;..\..\engine\EngineCore\Include;..\..\engine\Model\Include;..\..\engine\Media\Sound\Include;..\..\engine\UI\Include;..\..\Shared\Protection\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL"
-				StringPooling="true"
+				StringPooling="false"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
