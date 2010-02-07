@@ -25,7 +25,7 @@ void CUIComboObjListTile::OnListBoxObjectSelection()
 	if (tiles.find(getSelectedObjectID())!=tiles.end())
 	{
 		const Tile& tile = tiles[getSelectedObjectID()];
-		m_uTileTexID = tile.tileMaterial.nTexDiffuse;
+		m_uTileTexID = tile.tileMaterial.uDiffuse;
 	}
 }
 
@@ -56,7 +56,7 @@ void CUIComboObjListTile::SelectObjectByObjectID(size_t id)
 	if (tiles.find(getSelectedObjectID())!=tiles.end())
 	{
 		const Tile& tile = tiles[getSelectedObjectID()];
-		m_uTileTexID = tile.tileMaterial.nTexDiffuse;
+		m_uTileTexID = tile.tileMaterial.uDiffuse;
 	}
 }
 
