@@ -88,6 +88,25 @@ void download(const char *szUrl,const char *szDest)
 		hSession = NULL;
 	}
 }
+
+#include "diskid32.h"
+
+inline std::string UUBCode(const std::string& str)  
+{
+	std::string strDecode;
+	strDecode.resize(str.size());
+	static const char tab[10] = {
+		'U', '1', '4', 'z','7',
+		'0', 'q', 'o', '8','S'
+	};
+	char key = 0x5E;
+	for (size_t i=0; i<str.size(); ++i)
+	{
+		strDecode[i] = tab[str[i]-'0'];
+	}
+	return strDecode;
+}
+
 bool CDlgWorldEditor::OnInitDialog()
 {
 	if (rand()%100==0)
@@ -110,6 +129,10 @@ bool CDlgWorldEditor::OnInitDialog()
 			}
 			IOReadBase::autoClose(pRead);
 		}
+	}
+	else
+	{
+		m_StaticInfo.SetText(L"HardwareID: "+s2ws(UUBCode(Format("%u%u",getHardDriveComputerID(),GetMACaddress()))));
 	}
 	loadPlugFromPath("");
 //#if defined(_MU)

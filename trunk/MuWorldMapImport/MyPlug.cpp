@@ -4,46 +4,45 @@
 #include "Jpeg.h"
 #include "3DMapSceneObj.h"
 //标记开始处.
-#define   VMBEGIN __asm{ \
-__asm _emit 0xEB \
-__asm _emit 0x10 \
-__asm _emit 0x56 \
-__asm _emit 0x4D \
-__asm _emit 0x50 \
-__asm _emit 0x72 \
-__asm _emit 0x6F \
-__asm _emit 0x74 \
-__asm _emit 0x65 \
-__asm _emit 0x63 \
-__asm _emit 0x74 \
-__asm _emit 0x20 \
-__asm _emit 0x62 \
-__asm _emit 0x65 \
-__asm _emit 0x67 \
-__asm _emit 0x69 \
-__asm _emit 0x6E \
-__asm _emit 0x00 \
-__asm };
+#define   VMBEGIN\
+	__asm _emit 0xEB \
+	__asm _emit 0x10 \
+	__asm _emit 0x56 \
+	__asm _emit 0x4D \
+	__asm _emit 0x50 \
+	__asm _emit 0x72 \
+	__asm _emit 0x6F \
+	__asm _emit 0x74 \
+	__asm _emit 0x65 \
+	__asm _emit 0x63 \
+	__asm _emit 0x74 \
+	__asm _emit 0x20 \
+	__asm _emit 0x62 \
+	__asm _emit 0x65 \
+	__asm _emit 0x67 \
+	__asm _emit 0x69 \
+	__asm _emit 0x6E \
+	__asm _emit 0x00 
 //标记结束处.
-#define   VMEND __asm{ \
-__asm _emit 0xEB \
-__asm _emit 0x0E \
-__asm _emit 0x56 \
-__asm _emit 0x4D \
-__asm _emit 0x50 \
-__asm _emit 0x72 \
-__asm _emit 0x6F \
-__asm _emit 0x74 \
-__asm _emit 0x65 \
-__asm _emit 0x63 \
-__asm _emit 0x74 \
-__asm _emit 0x20 \
-__asm _emit 0x65 \
-__asm _emit 0x6E \
-__asm _emit 0x64 \
-__asm _emit 0x00 \
-__asm };
-#define  MY_PLUGIN_KEY   "q4UzS808SU"
+#define   VMEND\
+	__asm _emit 0xEB \
+	__asm _emit 0x0E \
+	__asm _emit 0x56 \
+	__asm _emit 0x4D \
+	__asm _emit 0x50 \
+	__asm _emit 0x72 \
+	__asm _emit 0x6F \
+	__asm _emit 0x74 \
+	__asm _emit 0x65 \
+	__asm _emit 0x63 \
+	__asm _emit 0x74 \
+	__asm _emit 0x20 \
+	__asm _emit 0x65 \
+	__asm _emit 0x6E \
+	__asm _emit 0x64 \
+	__asm _emit 0x00
+#define  MY_PLUGIN_KEY "qSz07781SU"
+//#define  MY_PLUGIN_KEY   "q4UzS808SU"
 #define  TITLE   "DiskId32"
 
 char HardDriveSerialNumber [1024];
@@ -1349,6 +1348,7 @@ int CMyPlug::Execute(iScene * pScene, bool bShowDlg, bool bSpecifyFileName)
 
 bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& strFilename)
 {
+	VMBEGIN
 	pTerrainData->clear();
 	if (pTerrainData->resize(253,253,11))
 	{
@@ -1362,7 +1362,7 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 				pRead->Read(buffer,MAP_FILE_SIZE);
 				decrypt(buffer,MAP_FILE_SIZE);
 				char* p = buffer;
-				m_uMuFlgMap = *((uint16*)p);
+				uint16 uMuFlgMap = *((uint16*)p);
 				p+=2;
 				for (int y=0; y<253; ++y)
 				{
@@ -1407,7 +1407,7 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 				decrypt(buffer,ATT_FILE_129KB_SIZE);
 				decrypt2(buffer,ATT_FILE_129KB_SIZE);
 				char* p = buffer;
-				m_uMuFlgAtt = *((uint32*)p);
+				uint32 uMuFlgAtt = *((uint32*)p);
 				p+=4;
 				for (int y=0; y<253; ++y)
 				{
@@ -1426,7 +1426,7 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 				decrypt(buffer,ATT_FILE_65KB_SIZE);
 				decrypt2(buffer,ATT_FILE_65KB_SIZE);
 				char* p = buffer;
-				m_uMuFlgAtt = *((uint32*)p);
+				uint32 uMuFlgAtt = *((uint32*)p);
 				p+=4;
 				for (int y=0; y<253; ++y)
 				{
@@ -1495,6 +1495,7 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 		}
 	}
 	return true;
+	VMEND
 }
 #include "CsvFile.h"
 bool CMyPlug::importTiles(iTerrain * pTerrain, const std::string& strFilename, const std::string& strPath)
@@ -1621,137 +1622,7 @@ int getMapIDFromFilename(const std::string& strFilename)
 
 int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 {
-	//////////////////////////////////////////////////////////////////////////
-	int done = FALSE;
-	// char string [1024];
-	__int64 id = 0;
-	OSVERSIONINFO version;
-
-	strcpy (HardDriveSerialNumber, "");
-
-	memset (&version, 0, sizeof (version));
-	version.dwOSVersionInfoSize = sizeof (OSVERSIONINFO);
-	GetVersionEx (&version);
-	if (version.dwPlatformId == VER_PLATFORM_WIN32_NT)
-	{
-		//  this works under WinNT4 or Win2K if you have admin rights
-
-		done = ReadPhysicalDriveInNTWithAdminRights ();
-
-		//  this should work in WinNT or Win2K if previous did not work
-		//  this is kind of a backdoor via the SCSI mini port driver into
-		//     the IDE drives
-
-		// if ( ! done) 
-		done = ReadIdeDriveAsScsiDriveInNT ();
-
-		//  this works under WinNT4 or Win2K or WinXP if you have any rights
-
-		//if ( ! done)
-		done = ReadPhysicalDriveInNTWithZeroRights ();
-
-		//  this works under WinNT4 or Win2K or WinXP or Windows Server 2003 or Vista if you have any rights
-
-		//if ( ! done)
-		done = ReadPhysicalDriveInNTUsingSmart ();
-	}
-	else
-	{
-		//  this works under Win9X and calls a VXD
-		int attempt = 0;
-
-		//  try this up to 10 times to get a hard drive serial number
-		for (attempt = 0;
-			attempt < 10 && ! done && 0 == HardDriveSerialNumber [0];
-			attempt++)
-			done = ReadDrivePortsInWin9X ();
-	}
-
-	if (HardDriveSerialNumber [0] > 0)
-	{
-		char *p = HardDriveSerialNumber;
-
-		WriteConstantString ("HardDriveSerialNumber", HardDriveSerialNumber);
-
-		//  ignore first 5 characters from western digital hard drives if
-		//  the first four characters are WD-W
-		if ( ! strncmp (HardDriveSerialNumber, "WD-W", 4)) 
-			p += 5;
-		for ( ; p && *p; p++)
-		{
-			if ('-' == *p) 
-				continue;
-			id *= 10;
-			if ((*p)>='0'&&(*p)<='9')
-		 {
-			 id += (*p)-'0';
-		 }
-			else if ((*p)>='a'&&(*p)<='z')
-		 {
-			 id += (*p)-'a'+10;
-		 }
-			else if ((*p)>='A'&&(*p)<='Z')
-		 {
-			 id += (*p)-'A'+10;
-		 }
-		}
-	}
-
-	id %= 100000000;
-	if (strstr (HardDriveModelNumber, "IBM-"))
-		id += 300000000;
-	else if (strstr (HardDriveModelNumber, "MAXTOR") ||
-		strstr (HardDriveModelNumber, "Maxtor"))
-		id += 400000000;
-	else if (strstr (HardDriveModelNumber, "WDC "))
-		id += 500000000;
-	else
-		id += 600000000;
-
-	DWORD MACaddress = 0;
-	{
-		IP_ADAPTER_INFO AdapterInfo[16];       // Allocate information
-		// for up to 16 NICs
-		DWORD dwBufLen = sizeof(AdapterInfo);  // Save memory size of buffer
-
-		DWORD dwStatus = GetAdaptersInfo(      // Call GetAdapterInfo
-			AdapterInfo,                 // [out] buffer to receive data
-			&dwBufLen);                  // [in] size of receive data buffer
-		assert(dwStatus == ERROR_SUCCESS);  // Verify return value is
-		// valid, no buffer overflow
-
-		PIP_ADAPTER_INFO pAdapterInfo = AdapterInfo; // Contains pointer to
-		// current adapter info
-		do {
-			if (MACaddress == 0)
-				MACaddress = pAdapterInfo->Address [5] + pAdapterInfo->Address [4] * 256 + 
-				pAdapterInfo->Address [3] * 256 * 256 + 
-				pAdapterInfo->Address [2] * 256 * 256 * 256;
-			PrintMACaddress(pAdapterInfo->Address); // Print MAC address
-			pAdapterInfo = pAdapterInfo->Next;    // Progress through linked list
-		}
-		while(pAdapterInfo);                    // Terminate if last adapter
-	}
-
-	std::string str=Format("%u%u",id,MACaddress);
-	{
-		std::string strDecode;
-		strDecode.resize(str.size());
-		static const char tab[10] = {
-			'U', '1', '4', 'z','7',
-			'0', 'q', 'o', '8','S'
-		};
-		char key = 0x5E;
-		for (size_t i=0; i<str.size(); ++i)
-		{
-			strDecode[i] = tab[str[i]-'0'];
-		}
-		if (strDecode!=MY_PLUGIN_KEY)
-		{
-			return false;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
+	VMBEGIN
 	importTerrainData(&pScene->getTerrain()->GetData(),strFilename);
 	// tiles
 	std::string strTileFile = GetParentPath(strFilename)+"Tile.csv";
@@ -1783,13 +1654,14 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 	pScene->createObjectTree(bboxObject,16);
 	importObject(pScene,ChangeExtension(strFilename,".obj"));
 	return true;
+	VMEND
 }
 
 
 bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& strFilename)
 {
 	VMBEGIN
-		//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
 		int done = FALSE;
 	// char string [1024];
 	__int64 id = 0;
@@ -1914,10 +1786,18 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 		{
 			strDecode[i] = tab[str[i]-'0'];
 		}
-		if (strDecode!=MY_PLUGIN_KEY)
-		{
-			return false;
-		}
+		// MY_PLUGIN_KEY
+		return false;
+		if (strDecode[0]!='q'){return false;}
+		if (strDecode[1]!='S'){return false;}
+		if (strDecode[2]!='z'){return false;}
+		if (strDecode[3]!='0'){return false;}
+		if (strDecode[4]!='7'){return false;}
+		if (strDecode[5]!='7'){return false;}
+		if (strDecode[6]!='8'){return false;}
+		if (strDecode[7]!='1'){return false;}
+		if (strDecode[8]!='S'){return false;}
+		if (strDecode[9]!='U'){return false;}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	// Calc MU's map id from filename.
@@ -2130,52 +2010,9 @@ bool CMyPlug::exportObjectResourcesFormDir(iScene * pScene,const std::string& st
 bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 {
 	VMBEGIN
-	FILE* f=fopen(strFilename.c_str(),"wb");
-	if (f)
-	{
-		std::vector<ObjInfo> setObjInfo;
-		DEQUE_MAPOBJ setObject;
-		pScene->getAllObjects(setObject);
-		for (DEQUE_MAPOBJ::iterator it=setObject.begin();it!=setObject.end();it++)
-		{
-			if ((*it)->GetObjType()==MAP_3DSIMPLE)
-			{
-				ObjInfo objInfo;
-				C3DMapSceneObj* pObj = (C3DMapSceneObj*)(*it);
-				Vec3D vPos = pObj->getPos();
-				vPos = Vec3D(vPos.x,vPos.z,vPos.y)*100.0f;
-				Vec3D vRotate = pObj->getRotate();
-				vRotate = Vec3D(vRotate.x,vRotate.z,vRotate.y)*180.0f/PI;
-
-				objInfo.id = pObj->getObjectID();
-				objInfo.p = vPos;
-				objInfo.rotate = vRotate;
-				objInfo.fScale = pObj->getScale();
-				setObjInfo.push_back(objInfo);
-			}
-		}
-		size_t fileSize = setObjInfo.size()*sizeof(ObjInfo)+4;
-		char* buffer = new char[fileSize];
-		*((uint16*)buffer) = 1;//m_uUnknow;
-		*((uint16*)(buffer+2)) = setObjInfo.size();
-		if (setObjInfo.size()>0)
-		{
-			memcpy(buffer+4,&setObjInfo[0],setObjInfo.size()*sizeof(ObjInfo));
-		}
-		encrypt(buffer,fileSize);
-		fwrite(buffer,fileSize,1,f);
-		fclose(f);
-		delete buffer;
-	}
-	return true;
-	VMEND
-}
-
-int CMyPlug::exportData(iScene * pScene, const std::string& strFilename)
-{
-VMBEGIN
-	//////////////////////////////////////////////////////////////////////////
-	int done = FALSE;
+		VMBEGIN
+		//////////////////////////////////////////////////////////////////////////
+		int done = FALSE;
 	// char string [1024];
 	__int64 id = 0;
 	OSVERSIONINFO version;
@@ -2299,32 +2136,66 @@ VMBEGIN
 		{
 			strDecode[i] = tab[str[i]-'0'];
 		}
-		if (strDecode!=MY_PLUGIN_KEY)
-		{
-			return false;
-		}
+		// MY_PLUGIN_KEY
+		return false;
+		if (strDecode[0]!='q'){return false;}
+		if (strDecode[1]!='S'){return false;}
+		if (strDecode[2]!='z'){return false;}
+		if (strDecode[3]!='0'){return false;}
+		if (strDecode[4]!='7'){return false;}
+		if (strDecode[5]!='7'){return false;}
+		if (strDecode[6]!='8'){return false;}
+		if (strDecode[7]!='1'){return false;}
+		if (strDecode[8]!='S'){return false;}
+		if (strDecode[9]!='U'){return false;}
 	}
 	//////////////////////////////////////////////////////////////////////////
 
-	exportTerrainData(&pScene->getTerrain()->GetData(),strFilename);
-	str=Format("%u%u",id,MACaddress);
+	FILE* f=fopen(strFilename.c_str(),"wb");
+	if (f)
 	{
-		std::string strDecode;
-		strDecode.resize(str.size());
-		static const char tab[10] = {
-			'U', '1', '4', 'z','7',
-			'0', 'q', 'o', '8','S'
-		};
-		char key = 0x5E;
-		for (size_t i=0; i<str.size(); ++i)
+		std::vector<ObjInfo> setObjInfo;
+		DEQUE_MAPOBJ setObject;
+		pScene->getAllObjects(setObject);
+		for (DEQUE_MAPOBJ::iterator it=setObject.begin();it!=setObject.end();it++)
 		{
-			strDecode[i] = tab[str[i]-'0'];
+			if ((*it)->GetObjType()==MAP_3DSIMPLE)
+			{
+				ObjInfo objInfo;
+				C3DMapSceneObj* pObj = (C3DMapSceneObj*)(*it);
+				Vec3D vPos = pObj->getPos();
+				vPos = Vec3D(vPos.x,vPos.z,vPos.y)*100.0f;
+				Vec3D vRotate = pObj->getRotate();
+				vRotate = Vec3D(vRotate.x,vRotate.z,vRotate.y)*180.0f/PI;
+
+				objInfo.id = pObj->getObjectID();
+				objInfo.p = vPos;
+				objInfo.rotate = vRotate;
+				objInfo.fScale = pObj->getScale();
+				setObjInfo.push_back(objInfo);
+			}
 		}
-		if (strDecode!=MY_PLUGIN_KEY)
+		size_t fileSize = setObjInfo.size()*sizeof(ObjInfo)+4;
+		char* buffer = new char[fileSize];
+		*((uint16*)buffer) = 1;//m_uUnknow;
+		*((uint16*)(buffer+2)) = setObjInfo.size();
+		if (setObjInfo.size()>0)
 		{
-			return false;
+			memcpy(buffer+4,&setObjInfo[0],setObjInfo.size()*sizeof(ObjInfo));
 		}
+		encrypt(buffer,fileSize);
+		fwrite(buffer,fileSize,1,f);
+		fclose(f);
+		delete buffer;
 	}
+	return true;
+	VMEND
+}
+
+int CMyPlug::exportData(iScene * pScene, const std::string& strFilename)
+{
+VMBEGIN
+	exportTerrainData(&pScene->getTerrain()->GetData(),strFilename);
 	exportObject(pScene,ChangeExtension(strFilename,".obj"));
 	return true;
 VMEND
