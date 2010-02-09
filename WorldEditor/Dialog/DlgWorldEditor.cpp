@@ -275,8 +275,8 @@ bool CDlgWorldEditor::createPlug(const std::string& strFilename)
 	stPs.hIns = LoadLibraryA(strFilename.c_str());
 	if (stPs.hIns)
 	{
-		PFN_Plug_CreateObject pFunc = (PFN_Plug_CreateObject)GetProcAddress(
-			stPs.hIns, "Plug_CreateObject");
+		PFN_Scene_Plug_CreateObject pFunc = (PFN_Scene_Plug_CreateObject)GetProcAddress(
+			stPs.hIns, "Scene_Plug_CreateObject");
 		if (pFunc){
 			if (pFunc((void **)&stPs.pObj)){
 				brt =true;

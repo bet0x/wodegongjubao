@@ -1,7 +1,7 @@
 #pragma once
 #include "InterfaceScene.h"
 
-class CMyPlug : public CPlugBase  
+class CMyPlug : public CScenePlugBase  
 {
 public:
 	CMyPlug(void);

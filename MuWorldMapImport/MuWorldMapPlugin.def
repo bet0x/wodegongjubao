@@ -4,4 +4,4 @@ LIBRARY      "MuWorldMapPlugin"
 DESCRIPTION  'MuWorldMapPlugin Windows Dynamic Link Library'
 
 EXPORTS
-    Plug_CreateObject	@1
+    Scene_Plug_CreateObject	@1

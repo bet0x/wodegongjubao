@@ -7,7 +7,7 @@
 #include "DlgRegister.h"
 
 typedef struct{
-	CPlugBase * pObj;
+	CScenePlugBase * pObj;
 	HINSTANCE hIns;
 }PLUG_ST, * LPPLUG_ST;
 

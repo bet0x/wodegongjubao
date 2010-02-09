@@ -1348,7 +1348,9 @@ int CMyPlug::Execute(iScene * pScene, bool bShowDlg, bool bSpecifyFileName)
 
 bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& strFilename)
 {
+#if defined(_NO_EXPORT)
 	VMBEGIN
+#endif
 	pTerrainData->clear();
 	if (pTerrainData->resize(253,253,11))
 	{
@@ -1495,7 +1497,9 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 		}
 	}
 	return true;
+#if defined(_NO_EXPORT)
 	VMEND
+#endif
 }
 #include "CsvFile.h"
 bool CMyPlug::importTiles(iTerrain * pTerrain, const std::string& strFilename, const std::string& strPath)
@@ -1586,7 +1590,7 @@ bool CMyPlug::importObject(iScene * pScene, const std::string& strFilename)
 		pRead->Read(buffer, fileSize);
 		decrypt(buffer,fileSize);
 
-		int m_uUnknow = *((uint16*)(buffer));
+		uint16 uMapID = *((uint16*)(buffer));
 		uint16 uObjCount = *((uint16*)(buffer+2));
 		ObjInfo* pObjInfo = (ObjInfo*)(buffer+4);
 		for (int i=0; i<uObjCount;++i)
@@ -1660,6 +1664,8 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 
 bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& strFilename)
 {
+#if defined(_NO_EXPORT)
+#else
 	VMBEGIN
 	//////////////////////////////////////////////////////////////////////////
 		int done = FALSE;
@@ -1786,18 +1792,29 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 		{
 			strDecode[i] = tab[str[i]-'0'];
 		}
+#if defined(_DEBUG)
+#else
 		// MY_PLUGIN_KEY
-		return false;
 		if (strDecode[0]!='q'){return false;}
-		if (strDecode[1]!='S'){return false;}
-		if (strDecode[2]!='z'){return false;}
+		if (strDecode[1]!='4'){return false;}
+		if (strDecode[2]!='8'){return false;}
 		if (strDecode[3]!='0'){return false;}
-		if (strDecode[4]!='7'){return false;}
-		if (strDecode[5]!='7'){return false;}
-		if (strDecode[6]!='8'){return false;}
-		if (strDecode[7]!='1'){return false;}
-		if (strDecode[8]!='S'){return false;}
-		if (strDecode[9]!='U'){return false;}
+		if (strDecode[4]!='z'){return false;}
+		if (strDecode[5]!='0'){return false;}
+		if (strDecode[6]!='7'){return false;}
+		if (strDecode[7]!='S'){return false;}
+		if (strDecode[8]!='U'){return false;}
+		if (strDecode[9]!='z'){return false;}
+		if (strDecode[10]!='0'){return false;}
+		if (strDecode[11]!='U'){return false;}
+		if (strDecode[12]!='q'){return false;}
+		if (strDecode[13]!='U'){return false;}
+		if (strDecode[14]!='8'){return false;}
+		if (strDecode[15]!='o'){return false;}
+		if (strDecode[16]!='U'){return false;}
+		if (strDecode[17]!='U'){return false;}
+		if (strDecode[18]!='4'){return false;}
+#endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	// Calc MU's map id from filename.
@@ -1988,8 +2005,9 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 		fwrite(buffer,HEIGHT_BUFFER_SIZE,1,f);
 		fclose(f);
 	}
-	return true;
 	VMEND
+#endif
+	return true;
 }
 
 bool CMyPlug::exportTiles(iTerrain * pTerrain, const std::string& strFilename, const std::string& strPath)
@@ -2009,9 +2027,10 @@ bool CMyPlug::exportObjectResourcesFormDir(iScene * pScene,const std::string& st
 
 bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 {
+#if defined(_NO_EXPORT)
+#else
 	VMBEGIN
-		VMBEGIN
-		//////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
 		int done = FALSE;
 	// char string [1024];
 	__int64 id = 0;
@@ -2123,7 +2142,7 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 		while(pAdapterInfo);                    // Terminate if last adapter
 	}
 
-	std::string str=Format("%u%u",id,MACaddress);
+	std::string str=Format("%u%u",(long)id,(long)MACaddress);
 	{
 		std::string strDecode;
 		strDecode.resize(str.size());
@@ -2136,18 +2155,29 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 		{
 			strDecode[i] = tab[str[i]-'0'];
 		}
-		// MY_PLUGIN_KEY
-		return false;
+#if defined(_DEBUG)
+#else
+		// MY_PLUGIN_KEYq480z07SUz0UqU8oUU4
 		if (strDecode[0]!='q'){return false;}
-		if (strDecode[1]!='S'){return false;}
-		if (strDecode[2]!='z'){return false;}
+		if (strDecode[1]!='4'){return false;}
+		if (strDecode[2]!='8'){return false;}
 		if (strDecode[3]!='0'){return false;}
-		if (strDecode[4]!='7'){return false;}
-		if (strDecode[5]!='7'){return false;}
-		if (strDecode[6]!='8'){return false;}
-		if (strDecode[7]!='1'){return false;}
-		if (strDecode[8]!='S'){return false;}
-		if (strDecode[9]!='U'){return false;}
+		if (strDecode[4]!='z'){return false;}
+		if (strDecode[5]!='0'){return false;}
+		if (strDecode[6]!='7'){return false;}
+		if (strDecode[7]!='S'){return false;}
+		if (strDecode[8]!='U'){return false;}
+		if (strDecode[9]!='z'){return false;}
+		if (strDecode[10]!='0'){return false;}
+		if (strDecode[11]!='U'){return false;}
+		if (strDecode[12]!='q'){return false;}
+		if (strDecode[13]!='U'){return false;}
+		if (strDecode[14]!='8'){return false;}
+		if (strDecode[15]!='o'){return false;}
+		if (strDecode[16]!='U'){return false;}
+		if (strDecode[17]!='U'){return false;}
+		if (strDecode[18]!='4'){return false;}
+#endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 
@@ -2177,7 +2207,9 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 		}
 		size_t fileSize = setObjInfo.size()*sizeof(ObjInfo)+4;
 		char* buffer = new char[fileSize];
-		*((uint16*)buffer) = 1;//m_uUnknow;
+		*((unsigned char*)buffer)=0x0;
+		unsigned char uMapID = getMapIDFromFilename(strFilename);
+		*((unsigned char*)(buffer+1))=uMapID;
 		*((uint16*)(buffer+2)) = setObjInfo.size();
 		if (setObjInfo.size()>0)
 		{
@@ -2188,8 +2220,9 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 		fclose(f);
 		delete buffer;
 	}
-	return true;
 	VMEND
+#endif
+	return true;
 }
 
 int CMyPlug::exportData(iScene * pScene, const std::string& strFilename)
