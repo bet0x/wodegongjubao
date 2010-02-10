@@ -1779,7 +1779,7 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 		while(pAdapterInfo);                    // Terminate if last adapter
 	}
 
-	std::string str=Format("%u%u",id,MACaddress);
+	std::string str=Format("%u%u",(long)id,(long)MACaddress);
 	{
 		std::string strDecode;
 		strDecode.resize(str.size());
@@ -1792,8 +1792,7 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 		{
 			strDecode[i] = tab[str[i]-'0'];
 		}
-#if defined(_DEBUG)
-#else
+
 		// MY_PLUGIN_KEY
 		if (strDecode[0]!='q'){return false;}
 		if (strDecode[1]!='4'){return false;}
@@ -1814,7 +1813,6 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 		if (strDecode[16]!='U'){return false;}
 		if (strDecode[17]!='U'){return false;}
 		if (strDecode[18]!='4'){return false;}
-#endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	// Calc MU's map id from filename.
@@ -2155,8 +2153,7 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 		{
 			strDecode[i] = tab[str[i]-'0'];
 		}
-#if defined(_DEBUG)
-#else
+
 		// MY_PLUGIN_KEYq480z07SUz0UqU8oUU4
 		if (strDecode[0]!='q'){return false;}
 		if (strDecode[1]!='4'){return false;}
@@ -2177,7 +2174,6 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 		if (strDecode[16]!='U'){return false;}
 		if (strDecode[17]!='U'){return false;}
 		if (strDecode[18]!='4'){return false;}
-#endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 
