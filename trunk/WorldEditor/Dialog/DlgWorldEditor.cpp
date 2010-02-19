@@ -132,7 +132,7 @@ bool CDlgWorldEditor::OnInitDialog()
 	}
 	else
 	{
-		m_StaticInfo.SetText(L"HardwareID: "+s2ws(UUBCode(Format("%u%u",getHardDriveComputerID(),GetMACaddress()))));
+		//m_StaticInfo.SetText(L"HardwareID: "+s2ws(UUBCode(Format("%u%u",getHardDriveComputerID(),GetMACaddress()))));
 	}
 	loadPlugFromPath("");
 //#if defined(_MU)
