@@ -79,7 +79,7 @@ void WriteConstantString (char *entry, char *string)
 #define SMART_SEND_DRIVE_COMMAND        CTL_CODE(IOCTL_DISK_BASE, 0x0021, METHOD_BUFFERED, FILE_READ_ACCESS | FILE_WRITE_ACCESS)
 #define SMART_RCV_DRIVE_DATA            CTL_CODE(IOCTL_DISK_BASE, 0x0022, METHOD_BUFFERED, FILE_READ_ACCESS | FILE_WRITE_ACCESS)
 
-
+#ifndef WINIOCTL
 typedef struct _GETVERSIONINPARAMS {
 	UCHAR    bVersion;               // Binary driver version.
 	UCHAR    bRevision;              // Binary driver revision.
@@ -88,7 +88,7 @@ typedef struct _GETVERSIONINPARAMS {
 	ULONG   fCapabilities;          // Bit mask of driver capabilities.
 	ULONG   dwReserved[4];          // For future use.
 } GETVERSIONINPARAMS, *PGETVERSIONINPARAMS, *LPGETVERSIONINPARAMS;
-
+#endif
 
 //  GETVERSIONOUTPARAMS contains the data returned from the 
 //  Get Driver Version function.
@@ -108,7 +108,7 @@ typedef struct _GETVERSIONOUTPARAMS
 #define  CAP_IDE_ATAPI_ID                2  // ATAPI ID command supported
 #define  CAP_IDE_EXECUTE_SMART_FUNCTION  4  // SMART commannds supported
 
-
+#ifndef WINIOCTL
 //  IDE registers
 typedef struct _IDEREGS
 {
@@ -135,13 +135,13 @@ typedef struct _SENDCMDINPARAMS
 	DWORD     dwReserved[4]; //  For future use.
 	BYTE      bBuffer[1];    //  Input buffer.
 } SENDCMDINPARAMS, *PSENDCMDINPARAMS, *LPSENDCMDINPARAMS;
-
+#endif
 
 //  Valid values for the bCommandReg member of IDEREGS.
 #define  IDE_ATAPI_IDENTIFY  0xA1  //  Returns ID sector for ATAPI.
 #define  IDE_ATA_IDENTIFY    0xEC  //  Returns ID sector for ATA.
 
-
+#ifndef WINIOCTL
 // Status returned from driver
 typedef struct _DRIVERSTATUS
 {
@@ -160,6 +160,7 @@ typedef struct _SENDCMDOUTPARAMS
 	DRIVERSTATUS  DriverStatus;  //  Driver status structure.
 	BYTE          bBuffer[1];    //  Buffer of arbitrary length in which to store the data read from the                                                       // drive.
 } SENDCMDOUTPARAMS, *PSENDCMDOUTPARAMS, *LPSENDCMDOUTPARAMS;
+#endif
 
 
 // The following struct defines the interesting part of the IDENTIFY
@@ -197,7 +198,6 @@ typedef struct _IDSECTOR
 	USHORT  wMultiWordDMA;
 	BYTE    bReserved[128];
 } IDSECTOR, *PIDSECTOR;
-
 
 typedef struct _SRB_IO_CONTROL
 {
@@ -498,7 +498,7 @@ int ReadPhysicalDriveInNTUsingSmart (void)
 //
 // Types of queries
 //
-
+#ifndef WINIOCTL
 typedef enum _STORAGE_QUERY_TYPE {
 	PropertyStandardQuery = 0,          // Retrieves the descriptor
 	PropertyExistsQuery,                // Used to test whether the descriptor is supported
@@ -649,8 +649,16 @@ typedef struct _STORAGE_DEVICE_DESCRIPTOR {
 	UCHAR RawDeviceProperties[1];
 
 } STORAGE_DEVICE_DESCRIPTOR, *PSTORAGE_DEVICE_DESCRIPTOR;
+#define IOCTL_DISK_GET_DRIVE_GEOMETRY_EX CTL_CODE(IOCTL_DISK_BASE, 0x0028, METHOD_BUFFERED, FILE_ANY_ACCESS)
+
+typedef struct _DISK_GEOMETRY_EX {
+	DISK_GEOMETRY  Geometry;
+	LARGE_INTEGER  DiskSize;
+	UCHAR  Data[1];
+} DISK_GEOMETRY_EX, *PDISK_GEOMETRY_EX;
 
 
+#endif
 //  function to decode the serial numbers of IDE hard drives
 //  using the IOCTL_STORAGE_QUERY_PROPERTY command 
 char * flipAndCodeBytes (const char * str,
@@ -768,14 +776,6 @@ char * flipAndCodeBytes (const char * str,
 }
 
 
-
-#define IOCTL_DISK_GET_DRIVE_GEOMETRY_EX CTL_CODE(IOCTL_DISK_BASE, 0x0028, METHOD_BUFFERED, FILE_ANY_ACCESS)
-
-typedef struct _DISK_GEOMETRY_EX {
-	DISK_GEOMETRY  Geometry;
-	LARGE_INTEGER  DiskSize;
-	UCHAR  Data[1];
-} DISK_GEOMETRY_EX, *PDISK_GEOMETRY_EX;
 
 
 

@@ -139,7 +139,7 @@ void CDlgFile::OnBtnNew()
 		m_wstrFilename = wstrFilename;
 	}
 	m_wstrFilename=ChangeExtension(m_wstrFilename,m_wstrFileType);
-	GetParentDialog()->SendEvent( EVENT_NEW, this );
+	SendEvent( EVENT_NEW, this );
 	SetVisible(false);
 }
 
@@ -163,20 +163,20 @@ void CDlgFile::OnBtnOpen()
 		OpenPath(m_EditBoxFile.GetText());
 		return;
 	}
-	GetParentDialog()->SendEvent( EVENT_OPEN, this );
+	SendEvent( EVENT_OPEN, this );
 	SetVisible(false);
 }
 
 void CDlgFile::OnBtnSave()
 {
 	m_wstrFilename = m_wstrPath+m_EditBoxFile.GetText();
-	GetParentDialog()->SendEvent( EVENT_SAVE, this );
+	SendEvent( EVENT_SAVE, this );
 	SetVisible(false);
 }
 
 void CDlgFile::OnBtnCancel()
 {
-	GetParentDialog()->SendEvent( EVENT_CANCEL, this );
+	SendEvent( EVENT_CANCEL, this );
 	SetVisible(false);
 }
 
@@ -224,12 +224,12 @@ bool CDlgFile::OpenPath(const std::wstring& wstrPath)
 
 void CDlgFile::setFileType(const std::wstring& wstrFileType)
 {
-	m_ComboBoxFileType.RemoveAllItems();
+	m_ComboBoxFileType.getListBox().RemoveAllItems();
 	m_setFileType.clear();
 	TokenizerW(wstrFileType,m_setFileType,L"|");
 	for (size_t i=0;i<m_setFileType.size();++i)
 	{
-		m_ComboBoxFileType.AddItem(m_setFileType[i]);
+		m_ComboBoxFileType.getListBox().AddItem(m_setFileType[i]);
 	}
 }
 

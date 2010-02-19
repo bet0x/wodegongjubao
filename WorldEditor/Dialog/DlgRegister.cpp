@@ -49,7 +49,7 @@ void CDlgRegister::OnControlRegister()
 
 	m_EditBoxHardwareID.setEditEnabled(false);
 
-	m_EditBoxHardwareID.SetText(s2ws(UUBCode(Format("%u%u",getHardDriveComputerID(),GetMACaddress()))));
+	//m_EditBoxHardwareID.SetText(s2ws(UUBCode(Format("%u%u",getHardDriveComputerID(),GetMACaddress()))));
 }
 
 bool CDlgRegister::OnInitDialog()

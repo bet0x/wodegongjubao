@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MuModelPlugin", "MuModelPlugin\VC2008MuModelPlugin.vcproj", "{40AB2FE3-FD81-47B3-9D55-AC959D2F8B8D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MuWorldMapPlugin", "MuWorldMapImport\VC2008MuWorldMapImport.vcproj", "{257217AD-AAF5-461D-9327-03891BA604A1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WorldEditor", "WorldEditor\VC2008WorldEditor.vcproj", "{DAC0DCD2-228B-4050-AE74-64E9A57611BE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{40AB2FE3-FD81-47B3-9D55-AC959D2F8B8D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{40AB2FE3-FD81-47B3-9D55-AC959D2F8B8D}.Debug|Win32.Build.0 = Debug|Win32
+		{40AB2FE3-FD81-47B3-9D55-AC959D2F8B8D}.Release|Win32.ActiveCfg = Release|Win32
+		{40AB2FE3-FD81-47B3-9D55-AC959D2F8B8D}.Release|Win32.Build.0 = Release|Win32
+		{257217AD-AAF5-461D-9327-03891BA604A1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{257217AD-AAF5-461D-9327-03891BA604A1}.Debug|Win32.Build.0 = Debug|Win32
+		{257217AD-AAF5-461D-9327-03891BA604A1}.Release|Win32.ActiveCfg = Release|Win32
+		{257217AD-AAF5-461D-9327-03891BA604A1}.Release|Win32.Build.0 = Release|Win32
+		{DAC0DCD2-228B-4050-AE74-64E9A57611BE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DAC0DCD2-228B-4050-AE74-64E9A57611BE}.Debug|Win32.Build.0 = Debug|Win32
+		{DAC0DCD2-228B-4050-AE74-64E9A57611BE}.Release|Win32.ActiveCfg = Release|Win32
+		{DAC0DCD2-228B-4050-AE74-64E9A57611BE}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
