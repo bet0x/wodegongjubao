@@ -115,66 +115,66 @@ bool CDlgModelPlayer::OnInitDialog()
 
 void CDlgModelPlayer::OnUpdatePlayer()
 {
-	if (m_ComboBoxSkeleton.GetSelectedItem()->wstrText.length()==0)
+	if (m_ComboBoxSkeleton.GetText().length()==0)
 	{
 		return;
 	}
 	std::string strPlayerPath = GetModelConfig().m_strMUPath+"Player\\";
-	getModelDisplay().loadComplexModel(strPlayerPath+ws2s(m_ComboBoxSkeleton.GetSelectedItem()->wstrText));
+	getModelDisplay().loadComplexModel(strPlayerPath+ws2s(m_ComboBoxSkeleton.GetText()));
 	if (getModelDisplay().m_pModelObject)
 	{
 		CModelComplex* pModelComplex = (CModelComplex*)getModelDisplay().m_pModelObject;
-		pModelComplex->loadSkinModel("head",strPlayerPath+ ws2s(m_ComboBoxHead.GetSelectedItem()->wstrText));
-		pModelComplex->loadSkinModel("helm",strPlayerPath+ ws2s(m_ComboBoxHelm.GetSelectedItem()->wstrText));
-		pModelComplex->loadSkinModel("armor",strPlayerPath+ ws2s(m_ComboBoxArmor.GetSelectedItem()->wstrText));
-		pModelComplex->loadSkinModel("glove",strPlayerPath+ ws2s(m_ComboBoxGlove.GetSelectedItem()->wstrText));
-		pModelComplex->loadSkinModel("pant",strPlayerPath+ ws2s(m_ComboBoxPants.GetSelectedItem()->wstrText));
-		pModelComplex->loadSkinModel("boot",strPlayerPath+ ws2s(m_ComboBoxBoot.GetSelectedItem()->wstrText));
+		pModelComplex->loadSkinModel("head",strPlayerPath+ ws2s(m_ComboBoxHead.GetText()));
+		pModelComplex->loadSkinModel("helm",strPlayerPath+ ws2s(m_ComboBoxHelm.GetText()));
+		pModelComplex->loadSkinModel("armor",strPlayerPath+ ws2s(m_ComboBoxArmor.GetText()));
+		pModelComplex->loadSkinModel("glove",strPlayerPath+ ws2s(m_ComboBoxGlove.GetText()));
+		pModelComplex->loadSkinModel("pant",strPlayerPath+ ws2s(m_ComboBoxPants.GetText()));
+		pModelComplex->loadSkinModel("boot",strPlayerPath+ ws2s(m_ComboBoxBoot.GetText()));
 	}
 	((CDlgModelController*)GetParentDialog())->OnUpdate();
 }
 
 void CDlgModelPlayer::OnSelectSet()
 {
-	std::wstring wstrSet = m_ComboBoxSet.GetSelectedItem()->wstrText;
+	std::wstring wstrSet = m_ComboBoxSet.GetText();
 	int index=wstrSet.find(L"*");
 	if (index!=std::wstring::npos)
 	{
 		{
-			m_ComboBoxHelm.SetSelectedByIndex(0);
+			m_ComboBoxHelm.getListBox().SelectItem(0);
 			std::wstring wstrPart=wstrSet;
 			wstrPart.replace(index, wcslen(L"*"), L"Helm");
-			m_ComboBoxHead.SetSelectedByText(wstrPart);
+			m_ComboBoxHead.getListBox().selectByText(wstrPart);
 		}
 		{
-			m_ComboBoxHelm.SetSelectedByIndex(0);
+			m_ComboBoxHelm.getListBox().SelectItem(0);
 			std::wstring wstrPart=wstrSet;
 			wstrPart.replace(index, wcslen(L"*"), L"Helm");
-			m_ComboBoxHelm.SetSelectedByText(wstrPart);
-			if (m_ComboBoxHelm.GetSelectedItemIndex()==0)
+			m_ComboBoxHelm.getListBox().selectByText(wstrPart);
+			if (m_ComboBoxHelm.getListBox().GetSelectedIndex()==0)
 			{
-				m_ComboBoxHead.SetSelectedByText(wstrPart);
+				m_ComboBoxHead.getListBox().selectByText(wstrPart);
 			}
 		}
 		{
 			std::wstring wstrPart=wstrSet;
 			wstrPart.replace(index, wcslen(L"*"), L"Armor");
-			m_ComboBoxArmor.SetSelectedByText(wstrPart);
+			m_ComboBoxArmor.getListBox().selectByText(wstrPart);
 		}
 		{
 			std::wstring wstrPart=wstrSet;
 			wstrPart.replace(index, wcslen(L"*"), L"Glove");
-			m_ComboBoxGlove.SetSelectedByText(wstrPart);
+			m_ComboBoxGlove.getListBox().selectByText(wstrPart);
 		}
 		{
 			std::wstring wstrPart=wstrSet;
 			wstrPart.replace(index, wcslen(L"*"), L"Pant");
-			m_ComboBoxPants.SetSelectedByText(wstrPart);
+			m_ComboBoxPants.getListBox().selectByText(wstrPart);
 		}
 		{
 			std::wstring wstrPart=wstrSet;
 			wstrPart.replace(index, wcslen(L"*"), L"Boot");
-			m_ComboBoxBoot.SetSelectedByText(wstrPart);
+			m_ComboBoxBoot.getListBox().selectByText(wstrPart);
 		}
 	}
 }

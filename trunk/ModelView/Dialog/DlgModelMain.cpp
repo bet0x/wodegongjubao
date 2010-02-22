@@ -1,7 +1,5 @@
 #include "DlgModelMain.h"
 #include "../Config/Config.h"
-#include "mpq/mpq_libmpq.h"
-#include "database.h"
 
 CDlgModelMain::CDlgModelMain()
 {

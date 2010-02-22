@@ -65,8 +65,8 @@ void CDlgModelAnim::OnFrameMove(double fTime, float fElapsedTime)
 
 void CDlgModelAnim::ResetAnim()
 {
-	int nSelected = m_ComboBoxAnim.GetSelectedItemIndex();
-	m_ComboBoxAnim.RemoveAllItems();
+	int nSelected = m_ComboBoxAnim.getListBox().GetSelectedIndex();
+	m_ComboBoxAnim.getListBox().RemoveAllItems();
 	if (getModelDisplay().m_pModelObject&&getModelDisplay().m_pModelObject->m_pModelData)
 	{
 		size_t uAnimSize = getModelDisplay().m_pModelObject->m_pModelData->m_AnimList.size();
@@ -80,7 +80,7 @@ void CDlgModelAnim::ResetAnim()
 			{
 				nSelected = uAnimSize-1;
 			}
-			m_ComboBoxAnim.SetSelectedByIndex(nSelected);
+			m_ComboBoxAnim.getListBox().SelectItem(nSelected);
 		}
 		OnSpeedChanged();
 	}
@@ -115,7 +115,7 @@ void CDlgModelAnim::OnAnimChanged()
 {
 	if (getModelDisplay().m_pModelObject&&getModelDisplay().m_pModelObject->m_AnimMgr)
 	{
-		getModelDisplay().m_pModelObject->SetAnim(m_ComboBoxAnim.GetSelectedItemIndex());
+		getModelDisplay().m_pModelObject->SetAnim(m_ComboBoxAnim.getListBox().GetSelectedIndex());
 		m_SliderFrame.SetRange(getModelDisplay().m_pModelObject->m_AnimMgr->getCurrentAnim().timeStart, getModelDisplay().m_pModelObject->m_AnimMgr->getCurrentAnim().timeEnd);
 	}
 }
