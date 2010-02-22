@@ -62,7 +62,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="rendersystemdx9d.lib modeld.lib enginecored.lib uid.lib fileiod.lib soundd.lib"
-				OutputFile="..\..\bin\WorldEditor\$(ProjectName)_Debug.exe"
+				OutputFile="..\..\bin\WorldEditor\$(ProjectName)D.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Shared\lib;..\..\engine\lib;..\..\engine\Render\DX9SDK\Lib\x86;..\..\engine\Media\FMOD\api\lib"
 				IgnoreDefaultLibraryNames="LIBCMTD.lib"
