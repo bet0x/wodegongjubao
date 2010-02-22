@@ -1,7 +1,7 @@
 #include "DlgModelController.h"
 #include "../Config/Config.h"
-#include "mpq/mpq_libmpq.h"
-#include "database.h"
+/*#include "mpq/mpq_libmpq.h"*/
+/*#include "database.h"*/
 #include "CsvFile.h"
 #include "IORead.h"
 #include "DlgModelMain.h"
@@ -86,7 +86,7 @@ void CDlgModelController::C3Model()
 
 void CDlgModelController::MPQModel()
 {
-	m_wstrPath=L"";
+/*	m_wstrPath=L"";
 	m_wstrFileType=L"";
 	m_ListBoxFolder.RemoveAllItems();
 	// 载入游戏MPQ文件到内存
@@ -115,7 +115,7 @@ void CDlgModelController::MPQModel()
 	//wxLogMessage(_T("Error: Could not open the Creatures DB."));
 	//if (!
 	GetCreatureSkinDB().open();//)
-	//wxLogMessage(_T("Error: Could not open the CreatureDisplayInfo DB."));
+	//wxLogMessage(_T("Error: Could not open the CreatureDisplayInfo DB."));*/
 }
 
 void CDlgModelController::initRecentPath()

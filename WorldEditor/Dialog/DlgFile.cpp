@@ -229,7 +229,7 @@ void CDlgFile::setFileType(const std::wstring& wstrFileType)
 	TokenizerW(wstrFileType,m_setFileType,L"|");
 	for (size_t i=0;i<m_setFileType.size();++i)
 	{
-		m_ComboBoxFileType.getListBox().AddItem(m_setFileType[i]);
+		m_ComboBoxFileType.AddItem(m_setFileType[i]);
 	}
 }
 

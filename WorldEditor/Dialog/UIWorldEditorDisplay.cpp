@@ -21,12 +21,15 @@ m_bKeyDown(false),
 m_bKeyLeft(false),
 m_bKeyRight(false)
 {
-	// 生成摄像机的视角参数
-	Vec3D vEye(20.0f, 20.0f, 20.0f);
-	Vec3D vAt (0.0f, -1.0f, 2.0f);
-	vAt+=vEye;
-	m_Camera.SetViewParams(vEye, vAt);
-	m_Camera.setTargetPos(Vec3D(10,10,10));
+	//// 生成摄像机的视角参数
+	//Vec3D vEye(20.0f, 20.0f, 20.0f);
+	//Vec3D vAt (0.0f, -1.0f, 2.0f);
+	//vAt+=vEye;
+	//m_Camera.SetViewParams(vEye, vAt);
+	//m_Camera.setTargetPos(Vec3D(10,10,10));
+
+	m_Camera.setYawAngle(PI/4);
+	m_Camera.setPitchAngle(-PI/4);
 	m_Scene.SetTerrain(&m_Terrain);
 }
 
