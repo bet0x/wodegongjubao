@@ -27,10 +27,14 @@ private:
 	std::wstring	m_wstrFileType;
 	CUIRadioButton m_RadioButtonShow;
 	CUIRadioButton m_RadioButtonAnim;
+	CUIRadioButton m_RadioButtonMaterial;
+	CUIRadioButton m_RadioButtonParticle;
 	CUIRadioButton m_RadioButtonAbout;
 	CDlgModelShow	m_DlgModelShow;
 	CDlgModelAnim	m_DlgModelAnim;
 	CUIDialog		m_DlgModelAbout;
+	CUIDialog		m_DlgModelMaterial;
+	CUIDialog		m_DlgModelParticle;
 
 	CUIRadioButton m_RadioButtonFile;
 	CUIRadioButton m_RadioButtonPlayer;
