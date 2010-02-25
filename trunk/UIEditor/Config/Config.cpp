@@ -29,11 +29,7 @@ CConfig::CConfig()
 	}
 	if ( myDocument.Error() )
 	{
-		m_strLastPath="";
-		m_strFontFilename="Data\\font.ttf";
-		m_strThemeFilename="Data\\Themes\\CSS\\UIStyle.xml";
-		m_strUIFilename="Data\\UI\\Dialog_EN.xml";
-		m_nFontSize=15;
+		return;
 	}
 	else
 	{
@@ -42,10 +38,6 @@ CConfig::CConfig()
 		//获得第一个window节点。
 		TiXmlElement *PathElement = RootElement->FirstChildElement("path");
 
-		if (PathElement->Attribute("lastpath"))
-		{
-			m_strLastPath = PathElement->Attribute("lastpath");
-		}
 		if (PathElement->Attribute("font"))
 		{
 			m_strFontFilename = PathElement->Attribute("font");
@@ -67,17 +59,4 @@ CConfig::CConfig()
 
 CConfig::~CConfig()
 {
-	//创建一个XML的文档对象。
-	TiXmlDocument myDocument;
-
-	TiXmlElement path("path");
-	path.SetAttribute("lastpath",m_strLastPath.c_str());
-	path.SetAttribute("font",m_strFontFilename.c_str());
-	path.SetAttribute("theme",m_strThemeFilename.c_str());
-	path.SetAttribute("ui",m_strUIFilename.c_str());
-	path.SetAttribute("font_size",m_nFontSize);
-	TiXmlElement RootElement("root");
-	RootElement.InsertEndChild(*((TiXmlNode*)&path));
-	myDocument.InsertEndChild(*((TiXmlNode*)&RootElement));
-	myDocument.SaveFile("config.xml");
 }

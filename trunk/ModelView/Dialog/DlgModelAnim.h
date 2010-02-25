@@ -14,6 +14,8 @@
 #include "UISlider.h"
 #include "UIEditBox.h"
 #include "UIIMEEditBox.h"
+#include "UIComboNumber.h"
+#include "UIComboColor.h"
 
 class CModelDisplay;
 class CDlgModelMain;

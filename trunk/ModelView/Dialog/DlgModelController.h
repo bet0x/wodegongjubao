@@ -1,6 +1,7 @@
 #pragma once
 #include "DlgModelShow.h"
 #include "DlgModelPlayer.h"
+#include "DlgModelMaterial.h"
 
 class CDlgModelController: public CDlgModelBaseDialog
 {
@@ -33,7 +34,7 @@ private:
 	CDlgModelShow	m_DlgModelShow;
 	CDlgModelAnim	m_DlgModelAnim;
 	CUIDialog		m_DlgModelAbout;
-	CUIDialog		m_DlgModelMaterial;
+	CDlgModelMaterial	m_DlgModelMaterial;
 	CUIDialog		m_DlgModelParticle;
 
 	CUIRadioButton m_RadioButtonFile;

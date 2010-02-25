@@ -22,9 +22,11 @@ public:
 public:
 	virtual void OnControlRegister();
 	bool InitDialogListFromXML(const std::string& strFilename);
-	void OnDlgListBoxSelection();
+	bool createDialogCodeFromXML(const std::string& strFilename,const std::string& strDialogName);
 	void SetDlgView(CUIDialog* pDlgView){m_pDlgView = pDlgView;}
 protected:
+	void OnDlgListBoxSelection();
+	void OnDlgListBoxDblClk();
 private:
 	CUIDialog*	m_pDlgView;
 	CUIListBox m_ListBox;
