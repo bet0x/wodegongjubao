@@ -256,6 +256,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Dialog\DlgModelMaterial.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Dialog\DlgModelMaterial.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Dialog\DlgModelPlayer.cpp"
 				>
 			</File>

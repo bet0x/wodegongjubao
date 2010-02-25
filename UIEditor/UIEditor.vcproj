@@ -61,7 +61,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="uid.lib rendersystemdx9d.lib fileiod.lib winmm.lib comctl32.lib"
-				OutputFile="..\..\bin\$(ProjectName)\$(ProjectName)_Debug.exe"
+				OutputFile="..\..\bin\$(ProjectName)\$(ProjectName)D.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\Shared\lib;..\..\engine\lib;..\..\engine\Render\DX9SDK\Lib\x86;..\..\engine\Media\FMOD\api\lib"
 				IgnoreDefaultLibraryNames="LIBCMTD.lib"

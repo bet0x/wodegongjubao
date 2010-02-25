@@ -230,6 +230,7 @@ void CDlgModelController::OnListBoxFolderItemDblClk()
 void CDlgModelController::OnUpdate()
 {
 	m_DlgModelAnim.ResetAnim();
+	m_DlgModelMaterial.onReset();
 }
 
 void CDlgModelController::OnTabChanged()
