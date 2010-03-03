@@ -125,7 +125,9 @@ void CDlgModelMaterial::OnEditboxLightmap()
 void CDlgModelMaterial::OnEditboxEffect()
 {
 	if (m_pSelectedMaterial==NULL){return;}
-	m_pSelectedMaterial->uEffect = GetRenderSystem().GetShaderMgr().registerItem(ws2s(m_EditboxEffect.GetText()));
+	CShaderMgr& SM=GetRenderSystem().GetShaderMgr();
+	SM.del(m_pSelectedMaterial->uEffect);
+	m_pSelectedMaterial->uEffect = SM.registerItem(ws2s(m_EditboxEffect.GetText()));
 }
 
 void CDlgModelMaterial::OnCheckboxAlphatest()
