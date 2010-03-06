@@ -1620,11 +1620,6 @@ int getMapIDFromFilename(const std::string& strFilename)
 
 int CMyPlug::checkKey()
 {
-}
-
-int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
-{
-	VMBEGIN
 	// download the key
 	//////////////////////////////////////////////////////////////////////////
 	int done = FALSE;
@@ -1752,7 +1747,7 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 			strDecode[i] = tab[str[i]-'0'];
 		}
 	}
-	
+
 	std::string	strKey;
 	//////////////////////////////////////////////////////////////////////////
 	if (strKey.size()==0)
@@ -1795,9 +1790,13 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 	}
 	if (strKey.size()==0)
 	{
-		MessageBox
+		MessageBoxA(NULL,std::string("HardwareID: ")+strDecode+"")
 	}
-		//
+}
+
+int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
+{
+	VMBEGIN
 	importTerrainData(&pScene->getTerrain()->GetData(),strFilename);
 	// tiles
 	std::string strTileFile = GetParentPath(strFilename)+"Tile.csv";
