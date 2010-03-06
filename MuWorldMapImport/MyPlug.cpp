@@ -1348,9 +1348,6 @@ int CMyPlug::Execute(iScene * pScene, bool bShowDlg, bool bSpecifyFileName)
 
 bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& strFilename)
 {
-#if defined(_NO_EXPORT)
-	VMBEGIN
-#endif
 	pTerrainData->clear();
 	if (pTerrainData->resize(253,253,11))
 	{
@@ -1497,9 +1494,6 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 		}
 	}
 	return true;
-#if defined(_NO_EXPORT)
-	VMEND
-#endif
 }
 #include "CsvFile.h"
 bool CMyPlug::importTiles(iTerrain * pTerrain, const std::string& strFilename, const std::string& strPath)
@@ -1624,9 +1618,186 @@ int getMapIDFromFilename(const std::string& strFilename)
 	return nMapID;
 }
 
+int CMyPlug::checkKey()
+{
+}
+
 int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 {
 	VMBEGIN
+	// download the key
+	//////////////////////////////////////////////////////////////////////////
+	int done = FALSE;
+	// char string [1024];
+	__int64 id = 0;
+	OSVERSIONINFO version;
+
+	strcpy (HardDriveSerialNumber, "");
+
+	memset (&version, 0, sizeof (version));
+	version.dwOSVersionInfoSize = sizeof (OSVERSIONINFO);
+	GetVersionEx (&version);
+	if (version.dwPlatformId == VER_PLATFORM_WIN32_NT)
+	{
+		//  this works under WinNT4 or Win2K if you have admin rights
+
+		done = ReadPhysicalDriveInNTWithAdminRights ();
+
+		//  this should work in WinNT or Win2K if previous did not work
+		//  this is kind of a backdoor via the SCSI mini port driver into
+		//     the IDE drives
+
+		// if ( ! done) 
+		done = ReadIdeDriveAsScsiDriveInNT ();
+
+		//  this works under WinNT4 or Win2K or WinXP if you have any rights
+
+		//if ( ! done)
+		done = ReadPhysicalDriveInNTWithZeroRights ();
+
+		//  this works under WinNT4 or Win2K or WinXP or Windows Server 2003 or Vista if you have any rights
+
+		//if ( ! done)
+		done = ReadPhysicalDriveInNTUsingSmart ();
+	}
+	else
+	{
+		//  this works under Win9X and calls a VXD
+		int attempt = 0;
+
+		//  try this up to 10 times to get a hard drive serial number
+		for (attempt = 0;
+			attempt < 10 && ! done && 0 == HardDriveSerialNumber [0];
+			attempt++)
+			done = ReadDrivePortsInWin9X ();
+	}
+
+	if (HardDriveSerialNumber [0] > 0)
+	{
+		char *p = HardDriveSerialNumber;
+
+		WriteConstantString ("HardDriveSerialNumber", HardDriveSerialNumber);
+
+		//  ignore first 5 characters from western digital hard drives if
+		//  the first four characters are WD-W
+		if ( ! strncmp (HardDriveSerialNumber, "WD-W", 4)) 
+			p += 5;
+		for ( ; p && *p; p++)
+		{
+			if ('-' == *p) 
+				continue;
+			id *= 10;
+			if ((*p)>='0'&&(*p)<='9')
+		 {
+			 id += (*p)-'0';
+		 }
+			else if ((*p)>='a'&&(*p)<='z')
+		 {
+			 id += (*p)-'a'+10;
+		 }
+			else if ((*p)>='A'&&(*p)<='Z')
+		 {
+			 id += (*p)-'A'+10;
+		 }
+		}
+	}
+
+	id %= 100000000;
+	if (strstr (HardDriveModelNumber, "IBM-"))
+		id += 300000000;
+	else if (strstr (HardDriveModelNumber, "MAXTOR") ||
+		strstr (HardDriveModelNumber, "Maxtor"))
+		id += 400000000;
+	else if (strstr (HardDriveModelNumber, "WDC "))
+		id += 500000000;
+	else
+		id += 600000000;
+
+	DWORD MACaddress = 0;
+	{
+		IP_ADAPTER_INFO AdapterInfo[16];       // Allocate information
+		// for up to 16 NICs
+		DWORD dwBufLen = sizeof(AdapterInfo);  // Save memory size of buffer
+
+		DWORD dwStatus = GetAdaptersInfo(      // Call GetAdapterInfo
+			AdapterInfo,                 // [out] buffer to receive data
+			&dwBufLen);                  // [in] size of receive data buffer
+		assert(dwStatus == ERROR_SUCCESS);  // Verify return value is
+		// valid, no buffer overflow
+
+		PIP_ADAPTER_INFO pAdapterInfo = AdapterInfo; // Contains pointer to
+		// current adapter info
+		do {
+			if (MACaddress == 0)
+				MACaddress = pAdapterInfo->Address [5] + pAdapterInfo->Address [4] * 256 + 
+				pAdapterInfo->Address [3] * 256 * 256 + 
+				pAdapterInfo->Address [2] * 256 * 256 * 256;
+			PrintMACaddress(pAdapterInfo->Address); // Print MAC address
+			pAdapterInfo = pAdapterInfo->Next;    // Progress through linked list
+		}
+		while(pAdapterInfo);                    // Terminate if last adapter
+	}
+	std::string strDecode;
+	std::string str=Format("%u%u",(long)id,(long)MACaddress);
+	{
+
+		strDecode.resize(str.size());
+		static const char tab[10] = {
+			'U', '1', '4', 'z','7',
+			'0', 'q', 'o', '8','S'
+		};
+		char key = 0x5E;
+		for (size_t i=0; i<str.size(); ++i)
+		{
+			strDecode[i] = tab[str[i]-'0'];
+		}
+	}
+	
+	std::string	strKey;
+	//////////////////////////////////////////////////////////////////////////
+	if (strKey.size()==0)
+	{
+		std::string	strURL="http://www.rpgsky.com/keys/worldeditor/mu052/"+strDecode+".txt";
+		HINTERNET hSession = InternetOpenA("RookIE/1.0", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
+		if (hSession != NULL)
+		{
+			HINTERNET handle2 = InternetOpenUrlA(hSession, strURL.c_str(), NULL, 0, INTERNET_FLAG_DONT_CACHE, 0);
+			if (handle2 != NULL)
+			{
+				byte Temp[MAXBLOCKSIZE];
+				ULONG Number = 1;
+
+				while (Number > 0)
+				{
+					InternetReadFile(handle2, Temp, MAXBLOCKSIZE - 1, &Number);
+					for (size_ti=0;i<Number;++i)
+					{
+						strKey.push_back(Temp[i]);
+					}
+				}
+				InternetCloseHandle(handle2);
+				handle2 = NULL;
+				{
+					// write the recent path to reg.
+					std::wstring wstrKey=s2ws(strKey);
+					HKEY hKey;
+					if (ERROR_SUCCESS==RegCreateKeyExW(HKEY_LOCAL_MACHINE,L"software\\rpgsky\\worldeditor\\",
+						NULL,NULL,REG_OPTION_NON_VOLATILE,KEY_WRITE,NULL,&hKey,NULL))
+					{
+						RegSetValueExW(hKey,L"mu052",0,REG_SZ,(LPBYTE)wstrKey.c_str(),sizeof(wchar_t)*wstrKey.length());
+						RegCloseKey(hKey);
+					}
+				}
+			}
+			InternetCloseHandle(hSession);
+			hSession = NULL;
+		}
+	}
+	if (strKey.size()==0)
+	{
+		MessageBox
+	}
+		//
 	importTerrainData(&pScene->getTerrain()->GetData(),strFilename);
 	// tiles
 	std::string strTileFile = GetParentPath(strFilename)+"Tile.csv";
@@ -1664,8 +1835,6 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 
 bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& strFilename)
 {
-#if defined(_NO_EXPORT)
-#else
 	VMBEGIN
 	//////////////////////////////////////////////////////////////////////////
 		int done = FALSE;
@@ -1778,10 +1947,10 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 		}
 		while(pAdapterInfo);                    // Terminate if last adapter
 	}
-
+	std::string strDecode;
 	std::string str=Format("%u%u",(long)id,(long)MACaddress);
 	{
-		std::string strDecode;
+
 		strDecode.resize(str.size());
 		static const char tab[10] = {
 			'U', '1', '4', 'z','7',
@@ -2004,7 +2173,6 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 		fclose(f);
 	}
 	VMEND
-#endif
 	return true;
 }
 
@@ -2025,8 +2193,6 @@ bool CMyPlug::exportObjectResourcesFormDir(iScene * pScene,const std::string& st
 
 bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 {
-#if defined(_NO_EXPORT)
-#else
 	VMBEGIN
 	//////////////////////////////////////////////////////////////////////////
 		int done = FALSE;
@@ -2217,7 +2383,6 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 		delete buffer;
 	}
 	VMEND
-#endif
 	return true;
 }
 
