@@ -3,6 +3,44 @@
 #include "FileSystem.h"
 #include "Jpeg.h"
 #include "3DMapSceneObj.h"
+
+#include "borzoi.h"    // Include this to use the elliptic curve and
+#include "nist_curves.h" // Include this to use the curves recommended by NIST
+
+inline OCTETSTR StdStr2OSP(const std::string& str)
+{
+	OCTETSTR osp;
+	for (size_t i=0;i<str.length();++i)
+	{
+		osp.push_back(str[i]);
+	}
+	return osp;
+}
+
+#define  BYTE2HEX(x) ((x)>=10?((x)-10+'a'):((x)+'0'))
+#define  HEX2BYTE(x) ((x)>='a'?((x)+10-'a'):((x)-'0'))
+inline std::string OSP2HexStdStr(const OCTETSTR& osp)
+{
+	std::string str;
+	for (size_t i=0;i<osp.size();++i)
+	{
+		int o;
+		str.push_back(BYTE2HEX(osp[i]>>4));
+		str.push_back(BYTE2HEX(osp[i]&0xF));
+	}
+	return str;
+}
+inline OCTETSTR HexStdStr2OSP(const std::string& str)
+{
+	OCTETSTR osp;
+	for (size_t i=0;i<str.length()/2;++i)
+	{
+		OCTET o = (HEX2BYTE(str[i*2])<<4)+HEX2BYTE(str[i*2+1]);
+		osp.push_back(o);
+	}
+	return osp;
+}
+
 //标记开始处.
 #define   VMBEGIN\
 	__asm _emit 0xEB \
@@ -57,7 +95,8 @@ void WriteConstantString (char *entry, char *string)
 {
 }
 
-
+#include "borzoi.h"    // Include this to use the elliptic curve and
+#include "nist_curves.h" // Include this to use the curves recommended by NIST
 
 //  Required to ensure correct PhysicalDrive IOCTL structure setup
 #pragma pack(1)
@@ -1617,10 +1656,13 @@ int getMapIDFromFilename(const std::string& strFilename)
 	}
 	return nMapID;
 }
-
-int CMyPlug::checkKey()
+#include <windows.h>
+#include <wininet.h>
+#define MAXBLOCKSIZE 1024
+int checkKey()
 {
-	// download the key
+VMBEGIN
+	// Get the HWID.
 	//////////////////////////////////////////////////////////////////////////
 	int done = FALSE;
 	// char string [1024];
@@ -1735,7 +1777,6 @@ int CMyPlug::checkKey()
 	std::string strDecode;
 	std::string str=Format("%u%u",(long)id,(long)MACaddress);
 	{
-
 		strDecode.resize(str.size());
 		static const char tab[10] = {
 			'U', '1', '4', 'z','7',
@@ -1750,9 +1791,43 @@ int CMyPlug::checkKey()
 
 	std::string	strKey;
 	//////////////////////////////////////////////////////////////////////////
-	if (strKey.size()==0)
+	// Read the key from reg.
 	{
-		std::string	strURL="http://www.rpgsky.com/keys/worldeditor/mu052/"+strDecode+".txt";
+		HKEY hKey;
+		if (ERROR_SUCCESS==RegOpenKeyExW(HKEY_LOCAL_MACHINE,L"software\\rpgsky\\worldeditor\\",
+			0, KEY_READ, &hKey))
+		{
+			DWORD dwType = REG_SZ;
+			wchar_t wszFilename[256];
+			DWORD dwSize = sizeof(wszFilename);
+
+			if (ERROR_SUCCESS==RegQueryValueExW(hKey, L"mu060",
+				NULL, &dwType, (PBYTE)&wszFilename, &dwSize))
+			{
+				RegCloseKey(hKey);
+				strKey = ws2s(wszFilename);
+				if (strKey=="NULL")
+				{
+					strKey="";
+				}
+			}
+			RegCloseKey(hKey);
+		}
+	}
+
+	// Check the key.
+	srand(time(NULL));
+	if (strKey.size()!=0&&rand()%128!=0)
+	{
+		//MessageBoxA(0,strKey.c_str(),0,0);
+		return false;
+	}
+
+	// Download the key from internet and write to reg
+
+	{
+		strKey="";
+		std::string	strURL="http://www.rpgsky.com/keys/worldeditor/mu060/"+strDecode+".txt";
 		HINTERNET hSession = InternetOpenA("RookIE/1.0", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
 		if (hSession != NULL)
 		{
@@ -1761,37 +1836,52 @@ int CMyPlug::checkKey()
 			{
 				byte Temp[MAXBLOCKSIZE];
 				ULONG Number = 1;
-
+				strKey="";
 				while (Number > 0)
 				{
 					InternetReadFile(handle2, Temp, MAXBLOCKSIZE - 1, &Number);
-					for (size_ti=0;i<Number;++i)
+					for (size_t i=0;i<Number;++i)
 					{
 						strKey.push_back(Temp[i]);
 					}
 				}
 				InternetCloseHandle(handle2);
 				handle2 = NULL;
-				{
-					// write the recent path to reg.
-					std::wstring wstrKey=s2ws(strKey);
-					HKEY hKey;
-					if (ERROR_SUCCESS==RegCreateKeyExW(HKEY_LOCAL_MACHINE,L"software\\rpgsky\\worldeditor\\",
-						NULL,NULL,REG_OPTION_NON_VOLATILE,KEY_WRITE,NULL,&hKey,NULL))
-					{
-						RegSetValueExW(hKey,L"mu052",0,REG_SZ,(LPBYTE)wstrKey.c_str(),sizeof(wchar_t)*wstrKey.length());
-						RegCloseKey(hKey);
-					}
-				}
 			}
 			InternetCloseHandle(hSession);
 			hSession = NULL;
 		}
 	}
+	if (strKey.size()>128)
+	{
+		strKey="";
+	}
+	// write the recent path to reg.
+	{
+		std::wstring wstrKey=s2ws(strKey);
+		if (wstrKey.size()==0)
+		{
+			wstrKey=L"NULL";
+		}
+		HKEY hKey;
+		if (ERROR_SUCCESS==RegCreateKeyExW(HKEY_LOCAL_MACHINE,L"software\\rpgsky\\worldeditor\\",
+			NULL,NULL,REG_OPTION_NON_VOLATILE,KEY_WRITE,NULL,&hKey,NULL))
+		{
+			RegSetValueExW(hKey,L"mu060",0,REG_SZ,(LPBYTE)wstrKey.c_str(),sizeof(wchar_t)*wstrKey.length());
+			RegCloseKey(hKey);
+		}
+	}
+	// If have not be reg, give user a message for how to reg.
 	if (strKey.size()==0)
 	{
-		MessageBoxA(NULL,std::string("HardwareID: ")+strDecode+"")
+		std::string strText = std::string("Your HardwareID is \"")+strDecode+"\".\nOrdinary users can only save the EncTerraionX.att and (Server)TerrionX.att!\nDonate to the project for testing the full : www.rpgsky.com";
+		if (MessageBoxA(NULL,strText.c_str(),"Can not save all data!",1)==1)
+		{
+			ShellExecuteA(0, "open", "http://www.rpgsky.com", NULL, NULL, SW_SHOWMAXIMIZED);   
+		}
 	}
+	return true;
+	VMEND
 }
 
 int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
@@ -1949,7 +2039,6 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 	std::string strDecode;
 	std::string str=Format("%u%u",(long)id,(long)MACaddress);
 	{
-
 		strDecode.resize(str.size());
 		static const char tab[10] = {
 			'U', '1', '4', 'z','7',
@@ -1960,216 +2049,271 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 		{
 			strDecode[i] = tab[str[i]-'0'];
 		}
-
-		// MY_PLUGIN_KEY
-		if (strDecode[0]!='q'){return false;}
-		if (strDecode[1]!='4'){return false;}
-		if (strDecode[2]!='8'){return false;}
-		if (strDecode[3]!='0'){return false;}
-		if (strDecode[4]!='z'){return false;}
-		if (strDecode[5]!='0'){return false;}
-		if (strDecode[6]!='7'){return false;}
-		if (strDecode[7]!='S'){return false;}
-		if (strDecode[8]!='U'){return false;}
-		if (strDecode[9]!='z'){return false;}
-		if (strDecode[10]!='0'){return false;}
-		if (strDecode[11]!='U'){return false;}
-		if (strDecode[12]!='q'){return false;}
-		if (strDecode[13]!='U'){return false;}
-		if (strDecode[14]!='8'){return false;}
-		if (strDecode[15]!='o'){return false;}
-		if (strDecode[16]!='U'){return false;}
-		if (strDecode[17]!='U'){return false;}
-		if (strDecode[18]!='4'){return false;}
 	}
+
+	std::string	strKey;
+	// Read the key from reg.
+	{
+		HKEY hKey;
+		if (ERROR_SUCCESS==RegOpenKeyExW(HKEY_LOCAL_MACHINE,L"software\\rpgsky\\worldeditor\\",
+			0, KEY_READ, &hKey))
+		{
+			DWORD dwType = REG_SZ;
+			wchar_t wszFilename[256];
+			DWORD dwSize = sizeof(wszFilename);
+
+			if (ERROR_SUCCESS==RegQueryValueExW(hKey, L"mu060",
+				NULL, &dwType, (PBYTE)&wszFilename, &dwSize))
+			{
+				RegCloseKey(hKey);
+				strKey = ws2s(wszFilename);
+			}
+			RegCloseKey(hKey);
+		}
+	}
+
 	//////////////////////////////////////////////////////////////////////////
 	// Calc MU's map id from filename.
 	int nMapID = getMapIDFromFilename(strFilename);
-	// map
-	FILE* f=fopen(strFilename.c_str(),"wb");
-	if (f)
 	{
-		char buffer[MAP_FILE_SIZE];
-		char* p = buffer;
-		*((unsigned char*)p)=0;++p;
-		*((unsigned char*)p)=nMapID;++p;
-		// tile
-		for (size_t layer=0;layer<2;++layer)
+		// att
+		// for server.att
+		std::string strServerAttFile = GetParentPath(strFilename)+"(Server)Terrion"+ws2s(i2ws(nMapID))+".att";
+		FILE* f=fopen(strServerAttFile.c_str(),"wb+");
+		if (f)
 		{
+			char buffer[ATT_FILE_SERVER_SIZE];
+			char* p = buffer;
+			*((unsigned char*)p)=0x0;++p;
+			*((unsigned char*)p)=0xFF;++p;
+			*((unsigned char*)p)=0xFF;++p;
 			for (int y=0; y<253; ++y)
 			{
 				for (int x=0; x<253; ++x)
 				{
-					*p = pTerrainData->GetCellTileID(Pos2D(x,y),layer);
+					*p = pTerrainData->getCellAttribute(Pos2D(x,y));
 					p++;
 				}
-				*p =0;++p;
-				*p =0;++p;
-				*p =0;++p;
+				for (int x=253; x<256; ++x)
+				{
+					*p =0;++p;
+				}
 			}
 			for (int x=0; x<256*3; ++x)
 			{
 				*p =0;++p;
 			}
+			fwrite(buffer,ATT_FILE_SERVER_SIZE,1,f);
+			fclose(f);
 		}
-		// alpha
+		// EncTerrain.att
+		f=fopen(ChangeExtension(strFilename,".att").c_str(),"wb+");
+		if (f)
 		{
-			for (int y=0; y<254; ++y)
+			switch(nMapID)
 			{
-				for (int x=0; x<254; ++x)
-				{
-					*p = pTerrainData->getVertexColor(Pos2D(x,y)).a;
-					p++;
-				}
-				*p =0;++p;
-				*p =0;++p;
-			}
-			for (int x=0; x<256*2; ++x)
-			{
-				*p =0;++p;
-			}
-		}
-		encrypt(buffer,MAP_FILE_SIZE);
-		fwrite(buffer,MAP_FILE_SIZE,1,f);
-		fclose(f);
-	}
-	// att
-	// for server.att
-	f=fopen(ChangeExtension(strFilename,"ForServer.att").c_str(),"wb+");
-	if (f)
-	{
-		char buffer[ATT_FILE_SERVER_SIZE];
-		char* p = buffer;
-		*((unsigned char*)p)=0x0;++p;
-		*((unsigned char*)p)=0xFF;++p;
-		*((unsigned char*)p)=0xFF;++p;
-		for (int y=0; y<253; ++y)
-		{
-			for (int x=0; x<253; ++x)
-			{
-				*p = pTerrainData->getCellAttribute(Pos2D(x,y));
-				p++;
-			}
-			for (int x=253; x<256; ++x)
-			{
-				*p =0;++p;
-			}
-		}
-		for (int x=0; x<256*3; ++x)
-		{
-			*p =0;++p;
-		}
-		fwrite(buffer,ATT_FILE_SERVER_SIZE,1,f);
-		fclose(f);
-	}
-	// EncTerrain.att
-	f=fopen(ChangeExtension(strFilename,".att").c_str(),"wb+");
-	if (f)
-	{
-		switch(nMapID)
-		{
-		case 2:
-		case 4:
-		case 5:
-		case 6:
-		case 7:
-		case 10:
-		case 11:
-		case 12:
-		case 19:
+			case 2:
+			case 4:
+			case 5:
+			case 6:
+			case 7:
+			case 10:
+			case 11:
+			case 12:
+			case 19:
 
+				{
+					char buffer[ATT_FILE_65KB_SIZE];
+					char* p = buffer;
+					*((unsigned char*)p)=0x0;++p;
+					*((unsigned char*)p)=nMapID;++p;
+					*((unsigned char*)p)=0xFF;++p;
+					*((unsigned char*)p)=0xFF;++p;
+					{
+						for (int y=0; y<253; ++y)
+						{
+							for (int x=0; x<253; ++x)
+							{
+								*p = pTerrainData->getCellAttribute(Pos2D(x,y));
+								p++;
+							}
+							for (int x=253; x<256; ++x)
+							{
+								*p =0;++p;
+							}
+						}
+						for (int x=0; x<256*3; ++x)
+						{
+							*p =0;++p;
+						}
+					}
+					decrypt2(buffer,ATT_FILE_65KB_SIZE);
+					encrypt(buffer,ATT_FILE_65KB_SIZE);
+					fwrite(buffer,ATT_FILE_65KB_SIZE,1,f);
+				}
+				break;
+			default:
+				{
+					char buffer[ATT_FILE_129KB_SIZE];
+					char* p = buffer;
+					*((unsigned char*)p)=0x0;++p;
+					*((unsigned char*)p)=nMapID;++p;
+					*((unsigned char*)p)=0xFF;++p;
+					*((unsigned char*)p)=0xFF;++p;
+					{
+						for (int y=0; y<253; ++y)
+						{
+							for (int x=0; x<253; ++x)
+							{
+								*p = pTerrainData->getCellAttribute(Pos2D(x,y));
+								p++;
+								*p =0;++p;
+							}
+							for (int x=253; x<256; ++x)
+							{
+								*p =0;++p;
+								*p =0;++p;
+							}
+						}
+						for (int x=0; x<256*6; ++x)
+						{
+							*p =0;++p;
+						}
+					}
+					decrypt2(buffer,ATT_FILE_129KB_SIZE);
+					encrypt(buffer,ATT_FILE_129KB_SIZE);
+					fwrite(buffer,ATT_FILE_129KB_SIZE,1,f);
+				}
+				break;
+			}
+			fclose(f);
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	// check the key
+	{
+		use_NIST_B_163 ();
+		std::vector<std::string> keys;
+		Tokenizer(strKey,keys,"-");
+		if (keys.size()<3)
+		{
+			return false;
+		}
+		if (keys[0].length()!=16)
+		{
+			return false;
+		}
+		{
+			time_t   t2;
+			time(&t2);
+
+			DWORD myTime=(t2)/(60);
+			DWORD myTimeRang[2];
+			hexStdStr2Date(keys[0].substr(0,8),&myTimeRang[0],4);
+			hexStdStr2Date(keys[0].substr(8,8),&myTimeRang[1],4);
+			if (myTime<myTimeRang[0])
 			{
-				char buffer[ATT_FILE_65KB_SIZE];
+				//return false;
+			}
+			else if (myTime>myTimeRang[1])
+			{
+				//return false;
+			}
+		}
+		Point G("03f0eba16286a2d57ea0991168d4994637e8343e36","00d51fbc6c71a0094fa2cdd545b11c5c0c797324f1");
+		Point W("06a7d0cc4981a50680414b31522b4a661f74a8f1f4","02a3ebc2f9782a73548a7de4343185ee5ecb81f617");
+		Curve C("000000000000000000000000000000000000000001", "020a601907b8c953ca1481eb10512f78744a3205fd");
+
+		Point R2 = C.mul(OS2IP( HexStdStr2OSP(keys[2]) ),G);
+
+		R2 = C.add(R2, C.mul(OS2IP( HexStdStr2OSP(keys[1]) ),W));
+
+		OCTETSTR x2_buf = FE2OSP (R2.x);
+
+		OCTETSTR y2_buf = FE2OSP (R2.y);
+
+		//然后，H=SHA(username,x,y)；
+
+		std::string strDate = strDecode+keys[0];
+		BigInt Hash2 = OS2IP (SHA1 (StdStr2OSP(strDate) || x2_buf || y2_buf));
+		if (OSP2HexStdStr(I2OSP(Hash2)) == keys[1])
+		{
+			// map
+			FILE* f=fopen(strFilename.c_str(),"wb");
+			if (f)
+			{
+				char buffer[MAP_FILE_SIZE];
 				char* p = buffer;
-				*((unsigned char*)p)=0x0;++p;
+				*((unsigned char*)p)=0;++p;
 				*((unsigned char*)p)=nMapID;++p;
-				*((unsigned char*)p)=0xFF;++p;
-				*((unsigned char*)p)=0xFF;++p;
+				// tile
+				for (size_t layer=0;layer<2;++layer)
 				{
 					for (int y=0; y<253; ++y)
 					{
 						for (int x=0; x<253; ++x)
 						{
-							*p = pTerrainData->getCellAttribute(Pos2D(x,y));
+							*p = pTerrainData->GetCellTileID(Pos2D(x,y),layer);
 							p++;
 						}
-						for (int x=253; x<256; ++x)
-						{
-							*p =0;++p;
-						}
+						*p =0;++p;
+						*p =0;++p;
+						*p =0;++p;
 					}
 					for (int x=0; x<256*3; ++x)
 					{
 						*p =0;++p;
 					}
 				}
-				decrypt2(buffer,ATT_FILE_65KB_SIZE);
-				encrypt(buffer,ATT_FILE_65KB_SIZE);
-				fwrite(buffer,ATT_FILE_65KB_SIZE,1,f);
-			}
-			break;
-		default:
-			{
-				char buffer[ATT_FILE_129KB_SIZE];
-				char* p = buffer;
-				*((unsigned char*)p)=0x0;++p;
-				*((unsigned char*)p)=nMapID;++p;
-				*((unsigned char*)p)=0xFF;++p;
-				*((unsigned char*)p)=0xFF;++p;
+				// alpha
 				{
-					for (int y=0; y<253; ++y)
+					for (int y=0; y<254; ++y)
 					{
-						for (int x=0; x<253; ++x)
+						for (int x=0; x<254; ++x)
 						{
-							*p = pTerrainData->getCellAttribute(Pos2D(x,y));
+							*p = pTerrainData->getVertexColor(Pos2D(x,y)).a;
 							p++;
-							*p =0;++p;
 						}
-						for (int x=253; x<256; ++x)
-						{
-							*p =0;++p;
-							*p =0;++p;
-						}
+						*p =0;++p;
+						*p =0;++p;
 					}
-					for (int x=0; x<256*6; ++x)
+					for (int x=0; x<256*2; ++x)
 					{
 						*p =0;++p;
 					}
 				}
-				decrypt2(buffer,ATT_FILE_129KB_SIZE);
-				encrypt(buffer,ATT_FILE_129KB_SIZE);
-				fwrite(buffer,ATT_FILE_129KB_SIZE,1,f);
+				encrypt(buffer,MAP_FILE_SIZE);
+				fwrite(buffer,MAP_FILE_SIZE,1,f);
+				fclose(f);
 			}
-			break;
-		}
-		fclose(f);
-	}
-	// Height
-	std::string strHeightFilename = GetParentPath(strFilename)+"TerrainHeight.ozb";
-	f=fopen(strHeightFilename.c_str(),"wb+");
-	if (f)
-	{
-		fseek(f,HEIGHT_HEAD_SIZE,SEEK_SET);
-		char buffer[HEIGHT_BUFFER_SIZE];
-		char* p = buffer;
-		int i = 0;
-		for (int y=0; y<254; ++y)
-		{
-			*p =0;++p;
-			*p =0;++p;
-			for (int x=0; x<254; ++x)
+			// Height
+			std::string strHeightFilename = GetParentPath(strFilename)+"TerrainHeight.ozb";
+			f=fopen(strHeightFilename.c_str(),"wb+");
+			if (f)
 			{
-				*p = max(min(pTerrainData->getVertexHeight(Pos2D(x,y))/0.015f,255),0);
-				p++;
-				i++;
+				fseek(f,HEIGHT_HEAD_SIZE,SEEK_SET);
+				char buffer[HEIGHT_BUFFER_SIZE];
+				char* p = buffer;
+				int i = 0;
+				for (int y=0; y<254; ++y)
+				{
+					*p =0;++p;
+					*p =0;++p;
+					for (int x=0; x<254; ++x)
+					{
+						*p = max(min(pTerrainData->getVertexHeight(Pos2D(x,y))/0.015f,255),0);
+						p++;
+						i++;
+					}
+				}
+				for (int x=0; x<256*2; ++x)
+				{
+					*p =0;++p;
+				}
+				fwrite(buffer,HEIGHT_BUFFER_SIZE,1,f);
+				fclose(f);
 			}
 		}
-		for (int x=0; x<256*2; ++x)
-		{
-			*p =0;++p;
-		}
-		fwrite(buffer,HEIGHT_BUFFER_SIZE,1,f);
-		fclose(f);
 	}
 	VMEND
 	return true;
@@ -2304,10 +2448,9 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 		}
 		while(pAdapterInfo);                    // Terminate if last adapter
 	}
-
+	std::string strDecode;
 	std::string str=Format("%u%u",(long)id,(long)MACaddress);
 	{
-		std::string strDecode;
 		strDecode.resize(str.size());
 		static const char tab[10] = {
 			'U', '1', '4', 'z','7',
@@ -2318,69 +2461,119 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 		{
 			strDecode[i] = tab[str[i]-'0'];
 		}
-
-		// MY_PLUGIN_KEYq480z07SUz0UqU8oUU4
-		if (strDecode[0]!='q'){return false;}
-		if (strDecode[1]!='4'){return false;}
-		if (strDecode[2]!='8'){return false;}
-		if (strDecode[3]!='0'){return false;}
-		if (strDecode[4]!='z'){return false;}
-		if (strDecode[5]!='0'){return false;}
-		if (strDecode[6]!='7'){return false;}
-		if (strDecode[7]!='S'){return false;}
-		if (strDecode[8]!='U'){return false;}
-		if (strDecode[9]!='z'){return false;}
-		if (strDecode[10]!='0'){return false;}
-		if (strDecode[11]!='U'){return false;}
-		if (strDecode[12]!='q'){return false;}
-		if (strDecode[13]!='U'){return false;}
-		if (strDecode[14]!='8'){return false;}
-		if (strDecode[15]!='o'){return false;}
-		if (strDecode[16]!='U'){return false;}
-		if (strDecode[17]!='U'){return false;}
-		if (strDecode[18]!='4'){return false;}
 	}
-	//////////////////////////////////////////////////////////////////////////
 
-	FILE* f=fopen(strFilename.c_str(),"wb");
-	if (f)
+	std::string	strKey;
+	// Read the key from reg.
 	{
-		std::vector<ObjInfo> setObjInfo;
-		DEQUE_MAPOBJ setObject;
-		pScene->getAllObjects(setObject);
-		for (DEQUE_MAPOBJ::iterator it=setObject.begin();it!=setObject.end();it++)
+		HKEY hKey;
+		if (ERROR_SUCCESS==RegOpenKeyExW(HKEY_LOCAL_MACHINE,L"software\\rpgsky\\worldeditor\\",
+			0, KEY_READ, &hKey))
 		{
-			if ((*it)->GetObjType()==MAP_3DSIMPLE)
-			{
-				ObjInfo objInfo;
-				C3DMapSceneObj* pObj = (C3DMapSceneObj*)(*it);
-				Vec3D vPos = pObj->getPos();
-				vPos = Vec3D(vPos.x,vPos.z,vPos.y)*100.0f;
-				Vec3D vRotate = pObj->getRotate();
-				vRotate = Vec3D(vRotate.x,vRotate.z,vRotate.y)*180.0f/PI;
+			DWORD dwType = REG_SZ;
+			wchar_t wszFilename[256];
+			DWORD dwSize = sizeof(wszFilename);
 
-				objInfo.id = pObj->getObjectID();
-				objInfo.p = vPos;
-				objInfo.rotate = vRotate;
-				objInfo.fScale = pObj->getScale();
-				setObjInfo.push_back(objInfo);
+			if (ERROR_SUCCESS==RegQueryValueExW(hKey, L"mu060",
+				NULL, &dwType, (PBYTE)&wszFilename, &dwSize))
+			{
+				RegCloseKey(hKey);
+				strKey = ws2s(wszFilename);
+			}
+			RegCloseKey(hKey);
+		}
+	}
+
+	// check the key
+	{
+		use_NIST_B_163 ();
+		std::vector<std::string> keys;
+		Tokenizer(strKey,keys,"-");
+		if (keys.size()<3)
+		{
+			return false;
+		}
+		if (keys[0].length()!=16)
+		{
+			return false;
+		}
+		{
+			time_t   t2;
+			time(&t2);
+
+			DWORD myTime=(t2)/(60);
+			DWORD myTimeRang[2];
+			hexStdStr2Date(keys[0].substr(0,8),&myTimeRang[0],4);
+			hexStdStr2Date(keys[0].substr(8,8),&myTimeRang[1],4);
+			if (myTime<myTimeRang[0])
+			{
+				//return false;
+			}
+			else if (myTime>myTimeRang[1])
+			{
+				//return false;
 			}
 		}
-		size_t fileSize = setObjInfo.size()*sizeof(ObjInfo)+4;
-		char* buffer = new char[fileSize];
-		*((unsigned char*)buffer)=0x0;
-		unsigned char uMapID = getMapIDFromFilename(strFilename);
-		*((unsigned char*)(buffer+1))=uMapID;
-		*((uint16*)(buffer+2)) = setObjInfo.size();
-		if (setObjInfo.size()>0)
+		Point G("03f0eba16286a2d57ea0991168d4994637e8343e36","00d51fbc6c71a0094fa2cdd545b11c5c0c797324f1");
+		Point W("06a7d0cc4981a50680414b31522b4a661f74a8f1f4","02a3ebc2f9782a73548a7de4343185ee5ecb81f617");
+		Curve C("000000000000000000000000000000000000000001", "020a601907b8c953ca1481eb10512f78744a3205fd");
+
+		Point R2 = C.mul(OS2IP( HexStdStr2OSP(keys[2]) ),G);
+
+		R2 = C.add(R2, C.mul(OS2IP( HexStdStr2OSP(keys[1]) ),W));
+
+		OCTETSTR x2_buf = FE2OSP (R2.x);
+
+		OCTETSTR y2_buf = FE2OSP (R2.y);
+
+		//然后，H=SHA(username,x,y)；
+
+		std::string strDate = strDecode+keys[0];
+		BigInt Hash2 = OS2IP (SHA1 (StdStr2OSP(strDate) || x2_buf || y2_buf));
+		if (OSP2HexStdStr(I2OSP(Hash2)) == keys[1])
 		{
-			memcpy(buffer+4,&setObjInfo[0],setObjInfo.size()*sizeof(ObjInfo));
+			FILE* f=fopen(strFilename.c_str(),"wb");
+			if (f)
+			{
+				std::vector<ObjInfo> setObjInfo;
+				DEQUE_MAPOBJ setObject;
+				pScene->getAllObjects(setObject);
+				for (DEQUE_MAPOBJ::iterator it=setObject.begin();it!=setObject.end();it++)
+				{
+					if ((*it)->GetObjType()==MAP_3DSIMPLE)
+					{
+						ObjInfo objInfo;
+						C3DMapSceneObj* pObj = (C3DMapSceneObj*)(*it);
+						Vec3D vPos = pObj->getPos();
+						vPos = Vec3D(vPos.x,vPos.z,vPos.y)*100.0f;
+						Vec3D vRotate = pObj->getRotate();
+						vRotate = Vec3D(vRotate.x,vRotate.z,vRotate.y)*180.0f/PI;
+
+						objInfo.id = pObj->getObjectID();
+						objInfo.p = vPos;
+						objInfo.rotate = vRotate;
+						objInfo.fScale = pObj->getScale();
+						setObjInfo.push_back(objInfo);
+					}
+				}
+				size_t fileSize = setObjInfo.size()*sizeof(ObjInfo)+4;
+				char* buffer = new char[fileSize];
+				*((unsigned char*)buffer)=0x0;
+				unsigned char uMapID = getMapIDFromFilename(strFilename);
+				*((unsigned char*)(buffer+1))=uMapID;
+				*((uint16*)(buffer+2)) = setObjInfo.size();
+				if (setObjInfo.size()>0)
+				{
+					memcpy(buffer+4,&setObjInfo[0],setObjInfo.size()*sizeof(ObjInfo));
+				}
+				encrypt(buffer,fileSize);
+				fwrite(buffer,fileSize,1,f);
+				fclose(f);
+				delete buffer;
+			}
 		}
-		encrypt(buffer,fileSize);
-		fwrite(buffer,fileSize,1,f);
-		fclose(f);
-		delete buffer;
 	}
+	//////////////////////////////////////////////////////////////////////////
 	VMEND
 	return true;
 }
@@ -2388,6 +2581,7 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 int CMyPlug::exportData(iScene * pScene, const std::string& strFilename)
 {
 VMBEGIN
+	checkKey();
 	exportTerrainData(&pScene->getTerrain()->GetData(),strFilename);
 	exportObject(pScene,ChangeExtension(strFilename,".obj"));
 	return true;
