@@ -77,7 +77,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="mathd.lib commond.lib fileiod.lib"
+				AdditionalDependencies="mathd.lib commond.lib fileiod.lib borZoid.lib wininet.lib"
 				OutputFile="..\..\bin\WorldEditor\$(ProjectName)d.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -178,7 +178,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="math.lib common.lib fileio.lib"
+				AdditionalDependencies="math.lib common.lib fileio.lib borZoi.lib wininet.lib"
 				OutputFile="..\..\bin\WorldEditor\$(ProjectName).dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
