@@ -6,8 +6,8 @@ class CMyPlug : public CModelPlugBase
 public:
 	CMyPlug(void);
 	~CMyPlug(void);
-	virtual const char * GetTitle(){return "Mu Model File";}
-	virtual const char * GetFormat() {return ".bmd";}
+	virtual const char * GetTitle(){return "OGRE Model File";}
+	virtual const char * GetFormat() {return ".mesh";}
 	virtual int Execute(iModelData * pModelData, bool bShowDlg, bool bSpecifyFileName);
 	virtual int importData(iModelData * pModelData, const std::string& strFilename);
 	virtual int exportData(iModelData * pModelData, const std::string& strFilename);

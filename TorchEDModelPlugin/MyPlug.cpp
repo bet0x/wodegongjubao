@@ -1,7 +1,7 @@
 #include "MyPlug.h"
 #include "IORead.h"
 #include "FileSystem.h"
-#include "MUBmd.h"
+//#include "MUBmd.h"
 //#include "RenderSystem.h"
 //#include "CSVFile.h"
 
@@ -236,13 +236,357 @@ enum MeshChunkID {
 
 	*/
 };
+const long STREAM_OVERHEAD_SIZE = sizeof(uint16) + sizeof(uint32);
 
 int CMyPlug::Execute(iModelData * pModelData, bool bShowDlg, bool bSpecifyFileName)
 {
 	return -1;
 }
 
-const long STREAM_OVERHEAD_SIZE = sizeof(uint16) + sizeof(uint32);
+struct GeometryVertexElement
+{
+	unsigned short source;		// buffer bind source
+	//VertexElementType vType;
+	//VertexElementSemantic vSemantic;
+	unsigned short vType;		// VertexElementType
+	unsigned short vSemantic;	// VertexElementSemantic
+	unsigned short offset;		// start offset in buffer in bytes
+	unsigned short index;		// index of the semantic
+};
+
+void readGeometryVertexDeclaration(IOReadBase* pRead, std::vector<GeometryVertexElement>& setElement)
+{
+	// Find optional geometry streams
+	if (!pRead->IsEof())
+	{
+		unsigned short streamID;
+		unsigned int uLength;
+		pRead->Read(&streamID,sizeof(unsigned short));
+		pRead->Read(&uLength,sizeof(unsigned int));
+		while(!!pRead->IsEof() &&(streamID == M_GEOMETRY_VERTEX_ELEMENT ))
+		{
+			switch (streamID)
+			{
+			case M_GEOMETRY_VERTEX_ELEMENT:
+				{
+					GeometryVertexElement element; 	
+					pRead->Read(&element,sizeof(GeometryVertexElement));
+
+					setElement.push_back(element);
+					//dest->vertexDeclaration->addElement(source, offset, vType, vSemantic, index);
+
+					// 	if (vType == VET_COLOUR)
+					// 	{
+					// 		LogManager::getSingleton().stream()
+					// 			<< "Warning: VET_COLOUR element type is deprecated, you should use "
+					// 			<< "one of the more specific types to indicate the byte order. "
+					// 			<< "Use OgreMeshUpgrade on " << pMesh->getName() << " as soon as possible. ";
+					// 	}
+				}
+				break;
+			}
+			// Get next stream
+			if (!pRead->IsEof())
+			{
+				pRead->Read(&streamID,sizeof(unsigned short));
+				pRead->Read(&uLength,sizeof(unsigned int));
+			}
+		}
+		if (!pRead->IsEof())
+		{
+			// Backpedal back to start of non-submesh stream
+			pRead->Move(-STREAM_OVERHEAD_SIZE);
+		}
+	}
+}
+
+void readGeometryVertexBuffer(IOReadBase* pRead, iLodMesh * pMesh,std::vector<GeometryVertexElement>& setElement)
+{
+	unsigned short bindIndex, vertexSize;
+	// unsigned short bindIndex;	// Index to bind this buffer to
+	pRead->Read(&bindIndex,sizeof(unsigned short));
+	// unsigned short vertexSize;	// Per-vertex size, must agree with declaration at this index
+	pRead->Read(&vertexSize,sizeof(unsigned short));
+
+	// Check for vertex data header
+	unsigned short streamID;
+	unsigned int uLength;
+	pRead->Read(&streamID,sizeof(unsigned short));
+	pRead->Read(&uLength,sizeof(unsigned int));
+	if (streamID != M_GEOMETRY_VERTEX_BUFFER_DATA)
+	{
+		MessageBoxW(NULL, L"Can't find vertex buffer data area",	L"MeshSerializerImpl::readGeometryVertexBuffer",0);
+	}
+
+	//pRead->read(pBuf, dest->vertexCount * vertexSize);
+
+}
+
+void readGeometry(IOReadBase* pRead, iLodMesh * pMesh)
+{
+	unsigned int vertexCount = 0;
+	pRead->Read(&vertexCount,sizeof(unsigned int));
+
+	unsigned short streamID;
+	unsigned int uLength;
+	pRead->Read(&streamID,sizeof(unsigned short));
+	pRead->Read(&uLength,sizeof(unsigned int));
+
+	std::vector<GeometryVertexElement> setElement; 
+	while(!pRead->IsEof() && (streamID == M_GEOMETRY_VERTEX_DECLARATION ||streamID == M_GEOMETRY_VERTEX_BUFFER ))
+	{
+		switch (streamID)
+		{
+		case M_GEOMETRY_VERTEX_DECLARATION:
+			readGeometryVertexDeclaration(pRead, setElement);
+			break;
+		case M_GEOMETRY_VERTEX_BUFFER:
+			readGeometryVertexBuffer(pRead, pMesh, setElement);
+			break;
+		}
+		// Get next stream
+		if (!pRead->IsEof())
+		{
+			pRead->Read(&streamID,sizeof(unsigned short));
+			pRead->Read(&uLength,sizeof(unsigned int));
+		}
+	}
+	if (!pRead->IsEof())
+	{
+		// Backpedal back to start of non-submesh stream
+		pRead->Move(-STREAM_OVERHEAD_SIZE);
+	}
+}
+
+std::string readString(IOReadBase* pRead)
+{
+	char	c;
+	std::string str;
+	pRead->Read(&c,sizeof(char));
+	while (c!='\n')
+	{
+		str.push_back(c);
+		pRead->Read(&c,sizeof(char));
+	}
+	return str;
+} 
+void readSubMesh(IOReadBase* pRead, iLodMesh * pMesh)
+{
+//	SubMesh* sm = pMesh->createSubMesh();
+
+	// char* materialName
+	std::string materialName = readString(pRead);
+// 	if(listener)
+// 		listener->processMaterialName(pMesh, &materialName);
+// 	sm->setMaterialName(materialName);
+
+	// bool useSharedVertices
+	bool useSharedVertices;
+	pRead->Read(&useSharedVertices,sizeof(bool));
+
+	// sm->indexData->indexStart = 0;
+	unsigned int indexCount = 0;
+	pRead->Read(&indexCount,sizeof(unsigned int));
+	//sm->indexData->indexCount = indexCount;
+
+	// bool indexes32Bit
+	bool idx32bit;
+	pRead->Read(&idx32bit,sizeof(bool));
+	if (idx32bit)
+	{
+		MessageBoxW(0,L"Can't read idx32bit",L"Error",0);
+		FaceIndex faceIndex;
+		for (size_t i=0;i<indexCount;++i)
+		{
+			unsigned int uVertexIndex;
+			pRead->Read(&uVertexIndex,sizeof(unsigned int));
+
+			size_t n = i%3;
+			faceIndex.v[n]=uVertexIndex;
+			faceIndex.n[n]=uVertexIndex;
+			faceIndex.c[n]=uVertexIndex;
+			faceIndex.uv1[n]=uVertexIndex;
+			if (2==n)
+			{
+				pMesh->addFaceIndex(faceIndex);
+			}
+		}
+	}
+	else // 16-bit
+	{
+		FaceIndex faceIndex;
+		for (size_t i=0;i<indexCount;++i)
+		{
+			unsigned short uVertexIndex;
+			pRead->Read(&uVertexIndex,sizeof(unsigned short));
+
+			size_t n = i%3;
+			faceIndex.v[n]=uVertexIndex;
+			faceIndex.n[n]=uVertexIndex;
+			faceIndex.c[n]=uVertexIndex;
+			faceIndex.uv1[n]=uVertexIndex;
+			if (2==n)
+			{
+				pMesh->addFaceIndex(faceIndex);
+			}
+		}
+	}
+
+	// M_GEOMETRY stream (Optional: present only if useSharedVertices = false)
+	if (!useSharedVertices)
+	{
+		unsigned short streamID;
+		unsigned int uLength;
+		pRead->Read(&streamID,sizeof(unsigned short));
+		pRead->Read(&uLength,sizeof(unsigned int));
+		if (streamID != M_GEOMETRY)
+		{
+			MessageBoxW(0,L"Missing geometry data in mesh file",L"readSubMesh",0);
+		}
+		readGeometry(pRead, pMesh);
+	}
+
+
+	// Find all bone assignments, submesh operation, and texture aliases (if present)
+	if (!pRead->IsEof())
+	{
+		unsigned short streamID;
+		unsigned int uLength;
+		pRead->Read(&streamID,sizeof(unsigned short));
+		pRead->Read(&uLength,sizeof(unsigned int));
+		while(!pRead->IsEof() &&
+			(streamID == M_SUBMESH_BONE_ASSIGNMENT ||
+			streamID == M_SUBMESH_OPERATION ||
+			streamID == M_SUBMESH_TEXTURE_ALIAS))
+		{
+			switch(streamID)
+			{
+			case M_SUBMESH_OPERATION:
+			//	readSubMeshOperation(stream, pMesh, sm);
+				break;
+			case M_SUBMESH_BONE_ASSIGNMENT:
+				//readSubMeshBoneAssignment(stream, pMesh, sm);
+				break;
+			case M_SUBMESH_TEXTURE_ALIAS:
+				//readSubMeshTextureAlias(stream, pMesh, sm);
+				break;
+			}
+
+			if (!pRead->IsEof())
+			{
+				pRead->Read(&streamID,sizeof(unsigned short));
+				pRead->Read(&uLength,sizeof(unsigned int));
+			}
+
+		}
+		if (!pRead->IsEof())
+		{
+			// Backpedal back to start of non-submesh stream
+			pRead->Move(-STREAM_OVERHEAD_SIZE);
+		}
+	}
+}
+
+void readHeader(IOReadBase* pRead)
+{
+	unsigned short headerID;
+	pRead->Read(&headerID,sizeof(unsigned short));
+
+	if (headerID == M_HEADER)// OK
+	{
+		// Read version
+		std::string strVersion = readString(pRead);
+		//if (ver != mVersion)
+		//{
+		//	OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, 
+		//		"Invalid file: version incompatible, file reports " + String(ver) +
+		//		" Serializer is version " + mVersion,
+		//		"Serializer::readFileHeader");
+		//}
+	}
+	else
+	{
+		MessageBoxW(NULL,L"Invalid file: no header",0,0);
+	}
+}
+
+void readMesh(IOReadBase* pRead, iLodMesh * pMesh)
+{
+	bool skeletallyAnimated;
+	pRead->Read(&skeletallyAnimated,sizeof(bool));
+	// Find all substreams
+	if (!pRead->IsEof())
+	{
+		unsigned short streamID;
+		unsigned int uLength;
+		pRead->Read(&streamID,sizeof(unsigned short));
+		pRead->Read(&uLength,sizeof(unsigned int));
+
+		while(!pRead->IsEof() &&
+			(streamID == M_GEOMETRY ||
+			streamID == M_SUBMESH ||
+			streamID == M_MESH_SKELETON_LINK ||
+			streamID == M_MESH_BONE_ASSIGNMENT ||
+			streamID == M_MESH_LOD ||
+			streamID == M_MESH_BOUNDS ||
+			streamID == M_SUBMESH_NAME_TABLE ||
+			streamID == M_EDGE_LISTS ||
+			streamID == M_POSES ||
+			streamID == M_ANIMATIONS ||
+			streamID == M_TABLE_EXTREMES))
+		{
+			switch(streamID)
+			{
+			case M_GEOMETRY:
+				{
+					readGeometry(pRead, pMesh);
+				}
+				break;
+			case M_SUBMESH:
+				//readSubMesh(stream, pMesh, listener);
+				break;
+			case M_MESH_SKELETON_LINK:
+				//readSkeletonLink(stream, pMesh, listener);
+				break;
+			case M_MESH_BONE_ASSIGNMENT:
+				//readMeshBoneAssignment(stream, pMesh);
+				break;
+			case M_MESH_LOD:
+				//readMeshLodInfo(stream, pMesh);
+				break;
+			case M_MESH_BOUNDS:
+				//readBoundsInfo(stream, pMesh);
+				break;
+			case M_SUBMESH_NAME_TABLE:
+				//readSubMeshNameTable(stream, pMesh);
+				break;
+			case M_EDGE_LISTS:
+				//readEdgeList(stream, pMesh);
+				break;
+			case M_POSES:
+				//readPoses(stream, pMesh);
+				break;
+			case M_ANIMATIONS:
+				//readAnimations(stream, pMesh);
+				break;
+			case M_TABLE_EXTREMES:
+				//readExtremes(stream, pMesh);
+				break;
+			}
+
+			if (!pRead->IsEof())
+			{
+				pRead->Read(&streamID,sizeof(unsigned short));
+				pRead->Read(&uLength,sizeof(unsigned int));
+			}
+		}
+		if (!pRead->IsEof())
+		{
+			// Backpedal back to start of non-submesh stream
+			pRead->Move(-STREAM_OVERHEAD_SIZE);
+		}
+	}
+}
 
 int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
 {
@@ -250,323 +594,28 @@ int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
 	IOReadBase* pRead = IOReadBase::autoOpen(strFilename);
 	if (pRead)
 	{
-		{ // header
-			unsigned short headerID;
-			pRead->Read(&headerID,sizeof(unsigned short));
+		// header
+		readHeader(pRead);
 
-			if (headerID == M_HEADER)// OK
-			{
-				// Read version
-				char	c;
-				std::string strVersion;
-				pRead->Read(&c,sizeof(char));
-				while (c!=0)
-				{
-					strVersion.push_back(c);
-					pRead->Read(&c,sizeof(char));
-				}
-				//if (ver != mVersion)
-				//{
-				//	OGRE_EXCEPT(Exception::ERR_INTERNAL_ERROR, 
-				//		"Invalid file: version incompatible, file reports " + String(ver) +
-				//		" Serializer is version " + mVersion,
-				//		"Serializer::readFileHeader");
-				//}
-			}
-			else
-			{
-				MessageBoxW(NULL,L"Invalid file: no header",0,0);
-			}
-		}
+		if (!pRead->IsEof())
 		{
 			unsigned short streamID;
 			unsigned int uLength;
+			pRead->Read(&streamID,sizeof(unsigned short));
+			pRead->Read(&uLength,sizeof(unsigned int));
 
-			if (!pRead->IsEof())
+			switch (streamID)
 			{
-				pRead->Read(&streamID,sizeof(unsigned short));
-				pRead->Read(&uLength,sizeof(unsigned int));
-
-
-				switch (streamID)
+			case M_MESH:
 				{
-				case M_MESH:
-					{
-						bool skeletallyAnimated;
-						pRead->Read(&skeletallyAnimated,sizeof(bool));
-						// Find all substreams
-						if (!pRead->IsEof())
-						{
-							pRead->Read(&streamID,sizeof(unsigned short));
-							pRead->Read(&uLength,sizeof(unsigned int));
-
-							switch(streamID)
-							{
-							case M_GEOMETRY:
-								{
-									unsigned int vertexCount = 0;
-									pRead->Read(&vertexCount,sizeof(unsigned int));
-
-									pRead->Read(&streamID,sizeof(unsigned short));
-									pRead->Read(&uLength,sizeof(unsigned int));
-
-									while(!pRead->IsEof() && (streamID == M_GEOMETRY_VERTEX_DECLARATION ||streamID == M_GEOMETRY_VERTEX_BUFFER ))
-									{
-										switch (streamID)
-										{
-										case M_GEOMETRY_VERTEX_DECLARATION:
-											// Find optional geometry streams
-											if (!pRead->IsEof())
-											{
-												pRead->Read(&streamID,sizeof(unsigned short));
-												pRead->Read(&uLength,sizeof(unsigned int));
-												while(!!pRead->IsEof() &&(streamID == M_GEOMETRY_VERTEX_ELEMENT ))
-												{
-													switch (streamID)
-													{
-													case M_GEOMETRY_VERTEX_ELEMENT:
-														readGeometryVertexElement(stream, pMesh, dest);
-														break;
-													}
-													// Get next stream
-													if (!pRead->IsEof())
-													{
-														pRead->Read(&streamID,sizeof(unsigned short));
-														pRead->Read(&uLength,sizeof(unsigned int));
-													}
-												}
-												if (!pRead->IsEof())
-												{
-													// Backpedal back to start of non-submesh stream
-													pRead->Move(-STREAM_OVERHEAD_SIZE);
-												}
-											}
-											break;
-										case M_GEOMETRY_VERTEX_BUFFER:
-											readGeometryVertexBuffer(stream, pMesh, dest);
-											break;
-										}
-										// Get next stream
-										if (!pRead->IsEof())
-										{
-											pRead->Read(&streamID,sizeof(unsigned short));
-											pRead->Read(&uLength,sizeof(unsigned int));
-										}
-									}
-									if (!pRead->IsEof())
-									{
-										// Backpedal back to start of non-submesh stream
-										pRead->Move(-STREAM_OVERHEAD_SIZE);
-									}
-
-								}
-								break;
-							case M_SUBMESH:
-								readSubMesh(stream, pMesh, listener);
-								break;
-							case M_MESH_SKELETON_LINK:
-								readSkeletonLink(stream, pMesh, listener);
-								break;
-							case M_MESH_BONE_ASSIGNMENT:
-								readMeshBoneAssignment(stream, pMesh);
-								break;
-							case M_MESH_LOD:
-								readMeshLodInfo(stream, pMesh);
-								break;
-							case M_MESH_BOUNDS:
-								readBoundsInfo(stream, pMesh);
-								break;
-							case M_SUBMESH_NAME_TABLE:
-								readSubMeshNameTable(stream, pMesh);
-								break;
-							case M_EDGE_LISTS:
-								readEdgeList(stream, pMesh);
-								break;
-							case M_POSES:
-								readPoses(stream, pMesh);
-								break;
-							case M_ANIMATIONS:
-								readAnimations(stream, pMesh);
-								break;
-							case M_TABLE_EXTREMES:
-								readExtremes(stream, pMesh);
-								break;
-							}
-
-							if (!pRead->IsEof())
-							{
-								pRead->Read(&streamID,sizeof(unsigned short));
-								pRead->Read(&uLength,sizeof(unsigned int));
-							}
-						}
-						break;
-					}
+					readMesh(pRead,&pModelData->getMesh());
+					break;
 				}
 			}
 		}
-
-	static CMUBmd* pPlayerBmd;
-	CMUBmd bmd;
-	bool bIsPlayerPart = false;
-	if (!bmd.LoadFile(strFilename))
-	{
-		return false;
-	}
-	if (GetFilename(strFilename)!="player.bmd")
-	{
-		std::string str = GetFilename(GetParentPath(strFilename));
-		if (str=="player")
-		{
-			if (pPlayerBmd)
-			{
-				bIsPlayerPart= true;
-			}
-			else
-			{
-				pPlayerBmd = new CMUBmd;
-				bIsPlayerPart = pPlayerBmd->LoadFile(GetParentPath(strFilename)+"player.bmd");
-			}
-		}
 	}
 
-	//////////////////////////////////////////////////////////////////////////
-	iLodMesh& mesh = pModelData->getMesh();
-	//m_Mesh.m_Lods.resize(1);
-	if (bmd.nFrameCount>1)// if there one frame only, free the animlist
-	{
-		int nFrameCount = 0;
-		for (size_t i=0; i<bmd.head.uAnimCount; ++i)
-		{
-			long timeStart = nFrameCount*MU_BMD_ANIM_FRAME_TIME;
-			nFrameCount+=bmd.bmdSkeleton.setBmdAnim[i].uFrameCount+1;
-			long timeEnd = (nFrameCount-1)*MU_BMD_ANIM_FRAME_TIME;
-			pModelData->addAnimation(timeStart,timeEnd);
-		}
-	}
-
-	for (size_t i=0;  i<bmd.setBmdSub.size(); ++i)
-	{
-		CMUBmd::BmdSub& bmdSub = bmd.setBmdSub[i];
-		iLodMesh& mesh = pModelData->getMesh();
-		for(std::vector<CMUBmd::BmdSub::BmdTriangle>::iterator it=bmdSub.setTriangle.begin(); it!=bmdSub.setTriangle.end(); it++)
-		{
-			FaceIndex faceIndex;
-			faceIndex.uSubID=i;
-			for (size_t j=0; j<3; ++j)
-			{
-				faceIndex.v[j]	= mesh.getPosCount()+it->indexVertex[2-j];
-				faceIndex.b[j]	= mesh.getBoneCount()+it->indexVertex[2-j];
-				faceIndex.w[j]	= mesh.getWeightCount()+it->indexVertex[2-j];
-				faceIndex.n[j]	= mesh.getNormalCount()+it->indexNormal[2-j];
-				faceIndex.uv1[j]= mesh.getTexcoordCount()+it->indexUV[2-j];
-			}
-			mesh.addFaceIndex(faceIndex);
-		}
-		for(std::vector<CMUBmd::BmdSub::BmdPos>::iterator it=bmdSub.setVertex.begin(); it!=bmdSub.setVertex.end(); it++)
-		{
-			Vec3D vPos = fixCoordSystemPos(it->vPos);
-			if (bIsPlayerPart)
-			{
-				vPos = pPlayerBmd->bmdSkeleton.getLocalMatrix(it->uBones)*vPos;
-			}
-			else
-			{
-				vPos = bmd.bmdSkeleton.getLocalMatrix(it->uBones)*vPos;
-			}
-			if (1<bmd.nFrameCount||bIsPlayerPart)
-			{
-				uint8 uBone = it->uBones&0xFF;
-				if (bmd.bmdSkeleton.setBmdBone.size()<=uBone||bmd.bmdSkeleton.setBmdBone[uBone].bEmpty)
-				{
-					mesh.addBone(0);
-				}
-				else
-				{
-					mesh.addBone(it->uBones);
-				}
-				//assert((it->uBones&0xFFFFFF00)==0);
-				mesh.addWeight(0x000000FF);
-			}
-			mesh.addPos(vPos);
-		}
-		for(std::vector<CMUBmd::BmdSub::BmdNormal>::iterator it=bmdSub.setNormal.begin(); it!=bmdSub.setNormal.end(); it++)
-		{
-			Vec3D n = fixCoordSystemNormal(it->vNormal);
-			n = bmd.bmdSkeleton.getRotateMatrix(it->uBones)*n;
-			mesh.addNormal(n);
-		}
-		for(std::vector<Vec2D>::iterator it=bmdSub.setUV.begin(); it!=bmdSub.setUV.end(); it++)
-		{
-			mesh.addTexcoord(*it);
-		}
-		{
-// 			ModelRenderPass pass;
-// 			pass.nSubID = i;
-// 			pass.material.bCull = false;
-// 			pass.material.bAlphaTest = true;
-// 			pass.material.uAlphaTestValue = 0x80;
-			std::string strTexFileName = GetParentPath(strFilename) + bmdSub.szTexture;
-			{
-				std::string strExtension = GetExtension(bmdSub.szTexture); 
-				if (".jpg"==strExtension)
-					strTexFileName = ChangeExtension(strTexFileName,".ozj");
-				else if (".tga"==strExtension)
-					strTexFileName = ChangeExtension(strTexFileName,".ozt");
-				else if (".bmp"==strExtension)
-					strTexFileName = ChangeExtension(strTexFileName,".ozb");
-			}
-			pModelData->setRenderPass(i,"",strTexFileName,"","","","","",0,false,true,0,0);
-		}
-	}
-
-	iSkeleton& skeleton = pModelData->getSkeleton();
-	skeleton.m_BoneAnims.resize(bmd.head.uBoneCount);
-
-	std::vector<BoneAnim>::iterator itBoneAnim = skeleton.m_BoneAnims.begin();
-	for (std::vector<CMUBmd::BmdSkeleton::BmdBone>::iterator itBmdBone=bmd.bmdSkeleton.setBmdBone.begin();itBmdBone!=bmd.bmdSkeleton.setBmdBone.end();itBmdBone++)
-	{
-		if (!itBmdBone->bEmpty)
-		{
-			itBoneAnim->strName = itBmdBone->szName;
-			Matrix	mInvLocal = itBmdBone->mLocal;
-			mInvLocal.Invert();
-			itBoneAnim->mSkin = mInvLocal;
-			unsigned int uTime =0;
-			for (std::vector<Vec3D>::iterator it= itBmdBone->setTrans.begin();
-				it!=itBmdBone->setTrans.end(); it++)
-			{
-				if (GetFilename(strFilename)=="player.bmd"&&itBmdBone==bmd.bmdSkeleton.setBmdBone.begin())
-				{
-					/*if (uTime>m_AnimList[15].timeStart&&uTime<m_AnimList[23].timeStart)
-					{
-					Vec3D vPos = fixCoordSystemPos(*it);
-					vPos.x=0;vPos.z=0;
-					itBoneAnim->trans.addValue(uTime,vPos);
-					uTime += MU_BMD_ANIM_FRAME_TIME;
-					continue;
-					}*/
-				}
-				itBoneAnim->trans.addValue(uTime,fixCoordSystemPos(*it));
-				uTime += MU_BMD_ANIM_FRAME_TIME;
-			}
-			uTime =0;
-			for (std::vector<Vec3D>::iterator it= itBmdBone->setRotate.begin();
-				it!=itBmdBone->setRotate.end(); it++)
-			{
-				itBoneAnim->rot.addValue(uTime,fixCoordSystemRotate(*it));
-				uTime += MU_BMD_ANIM_FRAME_TIME;
-			}
-			int nParent = itBmdBone->nParent;
-			if (nParent<0||nParent>255)
-			{
-				nParent = 255;
-			}
-			itBoneAnim->parent=nParent;	
-		}
-		itBoneAnim++;
-	}
-
-	mesh.update();
+	//mesh.update();
 
 	//m_bbox = mesh.getBBox();
 	std::string strMyPath ="Data\\"+GetFilename(GetParentPath(strFilename))+"\\";
