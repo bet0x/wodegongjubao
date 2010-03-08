@@ -27,7 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FileTools", "FileTools", "{
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MuModelPlugin", "MuModelPlugin\MuModelPlugin.vcproj", "{40AB2FE3-FD81-47B3-9D55-AC959D2F8B8D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TorchEDModelPlugin", "TorchEDModelPlugin\TorchEDModelPlugin.vcproj", "{214B8B3A-CD4A-4B0C-8E92-9323A375C242}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OGREModelPlugin", "OGREModelPlugin\OGREModelPlugin.vcproj", "{214B8B3A-CD4A-4B0C-8E92-9323A375C242}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
