@@ -1,0 +1,7 @@
+; TorchEDModelPlugin.def : Declares the module parameters for the DLL.
+
+LIBRARY      "TorchEDModelPlugin"
+DESCRIPTION  'TorchEDModelPlugin Windows Dynamic Link Library'
+
+EXPORTS
+    Model_Plug_CreateObject	@1
