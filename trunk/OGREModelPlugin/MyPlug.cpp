@@ -243,13 +243,37 @@ int CMyPlug::Execute(iModelData * pModelData, bool bShowDlg, bool bSpecifyFileNa
 	return -1;
 }
 
+enum VertexElementType
+{
+	VET_FLOAT1,
+	VET_FLOAT2,
+	VET_FLOAT3,
+	VET_FLOAT4,
+	VET_COLOUR,
+	VET_SHORT1,
+	VET_SHORT2,
+	VET_SHORT3,
+	VET_SHORT4,
+	VET_UBYTE4
+};
+enum VertexElementSemantic
+{
+	VES_POSITION = 1,               // 位置：每个顶点要使用三个实数 (Real) 来表示
+	VES_BLEND_WEIGHTS = 2,          // 混合权重
+	VES_BLEND_INDICES = 3,          // 混合索引
+	VES_NORMAL = 4,                 // 法线：每个顶点的法线要使用三个实数 (Real) 来表示
+	VES_DIFFUSE = 5,                // 散射光的颜色值
+	VES_SPECULAR = 6,               // 反射光的颜色值
+	VES_TEXTURE_COORDINATES = 7,    // 纹理坐标
+	VES_BINORMAL = 8,               // 副法线 (如果法线是 Z 轴，副法线就是 Y 轴)
+	VES_TANGENT = 9                 // 切线 (如果法线是 Z 轴，切线就是 X 轴)
+};
+
 struct GeometryVertexElement
 {
 	unsigned short source;		// buffer bind source
-	//VertexElementType vType;
-	//VertexElementSemantic vSemantic;
-	unsigned short vType;		// VertexElementType
-	unsigned short vSemantic;	// VertexElementSemantic
+	VertexElementType vType;
+	VertexElementSemantic vSemantic;
 	unsigned short offset;		// start offset in buffer in bytes
 	unsigned short index;		// index of the semantic
 };
@@ -263,14 +287,21 @@ void readGeometryVertexDeclaration(IOReadBase* pRead, std::vector<GeometryVertex
 		unsigned int uLength;
 		pRead->Read(&streamID,sizeof(unsigned short));
 		pRead->Read(&uLength,sizeof(unsigned int));
-		while(!!pRead->IsEof() &&(streamID == M_GEOMETRY_VERTEX_ELEMENT ))
+		while(!pRead->IsEof() &&(streamID == M_GEOMETRY_VERTEX_ELEMENT ))
 		{
 			switch (streamID)
 			{
 			case M_GEOMETRY_VERTEX_ELEMENT:
 				{
-					GeometryVertexElement element; 	
-					pRead->Read(&element,sizeof(GeometryVertexElement));
+					GeometryVertexElement element; 
+					unsigned short tmp;
+					pRead->Read(&element.source,sizeof(unsigned short));
+					pRead->Read(&tmp,sizeof(unsigned short));
+					element.vType = static_cast<VertexElementType>(tmp);
+					pRead->Read(&tmp,sizeof(unsigned short));
+					element.vSemantic = static_cast<VertexElementSemantic>(tmp);
+					pRead->Read(&element.offset,sizeof(unsigned short));
+					pRead->Read(&element.index,sizeof(unsigned short));
 
 					setElement.push_back(element);
 					//dest->vertexDeclaration->addElement(source, offset, vType, vSemantic, index);
@@ -300,7 +331,7 @@ void readGeometryVertexDeclaration(IOReadBase* pRead, std::vector<GeometryVertex
 	}
 }
 
-void readGeometryVertexBuffer(IOReadBase* pRead, iLodMesh * pMesh,std::vector<GeometryVertexElement>& setElement)
+void readGeometryVertexBuffer(IOReadBase* pRead, iLodMesh * pMesh,std::vector<GeometryVertexElement>& setElement,unsigned int vertexCount)
 {
 	unsigned short bindIndex, vertexSize;
 	// unsigned short bindIndex;	// Index to bind this buffer to
@@ -317,7 +348,83 @@ void readGeometryVertexBuffer(IOReadBase* pRead, iLodMesh * pMesh,std::vector<Ge
 	{
 		MessageBoxW(NULL, L"Can't find vertex buffer data area",	L"MeshSerializerImpl::readGeometryVertexBuffer",0);
 	}
-
+	for (size_t i=0;i<vertexCount;++i)
+	{
+		for (size_t n=0;n<setElement.size();++n)
+		{
+			if (setElement[n].source==bindIndex)
+			{
+				switch(setElement[n].vSemantic)
+				{
+				case VES_POSITION:
+					{
+						Vec3D vPos;
+						pRead->Read(&vPos,sizeof(Vec3D));
+						pMesh->addPos(vPos);
+					}
+					break;
+				case VES_BLEND_WEIGHTS:
+					{
+						unsigned int uWeight;
+						pRead->Read(&uWeight,sizeof(unsigned int));
+						pMesh->addWeight(uWeight);
+					}
+					break;
+				case VES_BLEND_INDICES:
+					{
+						unsigned int uBone;
+						pRead->Read(&uBone,sizeof(unsigned int));
+						pMesh->addBone(uBone);
+					}
+					break;
+				case VES_NORMAL:
+					{
+						Vec3D vNormal;
+						pRead->Read(&vNormal,sizeof(Vec3D));
+						pMesh->addNormal(vNormal);
+					}
+					break;
+				case VES_DIFFUSE:
+					{
+						Color32 color;
+						pRead->Read(&color,sizeof(Color32));
+						//pMesh->addColor(color);
+					}
+					break;
+				case VES_SPECULAR:
+					{
+						Color32 color;
+						pRead->Read(&color,sizeof(Color32));
+						//pMesh->addColor(color);
+					}
+					break;
+				case VES_TEXTURE_COORDINATES:
+					{
+						Vec2D vUV;
+						pRead->Read(&vUV,sizeof(Vec2D));
+						pMesh->addTexcoord(vUV);
+					}
+					break;
+				case VES_BINORMAL:
+					{
+						Vec3D vBiNormal;
+						pRead->Read(&vBiNormal,sizeof(Vec3D));
+						//pMesh->addBiNormal(vBiNormal);
+					}
+					break;
+				case VES_TANGENT:
+					{
+						Vec3D vTangent;
+						pRead->Read(&vTangent,sizeof(Vec3D));
+						//pMesh->addTangent(vTangent);
+					}
+					break;
+				default:
+				    break;
+				}
+			}
+		}
+	}
 	//pRead->read(pBuf, dest->vertexCount * vertexSize);
 
 }
@@ -341,7 +448,7 @@ void readGeometry(IOReadBase* pRead, iLodMesh * pMesh)
 			readGeometryVertexDeclaration(pRead, setElement);
 			break;
 		case M_GEOMETRY_VERTEX_BUFFER:
-			readGeometryVertexBuffer(pRead, pMesh, setElement);
+			readGeometryVertexBuffer(pRead, pMesh, setElement, vertexCount);
 			break;
 		}
 		// Get next stream
@@ -543,7 +650,7 @@ void readMesh(IOReadBase* pRead, iLodMesh * pMesh)
 				}
 				break;
 			case M_SUBMESH:
-				//readSubMesh(stream, pMesh, listener);
+				readSubMesh(pRead, pMesh);
 				break;
 			case M_MESH_SKELETON_LINK:
 				//readSkeletonLink(stream, pMesh, listener);
