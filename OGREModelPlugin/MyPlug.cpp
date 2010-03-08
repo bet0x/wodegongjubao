@@ -476,7 +476,15 @@ std::string readString(IOReadBase* pRead)
 		pRead->Read(&c,sizeof(char));
 	}
 	return str;
-} 
+}
+
+typedef struct VertexBoneAssignment_s
+{
+	unsigned int vertexIndex;
+	unsigned short boneIndex;
+	float weight;
+} VertexBoneAssignment;
+
 void readSubMesh(IOReadBase* pRead, iLodMesh * pMesh)
 {
 //	SubMesh* sm = pMesh->createSubMesh();
@@ -522,6 +530,7 @@ void readSubMesh(IOReadBase* pRead, iLodMesh * pMesh)
 	else // 16-bit
 	{
 		FaceIndex faceIndex;
+		faceIndex.uSubID=0;
 		for (size_t i=0;i<indexCount;++i)
 		{
 			unsigned short uVertexIndex;
@@ -570,12 +579,29 @@ void readSubMesh(IOReadBase* pRead, iLodMesh * pMesh)
 			{
 			case M_SUBMESH_OPERATION:
 			//	readSubMeshOperation(stream, pMesh, sm);
+				// unsigned short operationType
+				unsigned short opType;
+				pRead->Read(&opType,sizeof(unsigned short));
+				//sm->operationType = static_cast<RenderOperation::OperationType>(opType);
 				break;
 			case M_SUBMESH_BONE_ASSIGNMENT:
 				//readSubMeshBoneAssignment(stream, pMesh, sm);
+				VertexBoneAssignment assign;
+
+				// unsigned int vertexIndex;
+				pRead->Read(&(assign.vertexIndex),sizeof(unsigned int));
+				// unsigned short boneIndex;
+				pRead->Read(&(assign.boneIndex),sizeof(unsigned short));
+				// float weight;
+				pRead->Read(&(assign.weight),sizeof(float));
+
+				//sub->addBoneAssignment(assign);
 				break;
 			case M_SUBMESH_TEXTURE_ALIAS:
 				//readSubMeshTextureAlias(stream, pMesh, sm);
+				std::string aliasName = readString(pRead);
+				std::string textureName = readString(pRead);
+				//sub->addTextureAlias(aliasName, textureName);
 				break;
 			}
 
@@ -653,30 +679,69 @@ void readMesh(IOReadBase* pRead, iLodMesh * pMesh)
 				readSubMesh(pRead, pMesh);
 				break;
 			case M_MESH_SKELETON_LINK:
-				//readSkeletonLink(stream, pMesh, listener);
+				{
+					std::string skelName = readString(pRead);
+
+					// 				if(listener)
+					// 					listener->processSkeletonName(pMesh, &skelName);
+					// 
+					// 				pMesh->setSkeletonName(skelName);
+					//readSkeletonLink(stream, pMesh, listener);
+				}
 				break;
 			case M_MESH_BONE_ASSIGNMENT:
 				//readMeshBoneAssignment(stream, pMesh);
+				{
+					VertexBoneAssignment assign;
+
+					// unsigned int vertexIndex;
+					pRead->Read(&(assign.vertexIndex),sizeof(unsigned int));
+					// unsigned short boneIndex;
+					pRead->Read(&(assign.boneIndex),sizeof(unsigned short));
+					// float weight;
+					pRead->Read(&(assign.weight),sizeof(float));
+
+					//sub->addBoneAssignment(assign);
+				}
 				break;
 			case M_MESH_LOD:
+				MessageBoxW(NULL,L"M_MESH_LOD",0,0);
 				//readMeshLodInfo(stream, pMesh);
 				break;
 			case M_MESH_BOUNDS:
 				//readBoundsInfo(stream, pMesh);
+				{
+					Vec3D min, max;
+					// float minx, miny, minz
+					pRead->Read(&min,sizeof(Vec3D));
+					// float maxx, maxy, maxz
+					pRead->Read(&max,sizeof(Vec3D));
+					//AxisAlignedBox box(min, max);
+					//pMesh->_setBounds(box, true);
+					// float radius
+					float radius;
+					pRead->Read(&radius,sizeof(float));
+					//pMesh->_setBoundingSphereRadius(radius);
+				}
 				break;
 			case M_SUBMESH_NAME_TABLE:
+				MessageBoxW(NULL,L"M_SUBMESH_NAME_TABLE",0,0);
 				//readSubMeshNameTable(stream, pMesh);
 				break;
 			case M_EDGE_LISTS:
+				MessageBoxW(NULL,L"M_EDGE_LISTS",0,0);
 				//readEdgeList(stream, pMesh);
 				break;
 			case M_POSES:
+				MessageBoxW(NULL,L"M_POSES",0,0);
 				//readPoses(stream, pMesh);
 				break;
 			case M_ANIMATIONS:
+				MessageBoxW(NULL,L"M_ANIMATIONS",0,0);
 				//readAnimations(stream, pMesh);
 				break;
 			case M_TABLE_EXTREMES:
+				MessageBoxW(NULL,L"M_TABLE_EXTREMES",0,0);
 				//readExtremes(stream, pMesh);
 				break;
 			}
@@ -722,7 +787,7 @@ int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
 		}
 	}
 
-	//mesh.update();
+	pModelData->getMesh().update();
 
 	//m_bbox = mesh.getBBox();
 	std::string strMyPath ="Data\\"+GetFilename(GetParentPath(strFilename))+"\\";
