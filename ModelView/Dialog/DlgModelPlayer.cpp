@@ -121,9 +121,9 @@ void CDlgModelPlayer::OnUpdatePlayer()
 	}
 	std::string strPlayerPath = GetModelConfig().m_strMUPath+"Player\\";
 	getModelDisplay().loadComplexModel(strPlayerPath+ws2s(m_ComboBoxSkeleton.GetText()));
-	if (getModelDisplay().m_pModelObject)
+	CModelComplex* pModelComplex = (CModelComplex*)getModelDisplay().getModelObject();
+	if (pModelComplex)
 	{
-		CModelComplex* pModelComplex = (CModelComplex*)getModelDisplay().m_pModelObject;
 		pModelComplex->loadSkinModel("head",strPlayerPath+ ws2s(m_ComboBoxHead.GetText()));
 		pModelComplex->loadSkinModel("helm",strPlayerPath+ ws2s(m_ComboBoxHelm.GetText()));
 		pModelComplex->loadSkinModel("armor",strPlayerPath+ ws2s(m_ComboBoxArmor.GetText()));

@@ -12,8 +12,8 @@ void CDlgModelMaterial::OnControlRegister()
 	RegisterControl("IDC_EDITBOX_SPECULAR",	m_EditboxSpecular);
 	RegisterControl("IDC_EDITBOX_BUMP",		m_EditboxBump);
 	RegisterControl("IDC_EDITBOX_REFLECTION",	m_EditboxReflection);
-	RegisterControl("IDC_EDITBOX_LIGHTMAP",	m_EditboxLightmap);
-	RegisterControl("IDC_EDITBOX_EFFECT",	m_EditboxEffect);
+	RegisterControl("IDC_EDITBOX_LIGHTMAP",		m_EditboxLightmap);
+	RegisterControl("IDC_EDITBOX_EFFECT",		m_EditboxEffect);
 	RegisterControl("IDC_CHECKBOX_ALPHATEST",	m_CheckboxAlphatest);
 	RegisterControl("IDC_NUM_ALPHATESTVALUE",	m_NumAlphatestvalue);
 	RegisterControl("IDC_CHECKBOX_BLEND",	m_CheckboxBlend);
@@ -50,9 +50,9 @@ void CDlgModelMaterial::onReset()
 {
 	int nSelected = m_ListboxMaterial.GetSelectedIndex();
 	m_ListboxMaterial.RemoveAllItems();
-	if (getModelDisplay().m_pModelObject&&getModelDisplay().m_pModelObject->m_pModelData)
+	if (getModelDisplay().getModelData())
 	{
-		size_t uCount = getModelDisplay().m_pModelObject->m_pModelData->m_mapPasses.size();
+		size_t uCount = getModelDisplay().getModelData()->m_mapPasses.size();
 		if (uCount>0)
 		{
 			for (size_t i=0; i<uCount; ++i)
@@ -72,9 +72,9 @@ void CDlgModelMaterial::onReset()
 CMaterial* CDlgModelMaterial::getSelectedMaterial()
 {
 	int nSelected = m_ListboxMaterial.GetSelectedIndex();
-	if (getModelDisplay().m_pModelObject&&getModelDisplay().m_pModelObject->m_pModelData)
+	if (getModelDisplay().getModelData())
 	{
-		ModelRenderPass& renderPass = getModelDisplay().m_pModelObject->m_pModelData->m_mapPasses[nSelected];
+		ModelRenderPass& renderPass = getModelDisplay().getModelData()->m_mapPasses[nSelected];
 		return &renderPass.material;
 	}
 	return NULL;
