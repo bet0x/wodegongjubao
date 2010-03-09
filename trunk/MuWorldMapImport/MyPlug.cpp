@@ -1544,17 +1544,19 @@ bool CMyPlug::importTiles(iTerrain * pTerrain, const std::string& strFilename, c
 		while (csv.SeekNextLine())
 		{
 			pTerrain->setTile(csv.GetInt("ID"), csv.GetStr("Name"),
-				getRealFilename(strPath,csv.GetStr("Diffuse")),
-				getRealFilename(strPath,csv.GetStr("Emissive")),
-				getRealFilename(strPath,csv.GetStr("Specular")),
-				getRealFilename(strPath,csv.GetStr("Normal")),
-				getRealFilename(strPath,csv.GetStr("Environment")),
-				csv.GetStr("Effect"),
-				csv.GetInt("Channel"),
-				csv.GetBool("AlphaBlend"),
-				csv.GetBool("AlphaTest"),
-				1.0f/(float)csv.GetInt("usize"),
-				1.0f/(float)csv.GetInt("vsize"));
+				getRealFilename(strPath,csv.GetStr("Diffuse"))+","+
+				getRealFilename(strPath,csv.GetStr("Emissive"))+","+
+				getRealFilename(strPath,csv.GetStr("Specular"))+","+
+				getRealFilename(strPath,csv.GetStr("Normal"))+","+
+				getRealFilename(strPath,csv.GetStr("Environment"))+","+
+				csv.GetStr("Effect")+","+
+				csv.GetStr("Channel")+","+
+				csv.GetStr("AlphaBlend")+","+
+				"0"+","+
+				csv.GetStr("AlphaTest")+","+
+				"128"+","+
+				csv.GetStr("usize")+","+
+				csv.GetStr("vsize"));
 		}
 		csv.Close();
 	}

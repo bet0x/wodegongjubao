@@ -133,7 +133,8 @@ int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
 				else if (".bmp"==strExtension)
 					strTexFileName = ChangeExtension(strTexFileName,".ozb");
 			}
-			pModelData->setRenderPass(i,"",strTexFileName,"","","","","",0,false,true,0,0);
+			std::string strMaterial = strTexFileName+",,,,,,0,0,0,1,128,0,0";
+			pModelData->setRenderPass(i,strMaterial);
 		}
 	}
 
