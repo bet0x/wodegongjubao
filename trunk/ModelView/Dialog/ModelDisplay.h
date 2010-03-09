@@ -36,6 +36,9 @@ public:
 	virtual void OnDropRect();
 	virtual void OnSize(const RECT& rc);
 
+	CModelObject* getModelObject();
+	CModelData*  getModelData();
+	AnimManager* getModelAnimManager();
 public:
 	CCamera				m_Camera;
 	CSkyBox				m_SkyBox;
@@ -50,7 +53,6 @@ public:
 	bool m_bShowMaterial;
 	bool m_bShowParticles;
 
-	CModelObject* m_pModelObject;
 
 	bool m_bLbuttonDrop;
 	GSRect<float> m_DropRect;
@@ -61,4 +63,6 @@ public:
 	VERTEX_XYZ_DIF m_PickPlane[5];
 
 	CMeshCoordinate		m_MeshCoordinate;
+private:
+	CModelObject* m_pModelObject;
 };
