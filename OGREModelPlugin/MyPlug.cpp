@@ -511,6 +511,7 @@ void readSubMesh(IOReadBase* pRead, iLodMesh * pMesh)
 	{
 		MessageBoxW(0,L"Can't read idx32bit",L"Error",0);
 		FaceIndex faceIndex;
+		faceIndex.uSubID=pMesh->getSubCount();
 		for (size_t i=0;i<indexCount;++i)
 		{
 			unsigned int uVertexIndex;
@@ -530,7 +531,7 @@ void readSubMesh(IOReadBase* pRead, iLodMesh * pMesh)
 	else // 16-bit
 	{
 		FaceIndex faceIndex;
-		faceIndex.uSubID=0;
+		faceIndex.uSubID=pMesh->getSubCount();
 		for (size_t i=0;i<indexCount;++i)
 		{
 			unsigned short uVertexIndex;
@@ -655,6 +656,7 @@ void readMesh(IOReadBase* pRead, iLodMesh * pMesh)
 		pRead->Read(&streamID,sizeof(unsigned short));
 		pRead->Read(&uLength,sizeof(unsigned int));
 
+		
 		while(!pRead->IsEof() &&
 			(streamID == M_GEOMETRY ||
 			streamID == M_SUBMESH ||
