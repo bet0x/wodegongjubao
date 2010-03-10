@@ -198,7 +198,7 @@ void CDlgModelMaterial::OnListboxMaterial()
 	{
 		CTextureMgr& TM=GetRenderSystem().GetTextureMgr();
 		CShaderMgr& SM=GetRenderSystem().GetShaderMgr();
-		std::string strFilename = getModelDisplay().getModelObject()->getModelFilename();
+		std::string strFilename = GetParentPath(getModelDisplay().getModelObject()->getModelFilename());
 		
 		m_EditboxDiffuse.	SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uDiffuse))));
 		m_EditboxEmissive.	SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uEmissive))));
