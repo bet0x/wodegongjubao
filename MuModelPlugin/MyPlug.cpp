@@ -66,10 +66,9 @@ int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
 	{
 		CMUBmd::BmdSub& bmdSub = bmd.setBmdSub[i];
 		iLodMesh& mesh = pModelData->getMesh();
+		FaceIndex faceIndex;
 		for(std::vector<CMUBmd::BmdSub::BmdTriangle>::iterator it=bmdSub.setTriangle.begin(); it!=bmdSub.setTriangle.end(); it++)
 		{
-			FaceIndex faceIndex;
-			faceIndex.uSubID=i;
 			for (size_t j=0; j<3; ++j)
 			{
 				faceIndex.v[j]	= mesh.getPosCount()+it->indexVertex[2-j];
@@ -78,7 +77,7 @@ int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
 				faceIndex.n[j]	= mesh.getNormalCount()+it->indexNormal[2-j];
 				faceIndex.uv1[j]= mesh.getTexcoordCount()+it->indexUV[2-j];
 			}
-			mesh.addFaceIndex(faceIndex);
+			mesh.addFaceIndex(i,faceIndex);
 		}
 		for(std::vector<CMUBmd::BmdSub::BmdPos>::iterator it=bmdSub.setVertex.begin(); it!=bmdSub.setVertex.end(); it++)
 		{
