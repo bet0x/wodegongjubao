@@ -237,6 +237,76 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 				m_Scene.delMapObj(m_Scene.getObjectFocus());
 				return true;
 			}
+
+			//////////////////////////////////////////////////////////////////////////
+			if (m_Terrain.GetBrushDecal().GetBrushType()==CTerrainBrush::BRUSH_TYPE_SCENE_OBJECT)
+			{
+				CMapObj* pObject = m_Scene.getObjectFocus();
+				if (pObject)
+				{
+					if (m_bKeyCtrl)
+					{
+						switch(wParam)
+						{
+						case VK_UP:
+						case VK_DOWN:
+						case VK_LEFT:
+						case VK_RIGHT:
+							{
+								//Vec3D vPos;
+								//if (m_Terrain.GetData().Pick(vRayPos, vRayDir,&vPos))
+								{
+									GetParentDialog()->postMsg("MSG_ADD_OBJECT");
+								}
+							}
+							return true;
+						}
+					}
+					else
+					{
+						switch(wParam)
+						{
+						case VK_UP:
+							{
+								Vec3D vPos=pObject->getPos();
+								vPos.z+=1;
+								pObject->setPos(vPos);
+								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
+								m_Scene.updateMapObj(pObject);
+							}
+							return true;
+						case VK_DOWN:
+							{
+								Vec3D vPos=pObject->getPos();
+								vPos.z-=1;
+								pObject->setPos(vPos);
+								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
+								m_Scene.updateMapObj(pObject);
+							}
+							return true;
+						case VK_LEFT:
+							{
+								Vec3D vPos=pObject->getPos();
+								vPos.x-=1;
+								pObject->setPos(vPos);
+								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
+								m_Scene.updateMapObj(pObject);
+							}
+							return true;
+						case VK_RIGHT:
+							{
+								Vec3D vPos=pObject->getPos();
+								vPos.x+=1;
+								pObject->setPos(vPos);
+								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
+								m_Scene.updateMapObj(pObject);
+							}
+							return true;
+						}
+					}
+					return true;
+				}
+			}
 		}
 	case WM_KEYUP:
 		{
