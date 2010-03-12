@@ -484,13 +484,113 @@ typedef struct VertexBoneAssignment_s
 	unsigned short boneIndex;
 	float weight;
 } VertexBoneAssignment;
-
-void readSubMesh(IOReadBase* pRead, iLodMesh * pMesh)
+bool moveToString(IOReadBase* pRead,const std::string& str)
 {
-//	SubMesh* sm = pMesh->createSubMesh();
+	char c;
+	while (!pRead->IsEof())
+	{
+		for (size_t i=0;i<str.length();++i)
+		{
+			pRead->Read(&c,sizeof(char));
+			if (pRead->IsEof())
+			{
+				return false;
+			}
+			if (str[i]!=c)
+			{
+				break;
+			}
+			if (i==str.length()-1)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
 
-	// char* materialName
+bool getWord(IOReadBase* pRead,std::string& str)
+{
+	char c;
+	pRead->Read(&c,sizeof(char));
+	while (!pRead->IsEof())
+	{
+		str.push_back(c);
+		pRead->Read(&c,sizeof(char));
+		if (' '==c||'\n'==c||char(13)==c)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool readMaterialFromTexture(int nSubID, iModelData* pModelData, const std::string& strFilename)
+{
+	if (pModelData->getMesh().getSubCount()<=nSubID)
+	{
+		//return false;
+	}
+	std::string strTexture=strFilename;
+	if (!IOReadBase::Exists(strTexture))
+	{
+		strTexture = ChangeExtension(strTexture,".dds");
+		if (!IOReadBase::Exists(strTexture))
+		{
+			return false;
+		}
+	}
+	//strTexture = getRealFilename(GetParentPath(strFilename),strTexture);
+	std::string strMaterial = strTexture+",,,,,,0,0,0,1,128,0,0";
+	pModelData->setRenderPass(nSubID,strMaterial);
+	return true;
+}
+
+
+bool readMaterial(int nSubID, iModelData * pModelData, const std::string& strFilename, const std::string& strMaterialName)
+{
+	IOReadBase* pRead = IOReadBase::autoOpen(strFilename);
+	if (pRead==NULL)
+	{
+		return false;
+	}
+	while (!pRead->IsEof())
+	{
+		moveToString(pRead,"material ");
+		std::string strName;
+		getWord(pRead,strName);
+		if (strMaterialName == strName)
+		{
+			moveToString(pRead,"texture ");
+			std::string strTexture;
+			getWord(pRead,strTexture);
+			if (strTexture.length()>0)
+			{
+				strTexture=GetParentPath(strFilename)+strTexture;
+				if (readMaterialFromTexture(nSubID,pModelData,strTexture))
+				{
+					break;
+				}
+			}
+		}
+	}
+	IOReadBase::autoClose(pRead);
+
+	return true;
+}
+
+void readSubMesh(IOReadBase* pRead, iModelData* pModelData)
+{
+	iLodMesh* pMesh = &pModelData->getMesh();
 	std::string materialName = readString(pRead);
+	int nSubID=pMesh->getSubCount();
+	if (!readMaterial(nSubID, pModelData,ChangeExtension(pModelData->getItemName(),".material"),materialName))
+	{
+		std::string strMatFilename = GetParentPath(pModelData->getItemName());
+		strMatFilename=strMatFilename+GetFilename(strMatFilename)+".material";
+		readMaterial(nSubID, pModelData,strMatFilename,materialName);
+	}
+
 // 	if(listener)
 // 		listener->processMaterialName(pMesh, &materialName);
 // 	sm->setMaterialName(materialName);
@@ -507,7 +607,7 @@ void readSubMesh(IOReadBase* pRead, iLodMesh * pMesh)
 	// bool indexes32Bit
 	bool idx32bit;
 	pRead->Read(&idx32bit,sizeof(bool));
-	int nSubID=pMesh->getSubCount();
+
 	if (idx32bit)
 	{
 		MessageBoxW(0,L"Can't read idx32bit",L"Error",0);
@@ -642,7 +742,7 @@ void readHeader(IOReadBase* pRead)
 	}
 }
 
-void readMesh(IOReadBase* pRead, iLodMesh * pMesh)
+void readMesh(IOReadBase* pRead, iModelData* pModelData)
 {
 	bool skeletallyAnimated;
 	pRead->Read(&skeletallyAnimated,sizeof(bool));
@@ -654,7 +754,6 @@ void readMesh(IOReadBase* pRead, iLodMesh * pMesh)
 		pRead->Read(&streamID,sizeof(unsigned short));
 		pRead->Read(&uLength,sizeof(unsigned int));
 
-		
 		while(!pRead->IsEof() &&
 			(streamID == M_GEOMETRY ||
 			streamID == M_SUBMESH ||
@@ -672,11 +771,11 @@ void readMesh(IOReadBase* pRead, iLodMesh * pMesh)
 			{
 			case M_GEOMETRY:
 				{
-					readGeometry(pRead, pMesh);
+					readGeometry(pRead, &pModelData->getMesh());
 				}
 				break;
 			case M_SUBMESH:
-				readSubMesh(pRead, pMesh);
+				readSubMesh(pRead, pModelData);
 				break;
 			case M_MESH_SKELETON_LINK:
 				{
@@ -760,6 +859,7 @@ void readMesh(IOReadBase* pRead, iLodMesh * pMesh)
 	}
 }
 
+
 int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
 {
 	assert(pModelData);
@@ -780,12 +880,20 @@ int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
 			{
 			case M_MESH:
 				{
-					readMesh(pRead,&pModelData->getMesh());
+					readMesh(pRead,pModelData);
 					break;
 				}
 			}
 		}
+		IOReadBase::autoClose(pRead);
 	}
+
+	//if (readMaterial(pModelData,ChangeExtension(strFilename,".material")))
+	//{
+	//	std::string strFilename = ChangeExtension(strFilename,".jpg");
+	//	readMaterialFromTexture(0,pModelData,strFilename);
+	//}
+
 
 	pModelData->getMesh().update();
 
