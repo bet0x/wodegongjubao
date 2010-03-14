@@ -1806,7 +1806,6 @@ VMBEGIN
 			if (ERROR_SUCCESS==RegQueryValueExW(hKey, L"mu060",
 				NULL, &dwType, (PBYTE)&wszFilename, &dwSize))
 			{
-				RegCloseKey(hKey);
 				strKey = ws2s(wszFilename);
 				if (strKey=="NULL")
 				{
@@ -1909,6 +1908,10 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 	if (nMapID==1)
 	{
 		importObjectResources(pScene,"Data\\World1\\Object.csv",strObjectPath); 
+	}
+	else if (IOReadBase::Exists(GetParentPath(strFilename)+"Object.csv"))
+	{
+		importObjectResources(pScene,GetParentPath(strFilename)+"Object.csv",GetParentPath(strFilename)); 
 	}
 	else
 	{
@@ -2067,7 +2070,6 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 			if (ERROR_SUCCESS==RegQueryValueExW(hKey, L"mu060",
 				NULL, &dwType, (PBYTE)&wszFilename, &dwSize))
 			{
-				RegCloseKey(hKey);
 				strKey = ws2s(wszFilename);
 			}
 			RegCloseKey(hKey);
@@ -2188,6 +2190,74 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 				}
 				break;
 			}
+			fclose(f);
+		}
+		//////////////////////////////////////////////////////////////////////////
+		f=fopen(ChangeExtension(strFilename,"64.att").c_str(),"wb+");
+		if (f)
+		{
+			char buffer[ATT_FILE_65KB_SIZE];
+			char* p = buffer;
+			*((unsigned char*)p)=0x0;++p;
+			*((unsigned char*)p)=nMapID;++p;
+			*((unsigned char*)p)=0xFF;++p;
+			*((unsigned char*)p)=0xFF;++p;
+			{
+				for (int y=0; y<253; ++y)
+				{
+					for (int x=0; x<253; ++x)
+					{
+						*p = pTerrainData->getCellAttribute(Pos2D(x,y));
+						p++;
+					}
+					for (int x=253; x<256; ++x)
+					{
+						*p =0;++p;
+					}
+				}
+				for (int x=0; x<256*3; ++x)
+				{
+					*p =0;++p;
+				}
+			}
+			decrypt2(buffer,ATT_FILE_65KB_SIZE);
+			encrypt(buffer,ATT_FILE_65KB_SIZE);
+			fwrite(buffer,ATT_FILE_65KB_SIZE,1,f);
+
+			f=fopen(ChangeExtension(strFilename,"128.att").c_str(),"wb+");
+		}
+		if (f)
+		{
+			char buffer[ATT_FILE_129KB_SIZE];
+			char* p = buffer;
+			*((unsigned char*)p)=0x0;++p;
+			*((unsigned char*)p)=nMapID;++p;
+			*((unsigned char*)p)=0xFF;++p;
+			*((unsigned char*)p)=0xFF;++p;
+			{
+				for (int y=0; y<253; ++y)
+				{
+					for (int x=0; x<253; ++x)
+					{
+						*p = pTerrainData->getCellAttribute(Pos2D(x,y));
+						p++;
+						*p =0;++p;
+					}
+					for (int x=253; x<256; ++x)
+					{
+						*p =0;++p;
+						*p =0;++p;
+					}
+				}
+				for (int x=0; x<256*6; ++x)
+				{
+					*p =0;++p;
+				}
+			}
+			decrypt2(buffer,ATT_FILE_129KB_SIZE);
+			encrypt(buffer,ATT_FILE_129KB_SIZE);
+			fwrite(buffer,ATT_FILE_129KB_SIZE,1,f);
+
 			fclose(f);
 		}
 	}
@@ -2479,7 +2549,6 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 			if (ERROR_SUCCESS==RegQueryValueExW(hKey, L"mu060",
 				NULL, &dwType, (PBYTE)&wszFilename, &dwSize))
 			{
-				RegCloseKey(hKey);
 				strKey = ws2s(wszFilename);
 			}
 			RegCloseKey(hKey);
