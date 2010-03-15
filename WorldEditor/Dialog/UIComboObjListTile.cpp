@@ -24,8 +24,8 @@ void CUIComboObjListTile::OnListBoxObjectSelection()
 	CTerrain::MAP_TILES& tiles =((CTerrain*)(m_pScene->getTerrain()))->GetTiles();
 	if (tiles.find(getSelectedObjectID())!=tiles.end())
 	{
-		const Tile& tile = tiles[getSelectedObjectID()];
-		m_uTileTexID = tile.material.uDiffuse;
+		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(tiles[getSelectedObjectID()]);
+		m_uTileTexID = material.uDiffuse;
 	}
 }
 
@@ -38,7 +38,7 @@ void CUIComboObjListTile::initObject(CScene& scene)
 	CTerrain::MAP_TILES& tiles =((CTerrain*)(scene.getTerrain()))->GetTiles();
 	for (CTerrain::MAP_TILES::iterator it=tiles.begin(); it!=tiles.end(); it++)
 	{
-		m_ListBoxObject.AddItem(s2ws(it->second.strName),(LPVOID)it->first);
+		m_ListBoxObject.AddItem(s2ws(it->second),(LPVOID)it->first);
 	}
 }
 
@@ -55,8 +55,8 @@ void CUIComboObjListTile::SelectObjectByObjectID(size_t id)
 	CTerrain::MAP_TILES& tiles =((CTerrain*)(m_pScene->getTerrain()))->GetTiles();
 	if (tiles.find(getSelectedObjectID())!=tiles.end())
 	{
-		const Tile& tile = tiles[getSelectedObjectID()];
-		m_uTileTexID = tile.material.uDiffuse;
+		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(tiles[getSelectedObjectID()]);
+		m_uTileTexID = material.uDiffuse;
 	}
 }
 

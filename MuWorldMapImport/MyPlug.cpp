@@ -1538,25 +1538,13 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 bool CMyPlug::importTiles(iTerrain * pTerrain, const std::string& strFilename, const std::string& strPath)
 {
 	pTerrain->clearAllTiles();
+	pTerrain->loadMaterial(strFilename);
 	CCsvFile csv;
 	if (csv.Open(strFilename))
 	{
 		while (csv.SeekNextLine())
 		{
-			pTerrain->setTile(csv.GetInt("ID"), csv.GetStr("Name"),
-				getRealFilename(strPath,csv.GetStr("Diffuse"))+","+
-				getRealFilename(strPath,csv.GetStr("Emissive"))+","+
-				getRealFilename(strPath,csv.GetStr("Specular"))+","+
-				getRealFilename(strPath,csv.GetStr("Normal"))+","+
-				getRealFilename(strPath,csv.GetStr("Environment"))+","+
-				csv.GetStr("Effect")+","+
-				csv.GetStr("Channel")+","+
-				csv.GetStr("AlphaBlend")+","+
-				"0"+","+
-				csv.GetStr("AlphaTest")+","+
-				"128"+","+
-				csv.GetStr("usize")+","+
-				csv.GetStr("vsize"));
+			pTerrain->setTile(csv.GetInt("ID"), csv.GetStr("Name"));
 		}
 		csv.Close();
 	}
@@ -1875,7 +1863,7 @@ VMBEGIN
 	// If have not be reg, give user a message for how to reg.
 	if (strKey.size()==0)
 	{
-		std::string strText = std::string("Your HardwareID is \"")+strDecode+"\".\nOrdinary users can only save the EncTerraionX.att and (Server)TerrionX.att!\nDonate to the project for testing the full : www.rpgsky.com";
+		std::string strText = std::string("Your HardwareID is \"")+strDecode+"\".\nOrdinary users can only save the EncTerrainX.att and (Server)TerrainX.att!\nDonate to the project for testing the full : www.rpgsky.com";
 		if (MessageBoxA(NULL,strText.c_str(),"Can not save all data!",1)==1)
 		{
 			ShellExecuteA(0, "open", "http://www.rpgsky.com", NULL, NULL, SW_SHOWMAXIMIZED);   
@@ -2082,7 +2070,7 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 	{
 		// att
 		// for server.att
-		std::string strServerAttFile = GetParentPath(strFilename)+"(Server)Terrion"+ws2s(i2ws(nMapID))+".att";
+		std::string strServerAttFile = GetParentPath(strFilename)+"(Server)Terrain"+ws2s(i2ws(nMapID))+".att";
 		FILE* f=fopen(strServerAttFile.c_str(),"wb+");
 		if (f)
 		{
