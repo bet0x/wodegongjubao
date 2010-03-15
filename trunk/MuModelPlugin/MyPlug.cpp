@@ -199,8 +199,8 @@ int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
 		strParFilename=strMyPath+ChangeExtension(GetFilename(strFilename),".par.csv");
 	}
 
-	pModelData->loadMaterial(strMatFilename,GetParentPath(strFilename));
-	pModelData->loadParticleEmitters(strParFilename,GetParentPath(strFilename));
+	pModelData->loadMaterial(strMatFilename);
+	pModelData->loadParticleEmitters(strParFilename);
 	return true;
 }
 

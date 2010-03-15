@@ -75,7 +75,8 @@ CMaterial* CDlgModelMaterial::getSelectedMaterial()
 	if (getModelDisplay().getModelData())
 	{
 		ModelRenderPass& renderPass = getModelDisplay().getModelData()->m_mapPasses[nSelected];
-		return &renderPass.material;
+		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(renderPass.strMaterialName);
+		return &material;
 	}
 	return NULL;
 }
