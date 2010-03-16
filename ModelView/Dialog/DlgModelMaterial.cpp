@@ -106,7 +106,7 @@ void CDlgModelMaterial::OnEditboxBump()
 {
 	if (m_pSelectedMaterial==NULL){return;}
 	std::string strFilename = getRealFilename(GetParentPath(getModelDisplay().getModelObject()->getModelFilename()),ws2s(m_EditboxBump.GetText()));
-	m_pSelectedMaterial->uBump = GetRenderSystem().GetTextureMgr().RegisterTexture(strFilename);
+	m_pSelectedMaterial->uNormal = GetRenderSystem().GetTextureMgr().RegisterTexture(strFilename);
 }
 
 void CDlgModelMaterial::OnEditboxReflection()
@@ -127,9 +127,9 @@ void CDlgModelMaterial::OnEditboxEffect()
 {
 	if (m_pSelectedMaterial==NULL){return;}
 	CShaderMgr& SM=GetRenderSystem().GetShaderMgr();
-	SM.del(m_pSelectedMaterial->uEffect);
+	SM.del(m_pSelectedMaterial->uShader);
 	std::string strFilename = getRealFilename(GetParentPath(getModelDisplay().getModelObject()->getModelFilename()),ws2s(m_EditboxEffect.GetText()));
-	m_pSelectedMaterial->uEffect = SM.registerItem(strFilename);
+	m_pSelectedMaterial->uShader = SM.registerItem(strFilename);
 }
 
 void CDlgModelMaterial::OnCheckboxAlphatest()
@@ -204,10 +204,10 @@ void CDlgModelMaterial::OnListboxMaterial()
 		m_EditboxDiffuse.	SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uDiffuse))));
 		m_EditboxEmissive.	SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uEmissive))));
 		m_EditboxSpecular.	SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uSpecular))));
-		m_EditboxBump.		SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uBump))));
+		m_EditboxBump.		SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uNormal))));
 		m_EditboxReflection.SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uReflection))));
 		m_EditboxLightmap.	SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uLightMap))));
-		m_EditboxEffect.	SetText(s2ws(getSimpleFilename(strFilename,SM.getItemName(m_pSelectedMaterial->uEffect))));
+		m_EditboxEffect.	SetText(s2ws(getSimpleFilename(strFilename,SM.getItemName(m_pSelectedMaterial->uShader))));
 		m_CheckboxAlphatest.SetChecked(m_pSelectedMaterial->bAlphaTest);
 		m_NumAlphatestvalue.setFloat(m_pSelectedMaterial->uAlphaTestValue);
 		m_CheckboxBlend.SetChecked(m_pSelectedMaterial->bBlend);

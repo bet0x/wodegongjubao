@@ -1544,7 +1544,7 @@ bool CMyPlug::importTiles(iTerrain * pTerrain, const std::string& strFilename, c
 	{
 		while (csv.SeekNextLine())
 		{
-			pTerrain->setTile(csv.GetInt("ID"), csv.GetStr("Name"));
+			pTerrain->setTileMaterial(csv.GetInt("ID"), csv.GetStr("Name"));
 		}
 		csv.Close();
 	}
@@ -1886,8 +1886,6 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 	importTiles(pScene->getTerrain(),strTileFile,GetParentPath(strFilename));
 	//
 	//pScene->getTerrain()->setLightMapTexture(strFilename+"TerrainLight.OZJ");
-	pScene->getTerrain()->setGrassTexture(GetParentPath(strFilename)+"TileGrass01.OZT");
-	pScene->getTerrain()->setGrassShader("data\\fx\\TerrainGrass.fx");
 	pScene->getTerrain()->create();
 
 	// calc MU's filename

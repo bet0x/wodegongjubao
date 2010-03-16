@@ -2,6 +2,7 @@
 #include "IORead.h"
 #include "FileSystem.h"
 #include "MUBmd.h"
+#include "Material.h"
 //#include "RenderSystem.h"
 //#include "CSVFile.h"
 
@@ -132,8 +133,13 @@ int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
 				else if (".bmp"==strExtension)
 					strTexFileName = ChangeExtension(strTexFileName,".ozb");
 			}
-			std::string strMaterial = strTexFileName+",,,,,,0,0,0,1,128,0,0";
-			pModelData->setRenderPass(i,strMaterial);
+			std::string strMaterialName = Format("%s%d",ChangeExtension(strFilename,".sub"),i);
+			{
+				CMaterial& material = pModelData->getMaterial(strMaterialName);
+				material.strDiffuse=strTexFileName;
+				material.bAlphaTest=true;
+			}
+			pModelData->setRenderPass(i,i,strMaterialName);
 		}
 	}
 
