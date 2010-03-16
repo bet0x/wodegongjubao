@@ -525,29 +525,7 @@ bool getWord(IOReadBase* pRead,std::string& str)
 	return false;
 }
 
-bool readMaterialFromTexture(int nSubID, iModelData* pModelData, const std::string& strFilename)
-{
-	if (pModelData->getMesh().getSubCount()<=nSubID)
-	{
-		//return false;
-	}
-	std::string strTexture=strFilename;
-	if (!IOReadBase::Exists(strTexture))
-	{
-		strTexture = ChangeExtension(strTexture,".dds");
-		if (!IOReadBase::Exists(strTexture))
-		{
-			return false;
-		}
-	}
-	//strTexture = getRealFilename(GetParentPath(strFilename),strTexture);
-	std::string strMaterial = strTexture+",,,,,,0,0,0,1,128,0,0";
-	pModelData->setRenderPass(nSubID,strMaterial);
-	return true;
-}
-
-
-bool readMaterial(int nSubID, iModelData * pModelData, const std::string& strFilename, const std::string& strMaterialName)
+bool readMaterial(iModelData * pModelData, const std::string& strFilename)
 {
 	IOReadBase* pRead = IOReadBase::autoOpen(strFilename);
 	if (pRead==NULL)
@@ -557,9 +535,13 @@ bool readMaterial(int nSubID, iModelData * pModelData, const std::string& strFil
 	while (!pRead->IsEof())
 	{
 		moveToString(pRead,"material ");
-		std::string strName;
-		getWord(pRead,strName);
-		if (strMaterialName == strName)
+		if (pRead->IsEof())
+		{
+			break;
+		}
+		std::string strMaterialName;
+		getWord(pRead,strMaterialName);
+		//if (strMaterialName == strName)
 		{
 			moveToString(pRead,"texture ");
 			std::string strTexture;
@@ -567,29 +549,25 @@ bool readMaterial(int nSubID, iModelData * pModelData, const std::string& strFil
 			if (strTexture.length()>0)
 			{
 				strTexture=GetParentPath(strFilename)+strTexture;
-				if (readMaterialFromTexture(nSubID,pModelData,strTexture))
+				strTexture = ChangeExtension(strTexture,".dds");
 				{
-					break;
+					CMaterial& material = pModelData->getMaterial(strMaterialName);
+					material.strDiffuse=strTexture;
+					material.bAlphaTest=true;
 				}
 			}
 		}
 	}
 	IOReadBase::autoClose(pRead);
-
 	return true;
 }
 
 void readSubMesh(IOReadBase* pRead, iModelData* pModelData)
 {
 	iLodMesh* pMesh = &pModelData->getMesh();
-	std::string materialName = readString(pRead);
+	std::string strMaterialName = readString(pRead);
 	int nSubID=pMesh->getSubCount();
-	if (!readMaterial(nSubID, pModelData,ChangeExtension(pModelData->getItemName(),".material"),materialName))
-	{
-		std::string strMatFilename = GetParentPath(pModelData->getItemName());
-		strMatFilename=strMatFilename+GetFilename(strMatFilename)+".material";
-		readMaterial(nSubID, pModelData,strMatFilename,materialName);
-	}
+	pModelData->setRenderPass(nSubID,nSubID,strMaterialName);
 
 // 	if(listener)
 // 		listener->processMaterialName(pMesh, &materialName);
@@ -888,12 +866,13 @@ int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
 		IOReadBase::autoClose(pRead);
 	}
 
-	//if (readMaterial(pModelData,ChangeExtension(strFilename,".material")))
-	//{
-	//	std::string strFilename = ChangeExtension(strFilename,".jpg");
-	//	readMaterialFromTexture(0,pModelData,strFilename);
-	//}
 
+	if (!readMaterial(pModelData,ChangeExtension(strFilename,".material")))
+	{
+		std::string strMatFilename = GetParentPath(strFilename);
+		strMatFilename=strMatFilename+GetFilename(strMatFilename)+".material";
+		readMaterial(pModelData,strMatFilename);
+	}
 
 	pModelData->getMesh().update();
 
