@@ -1535,19 +1535,41 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 	return true;
 }
 #include "CsvFile.h"
+
 bool CMyPlug::importTiles(iTerrain * pTerrain, const std::string& strFilename, const std::string& strPath)
 {
 	pTerrain->clearAllTiles();
-	pTerrain->loadMaterial(strFilename);
 	CCsvFile csv;
-	if (csv.Open(strFilename))
+	if (!csv.Open(strFilename))
 	{
-		while (csv.SeekNextLine())
-		{
-			pTerrain->setTileMaterial(csv.GetInt("ID"), csv.GetStr("Name"));
-		}
-		csv.Close();
+		return false;
 	}
+	while (csv.SeekNextLine())
+	{
+		const std::string strMaterialName	= csv.GetStr("Name");
+		pTerrain->setTileMaterial(csv.GetInt("ID"), strMaterialName);
+		{
+			CMaterial& material = pTerrain->getMaterial(strMaterialName);
+
+			material.strDiffuse		=getRealFilename(strPath,csv.GetStr("Diffuse"));
+			material.strEmissive	=getRealFilename(strPath,csv.GetStr("Emissive"));
+			material.strSpecular	=getRealFilename(strPath,csv.GetStr("Specular"));
+			material.strNormal		=getRealFilename(strPath,csv.GetStr("Normal"));
+			material.strReflection	=getRealFilename(strPath,csv.GetStr("Reflection"));
+			material.strLightMap	=getRealFilename(strPath,csv.GetStr("LightMap"));
+			material.strShader		=getRealFilename(strPath,csv.GetStr("Shader"));
+
+			material.m_fOpacity	=csv.GetFloat("Opacity");
+			material.bAlphaTest	=csv.GetBool("IsAlphaTest");
+			material.bBlend		=csv.GetBool("IsBlend");
+			material.vTexAnim.x	=csv.GetFloat("TexAnimX");
+			material.vTexAnim.y	=csv.GetFloat("TexAnimY");
+			material.vUVScale.x	=1.0f/csv.GetFloat("UScale");
+			material.vUVScale.y	=1.0f/csv.GetFloat("VScale");
+		}
+	}
+	csv.Close();
+
 	return true;
 }
 

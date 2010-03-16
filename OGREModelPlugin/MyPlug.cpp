@@ -876,21 +876,21 @@ int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
 
 	pModelData->getMesh().update();
 
-	//m_bbox = mesh.getBBox();
-	std::string strMyPath ="Data\\"+GetFilename(GetParentPath(strFilename))+"\\";
-	std::string strMatFilename = ChangeExtension(strFilename,".mat.csv");
-	std::string strParFilename = ChangeExtension(strFilename,".par.csv");
-	if (!IOReadBase::Exists(strMatFilename))
-	{
-		strMatFilename=strMyPath+ChangeExtension(GetFilename(strFilename),".mat.csv");
-	}
-	if (!IOReadBase::Exists(strParFilename))
-	{
-		strParFilename=strMyPath+ChangeExtension(GetFilename(strFilename),".par.csv");
-	}
-
-	pModelData->loadMaterial(strMatFilename);
-	pModelData->loadParticleEmitters(strParFilename);
+// 	//m_bbox = mesh.getBBox();
+// 	std::string strMyPath ="Data\\"+GetFilename(GetParentPath(strFilename))+"\\";
+// 	std::string strMatFilename = ChangeExtension(strFilename,".mat.csv");
+// 	std::string strParFilename = ChangeExtension(strFilename,".par.csv");
+// 	if (!IOReadBase::Exists(strMatFilename))
+// 	{
+// 		strMatFilename=strMyPath+ChangeExtension(GetFilename(strFilename),".mat.csv");
+// 	}
+// 	if (!IOReadBase::Exists(strParFilename))
+// 	{
+// 		strParFilename=strMyPath+ChangeExtension(GetFilename(strFilename),".par.csv");
+// 	}
+// 
+// 	pModelData->loadMaterial(strMatFilename);
+// 	pModelData->loadParticleEmitters(strParFilename);
 	return true;
 }
 

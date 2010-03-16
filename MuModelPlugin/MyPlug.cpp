@@ -4,7 +4,7 @@
 #include "MUBmd.h"
 #include "Material.h"
 //#include "RenderSystem.h"
-//#include "CSVFile.h"
+#include "CSVFile.h"
 
 CMyPlug::CMyPlug(void)
 {
@@ -19,6 +19,39 @@ CMyPlug::~CMyPlug(void)
 int CMyPlug::Execute(iModelData * pModelData, bool bShowDlg, bool bSpecifyFileName)
 {
 	return -1;
+}
+
+bool importMaterial(iModelData * pModelData, const std::string& strFilename, const std::string& strPath)
+{
+	CCsvFile csv;
+	if (!csv.Open(strFilename))
+	{
+		return false;
+	}
+	while (csv.SeekNextLine())
+	{
+		const std::string strMaterialName = csv.GetStr("Name");
+		CMaterial& material = pModelData->getMaterial(strMaterialName);
+
+		material.strDiffuse		=getRealFilename(strPath,csv.GetStr("Diffuse"));
+		material.strEmissive	=getRealFilename(strPath,csv.GetStr("Emissive"));
+		material.strSpecular	=getRealFilename(strPath,csv.GetStr("Specular"));
+		material.strNormal		=getRealFilename(strPath,csv.GetStr("Normal"));
+		material.strReflection	=getRealFilename(strPath,csv.GetStr("Reflection"));
+		material.strLightMap	=getRealFilename(strPath,csv.GetStr("LightMap"));
+		material.strShader		=getRealFilename(strPath,csv.GetStr("Shader"));
+
+		material.m_fOpacity	=csv.GetFloat("Opacity");
+		material.bAlphaTest	=csv.GetBool("IsAlphaTest");
+		material.bBlend		=csv.GetBool("IsBlend");
+		material.vTexAnim.x	=csv.GetFloat("TexAnimX");
+		material.vTexAnim.y	=csv.GetFloat("TexAnimY");
+		material.vUVScale.x	=1.0f/csv.GetFloat("UScale");
+		material.vUVScale.y	=1.0f/csv.GetFloat("VScale");
+	}
+	csv.Close();
+
+	return true;
 }
 
 int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
@@ -193,19 +226,22 @@ int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
 	mesh.update();
 
 	//m_bbox = mesh.getBBox();
-	std::string strMyPath ="Data\\"+GetFilename(GetParentPath(strFilename))+"\\";
-	std::string strMatFilename = ChangeExtension(strFilename,".mat.csv");
-	std::string strParFilename = ChangeExtension(strFilename,".par.csv");
+	std::string strParentDir = GetParentPath(strFilename);
+	std::string strParentDirName = GetFilename(strParentDir);
+	
+	std::string strMyPath ="Data\\"+strParentDirName+"\\";
+	std::string strMatFilename = strMyPath+GetFilename(ChangeExtension(strFilename,".mat.csv"));
+	std::string strParFilename = strMyPath+GetFilename(ChangeExtension(strFilename,".par.csv"));
 	if (!IOReadBase::Exists(strMatFilename))
 	{
-		strMatFilename=strMyPath+ChangeExtension(GetFilename(strFilename),".mat.csv");
+		strMatFilename=strMyPath+strParentDirName+".mat.csv";
 	}
 	if (!IOReadBase::Exists(strParFilename))
 	{
-		strParFilename=strMyPath+ChangeExtension(GetFilename(strFilename),".par.csv");
+		strParFilename=strMyPath+strParentDirName+".par.csv";
 	}
 
-	pModelData->loadMaterial(strMatFilename);
+	importMaterial(pModelData, strMatFilename, strParentDir);
 	pModelData->loadParticleEmitters(strParFilename);
 	return true;
 }
