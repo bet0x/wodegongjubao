@@ -617,7 +617,11 @@ bool readMaterial(iModelData * pModelData, const std::string& strFilename)
 			{
 				strText = getWord(pRead);
 				strText = getWord(pRead);
-				material.bAlphaTest=true;
+				//material.bAlphaTest=false;
+			}
+			else if ("lighting"==strText)
+			{
+				strText = getWord(pRead);
 			}
 			else if ("texture_unit"==strText)
 			{
@@ -632,16 +636,38 @@ bool readMaterial(iModelData * pModelData, const std::string& strFilename)
 					break;
 				}
 				std::string strTexture = getWord(pRead);
-				if (strTexture.length()>0)
-				{
-					strTexture=GetParentPath(strFilename)+strTexture;
-					strTexture = ChangeExtension(strTexture,".dds");
-					material.strDiffuse=strTexture;
-				}
+
 				strText = getWord(pRead);
 				if ("}"==strText)
 				{
-					break;
+					if (strTexture.length()>0)
+					{
+						strTexture=GetParentPath(strFilename)+strTexture;
+						strTexture = ChangeExtension(strTexture,".dds");
+						material.strDiffuse=strTexture;
+					}
+				}
+				else if ("colour_op"==strText)
+				{
+					strText = getWord(pRead);
+					if ("add"==strText)
+					{
+						if (strTexture.length()>0)
+						{
+							strTexture=GetParentPath(strFilename)+strTexture;
+							strTexture = ChangeExtension(strTexture,".dds");
+							material.strEmissive=strTexture;
+						}
+					}
+					else
+					{
+						MessageBoxA(NULL,strText.c_str(),"Unknon colour_op!",0);
+					}
+					strText = getWord(pRead);
+					if ("}"!=strText)
+					{
+						break;
+					}
 				}
 				else
 				{
@@ -656,11 +682,6 @@ bool readMaterial(iModelData * pModelData, const std::string& strFilename)
 			{
 				MessageBoxA(NULL,strText.c_str(),"Unknon!",0);
 			}
-		}
-		strText = getWord(pRead);
-		if ("}"!=strText)
-		{
-			break;
 		}
 		strText = getWord(pRead);
 		if ("}"!=strText)
@@ -981,12 +1002,15 @@ int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
 		IOReadBase::autoClose(pRead);
 	}
 
-
 	if (!readMaterial(pModelData,ChangeExtension(strFilename,".material")))
 	{
 		std::string strMatFilename = GetParentPath(strFilename);
 		strMatFilename=strMatFilename+GetFilename(strMatFilename)+".material";
-		readMaterial(pModelData,strMatFilename);
+		if (!readMaterial(pModelData,strMatFilename))
+		{
+			strMatFilename=ChangeExtension(strMatFilename,"_tileset.material");
+			readMaterial(pModelData,strMatFilename);
+		}
 	}
 
 	pModelData->getMesh().update();
