@@ -153,7 +153,7 @@ void CDlgModelMaterial::OnCheckboxBlend()
 void CDlgModelMaterial::OnCheckboxCull()
 {
 	if (m_pSelectedMaterial==NULL){return;}
-	m_pSelectedMaterial->bCull = m_CheckboxCull.IsChecked();
+	m_pSelectedMaterial->uCull = m_CheckboxCull.IsChecked();
 }
 
 void CDlgModelMaterial::OnNumTexanimX()
@@ -211,7 +211,7 @@ void CDlgModelMaterial::OnListboxMaterial()
 		m_CheckboxAlphatest.SetChecked(m_pSelectedMaterial->bAlphaTest);
 		m_NumAlphatestvalue.setFloat(m_pSelectedMaterial->uAlphaTestValue);
 		m_CheckboxBlend.SetChecked(m_pSelectedMaterial->bBlend);
-		m_CheckboxCull.SetChecked(m_pSelectedMaterial->bCull);
+		m_CheckboxCull.SetChecked(m_pSelectedMaterial->uCull);
 		m_NumTexanimX.setFloat(m_pSelectedMaterial->vTexAnim.x);
 		m_NumTexanimY.setFloat(m_pSelectedMaterial->vTexAnim.y);
 		m_NumOpacity.setFloat(m_pSelectedMaterial->m_fOpacity);

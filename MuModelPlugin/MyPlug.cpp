@@ -41,13 +41,17 @@ bool importMaterial(iModelData * pModelData, const std::string& strFilename, con
 		material.strLightMap	=getRealFilename(strPath,csv.GetStr("LightMap"));
 		material.strShader		=getRealFilename(strPath,csv.GetStr("Shader"));
 
-		material.m_fOpacity	=csv.GetFloat("Opacity");
-		material.bAlphaTest	=csv.GetBool("IsAlphaTest");
-		material.bBlend		=csv.GetBool("IsBlend");
-		material.vTexAnim.x	=csv.GetFloat("TexAnimX");
-		material.vTexAnim.y	=csv.GetFloat("TexAnimY");
-		material.vUVScale.x	=1.0f/csv.GetFloat("UScale");
-		material.vUVScale.y	=1.0f/csv.GetFloat("VScale");
+		material.m_fOpacity		=csv.GetFloat("Opacity");
+		material.uCull			=csv.GetInt("Cull");
+		material.bDepthWrite	=csv.GetBool("IsDepthWrite");
+		material.bBlend			=csv.GetBool("IsBlend");
+		material.bAlphaTest		=csv.GetBool("IsAlphaTest");
+		material.uAlphaTestValue=csv.GetInt("AlphaTestValue");
+
+		material.vTexAnim.x		=csv.GetFloat("TexAnimX");
+		material.vTexAnim.y		=csv.GetFloat("TexAnimY");
+		material.vUVScale.x		=1.0f/csv.GetFloat("UScale");
+		material.vUVScale.y		=1.0f/csv.GetFloat("VScale");
 	}
 	csv.Close();
 
