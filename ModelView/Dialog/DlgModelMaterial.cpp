@@ -43,42 +43,42 @@ void CDlgModelMaterial::OnControlRegister()
 	RegisterControlEvent("IDC_COLOR_EMISSIVE",	(PEVENT)&CDlgModelMaterial::OnColorEmissive);
 	RegisterControlEvent("IDC_NUM_UVSCALE_X",	(PEVENT)&CDlgModelMaterial::OnNumUvscaleX);
 	RegisterControlEvent("IDC_NUM_UVSCALE_Y",	(PEVENT)&CDlgModelMaterial::OnNumUvscaleY);
-	RegisterControlEvent("IDC_LISTBOX_MATERIAL",(PEVENT)&CDlgModelMaterial::OnListboxMaterial);
+	RegisterControlEvent("IDC_BTN_CLOSE",	(PEVENT)&CDlgModelMaterial::OnBtnClose);
 }
 
-void CDlgModelMaterial::onReset()
+CDlgModelMain& CDlgModelMaterial::getDlgModelMain()
 {
-	int nSelected = m_ListboxMaterial.GetSelectedIndex();
-	m_ListboxMaterial.RemoveAllItems();
-	if (getModelDisplay().getModelData())
-	{
-		size_t uCount = getModelDisplay().getModelData()->m_mapPasses.size();
-		if (uCount>0)
-		{
-			for (size_t i=0; i<uCount; ++i)
-			{
-				m_ListboxMaterial.AddItem(FormatW(L"[%d]",i));
-			}
-			if (nSelected>=uCount)
-			{
-				nSelected = uCount-1;
-			}
-			m_ListboxMaterial.SelectItem(nSelected);
-		}
-		OnListboxMaterial();
-	}
+	assert(GetParentDialog());
+	return *((CDlgModelMain*)GetParentDialog());
 }
 
-CMaterial* CDlgModelMaterial::getSelectedMaterial()
+void CDlgModelMaterial::setMaterial(CMaterial* pMaterial)
 {
-	int nSelected = m_ListboxMaterial.GetSelectedIndex();
-	if (getModelDisplay().getModelData())
+	m_pSelectedMaterial=pMaterial;
+	if (m_pSelectedMaterial)
 	{
-		ModelRenderPass& renderPass = getModelDisplay().getModelData()->m_mapPasses[nSelected];
-		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(renderPass.strMaterialName);
-		return &material;
+		CTextureMgr& TM=GetRenderSystem().GetTextureMgr();
+		CShaderMgr& SM=GetRenderSystem().GetShaderMgr();
+		std::string strFilename = GetParentPath(getModelDisplay().getModelObject()->getModelFilename());
+
+		m_EditboxDiffuse.	SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uDiffuse))));
+		m_EditboxEmissive.	SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uEmissive))));
+		m_EditboxSpecular.	SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uSpecular))));
+		m_EditboxBump.		SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uNormal))));
+		m_EditboxReflection.SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uReflection))));
+		m_EditboxLightmap.	SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uLightMap))));
+		m_EditboxEffect.	SetText(s2ws(getSimpleFilename(strFilename,SM.getItemName(m_pSelectedMaterial->uShader))));
+		m_CheckboxAlphatest.SetChecked(m_pSelectedMaterial->bAlphaTest);
+		m_NumAlphatestvalue.setFloat(m_pSelectedMaterial->uAlphaTestValue);
+		m_CheckboxBlend.SetChecked(m_pSelectedMaterial->bBlend);
+		m_CheckboxCull.SetChecked(m_pSelectedMaterial->uCull);
+		m_NumTexanimX.setFloat(m_pSelectedMaterial->vTexAnim.x);
+		m_NumTexanimY.setFloat(m_pSelectedMaterial->vTexAnim.y);
+		m_NumOpacity.setFloat(m_pSelectedMaterial->m_fOpacity);
+		m_ColorEmissive.setColor(m_pSelectedMaterial->cEmissive);
+		m_NumUvscaleX.setFloat(m_pSelectedMaterial->vUVScale.x);
+		m_NumUvscaleY.setFloat(m_pSelectedMaterial->vUVScale.y);
 	}
-	return NULL;
 }
 
 void CDlgModelMaterial::OnEditboxDiffuse()
@@ -192,31 +192,7 @@ void CDlgModelMaterial::OnNumUvscaleY()
 	m_pSelectedMaterial->vUVScale.y = m_NumUvscaleY.getFloat();
 }
 
-void CDlgModelMaterial::OnListboxMaterial()
+void CDlgModelMaterial::OnBtnClose()
 {
-	m_pSelectedMaterial=getSelectedMaterial();
-	if (m_pSelectedMaterial)
-	{
-		CTextureMgr& TM=GetRenderSystem().GetTextureMgr();
-		CShaderMgr& SM=GetRenderSystem().GetShaderMgr();
-		std::string strFilename = GetParentPath(getModelDisplay().getModelObject()->getModelFilename());
-		
-		m_EditboxDiffuse.	SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uDiffuse))));
-		m_EditboxEmissive.	SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uEmissive))));
-		m_EditboxSpecular.	SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uSpecular))));
-		m_EditboxBump.		SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uNormal))));
-		m_EditboxReflection.SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uReflection))));
-		m_EditboxLightmap.	SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uLightMap))));
-		m_EditboxEffect.	SetText(s2ws(getSimpleFilename(strFilename,SM.getItemName(m_pSelectedMaterial->uShader))));
-		m_CheckboxAlphatest.SetChecked(m_pSelectedMaterial->bAlphaTest);
-		m_NumAlphatestvalue.setFloat(m_pSelectedMaterial->uAlphaTestValue);
-		m_CheckboxBlend.SetChecked(m_pSelectedMaterial->bBlend);
-		m_CheckboxCull.SetChecked(m_pSelectedMaterial->uCull);
-		m_NumTexanimX.setFloat(m_pSelectedMaterial->vTexAnim.x);
-		m_NumTexanimY.setFloat(m_pSelectedMaterial->vTexAnim.y);
-		m_NumOpacity.setFloat(m_pSelectedMaterial->m_fOpacity);
-		m_ColorEmissive.setColor(m_pSelectedMaterial->cEmissive);
-		m_NumUvscaleX.setFloat(m_pSelectedMaterial->vUVScale.x);
-		m_NumUvscaleY.setFloat(m_pSelectedMaterial->vUVScale.y);
-	}
+	SetVisible(false);
 }

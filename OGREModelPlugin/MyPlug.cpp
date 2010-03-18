@@ -707,8 +707,11 @@ bool readMaterialPass(CMaterial& material, IOReadBase* pRead, const std::string&
 		}
 		else if ("alpha_rejection"==strCommand)
 		{
-			// 2
-			//material.bAlphaTest=false;
+			if (setWords.size()==2)
+			{
+				material.bAlphaTest=true;
+				material.uAlphaTestValue=atoi(setWords[1].c_str());
+			}
 		}
 		else if ("lighting"==strCommand)
 		{

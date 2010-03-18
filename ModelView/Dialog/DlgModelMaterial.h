@@ -7,9 +7,9 @@ class CDlgModelMaterial: public CDlgModelBaseDialog
 public:
 	CDlgModelMaterial();
 	virtual void OnControlRegister();
-	void onReset();
+	virtual CDlgModelMain& getDlgModelMain();
+	void setMaterial(CMaterial* pMaterial);
 private:
-	CMaterial* getSelectedMaterial();
 	// Controls' event.
 	void OnEditboxDiffuse();
 	void OnEditboxEmissive();
@@ -28,7 +28,7 @@ private:
 	void OnColorEmissive();
 	void OnNumUvscaleX();
 	void OnNumUvscaleY();
-	void OnListboxMaterial();
+	void OnBtnClose();
 	// Controls' variable.
 	CUIEditBox	m_EditboxDiffuse;
 	CUIEditBox	m_EditboxEmissive;
