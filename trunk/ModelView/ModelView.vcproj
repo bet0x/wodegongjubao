@@ -272,6 +272,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Dialog\DlgModelRenderPass.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Dialog\DlgModelRenderPass.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Dialog\DlgModelShow.cpp"
 				>
 			</File>
