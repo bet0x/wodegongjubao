@@ -532,6 +532,125 @@ std::string getWord(IOReadBase* pRead)
 	return str;
 }
 
+std::string getLineCommand(IOReadBase* pRead, std::vector<std::string>& setWords)
+{
+	setWords.clear();
+	std::string str;
+	std::string strCommand;
+	char c;
+	pRead->Read(&c,sizeof(char));
+	while (!pRead->IsEof())
+	{
+		if ('	'==c||' '==c||'\n'==c||char(13)==c)
+		{
+			if (str.length()>0)
+			{
+				if (strCommand.length()==0)
+				{
+					strCommand = str;
+				}
+				else
+				{
+					setWords.push_back(str);
+				}
+			}
+			if ('\n'==c||char(13)==c)
+			{
+				if (strCommand.size()>0)
+				{
+					return strCommand;
+				}
+			}
+		}
+		else
+		{
+			str.push_back(c);
+		}
+		pRead->Read(&c,sizeof(char));
+	}
+	return strCommand;
+}
+
+bool readMaterialTexture(CMaterial& material, IOReadBase* pRead)
+{
+	std::string strCommand;
+	std::vector<std::string> setWords;
+	while (!pRead->IsEof())
+	{
+		strCommand = getLineCommand(pRead,setWords);
+		if ("{"!=strCommand)
+		{
+			break;
+		}
+		strCommand = getLineCommand(pRead,setWords);
+		std::string strTexture;
+		if ("texture"==strText)
+		{
+			if (setWords.size()>0)
+			{
+				std::string strTexture=GetParentPath(strFilename)+setWords[0];
+				strTexture = ChangeExtension(strTexture,".dds");
+			}
+		}
+		else if ("colour_op"==strText)
+		{
+			if (setWords.size()>0)
+			{
+				std::string strTexture=GetParentPath(strFilename)+setWords[0];
+				strTexture = ChangeExtension(strTexture,".dds");
+			}
+		}
+
+		if (strTexture.length()>0)
+		{
+			material.strDiffuse=strTexture;
+		}
+
+	strText = getWord(pRead);
+	if ("texture"!=strText)
+	{
+		break;
+	}
+	std::string strTexture = getWord(pRead);
+
+	strText = getWord(pRead);
+	if ("}"==strText)
+	{
+		if (strTexture.length()>0)
+		{
+			strTexture=GetParentPath(strFilename)+strTexture;
+			strTexture = ChangeExtension(strTexture,".dds");
+			material.strDiffuse=strTexture;
+		}
+	}
+	else if ("colour_op"==strText)
+	{
+		strText = getWord(pRead);
+		if ("add"==strText)
+		{
+			if (strTexture.length()>0)
+			{
+				strTexture=GetParentPath(strFilename)+strTexture;
+				strTexture = ChangeExtension(strTexture,".dds");
+				material.strEmissive=strTexture;
+			}
+		}
+		else
+		{
+			MessageBoxA(NULL,strText.c_str(),"Unknon colour_op!",0);
+		}
+		strText = getWord(pRead);
+		if ("}"!=strText)
+		{
+			break;
+		}
+	}
+	else
+	{
+		MessageBoxA(NULL,strText.c_str(),"Unknon!",0);
+	}
+}
+
 bool readMaterial(iModelData * pModelData, const std::string& strFilename)
 {
 	IOReadBase* pRead = IOReadBase::autoOpen(strFilename);
@@ -539,15 +658,24 @@ bool readMaterial(iModelData * pModelData, const std::string& strFilename)
 	{
 		return false;
 	}
+	std::vector<std::string> setWords;
 	std::string strText;
 	std::string strMaterialName;
 	while (!pRead->IsEof())
 	{
-		strText = getWord(pRead);
-		if ("material"!=strText)
+		getLineWords(pRead,setWords);
+		if (setWords.size()==0)
 		{
 			break;
 		}
+		if ("material"!=setWords[0])
+		{
+			break;
+		}
+		
+		getLineWords(pRead,setWords);
+
+
 		strMaterialName = getWord(pRead);
 		CMaterial& material = pModelData->getMaterial(strMaterialName);
 		strText = getWord(pRead);
