@@ -538,27 +538,25 @@ std::string getLineCommand(IOReadBase* pRead, std::vector<std::string>& setWords
 	std::string str;
 	std::string strCommand;
 	char c;
-	pRead->Read(&c,sizeof(char));
 	while (!pRead->IsEof())
 	{
+		pRead->Read(&c,sizeof(char));
 		if ('	'==c||' '==c||'\n'==c||char(13)==c)
 		{
-			if (str.length()>0)
+			if (strCommand.length()==0)
 			{
-				if (strCommand.length()==0)
-				{
-					strCommand = str;
-				}
-				else
-				{
-					setWords.push_back(str);
-				}
+				strCommand = str;
 			}
+			else
+			{
+				setWords.push_back(str);
+			}
+			str.clear();
 			if ('\n'==c||char(13)==c)
 			{
 				if (strCommand.size()>0)
 				{
-					return strCommand;
+					break;
 				}
 			}
 		}
@@ -566,89 +564,238 @@ std::string getLineCommand(IOReadBase* pRead, std::vector<std::string>& setWords
 		{
 			str.push_back(c);
 		}
-		pRead->Read(&c,sizeof(char));
+	}
+	if (pRead->IsEof())
+	{
+		if (strCommand.length()==0)
+		{
+			strCommand = str;
+		}
+		else
+		{
+			setWords.push_back(str);
+		}
 	}
 	return strCommand;
 }
 
-bool readMaterialTexture(CMaterial& material, IOReadBase* pRead)
+bool readMaterialTexture(CMaterial& material, IOReadBase* pRead, const std::string& strFilename)
 {
 	std::string strCommand;
 	std::vector<std::string> setWords;
+
+	strCommand = getLineCommand(pRead,setWords);
+	if ("{"!=strCommand)
+	{
+		return false;
+	}
+
+	std::string strTexture;
+	bool bAdd = false;
 	while (!pRead->IsEof())
 	{
 		strCommand = getLineCommand(pRead,setWords);
-		if ("{"!=strCommand)
+		if ("texture"==strCommand)
+		{
+			if (setWords.size()>0)
+			{
+				strTexture=GetParentPath(strFilename)+setWords[0];
+				strTexture = ChangeExtension(strTexture,".dds");
+			}
+		}
+		else if ("colour_op"==strCommand)
+		{
+			if (setWords.size()>0)
+			{
+				if ("add"==setWords[0])
+				{
+					bAdd = true;
+				}
+			}
+		}
+		else if ("scroll_anim"==strCommand)
+		{
+			if (setWords.size()==2)
+			{
+				material.vTexAnim.x=atof(setWords[0].c_str());
+				material.vTexAnim.y=atof(setWords[1].c_str());
+			}
+		}
+		else if ("}"==strCommand)
 		{
 			break;
-		}
-		strCommand = getLineCommand(pRead,setWords);
-		std::string strTexture;
-		if ("texture"==strText)
-		{
-			if (setWords.size()>0)
-			{
-				std::string strTexture=GetParentPath(strFilename)+setWords[0];
-				strTexture = ChangeExtension(strTexture,".dds");
-			}
-		}
-		else if ("colour_op"==strText)
-		{
-			if (setWords.size()>0)
-			{
-				std::string strTexture=GetParentPath(strFilename)+setWords[0];
-				strTexture = ChangeExtension(strTexture,".dds");
-			}
-		}
-
-		if (strTexture.length()>0)
-		{
-			material.strDiffuse=strTexture;
-		}
-
-	strText = getWord(pRead);
-	if ("texture"!=strText)
-	{
-		break;
-	}
-	std::string strTexture = getWord(pRead);
-
-	strText = getWord(pRead);
-	if ("}"==strText)
-	{
-		if (strTexture.length()>0)
-		{
-			strTexture=GetParentPath(strFilename)+strTexture;
-			strTexture = ChangeExtension(strTexture,".dds");
-			material.strDiffuse=strTexture;
-		}
-	}
-	else if ("colour_op"==strText)
-	{
-		strText = getWord(pRead);
-		if ("add"==strText)
-		{
-			if (strTexture.length()>0)
-			{
-				strTexture=GetParentPath(strFilename)+strTexture;
-				strTexture = ChangeExtension(strTexture,".dds");
-				material.strEmissive=strTexture;
-			}
 		}
 		else
 		{
-			MessageBoxA(NULL,strText.c_str(),"Unknon colour_op!",0);
+			MessageBoxA(NULL,strCommand.c_str(),"Unknon in texture_unit!",0);
 		}
-		strText = getWord(pRead);
-		if ("}"!=strText)
+	}
+	if (strTexture.length()>0)
+	{
+		if (bAdd)
+		{
+			material.strEmissive=strTexture;
+		}
+		else
+		{
+			material.strDiffuse=strTexture;
+		}
+	}
+	return true;
+}
+
+bool readMaterialPass(CMaterial& material, IOReadBase* pRead, const std::string& strFilename)
+{
+	std::string strCommand;
+	std::vector<std::string> setWords;
+
+	strCommand = getLineCommand(pRead,setWords);
+	if ("{"!=strCommand)
+	{
+		return false;
+	}
+	while (!pRead->IsEof())
+	{
+		strCommand = getLineCommand(pRead,setWords);
+		if ("ambient"==strCommand)
+		{
+			// 3
+		}
+		else if ("diffuse"==strCommand)
+		{
+			// 3
+		}
+		else if ("specular"==strCommand)
+		{
+			//4
+		}
+		else if ("emissive"==strCommand)
+		{
+			// 3
+		}
+		else if ("depth_write"==strCommand)
+		{
+			if (setWords.size()>0)
+			{
+				if ("off"==setWords[0])
+				{
+					material.bDepthWrite=false;
+				}
+				else
+				{
+					MessageBoxA(NULL,setWords[0].c_str(),"Unknon in depth_write!",0);
+				}
+			}
+		}
+		else if ("scene_blend"==strCommand)
+		{
+			if (setWords.size()==1)
+			{
+				if ("alpha_blend"==setWords[0])
+				{
+					material.bBlend=true;
+				}
+				else
+				{
+					MessageBoxA(NULL,setWords[0].c_str(),"Unknon in scene_blend!",0);
+				}
+			}
+			else if (setWords.size()==2)
+			{
+				MessageBoxA(NULL,setWords[0].c_str(),"Unknon in scene_blend!",0);
+			}
+		}
+		else if ("alpha_rejection"==strCommand)
+		{
+			// 2
+			//material.bAlphaTest=false;
+		}
+		else if ("lighting"==strCommand)
+		{
+			// 1
+		}
+		else if ("texture_unit"==strCommand)
+		{
+			if (!readMaterialTexture(material,pRead,strFilename))
+			{
+				MessageBoxA(NULL,"readMaterialTexture()","Error!",0);
+				return false;
+			}
+		}
+		else if ("}"==strCommand)
 		{
 			break;
 		}
+		else
+		{
+			MessageBoxA(NULL,strCommand.c_str(),"Unknon in pass!",0);
+		}
 	}
-	else
+	return true;
+}
+
+bool readMaterialTechnique(CMaterial& material, IOReadBase* pRead, const std::string& strFilename)
+{
+	std::string strCommand;
+	std::vector<std::string> setWords;
+
+	strCommand = getLineCommand(pRead,setWords);
+	if ("{"!=strCommand)
 	{
-		MessageBoxA(NULL,strText.c_str(),"Unknon!",0);
+		return false;
 	}
+	while (!pRead->IsEof())
+	{
+		strCommand = getLineCommand(pRead,setWords);
+		if ("pass"==strCommand)
+		{
+			if (!readMaterialPass(material,pRead,strFilename))
+			{
+				return false;
+			}
+		}
+		else if ("}"==strCommand)
+		{
+			break;
+		}
+		else
+		{
+			MessageBoxA(NULL,strCommand.c_str(),"Unknon in technique!",0);
+		}
+	}
+	return true;
+}
+
+bool readMaterial(CMaterial& material, IOReadBase* pRead, const std::string& strFilename)
+{
+	std::string strCommand;
+	std::vector<std::string> setWords;
+
+	strCommand = getLineCommand(pRead,setWords);
+	if ("{"!=strCommand)
+	{
+		return false;
+	}
+	while (!pRead->IsEof())
+	{
+		strCommand = getLineCommand(pRead,setWords);
+		if ("technique"==strCommand)
+		{
+			if (!readMaterialTechnique(material,pRead,strFilename))
+			{
+				return false;
+			}
+		}
+		else if ("}"==strCommand)
+		{
+			break;
+		}
+		else
+		{
+			MessageBoxA(NULL,strCommand.c_str(),"Unknon in material!",0);
+		}
+	}
+	return true;
 }
 
 bool readMaterial(iModelData * pModelData, const std::string& strFilename)
@@ -658,168 +805,18 @@ bool readMaterial(iModelData * pModelData, const std::string& strFilename)
 	{
 		return false;
 	}
+	std::string strCommand;
 	std::vector<std::string> setWords;
-	std::string strText;
-	std::string strMaterialName;
 	while (!pRead->IsEof())
 	{
-		getLineWords(pRead,setWords);
-		if (setWords.size()==0)
+		strCommand = getLineCommand(pRead,setWords);
+		if ("material"==strCommand)
 		{
-			break;
-		}
-		if ("material"!=setWords[0])
-		{
-			break;
-		}
-		
-		getLineWords(pRead,setWords);
-
-
-		strMaterialName = getWord(pRead);
-		CMaterial& material = pModelData->getMaterial(strMaterialName);
-		strText = getWord(pRead);
-		if ("{"!=strText)
-		{
-			break;
-		}
-		strText = getWord(pRead);
-		if ("technique"!=strText)
-		{
-			break;
-		}
-		strText = getWord(pRead);
-		if ("{"!=strText)
-		{
-			break;
-		}
-		strText = getWord(pRead);
-		if ("pass"!=strText)
-		{
-			break;
-		}
-		strText = getWord(pRead);
-		if ("{"!=strText)
-		{
-			break;
-		}
-		while (!pRead->IsEof())
-		{
-			strText = getWord(pRead);
-			if ("ambient"==strText)
+			if (setWords.size()>0)
 			{
-				strText = getWord(pRead);
-				strText = getWord(pRead);
-				strText = getWord(pRead);
+				CMaterial& material = pModelData->getMaterial(setWords[0]);
+				readMaterial(material,pRead,strFilename);
 			}
-			else if ("diffuse"==strText)
-			{
-				strText = getWord(pRead);
-				strText = getWord(pRead);
-				strText = getWord(pRead);
-			}
-			else if ("specular"==strText)
-			{
-				strText = getWord(pRead);
-				strText = getWord(pRead);
-				strText = getWord(pRead);
-				strText = getWord(pRead);
-			}
-			else if ("emissive"==strText)
-			{
-				strText = getWord(pRead);
-				strText = getWord(pRead);
-				strText = getWord(pRead);
-			}
-			else if ("depth_write"==strText)
-			{
-				strText = getWord(pRead);
-				material.bDepthWrite=("off"!=strText);
-			}
-			else if ("scene_blend"==strText)
-			{
-				strText = getWord(pRead);
-				material.bBlend=("alpha_blend"==strText);
-			}
-			else if ("alpha_rejection"==strText)
-			{
-				strText = getWord(pRead);
-				strText = getWord(pRead);
-				//material.bAlphaTest=false;
-			}
-			else if ("lighting"==strText)
-			{
-				strText = getWord(pRead);
-			}
-			else if ("texture_unit"==strText)
-			{
-				strText = getWord(pRead);
-				if ("{"!=strText)
-				{
-					break;
-				}
-				strText = getWord(pRead);
-				if ("texture"!=strText)
-				{
-					break;
-				}
-				std::string strTexture = getWord(pRead);
-
-				strText = getWord(pRead);
-				if ("}"==strText)
-				{
-					if (strTexture.length()>0)
-					{
-						strTexture=GetParentPath(strFilename)+strTexture;
-						strTexture = ChangeExtension(strTexture,".dds");
-						material.strDiffuse=strTexture;
-					}
-				}
-				else if ("colour_op"==strText)
-				{
-					strText = getWord(pRead);
-					if ("add"==strText)
-					{
-						if (strTexture.length()>0)
-						{
-							strTexture=GetParentPath(strFilename)+strTexture;
-							strTexture = ChangeExtension(strTexture,".dds");
-							material.strEmissive=strTexture;
-						}
-					}
-					else
-					{
-						MessageBoxA(NULL,strText.c_str(),"Unknon colour_op!",0);
-					}
-					strText = getWord(pRead);
-					if ("}"!=strText)
-					{
-						break;
-					}
-				}
-				else
-				{
-					MessageBoxA(NULL,strText.c_str(),"Unknon!",0);
-				}
-			}
-			else if ("}"==strText)
-			{
-				break;
-			}
-			else
-			{
-				MessageBoxA(NULL,strText.c_str(),"Unknon!",0);
-			}
-		}
-		strText = getWord(pRead);
-		if ("}"!=strText)
-		{
-			break;
-		}
-		strText = getWord(pRead);
-		if ("}"!=strText)
-		{
-			break;
 		}
 	}
 	IOReadBase::autoClose(pRead);
