@@ -863,6 +863,8 @@ void readSubMesh(IOReadBase* pRead, iModelData* pModelData)
 			faceIndex.n[n]=uVertexIndex;
 			faceIndex.c[n]=uVertexIndex;
 			faceIndex.uv1[n]=uVertexIndex;
+			faceIndex.b[n]=uVertexIndex;
+			faceIndex.w[n]=uVertexIndex;
 			if (2==n)
 			{
 				pMesh->addFaceIndex(nSubID,faceIndex);
@@ -882,6 +884,8 @@ void readSubMesh(IOReadBase* pRead, iModelData* pModelData)
 			faceIndex.n[n]=uVertexIndex;
 			faceIndex.c[n]=uVertexIndex;
 			faceIndex.uv1[n]=uVertexIndex;
+			faceIndex.b[n]=uVertexIndex;
+			faceIndex.w[n]=uVertexIndex;
 			if (2==n)
 			{
 				pMesh->addFaceIndex(nSubID,faceIndex);
@@ -926,17 +930,38 @@ void readSubMesh(IOReadBase* pRead, iModelData* pModelData)
 				//sm->operationType = static_cast<RenderOperation::OperationType>(opType);
 				break;
 			case M_SUBMESH_BONE_ASSIGNMENT:
-				//readSubMeshBoneAssignment(stream, pMesh, sm);
-				VertexBoneAssignment assign;
+				{
+					//readSubMeshBoneAssignment(stream, pMesh, sm);
+					VertexBoneAssignment assign;
 
-				// unsigned int vertexIndex;
-				pRead->Read(&(assign.vertexIndex),sizeof(unsigned int));
-				// unsigned short boneIndex;
-				pRead->Read(&(assign.boneIndex),sizeof(unsigned short));
-				// float weight;
-				pRead->Read(&(assign.weight),sizeof(float));
+					// unsigned int vertexIndex;
+					pRead->Read(&(assign.vertexIndex),sizeof(unsigned int));
+					// unsigned short boneIndex;
+					pRead->Read(&(assign.boneIndex),sizeof(unsigned short));
+					// float weight;
+					pRead->Read(&(assign.weight),sizeof(float));
+break;
+					unsigned int uBone = 0;
+					unsigned int uWeight = 0;
+					// get
+					pMesh->getBone(assign.vertexIndex,uBone);
+					pMesh->getWeight(assign.vertexIndex,uWeight);
+					// add
+					for (size_t i=0;i<4;++i)
+					{
+						if (((unsigned char*)&uWeight)[i]==0)
+						{
+							((unsigned char*)&uWeight)[i] = assign.weight*255;
+							((unsigned char*)&uBone)[i] = assign.boneIndex;
+							break;
+						}
+					}
+					// set
+					pMesh->setBone(assign.vertexIndex,uBone);
+					pMesh->setWeight(assign.vertexIndex,uWeight);
 
-				//sub->addBoneAssignment(assign);
+					//sub->addBoneAssignment(assign);
+				}
 				break;
 			case M_SUBMESH_TEXTURE_ALIAS:
 				//readSubMeshTextureAlias(stream, pMesh, sm);
