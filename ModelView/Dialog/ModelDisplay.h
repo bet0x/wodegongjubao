@@ -3,7 +3,6 @@
 #include "Camera.h"
 #include "SkyBox.h"
 #include "ModelComplex.h"
-#include "RECT.h"
 #include "SceneEffect.h"
 
 // œ‘ æ¿‡
@@ -55,7 +54,7 @@ public:
 
 
 	bool m_bLbuttonDrop;
-	GSRect<float> m_DropRect;
+	CRect<float> m_DropRect;
 	
 	Vec3D m_vPickRectLeft;
 	Vec3D m_vPickRectBottom;
