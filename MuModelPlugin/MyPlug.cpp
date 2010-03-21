@@ -170,7 +170,7 @@ int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
 				else if (".bmp"==strExtension)
 					strTexFileName = ChangeExtension(strTexFileName,".ozb");
 			}
-			std::string strMaterialName = Format("%s%d",ChangeExtension(strFilename,".sub"),i);
+			std::string strMaterialName = Format("%s%d",ChangeExtension(GetFilename(strFilename),".sub").c_str(),i);
 			{
 				CMaterial& material = pModelData->getMaterial(strMaterialName);
 				material.strDiffuse=strTexFileName;
