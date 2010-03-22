@@ -1127,34 +1127,38 @@ void readMesh(IOReadBase* pRead, iModelData* pModelData)
 }
 
 
-int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
+bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
 {
 	assert(pModelData);
+	// Loading the mesh.
 	IOReadBase* pRead = IOReadBase::autoOpen(strFilename);
-	if (pRead)
+	if (!pRead)
 	{
-		// header
-		readHeader(pRead);
+		return false;
+	}
+	// header
+	readHeader(pRead);
+	// mesh
+	if (!pRead->IsEof())
+	{
+		unsigned short streamID;
+		unsigned int uLength;
+		pRead->Read(&streamID,sizeof(unsigned short));
+		pRead->Read(&uLength,sizeof(unsigned int));
 
-		if (!pRead->IsEof())
+		switch (streamID)
 		{
-			unsigned short streamID;
-			unsigned int uLength;
-			pRead->Read(&streamID,sizeof(unsigned short));
-			pRead->Read(&uLength,sizeof(unsigned int));
-
-			switch (streamID)
+		case M_MESH:
 			{
-			case M_MESH:
-				{
-					readMesh(pRead,pModelData);
-					break;
-				}
+				readMesh(pRead,pModelData);
+				break;
 			}
 		}
-		IOReadBase::autoClose(pRead);
 	}
+	// close file
+	IOReadBase::autoClose(pRead);
 
+	// Loading the materials.
 	if (!readMaterial(pModelData,ChangeExtension(strFilename,".material")))
 	{
 		std::string strMatFilename = GetParentPath(strFilename);
@@ -1166,6 +1170,7 @@ int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
 		}
 	}
 
+	// mesh update
 	pModelData->getMesh().update();
 
 // 	//m_bbox = mesh.getBBox();
@@ -1186,7 +1191,7 @@ int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
 	return true;
 }
 
-int CMyPlug::exportData(iModelData * pModelData, const std::string& strFilename)
+bool CMyPlug::exportData(iModelData * pModelData, const std::string& strFilename)
 {
 	return true;
 }

@@ -58,7 +58,7 @@ bool importMaterial(iModelData * pModelData, const std::string& strFilename, con
 	return true;
 }
 
-int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
+bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
 {
 	assert(pModelData);
 	static CMUBmd* pPlayerBmd;
@@ -250,7 +250,7 @@ int CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
 	return true;
 }
 
-int CMyPlug::exportData(iModelData * pModelData, const std::string& strFilename)
+bool CMyPlug::exportData(iModelData * pModelData, const std::string& strFilename)
 {
 	return true;
 }
