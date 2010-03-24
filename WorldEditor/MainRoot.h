@@ -1,19 +1,21 @@
 #pragma once
 #include "Root.h"
-#include "Dialog/DlgWorldEditor.h"
-// œ‘ æ¿‡
-class CMainRoot : public CRoot
+#include "Dialog/DlgMainEditor.h"
+#include "TSingleton.h"
+
+// Root
+class CMainRoot : public CRoot, public TSingleton<CMainRoot>
 {
 public:
 	CMainRoot();
 	~CMainRoot();
 public:
+	CDlgMainEditor& getMainDialog();
 	void Run();
 	void OnFrameMove( double fTime, float fElapsedTime );
 	void OnFrameRender( double fTime, float fElapsedTime );
 
 	bool MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 protected:
-	CDlgWorldEditor	m_dlgMain;
-	//CUIDialog		m_dlgBG;
+	CDlgMainEditor	m_dlgMain;
 };

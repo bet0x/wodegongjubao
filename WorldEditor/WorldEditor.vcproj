@@ -249,6 +249,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Dialog\DlgMainEditor.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Dialog\DlgMainEditor.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Dialog\DlgRegister.cpp"
 				>
 			</File>
@@ -270,14 +278,6 @@
 			</File>
 			<File
 				RelativePath=".\Dialog\DlgToolbar.h"
-				>
-			</File>
-			<File
-				RelativePath=".\Dialog\DlgWorldEditor.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Dialog\DlgWorldEditor.h"
 				>
 			</File>
 			<File
@@ -377,6 +377,74 @@
 				</File>
 				<File
 					RelativePath=".\Dialog\UIComboObjListTile.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Model"
+				>
+				<File
+					RelativePath=".\Dialog\DlgFaceDetect.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Dialog\DlgFaceDetect.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Dialog\DlgModelAnim.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Dialog\DlgModelAnim.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Dialog\DlgModelController.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Dialog\DlgModelController.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Dialog\DlgModelMaterial.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Dialog\DlgModelMaterial.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Dialog\DlgModelPlayer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Dialog\DlgModelPlayer.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Dialog\DlgModelRenderPass.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Dialog\DlgModelRenderPass.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Dialog\DlgModelShow.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Dialog\DlgModelShow.h"
+					>
+				</File>
+				<File
+					RelativePath=".\Dialog\ModelDisplay.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Dialog\ModelDisplay.h"
 					>
 				</File>
 			</Filter>
