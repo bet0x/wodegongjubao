@@ -17,8 +17,6 @@ public:
 	void OnBtnObject();
 
 	void reset();
-protected:
-	virtual CUIWorldEditorDisplay& getDisplay();
 private:
 	void closeAllChildDialog();
 	CDlgSetting			m_dlgSetting;

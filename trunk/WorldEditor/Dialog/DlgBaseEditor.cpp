@@ -1,5 +1,6 @@
 #include "DlgBaseEditor.h"
-#include "DlgToolbar.h"
+#include "..\MainRoot.h"
+
 CDlgBaseEditor::CDlgBaseEditor()
 {
 }
@@ -8,13 +9,22 @@ CDlgBaseEditor::~CDlgBaseEditor()
 {	
 }
 
-CTerrainBrush& CDlgBaseEditor::getBrush()
+CDlgMainEditor& CDlgBaseEditor::getMainDialog()
 {
-	return getDisplay().getTerrain().GetBrushDecal();
+	return CMainRoot::getInstance().getMainDialog();
 }
 
 CUIWorldEditorDisplay& CDlgBaseEditor::getDisplay()
 {
-	assert(GetParentDialog());
-	return ((CDlgBaseEditor*)GetParentDialog())->getDisplay();
+	return getMainDialog().getDisplay();
+}
+
+CModelDisplay& CDlgBaseEditor::getModelDisplay()
+{
+	return getMainDialog().getModelDisplay();
+}
+
+CTerrainBrush& CDlgBaseEditor::getBrush()
+{
+	return getDisplay().getTerrain().GetBrushDecal();
 }

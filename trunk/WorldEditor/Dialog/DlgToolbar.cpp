@@ -1,5 +1,4 @@
 #include "DlgToolbar.h"
-#include "DlgWorldEditor.h"
 
 CDlgToolbar::CDlgToolbar()
 {
@@ -7,12 +6,6 @@ CDlgToolbar::CDlgToolbar()
 
 CDlgToolbar::~CDlgToolbar()
 {	
-}
-
-CUIWorldEditorDisplay& CDlgToolbar::getDisplay()
-{
-	assert(GetParentDialog());
-	return ((CDlgWorldEditor*)GetParentDialog())->getDisplay();
 }
 
 void CDlgToolbar::OnControlRegister()

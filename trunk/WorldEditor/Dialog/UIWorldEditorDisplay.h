@@ -68,4 +68,8 @@ protected:
 		CPT_XY,
 	};
 	COORD_PLAN_TYPE		m_CoordPlanType;
+
+	bool g_bLeftButtonDown;
+	bool g_bRightButtonDown;
+	bool g_bMiddleButtonDown;
 };

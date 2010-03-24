@@ -31,6 +31,10 @@ m_bKeyRight(false)
 	m_Camera.setYawAngle(PI/4);
 	m_Camera.setPitchAngle(-PI/4);
 	m_Scene.SetTerrain(&m_Terrain);
+
+	g_bLeftButtonDown = false;
+	g_bRightButtonDown = false;
+	g_bMiddleButtonDown = false;
 }
 
 CUIWorldEditorDisplay::~CUIWorldEditorDisplay()
@@ -332,10 +336,6 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 	}
 	return false;
 }
-
-bool                    g_bLeftButtonDown = false;
-bool                    g_bRightButtonDown = false;
-bool                    g_bMiddleButtonDown = false;
 
 void CUIWorldEditorDisplay::MoveCamera(int x,int y)
 {
