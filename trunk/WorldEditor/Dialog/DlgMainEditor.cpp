@@ -181,6 +181,7 @@ void CDlgMainEditor::OnBtnSaveFile()
 void CDlgMainEditor::OnBtnToolbar()
 {
 	m_DlgToolbar.SetVisible(!m_DlgToolbar.IsVisible());
+	updateDisplay();
 }
 
 void CDlgMainEditor::OnFileNew()

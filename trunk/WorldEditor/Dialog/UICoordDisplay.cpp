@@ -16,7 +16,7 @@ void CUICoordDisplay::OnFrameRender(double fTime, float fElapsedTime)
 {
 	CRenderSystem& R = GetRenderSystem();
 
-	RECT rcScreen = m_rcBoundingBox;
+	//RECT rcScreen = m_rcBoundingBox;
 	//m_Coord.SetPos(rcScreen.left, rcScreen.top, rcScreen.bottom-rcScreen.top);
 	
 	//m_Coord.Render();
