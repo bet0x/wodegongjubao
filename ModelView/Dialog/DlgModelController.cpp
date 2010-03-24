@@ -268,9 +268,3 @@ void CDlgModelController::OnClose()
 {
 	((CDlgModelMain*)GetParentDialog())->CloseController();
 }
-
-CDlgModelMain& CDlgModelController::getDlgModelMain()
-{
-	assert(GetParentDialog());
-	return *((CDlgModelMain*)GetParentDialog());
-}

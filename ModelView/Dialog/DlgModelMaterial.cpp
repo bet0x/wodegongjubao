@@ -46,12 +46,6 @@ void CDlgModelMaterial::OnControlRegister()
 	RegisterControlEvent("IDC_BTN_CLOSE",	(PEVENT)&CDlgModelMaterial::OnBtnClose);
 }
 
-CDlgModelMain& CDlgModelMaterial::getDlgModelMain()
-{
-	assert(GetParentDialog());
-	return *((CDlgModelMain*)GetParentDialog());
-}
-
 void CDlgModelMaterial::setMaterial(CMaterial* pMaterial)
 {
 	m_pSelectedMaterial=pMaterial;
@@ -81,46 +75,50 @@ void CDlgModelMaterial::setMaterial(CMaterial* pMaterial)
 	}
 }
 
+std::string CDlgModelMaterial::getEditBoxFilename(const CUIEditBox& editBox)
+{
+	return getRealFilename(GetParentPath(getModelDisplay().getModelObject()->getModelFilename()),ws2s(editBox.GetText()));
+}
+
+unsigned int CDlgModelMaterial::getTextureID(const CUIEditBox& editBox)
+{
+	return GetRenderSystem().GetTextureMgr().RegisterTexture(getEditBoxFilename(editBox));
+}
+
 void CDlgModelMaterial::OnEditboxDiffuse()
 {
 	if (m_pSelectedMaterial==NULL){return;}
-	std::string strFilename = getRealFilename(GetParentPath(getModelDisplay().getModelObject()->getModelFilename()),ws2s(m_EditboxDiffuse.GetText()));
-	m_pSelectedMaterial->uDiffuse = GetRenderSystem().GetTextureMgr().RegisterTexture(strFilename);
+	m_pSelectedMaterial->uDiffuse = getTextureID(m_EditboxDiffuse);
 }
 
 void CDlgModelMaterial::OnEditboxEmissive()
 {
 	if (m_pSelectedMaterial==NULL){return;}
-	std::string strFilename = getRealFilename(GetParentPath(getModelDisplay().getModelObject()->getModelFilename()),ws2s(m_EditboxEmissive.GetText()));
-	m_pSelectedMaterial->uEmissive = GetRenderSystem().GetTextureMgr().RegisterTexture(strFilename);
+	m_pSelectedMaterial->uEmissive = getTextureID(m_EditboxEmissive);
 }
 
 void CDlgModelMaterial::OnEditboxSpecular()
 {
 	if (m_pSelectedMaterial==NULL){return;}
-	std::string strFilename = getRealFilename(GetParentPath(getModelDisplay().getModelObject()->getModelFilename()),ws2s(m_EditboxSpecular.GetText()));
-	m_pSelectedMaterial->uSpecular = GetRenderSystem().GetTextureMgr().RegisterTexture(strFilename);
+	m_pSelectedMaterial->uSpecular = getTextureID(m_EditboxSpecular);
 }
 
 void CDlgModelMaterial::OnEditboxBump()
 {
 	if (m_pSelectedMaterial==NULL){return;}
-	std::string strFilename = getRealFilename(GetParentPath(getModelDisplay().getModelObject()->getModelFilename()),ws2s(m_EditboxBump.GetText()));
-	m_pSelectedMaterial->uNormal = GetRenderSystem().GetTextureMgr().RegisterTexture(strFilename);
+	m_pSelectedMaterial->uNormal = getTextureID(m_EditboxBump);
 }
 
 void CDlgModelMaterial::OnEditboxReflection()
 {
 	if (m_pSelectedMaterial==NULL){return;}
-	std::string strFilename = getRealFilename(GetParentPath(getModelDisplay().getModelObject()->getModelFilename()),ws2s(m_EditboxReflection.GetText()));
-	m_pSelectedMaterial->uReflection = GetRenderSystem().GetTextureMgr().RegisterTexture(strFilename);
+	m_pSelectedMaterial->uReflection = getTextureID(m_EditboxReflection);
 }
 
 void CDlgModelMaterial::OnEditboxLightmap()
 {
 	if (m_pSelectedMaterial==NULL){return;}
-	std::string strFilename = getRealFilename(GetParentPath(getModelDisplay().getModelObject()->getModelFilename()),ws2s(m_EditboxLightmap.GetText()));
-	m_pSelectedMaterial->uLightMap = GetRenderSystem().GetTextureMgr().RegisterTexture(strFilename);
+	m_pSelectedMaterial->uLightMap = getTextureID(m_EditboxLightmap);
 }
 
 void CDlgModelMaterial::OnEditboxEffect()
@@ -128,7 +126,7 @@ void CDlgModelMaterial::OnEditboxEffect()
 	if (m_pSelectedMaterial==NULL){return;}
 	CShaderMgr& SM=GetRenderSystem().GetShaderMgr();
 	SM.del(m_pSelectedMaterial->uShader);
-	std::string strFilename = getRealFilename(GetParentPath(getModelDisplay().getModelObject()->getModelFilename()),ws2s(m_EditboxEffect.GetText()));
+	std::string strFilename = getEditBoxFilename(m_EditboxEffect);
 	m_pSelectedMaterial->uShader = SM.registerItem(strFilename);
 }
 

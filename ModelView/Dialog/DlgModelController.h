@@ -21,7 +21,6 @@ public:
 	void OpenPath(const std::wstring& wstrPath, const std::wstring& wstrFileType=L"*.*");
 	void OnClose();
 	void OnUpdate();
-	virtual CDlgModelMain& getDlgModelMain();
 protected:
 private:
 	std::wstring	m_wstrPath;

@@ -24,7 +24,7 @@ class CDlgModelBaseDialog: public CUIDialog
 public:
 	CDlgModelBaseDialog();
 	~CDlgModelBaseDialog();
-	virtual CDlgModelMain& getDlgModelMain();
+	virtual CDlgModelMain& getMainDialog();
 	CModelDisplay& getModelDisplay();
 protected:
 };
