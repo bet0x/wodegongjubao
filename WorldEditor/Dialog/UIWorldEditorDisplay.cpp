@@ -79,6 +79,10 @@ void CUIWorldEditorDisplay::OnFrameMove(double fTime, float fElapsedTime)
 
 void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 {
+	if (!IsVisible())
+	{
+		return;
+	}
 	CRenderSystem& R = GetRenderSystem();
 	CShader* pShader = R.GetShaderMgr().getSharedShader();
 	pShader->setFloat("g_fTime",fTime);
@@ -637,7 +641,7 @@ bool CUIWorldEditorDisplay::HandleMouse(UINT uMsg, POINT pt, WPARAM wParam, LPAR
 	return true;
 }
 
-void CUIWorldEditorDisplay::OnSize(const RECT& rc)
+void CUIWorldEditorDisplay::OnSize(const CRect<int>& rc)
 {
 	CUIDisplay::OnSize(rc);
 	m_SceneEffect.Reset(rc);

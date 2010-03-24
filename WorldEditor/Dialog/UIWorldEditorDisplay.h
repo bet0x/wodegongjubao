@@ -39,7 +39,7 @@ virtual bool CanHaveFocus() { return (m_bVisible && m_bEnabled); }
 
 	const CCamera& GetCamera(){return m_Camera;}
 
-	virtual void OnSize(const RECT& rc);
+	virtual void OnSize(const CRect<int>& rc);
 	//virtual void OnPressed()
 
 	void MoveCamera(int x,int y);

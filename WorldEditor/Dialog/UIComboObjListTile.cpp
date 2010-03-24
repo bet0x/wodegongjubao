@@ -93,7 +93,7 @@ void CUIComboObjListTile::OnFrameRender(double fTime, float fElapsedTime)
 	CUIComboObjList::OnFrameRender(fTime, fElapsedTime);
 	CRenderSystem& R = GetRenderSystem();
 	R.setViewport(m_ListBoxDisplay.GetBoundingBox());
-	GetGraphics().DrawTex(m_ListBoxDisplay.GetBoundingBox(),m_uTileTexID,0xFFFFFFFF);
+	GetGraphics().DrawTex(m_ListBoxDisplay.GetBoundingBox().getRECT(),m_uTileTexID,0xFFFFFFFF);
 	R.SetupRenderState();
 	R.setViewport(GetParentDialog()->GetParentDialog()->GetParentDialog()->GetBoundingBox());
 }

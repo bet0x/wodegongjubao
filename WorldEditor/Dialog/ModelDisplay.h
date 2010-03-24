@@ -33,7 +33,7 @@ public:
 	virtual void OnMButtonUp(POINT point);
 
 	virtual void OnDropRect();
-	virtual void OnSize(const RECT& rc);
+	virtual void OnSize(const CRect<int>& rc);
 
 	CModelObject* getModelObject();
 	CModelData*  getModelData();
