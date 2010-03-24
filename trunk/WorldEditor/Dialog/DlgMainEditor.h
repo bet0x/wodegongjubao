@@ -41,6 +41,9 @@ public:
 	void CloseController();
 	void OnBtnShowController();
 	void OnBtnFaceDetect();
+
+	void OnRadioModel();
+	void OnRadioWorld();
 public:
 	CUIWorldEditorDisplay& getDisplay();
 	CModelDisplay& getModelDisplay();
@@ -48,6 +51,7 @@ protected:
 	bool loadPlugFromPath(const std::string& strPath);
 	bool createPlug(const std::string& strFilename);
 private:
+	void updateDisplay();
 	CDlgModelController m_DlgModelController;
 	CUIButton		m_BtnHide;
 	CUIButton		m_BtnShow;
@@ -66,4 +70,7 @@ private:
 	CDlgRegister	m_DlgRegister;
 
 	std::vector<PLUG_ST> m_arrPlugObj;
+
+
+
 };

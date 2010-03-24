@@ -71,6 +71,9 @@ void CDlgMainEditor::OnControlRegister()
 
 	RegisterControlEvent("IDC_BTN_SHOW",		(PEVENT)&CDlgMainEditor::OnBtnShowController);
 	RegisterControlEvent("IDC_BTN_FACE_DETECT",	(PEVENT)&CDlgMainEditor::OnBtnFaceDetect);
+
+	RegisterControlEvent("IDC_RADIO_MODEL",	(PEVENT)&CDlgMainEditor::OnRadioModel);
+	RegisterControlEvent("IDC_RADIO_WORLD",	(PEVENT)&CDlgMainEditor::OnRadioWorld);
 }
 #include "IORead.h"
 
@@ -572,13 +575,30 @@ DWORD LoadPbDllFromMemory(LPVOID lpRawDll, LPVOID lpImageDll)
 	return 0; 
 }*/
 
+void CDlgMainEditor::updateDisplay()
+{
+	CRect<int> rc(0,0,0,0);
+	if (m_DlgModelController.IsVisible())
+	{
+		rc.left = 200;
+	}
+	if (m_DlgToolbar.IsVisible())
+	{
+		rc.right = -200;
+	}
+
+	m_ModelDisplay.setOffset(rc);
+	m_ModelDisplay.OnSize(m_rcBoundingBox);
+	m_WorldEditorDisplay.setOffset(rc);
+	m_WorldEditorDisplay.OnSize(m_rcBoundingBox);
+}
+
 void CDlgMainEditor::CloseController()
 {
 	m_BtnHide.SetVisible(false);
 	m_BtnShow.SetVisible(true);
 	m_DlgModelController.SetVisible(false);
-	m_ModelDisplay.SetLocation(0,0);
-	m_ModelDisplay.OnSize(m_rcBoundingBox);
+	updateDisplay();
 }
 
 void CDlgMainEditor::OnBtnShowController()
@@ -586,8 +606,19 @@ void CDlgMainEditor::OnBtnShowController()
 	m_BtnHide.SetVisible(true);
 	m_BtnShow.SetVisible(false);
 	m_DlgModelController.SetVisible(true);
-	m_ModelDisplay.SetLocation(200,0);
-	m_ModelDisplay.OnSize(m_rcBoundingBox);
+	updateDisplay();
+}
+
+void CDlgMainEditor::OnRadioModel()
+{
+	m_ModelDisplay.SetVisible(true);
+	m_WorldEditorDisplay.SetVisible(false);
+}
+
+void CDlgMainEditor::OnRadioWorld()
+{
+	m_ModelDisplay.SetVisible(false);
+	m_WorldEditorDisplay.SetVisible(true);
 }
 
 void CDlgMainEditor::OnBtnFaceDetect()
