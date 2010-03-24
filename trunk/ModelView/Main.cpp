@@ -3,10 +3,9 @@
 INT WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR, int )
 {
 	// Create application object
-	CMainRoot app;
 	try
 	{
-		app.Run();
+		CMainRoot::getInstance().Run();
 	}
 	catch( std::exception& e )
 	{
