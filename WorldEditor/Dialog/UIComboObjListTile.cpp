@@ -20,11 +20,11 @@ void CUIComboObjListTile::OnListBoxObjectSelection()
 	}
 	uint8 uTileIndex = (uint8)m_ListBoxObject.GetSelectedData();
 	((CTerrainEditor*)(m_pScene->getTerrain()))->GetBrushDecal().SetTileID(uTileIndex);
-
-	CTerrain::MAP_TILES& tiles =((CTerrain*)(m_pScene->getTerrain()))->GetTiles();
-	if (tiles.find(getSelectedObjectID())!=tiles.end())
+	
+	std::string strMaterial = getSelectedTileMaterial();
+	if (strMaterial.length()>0)
 	{
-		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(tiles[getSelectedObjectID()]);
+		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(strMaterial);
 		m_uTileTexID = material.uDiffuse;
 	}
 }
@@ -52,10 +52,10 @@ void CUIComboObjListTile::SelectObjectByObjectID(size_t id)
 	int nIndex = m_ListBoxObject.getItemIndexByData((void*)(id));
 	m_ListBoxObject.SelectItem(nIndex);
 
-	CTerrain::MAP_TILES& tiles =((CTerrain*)(m_pScene->getTerrain()))->GetTiles();
-	if (tiles.find(getSelectedObjectID())!=tiles.end())
+	std::string strMaterial = getSelectedTileMaterial();
+	if (strMaterial.length()>0)
 	{
-		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(tiles[getSelectedObjectID()]);
+		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(strMaterial);
 		m_uTileTexID = material.uDiffuse;
 	}
 }
@@ -77,6 +77,10 @@ void CUIComboObjListTile::OnObjectListReload()
 
 void CUIComboObjListTile::OnObjectListEdit()
 {
+	if (GetParentDialog())
+	{
+		GetParentDialog()->postMsg("EDIT_TILE_MATERIAL");
+	}
 	//std::string strObjectListFilename = getDisplay().getScene().getObjectListFilename();
 	//ShellExecuteW(NULL,L"open",s2ws(strObjectListFilename).c_str(),NULL,NULL,SW_SHOWNORMAL); 
 	//std::string strTileListFilename = getDisplay().getTerrain()().getTileListFilename();
@@ -96,4 +100,14 @@ void CUIComboObjListTile::OnFrameRender(double fTime, float fElapsedTime)
 	GetGraphics().DrawTex(m_ListBoxDisplay.GetBoundingBox().getRECT(),m_uTileTexID,0xFFFFFFFF);
 	R.SetupRenderState();
 	R.setViewport(GetParentDialog()->GetParentDialog()->GetParentDialog()->GetBoundingBox());
+}
+
+std::string CUIComboObjListTile::getSelectedTileMaterial()
+{
+	CTerrain::MAP_TILES& tiles =((CTerrain*)(m_pScene->getTerrain()))->GetTiles();
+	if (tiles.find(getSelectedObjectID())!=tiles.end())
+	{
+		return tiles[getSelectedObjectID()];
+	}
+	return "";
 }

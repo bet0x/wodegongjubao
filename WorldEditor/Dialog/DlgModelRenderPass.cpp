@@ -1,5 +1,6 @@
 #include "DlgModelRenderPass.h"
 #include "ModelDisplay.h"
+#include "DlgMainEditor.h"
 
 CDlgModelRenderPass::CDlgModelRenderPass()
 {
@@ -8,7 +9,6 @@ CDlgModelRenderPass::CDlgModelRenderPass()
 void CDlgModelRenderPass::OnControlRegister()
 {
 	RegisterControl("IDC_LISTBOX_RENDERPASS",	m_ListboxRenderPass);
-	m_DlgModelMaterial.Create("IDD_MODEL_MATERIAL", this->GetParentDialog()->GetParentDialog());
 	RegisterControlEvent("IDC_LISTBOX_RENDERPASS",(PEVENT)&CDlgModelRenderPass::OnListboxRenderPass);
 }
 
@@ -17,7 +17,7 @@ void CDlgModelRenderPass::SetVisible(bool bVisible)
 	CDlgBaseEditor::SetVisible(bVisible);
 	if (bVisible==false)
 	{
-		m_DlgModelMaterial.SetVisible(false);
+		getMainDialog().getMaterialDialog().SetVisible(false);
 	}
 }
 
@@ -40,28 +40,26 @@ void CDlgModelRenderPass::onReset()
 			}
 			m_ListboxRenderPass.SelectItem(nSelected);
 		}
-		if (m_DlgModelMaterial.IsVisible())
+		if (getMainDialog().getMaterialDialog().IsVisible())
 		{
 			OnListboxRenderPass();
 		}
 	}
 }
 
-CMaterial* CDlgModelRenderPass::getSelectedRenderPass()
+std::string CDlgModelRenderPass::getSelectedRenderPass()
 {
 	int nSelected = m_ListboxRenderPass.GetSelectedIndex();
 	if (getModelDisplay().getModelData())
 	{
 		ModelRenderPass& renderPass = getModelDisplay().getModelData()->m_mapPasses[nSelected];
-		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(renderPass.strMaterialName);
-		return &material;
+		return renderPass.strMaterialName;
 	}
-	return NULL;
+	return "";
 }
 
 void CDlgModelRenderPass::OnListboxRenderPass()
 {
-	CMaterial* pMaterial=getSelectedRenderPass();
-	m_DlgModelMaterial.setMaterial(pMaterial);
-	m_DlgModelMaterial.SetVisible(true);
+	getMainDialog().getMaterialDialog().setMaterial(getSelectedRenderPass(),GetParentPath(getModelDisplay().getModelObject()->getModelFilename()));
+	getMainDialog().getMaterialDialog().SetVisible(true);
 }

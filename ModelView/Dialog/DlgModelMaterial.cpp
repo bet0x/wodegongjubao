@@ -46,9 +46,9 @@ void CDlgModelMaterial::OnControlRegister()
 	RegisterControlEvent("IDC_BTN_CLOSE",	(PEVENT)&CDlgModelMaterial::OnBtnClose);
 }
 
-void CDlgModelMaterial::setMaterial(CMaterial* pMaterial)
+void CDlgModelMaterial::setMaterial(const std::string& strMaterial)
 {
-	m_pSelectedMaterial=pMaterial;
+	m_pSelectedMaterial = &GetRenderSystem().getMaterialMgr().getItem(strMaterial);
 	if (m_pSelectedMaterial)
 	{
 		CTextureMgr& TM=GetRenderSystem().GetTextureMgr();

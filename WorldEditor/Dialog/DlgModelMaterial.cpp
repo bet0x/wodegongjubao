@@ -1,5 +1,5 @@
 #include "DlgModelMaterial.h"
-#include "ModelDisplay.h"
+//#include "ModelDisplay.h"
 
 CDlgModelMaterial::CDlgModelMaterial():m_pSelectedMaterial(NULL)
 {
@@ -46,22 +46,22 @@ void CDlgModelMaterial::OnControlRegister()
 	RegisterControlEvent("IDC_BTN_CLOSE",	(PEVENT)&CDlgModelMaterial::OnBtnClose);
 }
 
-void CDlgModelMaterial::setMaterial(CMaterial* pMaterial)
+void CDlgModelMaterial::setMaterial(const std::string& strMaterial, const std::string& strPath)
 {
-	m_pSelectedMaterial=pMaterial;
+	m_pSelectedMaterial = &GetRenderSystem().getMaterialMgr().getItem(strMaterial);
 	if (m_pSelectedMaterial)
 	{
 		CTextureMgr& TM=GetRenderSystem().GetTextureMgr();
 		CShaderMgr& SM=GetRenderSystem().GetShaderMgr();
-		std::string strFilename = GetParentPath(getModelDisplay().getModelObject()->getModelFilename());
+		m_strPath = strPath;
 
-		m_EditboxDiffuse.	SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uDiffuse))));
-		m_EditboxEmissive.	SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uEmissive))));
-		m_EditboxSpecular.	SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uSpecular))));
-		m_EditboxBump.		SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uNormal))));
-		m_EditboxReflection.SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uReflection))));
-		m_EditboxLightmap.	SetText(s2ws(getSimpleFilename(strFilename,TM.getItemName(m_pSelectedMaterial->uLightMap))));
-		m_EditboxEffect.	SetText(s2ws(getSimpleFilename(strFilename,SM.getItemName(m_pSelectedMaterial->uShader))));
+		m_EditboxDiffuse.	SetText(s2ws(getSimpleFilename(strPath,TM.getItemName(m_pSelectedMaterial->uDiffuse))));
+		m_EditboxEmissive.	SetText(s2ws(getSimpleFilename(strPath,TM.getItemName(m_pSelectedMaterial->uEmissive))));
+		m_EditboxSpecular.	SetText(s2ws(getSimpleFilename(strPath,TM.getItemName(m_pSelectedMaterial->uSpecular))));
+		m_EditboxBump.		SetText(s2ws(getSimpleFilename(strPath,TM.getItemName(m_pSelectedMaterial->uNormal))));
+		m_EditboxReflection.SetText(s2ws(getSimpleFilename(strPath,TM.getItemName(m_pSelectedMaterial->uReflection))));
+		m_EditboxLightmap.	SetText(s2ws(getSimpleFilename(strPath,TM.getItemName(m_pSelectedMaterial->uLightMap))));
+		m_EditboxEffect.	SetText(s2ws(getSimpleFilename(strPath,SM.getItemName(m_pSelectedMaterial->uShader))));
 		m_CheckboxAlphatest.SetChecked(m_pSelectedMaterial->bAlphaTest);
 		m_NumAlphatestvalue.setFloat(m_pSelectedMaterial->uAlphaTestValue);
 		m_CheckboxBlend.SetChecked(m_pSelectedMaterial->bBlend);
@@ -77,7 +77,7 @@ void CDlgModelMaterial::setMaterial(CMaterial* pMaterial)
 
 std::string CDlgModelMaterial::getEditBoxFilename(const CUIEditBox& editBox)
 {
-	return getRealFilename(GetParentPath(getModelDisplay().getModelObject()->getModelFilename()),ws2s(editBox.GetText()));
+	return getRealFilename(m_strPath,ws2s(editBox.GetText()));
 }
 
 unsigned int CDlgModelMaterial::getTextureID(const CUIEditBox& editBox)

@@ -1,5 +1,7 @@
 #include "DlgTileBrush.h"
 #include "Terrain.h"
+// For Material
+#include "DlgMainEditor.h"
 
 CDlgTileBrush::CDlgTileBrush()
 {
@@ -18,6 +20,8 @@ void CDlgTileBrush::OnControlRegister()
 
 	RegisterControlEvent("IDC_RADIO_BTN_FIRST_LAYER",	(PEVENT)&CDlgTileBrush::OnRadioBtnLayerChanged);
 	RegisterControlEvent("IDC_RADIO_BTN_SECOND_LAYER",	(PEVENT)&CDlgTileBrush::OnRadioBtnLayerChanged);
+
+	RegisterEvent("EDIT_TILE_MATERIAL", (PEVENT)&CDlgTileBrush::OnBtnTileEdit);
 }
 
 bool CDlgTileBrush::OnInitDialog()
@@ -34,4 +38,10 @@ void CDlgTileBrush::OnRadioBtnLayerChanged()
 void CDlgTileBrush::initTiles()
 {
 	m_ObjListTiles.initObject(getDisplay().getScene());
+}
+
+void CDlgTileBrush::OnBtnTileEdit()
+{
+	getMainDialog().getMaterialDialog().setMaterial(m_ObjListTiles.getSelectedTileMaterial(),"");
+	getMainDialog().getMaterialDialog().SetVisible(true);
 }
