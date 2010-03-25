@@ -141,7 +141,6 @@ bool CDlgMainEditor::OnInitDialog()
 
 	// model
 	m_BtnHide.SetVisible(true);
-	m_BtnShow.SetVisible(false);
 	return CUIMainDialog::OnInitDialog();
 }
 
@@ -597,7 +596,6 @@ void CDlgMainEditor::updateDisplay()
 void CDlgMainEditor::CloseController()
 {
 	m_BtnHide.SetVisible(false);
-	m_BtnShow.SetVisible(true);
 	m_DlgModelController.SetVisible(false);
 	updateDisplay();
 }
@@ -605,8 +603,7 @@ void CDlgMainEditor::CloseController()
 void CDlgMainEditor::OnBtnShowController()
 {
 	m_BtnHide.SetVisible(true);
-	m_BtnShow.SetVisible(false);
-	m_DlgModelController.SetVisible(true);
+	m_DlgModelController.SetVisible(!m_DlgModelController.IsVisible());
 	updateDisplay();
 }
 
