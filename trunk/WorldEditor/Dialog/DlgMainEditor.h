@@ -7,6 +7,7 @@
 
 #include "DlgRegister.h"
 #include "DlgModelController.h"
+#include "DlgModelMaterial.h"
 #include "ModelDisplay.h"
 
 //#include "DlgFaceDetect.h"
@@ -47,6 +48,7 @@ public:
 public:
 	CUIWorldEditorDisplay& getDisplay();
 	CModelDisplay& getModelDisplay();
+	CDlgModelMaterial& getMaterialDialog();
 protected:
 	bool loadPlugFromPath(const std::string& strPath);
 	bool createPlug(const std::string& strFilename);
@@ -72,5 +74,5 @@ private:
 	std::vector<PLUG_ST> m_arrPlugObj;
 
 
-
+	CDlgModelMaterial m_DlgMaterialEdit;
 };

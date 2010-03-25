@@ -1,5 +1,5 @@
 #pragma once
-#include "DlgModelMaterial.h"
+#include "DlgBaseEditor.h"
 
 class CDlgModelRenderPass: public CDlgBaseEditor
 {
@@ -9,10 +9,9 @@ public:
 	virtual void SetVisible(bool bVisible);
 	void onReset();
 private:
-	CMaterial* getSelectedRenderPass();
+	std::string getSelectedRenderPass();
 	// Controls' event.
 	void OnListboxRenderPass();
 	// Controls' variable.
 	CUIListBox	m_ListboxRenderPass;
-	CDlgModelMaterial m_DlgModelMaterial;
 };

@@ -13,6 +13,7 @@ public:
 
 	void OnRadioBtnLayerChanged();
 	void initTiles();
+	void OnBtnTileEdit();
 private:
 	CUIComboObjListTile m_ObjListTiles;
 	CUIRadioButton	m_RadioBtnFirstLayer;

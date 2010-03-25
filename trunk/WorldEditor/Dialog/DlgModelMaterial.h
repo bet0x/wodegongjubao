@@ -7,7 +7,7 @@ class CDlgModelMaterial: public CDlgBaseEditor
 public:
 	CDlgModelMaterial();
 	virtual void OnControlRegister();
-	void setMaterial(CMaterial* pMaterial);
+	void setMaterial(const std::string& strMaterial, const std::string& strPath);
 private:
 	std::string getEditBoxFilename(const CUIEditBox& editBox);
 	unsigned int getTextureID(const CUIEditBox& editBox);
@@ -51,4 +51,6 @@ private:
 	CUIListBox	m_ListboxMaterial;
 
 	CMaterial* m_pSelectedMaterial;
+
+	std::string m_strPath;
 };

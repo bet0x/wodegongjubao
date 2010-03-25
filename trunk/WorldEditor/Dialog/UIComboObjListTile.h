@@ -17,6 +17,8 @@ public:
 	void OnObjectListEdit();
 	virtual void OnFrameMove(double fTime, float fElapsedTime);
 	virtual void OnFrameRender(double fTime, float fElapsedTime);
+
+	std::string getSelectedTileMaterial();
 public:
 	size_t	m_uTileTexID;
 };

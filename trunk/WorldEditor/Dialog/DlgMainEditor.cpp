@@ -22,6 +22,11 @@ CModelDisplay&  CDlgMainEditor::getModelDisplay()
 	return m_ModelDisplay;
 }
 
+CDlgModelMaterial& CDlgMainEditor::getMaterialDialog()
+{
+	return m_DlgMaterialEdit;
+}
+
 bool CDlgMainEditor::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	//.//
@@ -39,10 +44,15 @@ void CDlgMainEditor::OnControlRegister()
 {
 	CUIMainDialog::OnControlRegister();
 
-	m_DlgToolbar.Create("IDD_TOOLBAR", this);
+
 	m_DlgFile.Create("IDD_FILE", this);
 	m_DlgRegister.Create("IDD_REGISTER", this);
 	//m_DlgFPS.Create("IDD_FPS", this);
+	m_DlgMaterialEdit.Create("IDD_MODEL_MATERIAL", this);
+	m_DlgModelController.Create("IDD_MODEL_CONTROLLER", this);
+	//m_DlgFaceDetect.Create("IDD_FACE_DETECT", this);
+
+	m_DlgToolbar.Create("IDD_TOOLBAR", this); // 放到最后是因为前面会 在渲染纹理是 把其他UI消失掉
 
 	RegisterControl( "IDC_STATIC_POS_X", m_StaticPosX);
 	RegisterControl( "IDC_STATIC_POS_Y", m_StaticPosY);
@@ -61,8 +71,6 @@ void CDlgMainEditor::OnControlRegister()
 	RegisterControlEvent("IDD_FILE", (PEVENT)&CDlgMainEditor::OnFileSave,CDlgFile::EVENT_SAVE);
 	RegisterControlEvent("IDD_FILE", (PEVENT)&CDlgMainEditor::OnFileCancel,CDlgFile::EVENT_CANCEL);
 	//////////////////////////////////////////////////////////////////////////
-	m_DlgModelController.Create("IDD_MODEL_CONTROLLER", this);
-	//m_DlgFaceDetect.Create("IDD_FACE_DETECT", this);
 
 	RegisterControl("IDC_DISPLAY_MODEL", m_ModelDisplay);
 
@@ -141,6 +149,7 @@ bool CDlgMainEditor::OnInitDialog()
 
 	// model
 	m_BtnHide.SetVisible(true);
+	updateDisplay();
 	return CUIMainDialog::OnInitDialog();
 }
 
