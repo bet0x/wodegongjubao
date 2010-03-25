@@ -66,7 +66,8 @@ CUIWorldEditorDisplay::~CUIWorldEditorDisplay()
 
 void CUIWorldEditorDisplay::OnFrameMove(double fTime, float fElapsedTime)
 {
-	m_Camera.SetProjParams(PI/3, (m_rcBoundingBox.right-m_rcBoundingBox.left), (m_rcBoundingBox.bottom-m_rcBoundingBox.top), 0.1f, m_Scene.getFog().fEnd);
+	CRect<int> rcViewport = getViewport();
+	m_Camera.SetProjParams(PI/3, rcViewport.getWidth(), rcViewport.getHeight(), 0.1f, m_Scene.getFog().fEnd);
 	// 更新视矩阵
 	m_Camera.FrameMove(fElapsedTime);
 
@@ -79,10 +80,11 @@ void CUIWorldEditorDisplay::OnFrameMove(double fTime, float fElapsedTime)
 
 void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 {
-	if (!IsVisible())
+	if (!IsVisible()&&isHidden())
 	{
 		return;
 	}
+	CRect<int> rcViewport = getViewport();
 	CRenderSystem& R = GetRenderSystem();
 	CShader* pShader = R.GetShaderMgr().getSharedShader();
 	pShader->setFloat("g_fTime",fTime);
@@ -95,7 +97,7 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 	R.setWorldMatrix(Matrix::UNIT);
 	R.SetSamplerFilter(0, TEXF_LINEAR, TEXF_LINEAR, TEXF_LINEAR);
 	R.SetSamplerFilter(1, TEXF_LINEAR, TEXF_LINEAR, TEXF_LINEAR);
-	R.setViewport(GetBoundingBox());
+	R.setViewport(rcViewport);
 	R.setProjectionMatrix(m_Camera.GetProjMatrix());
 	R.setViewMatrix(m_Camera.GetViewMatrix());
 	// 渲染天空盒
@@ -202,6 +204,7 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 	R.setViewport(GetParentDialog()->GetBoundingBox());
 	
 	//TwDraw();
+	CUIDisplay::OnFrameRender(fTime,fElapsedTime);
 	return;
 }
 
