@@ -3,17 +3,14 @@
 #include "FileSystem.h"
 #include "MUBmd.h"
 #include "Material.h"
-//#include "RenderSystem.h"
 #include "CSVFile.h"
 
 CMyPlug::CMyPlug(void)
 {
-
 }
 
 CMyPlug::~CMyPlug(void)
 {
-
 }
 
 int CMyPlug::Execute(iModelData * pModelData, bool bShowDlg, bool bSpecifyFileName)
@@ -54,7 +51,6 @@ bool importMaterial(iModelData * pModelData, const std::string& strFilename, con
 		material.vUVScale.y		=1.0f/csv.GetFloat("VScale");
 	}
 	csv.Close();
-
 	return true;
 }
 
@@ -155,11 +151,6 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 			mesh.addTexcoord(*it);
 		}
 		{
-// 			ModelRenderPass pass;
-// 			pass.nSubID = i;
-// 			pass.material.bCull = false;
-// 			pass.material.bAlphaTest = true;
-// 			pass.material.uAlphaTestValue = 0x80;
 			std::string strTexFileName = GetParentPath(strFilename) + bmdSub.szTexture;
 			{
 				std::string strExtension = GetExtension(bmdSub.szTexture); 
@@ -174,7 +165,9 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 			{
 				CMaterial& material = pModelData->getMaterial(strMaterialName);
 				material.strDiffuse=strTexFileName;
+				material.uCull = 0;
 				material.bAlphaTest=true;
+				material.uAlphaTestValue = 0x80;
 			}
 			pModelData->setRenderPass(i,i,strMaterialName);
 		}
@@ -229,7 +222,6 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 
 	mesh.update();
 
-	//m_bbox = mesh.getBBox();
 	std::string strParentDir = GetParentPath(strFilename);
 	std::string strParentDirName = GetFilename(strParentDir);
 	
@@ -252,6 +244,19 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 
 bool CMyPlug::exportData(iModelData * pModelData, const std::string& strFilename)
 {
+	assert(pModelData);
+	FILE* fp= fopen(strFilename.c_str(),"wb");
+	if (fp==NULL)
+	{
+		return false;
+	}
+	CMUBmd::BmdHead bmdHead;
+	strcpy(bmdHead.strFile,GetFilename(pModelData->getItemName()).c_str());
+	bmdHead.uSubCount=pModelData->getMesh().getSubCount();
+	bmdHead.uBoneCount=pModelData->getSkeleton().m_BoneAnims.size();
+	bmdHead.uAnimCount=pModelData->getSkeleton().m_BoneAnims.size();
+
+
 	return true;
 }
 

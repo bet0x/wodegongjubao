@@ -1,7 +1,6 @@
 ; MuWorldMapPlug.def : Declares the module parameters for the DLL.
 
 LIBRARY      "MuModelPlugin"
-DESCRIPTION  'MuModelPlugin Windows Dynamic Link Library'
 
 EXPORTS
     Model_Plug_CreateObject	@1

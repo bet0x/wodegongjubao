@@ -92,9 +92,9 @@ void CUIComboObjListSceneObject::OnFrameRender(double fTime, float fElapsedTime)
 	R.SetSamplerFilter(1, TEXF_LINEAR, TEXF_LINEAR, TEXF_LINEAR);
 	Matrix mView,mProj;
 	BBox bbox;
-	if (m_ModelObject.m_pMesh)
+	if (m_ModelObject.getModelData())
 	{
-		bbox = m_ModelObject.m_pMesh->m_bbox;
+		bbox = m_ModelObject.getModelData()->m_Mesh.m_bbox;
 	}
 	Vec3D vCenter = (bbox.vMax+bbox.vMin)*0.5f;
 	float fWidth = (bbox.vMax-bbox.vMin).length();
