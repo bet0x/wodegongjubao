@@ -68,7 +68,7 @@ std::string CDlgModelRenderPass::getSelectedRenderPass()
 	int nSelected = m_ListboxRenderPass.GetSelectedIndex();
 	if (getModelDisplay().getModelData())
 	{
-		ModelRenderPass& renderPass = getModelDisplay().getModelData()->m_mapPasses[nSelected];
+		const ModelRenderPass& renderPass = getModelDisplay().getModelData()->m_mapPasses[nSelected];
 		return renderPass.strMaterialName;
 	}
 	return "";
@@ -83,7 +83,7 @@ void CDlgModelRenderPass::OnListboxRenderPass()
 	int nSelected = m_ListboxRenderPass.GetSelectedIndex();
 	if (getModelDisplay().getModelData())
 	{
-		ModelRenderPass& renderPass = getModelDisplay().getModelData()->m_mapPasses[nSelected];
+		const ModelRenderPass& renderPass = getModelDisplay().getModelData()->m_mapPasses[nSelected];
 		m_CmbSubID.getListBox().selectByData((void*)renderPass.nSubID);
 	}
 }
@@ -93,7 +93,7 @@ void CDlgModelRenderPass::OnCmbSubIDSelected()
 	int nSelected = m_ListboxRenderPass.GetSelectedIndex();
 	if (getModelDisplay().getModelData())
 	{
-		ModelRenderPass& renderPass = getModelDisplay().getModelData()->m_mapPasses[nSelected];
+		const ModelRenderPass& renderPass = getModelDisplay().getModelData()->m_mapPasses[nSelected];
 		//renderPass.nSubID = m_CmbSubID.getListBox().GetSelectedIndex()-1;
 	}
 }
@@ -103,7 +103,7 @@ void CDlgModelRenderPass::OnEditBoxMaterialChanged()
 	int nSelected = m_ListboxRenderPass.GetSelectedIndex();
 	if (getModelDisplay().getModelData())
 	{
-		ModelRenderPass& renderPass = getModelDisplay().getModelData()->m_mapPasses[nSelected];
+		const ModelRenderPass& renderPass = getModelDisplay().getModelData()->m_mapPasses[nSelected];
 		renderPass.strMaterialName = ws2s(m_EditBoxMaterial.GetText());
 	}
 }

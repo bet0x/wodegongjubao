@@ -2,7 +2,6 @@
 #include "IORead.h"
 #include "FileSystem.h"
 //#include "MUBmd.h"
-//#include "RenderSystem.h"
 //#include "CSVFile.h"
 
 CMyPlug::CMyPlug(void)
