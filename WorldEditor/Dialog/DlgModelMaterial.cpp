@@ -1,5 +1,4 @@
 #include "DlgModelMaterial.h"
-//#include "ModelDisplay.h"
 
 CDlgModelMaterial::CDlgModelMaterial():m_pSelectedMaterial(NULL)
 {
