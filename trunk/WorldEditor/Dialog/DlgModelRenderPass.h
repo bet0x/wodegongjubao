@@ -12,6 +12,12 @@ private:
 	std::string getSelectedRenderPass();
 	// Controls' event.
 	void OnListboxRenderPass();
+	void OnCmbSubIDSelected();
+	void OnEditBoxMaterialChanged();
+	void OnBtnAdd();
+	void OnBtnDelete();
 	// Controls' variable.
 	CUIListBox	m_ListboxRenderPass;
+	CUIComboBox	m_CmbSubID;
+	CUIEditBox	m_EditBoxMaterial;
 };
