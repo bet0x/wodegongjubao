@@ -36,7 +36,7 @@ public:
 	virtual void OnSize(const CRect<int>& rc);
 
 	CModelObject* getModelObject();
-	const CModelData*  getModelData()const;
+	CModelData*  getModelData()const;
 	AnimManager* getModelAnimManager();
 public:
 	CCamera				m_Camera;
