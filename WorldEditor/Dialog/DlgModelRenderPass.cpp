@@ -35,7 +35,7 @@ void CDlgModelRenderPass::onReset()
 	m_ListboxRenderPass.RemoveAllItems();
 	if (getModelDisplay().getModelData())
 	{
-		size_t uCount = getModelDisplay().getModelData()->m_mapPasses.size();
+		size_t uCount = getModelDisplay().getModelData()->getRenderPassCount();
 		if (uCount>0)
 		{
 			for (size_t i=0; i<uCount; ++i)
@@ -118,8 +118,7 @@ void CDlgModelRenderPass::OnEditBoxMaterialChanged()
 	int nSelected = m_ListboxRenderPass.GetSelectedIndex();
 	if (getModelDisplay().getModelData())
 	{
-		const ModelRenderPass& renderPass = getModelDisplay().getModelData()->m_mapPasses[nSelected];
-		renderPass.strMaterialName = ws2s(m_EditBoxMaterial.GetText());
+		getModelDisplay().getModelData()->setRenderPass(nSelected,m_CmbSubID.getListBox().GetSelectedIndex()-1,ws2s(m_EditBoxMaterial.GetText()));
 	}
 }
 
@@ -127,11 +126,8 @@ void CDlgModelRenderPass::OnBtnAdd()
 {
 	if (getModelDisplay().getModelData())
 	{
-		std::map<int,ModelRenderPass>& mapPasses=getModelDisplay().getModelData()->m_mapPasses;
-		int passID = mapPasses.size();
-		ModelRenderPass& renderPass = mapPasses[passID];
-		renderPass.nSubID = m_CmbSubID.getListBox().GetSelectedIndex()-1;
-		renderPass.strMaterialName = ws2s(m_EditBoxMaterial.GetText());
+		int passID =getModelDisplay().getModelData()->getRenderPassCount();
+		getModelDisplay().getModelData()->setRenderPass(passID,m_CmbSubID.getListBox().GetSelectedIndex()-1,ws2s(m_EditBoxMaterial.GetText()));
 	}
 }
 
@@ -140,11 +136,8 @@ void CDlgModelRenderPass::OnBtnDelete()
 	int nSelected = m_ListboxRenderPass.GetSelectedIndex();
 	if (getModelDisplay().getModelData())
 	{
-		std::map<int,ModelRenderPass>& mapPasses=getModelDisplay().getModelData()->m_mapPasses;
-		std::map<int,ModelRenderPass>::iterator it=mapPasses.find(nSelected);
-		if(it!=mapPasses.end())
+		if(getModelDisplay().getModelData()->delRenderPass(nSelected))
 		{
-			mapPasses.erase(it);
 			onReset();
 		}
 	}
