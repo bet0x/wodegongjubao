@@ -68,8 +68,12 @@ std::string CDlgModelRenderPass::getSelectedRenderPass()
 	int nSelected = m_ListboxRenderPass.GetSelectedIndex();
 	if (getModelDisplay().getModelData())
 	{
-		const ModelRenderPass& renderPass = getModelDisplay().getModelData()->m_mapPasses[nSelected];
-		return renderPass.strMaterialName;
+		int nSubID=0;
+		std::string strMaterial;
+		if (getModelDisplay().getModelData()->getRenderPass(nSelected,nSubID,strMaterial))
+		{
+			return strMaterial;
+		}
 	}
 	return "";
 }
@@ -83,8 +87,12 @@ void CDlgModelRenderPass::OnListboxRenderPass()
 	int nSelected = m_ListboxRenderPass.GetSelectedIndex();
 	if (getModelDisplay().getModelData())
 	{
-		const ModelRenderPass& renderPass = getModelDisplay().getModelData()->m_mapPasses[nSelected];
-		m_CmbSubID.getListBox().selectByData((void*)renderPass.nSubID);
+		int nSubID=0;
+		std::string strMaterial;
+		if (getModelDisplay().getModelData()->getRenderPass(nSelected,nSubID,strMaterial))
+		{
+			m_CmbSubID.getListBox().selectByData((void*)nSubID);
+		}
 	}
 }
 
@@ -93,7 +101,14 @@ void CDlgModelRenderPass::OnCmbSubIDSelected()
 	int nSelected = m_ListboxRenderPass.GetSelectedIndex();
 	if (getModelDisplay().getModelData())
 	{
-		const ModelRenderPass& renderPass = getModelDisplay().getModelData()->m_mapPasses[nSelected];
+		//int nSubID=0;
+		//std::string strMaterial;
+		//if (getModelDisplay().getModelData()->getRenderPass(nSelected,nSubID,strMaterial))
+		//{
+		//	m_CmbSubID.getListBox().selectByData((void*)nSubID);
+		//}
+
+		//const ModelRenderPass& renderPass = getModelDisplay().getModelData()->m_mapPasses[nSelected];
 		//renderPass.nSubID = m_CmbSubID.getListBox().GetSelectedIndex()-1;
 	}
 }
