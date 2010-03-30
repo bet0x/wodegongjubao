@@ -5,6 +5,7 @@
 #include "CsvFile.h"
 #include "IORead.h"
 #include "DlgMainEditor.h"
+#include "ModelDataMgr.h"
 
 CDlgModelController::CDlgModelController()
 {
@@ -147,11 +148,11 @@ void CDlgModelController::initRecentPath()
 	}
 	if (wstrRecentPath.length()>0)
 	{
-		OpenPath(wstrRecentPath,s2ws(GetModelMgr().getAllExtensions()));
+		OpenPath(wstrRecentPath,s2ws(CModelDataMgr::getInstance().getAllExtensions()));
 	}
 	else
 	{
-		OpenPath(getCurrentDirectory(),s2ws(GetModelMgr().getAllExtensions()));
+		OpenPath(getCurrentDirectory(),s2ws(CModelDataMgr::getInstance().getAllExtensions()));
 	}
 }
 
@@ -159,7 +160,7 @@ void CDlgModelController::OpenFile(const std::wstring& wstrFilename)
 {
 	if (IOReadBase::Exists(ws2s(wstrFilename)))
 	{
-		OpenPath(GetParentPath(wstrFilename),s2ws(GetModelMgr().getAllExtensions()));
+		OpenPath(GetParentPath(wstrFilename),s2ws(CModelDataMgr::getInstance().getAllExtensions()));
 		//m_ListBoxFolder.SetSelec()
 		//GetFilename(wstrFilename)
 		getModelDisplay().LoadModel(ws2s(wstrFilename));
