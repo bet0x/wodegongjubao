@@ -33,9 +33,9 @@ bool CDlgModelAnim::OnInitDialog()
 
 void CDlgModelAnim::OnFrameMove(double fTime, float fElapsedTime)
 {
-	if (getModelDisplay().getModelAnimManager())
+	if (getModelDisplay().getModelObject())
 	{
-		m_SliderFrame.SetValue(getModelDisplay().getModelAnimManager()->GetFrame());
+		m_SliderFrame.SetValue(getModelDisplay().getModelObject()->m_AnimMgr.uFrame);
 		std::wstring wstr = FormatW(L"%d", m_SliderFrame.GetValue()-m_SliderFrame.getMin());
 		m_StaticFrame.SetText(wstr);
 	}
@@ -48,12 +48,15 @@ void CDlgModelAnim::ResetAnim()
 	m_ComboBoxAnim.getListBox().RemoveAllItems();
 	if (getModelDisplay().getModelData())
 	{
-		size_t uAnimSize = getModelDisplay().getModelData()->m_AnimList.size();
+		size_t uAnimSize = getModelDisplay().getModelData()->getAnimationCount();
 		if (uAnimSize>0)
 		{
 			for (size_t i=0; i<uAnimSize; ++i)
 			{
-				m_ComboBoxAnim.AddItem(FormatW(L"[%d]",i));
+				std::string strAnimName;
+				long timeStart,timeEnd;
+				getModelDisplay().getModelData()->getAnimation(i,strAnimName,timeStart,timeEnd);
+				m_ComboBoxAnim.AddItem(s2ws(strAnimName));
 			}
 			if (nSelected>=uAnimSize)
 			{
@@ -68,43 +71,49 @@ void CDlgModelAnim::ResetAnim()
 
 void CDlgModelAnim::OnPlay()
 {
-	if (getModelDisplay().getModelAnimManager())
-	{
-		getModelDisplay().getModelAnimManager()->Pause();
-	}
+	//if (getModelDisplay().getModelAnimManager())
+	//{
+	//	getModelDisplay().getModelAnimManager()->Pause();
+	//}
 }
 
 void CDlgModelAnim::OnPrev()
 {
-	if (getModelDisplay().getModelAnimManager())
-	{
-		getModelDisplay().getModelAnimManager()->PrevFrame();
-	}
+	//if (getModelDisplay().getModelAnimManager())
+	//{
+	//	getModelDisplay().getModelAnimManager()->PrevFrame();
+	//}
 }
 
 void CDlgModelAnim::OnNext()
 {
-	if (getModelDisplay().getModelAnimManager())
-	{
-		getModelDisplay().getModelAnimManager()->NextFrame();
-	}
+	//if (getModelDisplay().getModelAnimManager())
+	//{
+	//	getModelDisplay().getModelAnimManager()->NextFrame();
+	//}
 }
 
 void CDlgModelAnim::OnAnimChanged()
 {
-	if (getModelDisplay().getModelAnimManager())
+	if (getModelDisplay().getModelData())
 	{
-		getModelDisplay().getModelObject()->SetAnim(m_ComboBoxAnim.getListBox().GetSelectedIndex());
-		m_SliderFrame.SetRange(getModelDisplay().getModelAnimManager()->getCurrentAnim().timeStart, getModelDisplay().getModelAnimManager()->getCurrentAnim().timeEnd);
+		std::string strAnimName=ws2s(m_ComboBoxAnim.GetText());
+		long timeStart=0;
+		long timeEnd=0;
+		getModelDisplay().getModelObject()->SetAnim(strAnimName);
+		if (getModelDisplay().getModelData()->getAnimation(strAnimName,timeStart,timeEnd))
+		{
+			m_SliderFrame.SetRange(timeStart, timeEnd);
+		}
 	}
 }
 
 void CDlgModelAnim::OnSpeedChanged()
 {
 	float fSpeed = m_SliderSpeed.GetValue()*0.1f;
-	if (getModelDisplay().getModelAnimManager())
+	if (getModelDisplay().getModelObject())
 	{
-		getModelDisplay().getModelAnimManager()->SetSpeed(fSpeed);
+		getModelDisplay().getModelObject()->m_AnimMgr.fSpeed=fSpeed;
 	}
 	std::wstring wstr = FormatW(L"%.1fx", fSpeed);
 	m_StaticSpeed.SetText(wstr);
@@ -112,9 +121,9 @@ void CDlgModelAnim::OnSpeedChanged()
 
 void CDlgModelAnim::OnFrameChanged()
 {
-	if (getModelDisplay().getModelAnimManager())
+	if (getModelDisplay().getModelObject())
 	{
 		int nFrame = m_SliderFrame.GetValue();
-		getModelDisplay().getModelAnimManager()->SetFrame(nFrame);
+		getModelDisplay().getModelObject()->m_AnimMgr.uFrame=nFrame;
 	}
 }
