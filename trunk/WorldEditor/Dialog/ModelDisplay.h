@@ -37,7 +37,6 @@ public:
 
 	CModelObject* getModelObject();
 	CModelData*  getModelData()const;
-	AnimManager* getModelAnimManager();
 public:
 	CCamera				m_Camera;
 	CSkyBox				m_SkyBox;
