@@ -140,7 +140,11 @@ bool CDlgMainEditor::OnInitDialog()
 		}
 	}
 
-	loadPlugFromPath("");
+#ifdef _DEBUG
+	loadPlugFromPath("Plugins\\debug\\");
+#else
+	loadPlugFromPath("Plugins\\");
+#endif
 //#if defined(_MU)
 	SetControlEnabled("IDC_BTN_NEW_FILE",false);
 //#endif
