@@ -92,7 +92,33 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 			long timeStart = nFrameCount*MU_BMD_ANIM_FRAME_TIME;
 			nFrameCount+=bmd.bmdSkeleton.setBmdAnim[i].uFrameCount+1;
 			long timeEnd = (nFrameCount-1)*MU_BMD_ANIM_FRAME_TIME;
-			pModelData->addAnimation(timeStart,timeEnd);
+
+			std::string strAnimName;
+			{
+				char szID[256]={0};
+				itoa(i,szID,10);
+				strAnimName=szID;
+			}
+			switch(i)
+			{
+			case 0:strAnimName+="Idle0";
+				break;
+			case 1:strAnimName+="Idle1";
+				break;
+			case 2:strAnimName+="Walk";
+				break;
+			case 3:strAnimName+="Attack0";
+				break;
+			case 4:strAnimName+="Attack1";
+				break;
+			case 5:strAnimName+="Hurt";
+				break;
+			case 6:strAnimName+="Dead";
+				break;
+			default:strAnimName+="Unknown";
+				break;
+			}
+			pModelData->setAnimation(strAnimName.c_str(),timeStart,timeEnd);
 		}
 	}
 
