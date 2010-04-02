@@ -126,18 +126,19 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 	{
 		CMUBmd::BmdSub& bmdSub = bmd.setBmdSub[i];
 		iLodMesh& mesh = pModelData->getMesh();
-		FaceIndex faceIndex;
+		iSubMesh& subMesh=mesh.addSubMesh();
+		VertexIndex vertexIndex;
 		for(std::vector<CMUBmd::BmdSub::BmdTriangle>::iterator it=bmdSub.setTriangle.begin(); it!=bmdSub.setTriangle.end(); it++)
 		{
 			for (size_t j=0; j<3; ++j)
 			{
-				faceIndex.v[j]	= mesh.getPosCount()+it->indexVertex[2-j];
-				faceIndex.b[j]	= mesh.getBoneCount()+it->indexVertex[2-j];
-				faceIndex.w[j]	= mesh.getWeightCount()+it->indexVertex[2-j];
-				faceIndex.n[j]	= mesh.getNormalCount()+it->indexNormal[2-j];
-				faceIndex.uv1[j]= mesh.getTexcoordCount()+it->indexUV[2-j];
+				vertexIndex.p	= /*mesh.getPosCount()+*/it->indexVertex[2-j];
+				vertexIndex.b	= /*mesh.getBoneCount()+*/it->indexVertex[2-j];
+				vertexIndex.w	= /*mesh.getWeightCount()+*/it->indexVertex[2-j];
+				vertexIndex.n	= /*mesh.getNormalCount()+*/it->indexNormal[2-j];
+				vertexIndex.uv1	= /*mesh.getTexcoordCount()+*/it->indexUV[2-j];
+				subMesh.addVertexIndex(vertexIndex);
 			}
-			mesh.addFaceIndex(i,faceIndex);
 		}
 		for(std::vector<CMUBmd::BmdSub::BmdPos>::iterator it=bmdSub.setVertex.begin(); it!=bmdSub.setVertex.end(); it++)
 		{
@@ -155,26 +156,26 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 				uint8 uBone = it->uBones&0xFF;
 				if (bmd.bmdSkeleton.setBmdBone.size()<=uBone||bmd.bmdSkeleton.setBmdBone[uBone].bEmpty)
 				{
-					mesh.addBone(0);
+					subMesh.addBone(0);
 				}
 				else
 				{
-					mesh.addBone(it->uBones);
+					subMesh.addBone(it->uBones);
 				}
 				//assert((it->uBones&0xFFFFFF00)==0);
-				mesh.addWeight(0x000000FF);
+				subMesh.addWeight(0x000000FF);
 			}
-			mesh.addPos(vPos);
+			subMesh.addPos(vPos);
 		}
 		for(std::vector<CMUBmd::BmdSub::BmdNormal>::iterator it=bmdSub.setNormal.begin(); it!=bmdSub.setNormal.end(); it++)
 		{
 			Vec3D n = fixCoordSystemNormal(it->vNormal);
 			n = bmd.bmdSkeleton.getRotateMatrix(it->uBones)*n;
-			mesh.addNormal(n);
+			subMesh.addNormal(n);
 		}
 		for(std::vector<Vec2D>::iterator it=bmdSub.setUV.begin(); it!=bmdSub.setUV.end(); it++)
 		{
-			mesh.addTexcoord(*it);
+			subMesh.addTexcoord(*it);
 		}
 		{
 			std::string strTexFileName = GetParentPath(strFilename) + bmdSub.szTexture;
@@ -290,21 +291,21 @@ bool CMyPlug::exportData(iModelData * pModelData, const std::string& strFilename
 	FaceIndex faceIndex;
 	for (size_t i=0; i<bmdHead.uSubCount; ++i)
 	{
-		size_t uFaceIndexCount=getFaceIndexCount(i);
-		// sub head
-		CMUBmd::BmdSub::BmdSubHead subHead;
-		subHead.uVertexCount=uFaceIndexCount*3;
-		subHead.uNormal=uFaceIndexCount*3;
-		subHead.uUVCount=uFaceIndexCount*3;
-		subHead.uTriangleCount=uFaceIndexCount*3;
+		//size_t uFaceIndexCount=getFaceIndexCount(i);
+		//// sub head
+		//CMUBmd::BmdSub::BmdSubHead subHead;
+		//subHead.uVertexCount=uFaceIndexCount*3;
+		//subHead.uNormal=uFaceIndexCount*3;
+		//subHead.uUVCount=uFaceIndexCount*3;
+		//subHead.uTriangleCount=uFaceIndexCount*3;
 
-		fwrite(&bmdHead,sizeof(CMUBmd::BmdHead),1,fp);
-		for (size_t n=0;n<uFaceIndexCount;++n)
-		{
-			if (getFaceIndex(i,n,faceIndex))
-			{
-			}
-		}
+		//fwrite(&bmdHead,sizeof(CMUBmd::BmdHead),1,fp);
+		//for (size_t n=0;n<uFaceIndexCount;++n)
+		//{
+		//	if (getFaceIndex(i,n,faceIndex))
+		//	{
+		//	}
+		//}
 		//setBmdSub[i].load(s);
 	}
 
