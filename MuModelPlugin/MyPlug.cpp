@@ -276,12 +276,37 @@ bool CMyPlug::exportData(iModelData * pModelData, const std::string& strFilename
 	{
 		return false;
 	}
+	// tag
+	uint32 uTag=0x0a444d42;
+	fwrite(&uTag,4,1,fp);
+	// head
 	CMUBmd::BmdHead bmdHead;
 	strcpy(bmdHead.strFile,GetFilename(pModelData->getItemName()).c_str());
 	bmdHead.uSubCount=pModelData->getMesh().getSubCount();
 	bmdHead.uBoneCount=pModelData->getSkeleton().m_BoneAnims.size();
 	bmdHead.uAnimCount=pModelData->getSkeleton().m_BoneAnims.size();
+	fwrite(&bmdHead,sizeof(CMUBmd::BmdHead),1,fp);
+	// sub
+	FaceIndex faceIndex;
+	for (size_t i=0; i<bmdHead.uSubCount; ++i)
+	{
+		size_t uFaceIndexCount=getFaceIndexCount(i);
+		// sub head
+		CMUBmd::BmdSub::BmdSubHead subHead;
+		subHead.uVertexCount=uFaceIndexCount*3;
+		subHead.uNormal=uFaceIndexCount*3;
+		subHead.uUVCount=uFaceIndexCount*3;
+		subHead.uTriangleCount=uFaceIndexCount*3;
 
+		fwrite(&bmdHead,sizeof(CMUBmd::BmdHead),1,fp);
+		for (size_t n=0;n<uFaceIndexCount;++n)
+		{
+			if (getFaceIndex(i,n,faceIndex))
+			{
+			}
+		}
+		//setBmdSub[i].load(s);
+	}
 
 	return true;
 }
