@@ -7,6 +7,7 @@
 #include "FileSystem.h"
 #include "LumpFile.h"
 #include "Color.h"
+#include "CSVFile.h"
 
 void fileOffset(const std::string& strSrcFilename, const std::string& strDestFilename,size_t offset)
 {
@@ -38,18 +39,18 @@ void fileOffset(const std::string& strSrcFilename, const std::string& strDestFil
 
 void ozj2jpg(const std::string& strSrcFilename)
 {
-	std::string strDestFilename = ChangeExtension(strSrcFilename,"jpg");
+	std::string strDestFilename = ChangeExtension(strSrcFilename,".jpg");
 	fileOffset(strSrcFilename,strDestFilename,24);
 }
 
 void ozt2tga(const std::string& strSrcFilename)
 {
-	std::string strDestFilename = ChangeExtension(strSrcFilename,"tga");
+	std::string strDestFilename = ChangeExtension(strSrcFilename,".tga");
 	fileOffset(strSrcFilename,strDestFilename,4);
 }
 void ozb2bmp(const std::string& strSrcFilename)
 {
-	std::string strDestFilename = ChangeExtension(strSrcFilename,"bmp");
+	std::string strDestFilename = ChangeExtension(strSrcFilename,".bmp");
 	fileOffset(strSrcFilename,strDestFilename,4);
 }
 void decryptMuBuffer(char* buffer, size_t size)
@@ -117,7 +118,7 @@ void decryptMuFile(const std::string& strSrcFilename, const std::string& strDest
 	}
 }
 
-void decryptMuBuffer2(char* buffer, size_t size)
+void decryptMuBufferXOR3(char* buffer, size_t size)
 {
 	const char xorKeys[] = {0xFC, 0xCF, 0xAB};
 	for (size_t i=0; i<size; ++i)
@@ -127,7 +128,93 @@ void decryptMuBuffer2(char* buffer, size_t size)
 	}
 }
 
-void decryptMuFile2(const std::string& strSrcFilename, const std::string& strDestFilename)
+struct itemdata97
+{
+	char cName[30];
+	unsigned char ucInt[34];
+};
+
+struct itemdatastruct97 //96y,97,98c
+{
+	char cName[30];	//1物品名称
+	unsigned char ucHand;		//2 0单手，1双手
+	unsigned char ucDroplv;	//3 所掉物品的怪物等级Level
+	unsigned char ucX;		//4 X,Y 所占格子
+	unsigned char ucY;        //5
+	unsigned char ucDamMin;	//6 最小攻击力
+	unsigned char ucDamMax;	//7 最大攻击力
+	unsigned char ucDefxx;	//8 防御率
+	unsigned char ucDef;		//9 防御力Def
+	unsigned char ucMagDef;	//10 00 MagDef 魔法防御?
+	unsigned char ucSpeed;	//11 攻击速度/护手等属性
+	unsigned char ucWalkSeed;	//12 WalkSpeed 鞋子属性
+	unsigned char ucDur;		//13 持久度
+	unsigned char ucUnknown1;	//14 00
+	unsigned short usiReqStr; //15 力量,此力量非所佩带需要力量,是有个力量参数*10 得来 /除了12项物品,该项是直接按值计算
+	unsigned short usiReqDex; //16 敏捷,此力量非所佩带需要敏捷,是有个敏捷参数*10 得来 /除了12项物品
+	//unsigned char ucUnknown2;  //17
+	//unsigned char ucUnknown3;      //18
+	unsigned char ucReqLev;	//19 最小佩带物品等级
+	unsigned char ucValue;		//20 14项物品计算价格参数
+	unsigned char ucUnknown4;	//21 ?书 12项非零
+	unsigned char ucUnknown5;        //22
+	unsigned char ucUnknown6;	//23 ? 书 极光以上非零
+	unsigned char ucUnknown7;	//24 00
+	unsigned char ucType1; //25 ?盾04 ..风头04//装备类都为04 普通武器刀剑类1 天雷3,玛雅武器0,弓弩2 法师杖03
+	unsigned char ucDs;		//26 法师
+	unsigned char ucDk;		//27 战士
+	unsigned char ucElf;		//28 精灵
+	unsigned char ucMg;		//29 魔剑士
+	unsigned char ucBing;		//30 防冰属性
+	unsigned char ucDu;		//31 防毒属性
+	unsigned char ucLei;		//32 防雷属性
+	unsigned char ucHuo;		//33 防火属性
+}; //64byte
+#include<iostream>
+#include<iomanip>
+#include<fstream>
+
+void encryptItemBMD(const std::string& strSrcFilename, const std::string& strDestFilename)
+{
+	CCsvFile csvFile;
+	if (csvFile.Open(strSrcFilename))
+	{
+		char buffer[512*64];
+		memset(buffer,0,512*64);
+		while (csvFile.SeekNextLine())
+		{
+			int id = csvFile.GetInt(0);
+			if (id>=512)
+			{
+				continue;
+			}
+			itemdata97* pItem=(itemdata97*)(buffer+id*64);
+			std::string strName = csvFile.GetStr(1);
+			strcpy(pItem->cName,strName.c_str());
+			for (size_t n=0;n<34;++n)
+			{
+				pItem->ucInt[n]=csvFile.GetInt(n+2);
+			}
+		}
+		csvFile.Close();
+		//
+		for (size_t i=0;i<512;++i)
+		{
+			decryptMuBufferXOR3(buffer+i*64,64);
+		}
+		DWORD dwCheck;
+		//
+		FILE* fp = fopen(strDestFilename.c_str(), "wb");
+		if (fp)
+		{
+			fwrite(buffer,512*64,1,fp);
+			fwrite(&dwCheck,4,1,fp);
+			fclose(fp);
+		}
+	}
+}
+
+void decryptItemBMD(const std::string& strSrcFilename, const std::string& strDestFilename)
 {
 	FILE* fp = fopen(strSrcFilename.c_str(), "rb");
 	if (fp)
@@ -139,7 +226,49 @@ void decryptMuFile2(const std::string& strSrcFilename, const std::string& strDes
 		fread(buffer,size,1,fp);
 		fclose(fp);
 		fp = NULL;
-		decryptMuBuffer2(buffer,size);
+		for (size_t i=0;i<size/64;++i)
+		{
+			decryptMuBufferXOR3(buffer+i*64,64);
+		}
+
+		std::ofstream file;
+		file.open(strDestFilename.c_str(), std::ios::out);
+		if ( file.is_open() )
+		{
+			file << "ID,物品名称,双手武器,掉物品的怪物等级,所占格子X,所占格子Y,最小攻击力,最大攻击力,防御率,防御力,魔法防御,攻击速度,鞋子属性,持久度,Unknown,力量需求,敏捷需求,等级需求,价格参数,书,22,书极光以上非零,00,类型,法师,战士,精灵,魔剑士,防冰属性,防毒属性,防雷属性,防火属性,9,9,9,9"<< std::endl;
+			for (size_t i=0;i<size/64;++i)
+			{
+				itemdata97* pItem = (itemdata97*)(buffer+i*64);
+				if (strlen(pItem->cName)!=0)
+				{
+					file <<i<<","<<pItem->cName;
+					for (size_t n=0;n<34;++n)
+					{
+						file<<","<<(int)pItem->ucInt[n];
+					}
+					file<<std::endl;
+				}
+			}
+		}
+		file.close();
+
+		delete buffer;
+	}
+}
+
+void decryptMuFileXOR3(const std::string& strSrcFilename, const std::string& strDestFilename)
+{
+	FILE* fp = fopen(strSrcFilename.c_str(), "rb");
+	if (fp)
+	{
+		fseek(fp, 0, SEEK_END);
+		size_t size = ftell(fp);
+		fseek(fp, 0, SEEK_SET);
+		char* buffer = new char[size];
+		fread(buffer,size,1,fp);
+		fclose(fp);
+		fp = NULL;
+		decryptMuBufferXOR3(buffer,size);
 		fp = fopen(strDestFilename.c_str(), "wb");
 		if (fp)
 		{
@@ -149,6 +278,7 @@ void decryptMuFile2(const std::string& strSrcFilename, const std::string& strDes
 		delete buffer;
 	}
 }
+
 void decryptMuATTFile(const std::string& strSrcFilename, const std::string& strDestFilename)
 {
 	FILE* fp = fopen(strSrcFilename.c_str(), "rb");
@@ -162,7 +292,7 @@ void decryptMuATTFile(const std::string& strSrcFilename, const std::string& strD
 		fclose(fp);
 		fp = NULL;
 		decryptMuBuffer(buffer,size);
-		decryptMuBuffer2(buffer,size);
+		decryptMuBufferXOR3(buffer,size);
 		fp = fopen(strDestFilename.c_str(), "wb");
 		if (fp)
 		{
@@ -172,6 +302,7 @@ void decryptMuATTFile(const std::string& strSrcFilename, const std::string& strD
 		delete buffer;
 	}
 }
+
 bool isEncBmd(const std::string& strSrcFilename)
 {
 	//FILE* fp = fopen(strSrcFilename.c_str(), "rb");
@@ -183,215 +314,63 @@ bool isEncBmd(const std::string& strSrcFilename)
 
 int main(int argc, _TCHAR* argv[])
 {
+	std::wstring wstrFindPath = getCurrentDirectory();
+	CDir dir;
+	dir.ReadDir(wstrFindPath);
+	for (size_t i=0; i<dir.m_FileInfo.size(); i++)
 	{
-		std::wstring wstrFindPath = getCurrentDirectory()+L"\\*.*";
-		CDir dir;
-		dir.ReadDir(wstrFindPath);
-		for (size_t i=0; i<dir.m_FileInfo.size(); i++)
+		if (!dir.m_FileInfo[i].IsDirectory())
 		{
-			if (!dir.m_FileInfo[i].IsDirectory())
+			std::wstring wstrExt = GetExtension(dir.m_FileInfo[i].wstrFilename);
+			std::string strFilename = ws2s(dir.m_FileInfo[i].wstrFilename);
+			if (wstrExt==L".ozj")
 			{
-				std::wstring wstrExt = GetExtension(dir.m_FileInfo[i].wstrFilename);
-				std::string strFilename = ws2s(dir.m_FileInfo[i].wstrFilename);
-				if (wstrExt==L".ozj")
+				ozj2jpg(strFilename);
+			}
+			else if (wstrExt==L".ozt")
+			{
+				ozt2tga(strFilename);
+			}
+			else if (wstrExt==L".ozb")
+			{
+				ozb2bmp(strFilename);
+			}
+			else if (wstrExt==L".map"||wstrExt==L".obj")
+			{
+				decryptMuFile(strFilename,"dec"+strFilename+"d");
+			}
+			else if (wstrExt==L".att")
+			{
+				decryptMuATTFile(strFilename,"dec"+strFilename+"d");
+			}
+			else if (wstrExt==L".bmd")
+			{
+				if ("item.bmd"==strFilename)
 				{
-					ozj2jpg(strFilename);
+					decryptItemBMD(strFilename,strFilename+".csv");
 				}
-				else if (wstrExt==L".ozt")
+				else if ("BuffEffect.bmd"==strFilename)
 				{
-					ozt2tga(strFilename);
+					decryptBuffEffectFile(strFilename,"dec"+strFilename+"d");
 				}
-				else if (wstrExt==L".ozb")
-				{
-					ozb2bmp(strFilename);
-				}
-				else if (wstrExt==L".map"||wstrExt==L".obj")
+				else if (isEncBmd(strFilename))
 				{
 					decryptMuFile(strFilename,"dec"+strFilename+"d");
 				}
-				else if (wstrExt==L".att")
+				else
 				{
-					decryptMuATTFile(strFilename,"dec"+strFilename+"d");
+					decryptMuFileXOR3(strFilename,"dec"+strFilename+"d");
 				}
-				else if (wstrExt==L".bmd")
+			}
+			else if (wstrExt==L".csv")
+			{
+				if ("item.bmd.csv"==strFilename)
 				{
-					if ("BuffEffect.bmd"==strFilename)
-					{
-						decryptBuffEffectFile(strFilename,"dec"+strFilename+"d");
-					}
-					else if (isEncBmd(strFilename))
-					{
-						decryptMuFile(strFilename,"dec"+strFilename+"d");
-					}
-					else
-					{
-						decryptMuFile2(strFilename,"dec"+strFilename+"d");
-					}
+					encryptItemBMD(strFilename,"Enc"+ChangeExtension(strFilename,""));
 				}
-				//else if (wstrExt==L".raw")
 			}
 		}
 	}
-	return 1;
-	{
-		CLumpFile lump;
-		lump.SetName("terrain");
-		lump.SetInt(1);
-		lump.SetInt("width", 253);
-		lump.SetInt("height", 253);
 
-		std::vector<float> setHeight;
-		std::vector<uint8> setTile[2];
-		std::vector<Color32> setColor;
-		std::vector<uint8> setAttribute;
-
-		CLumpNode* pCellsNode = lump.AddNode("cells");
-		if (pCellsNode)
-		{
-			{
-				FILE* fp = fopen("Terrain.map", "rb");
-				if (fp)
-				{
-					fseek(fp, 0, SEEK_END);
-					size_t size = ftell(fp);
-					if (size==65536*3+2)
-					{
-						fseek(fp, 2, SEEK_SET);
-						uint8 buffer[65536*3];
-						fread(&buffer,65536*3,1,fp);
-
-						for (int y=0; y<253; ++y)
-						{
-							for (int x=0; x<253; ++x)
-							{
-								setTile[0].push_back(buffer[y*256+x]);
-								setTile[1].push_back(buffer[y*256+x+256*256]);
-							}
-						}
-
-						for (int y=0; y<254; ++y)
-						{
-							for (int x=0; x<254; ++x)
-							{
-								setColor.push_back(Color32(buffer[y*256+x+256*256*2],255,255,255));
-							}
-						}
-					}
-					fclose(fp);
-				}
-			}
-			{
-				FILE* fp = fopen("TerrainLight.bmp", "rb");
-				if (fp)
-				{
-					fseek(fp, 54, SEEK_SET);
-					for (int y=0; y<254; ++y)
-					{
-						uint8 uVal;
-						for (int x=0; x<254; ++x)
-						{
-							fread(&uVal,1,1,fp);
-							setColor[y*254+x].b=uVal;
-							fread(&uVal,1,1,fp);
-							setColor[y*254+x].g=uVal;
-							fread(&uVal,1,1,fp);
-							setColor[y*254+x].r=uVal;
-						}
-						fread(&uVal,1,1,fp);
-						fread(&uVal,1,1,fp);
-						fread(&uVal,1,1,fp);
-						fread(&uVal,1,1,fp);
-						fread(&uVal,1,1,fp);
-						fread(&uVal,1,1,fp);
-					}
-					fclose(fp);
-				}
-			}
-			{
-				FILE* fp = fopen("TerrainHeight.bmp", "rb");
-				if (fp)
-				{
-					fseek(fp, 1078, SEEK_SET);
-					for (int y=0; y<254; ++y)
-					{
-						uint8 uVal;
-						fread(&uVal,1,1,fp);
-						fread(&uVal,1,1,fp);
-						for (int x=0; x<254; ++x)
-						{
-							fread(&uVal,1,1,fp);
-							setHeight.push_back(uVal*0.015f);
-						}
-					}
-					fclose(fp);
-				}
-
-
-				fp = fopen("Terrain.att", "rb");
-				if (fp)
-				{
-					fseek(fp, 3, SEEK_SET);
-					for (int y=0; y<253; ++y)
-					{
-						for (int x=0; x<256; ++x)
-						{
-							uint8 uVal;
-							fread(&uVal,1,1,fp);
-							if (x<253)
-							{
-								setAttribute.push_back(uVal);
-
-								if (uVal==0x08||uVal==0x0C)
-								{
-									setTile[0][y*253+x]=255;
-									setTile[1][y*253+x]=255;
-								}
-								/*switch(uVal)
-								{
-								case 0:
-									setColor[y*254+x].r=255;
-									setColor[y*254+x].g=255;
-									setColor[y*254+x].b=255;
-									break;
-								case 1:
-									setColor[y*254+x].r=0;
-									setColor[y*254+x].g=255;
-									setColor[y*254+x].b=0;
-									break;
-								case 4:
-									setColor[y*254+x].r=255;
-									setColor[y*254+x].g=0;
-									setColor[y*254+x].b=0;
-								    break;
-								case 5:
-									setColor[y*254+x].r=255;
-									setColor[y*254+x].g=255;
-									setColor[y*254+x].b=0;
-								    break;
-								case 0xFF:
-									setColor[y*254+x].r=0;
-									setColor[y*254+x].g=0;
-									setColor[y*254+x].b=0;
-									break;
-								default:
-									setColor[y*254+x].r=0;
-									setColor[y*254+x].g=0;
-									setColor[y*254+x].b=255;
-								    break;
-								}*/
-							}
-						}
-					}
-					fclose(fp);
-				}
-				pCellsNode->SetVector("height", setHeight);
-				pCellsNode->SetVector("tile0",	setTile[0]);
-				pCellsNode->SetVector("tile1",	setTile[1]);
-				pCellsNode->SetVector("color",	setColor);
-				pCellsNode->SetVector("attribute",	setAttribute);
-			}
-		}
-		lump.SaveFile("test.map");
-	}
 	return 0;
 }
