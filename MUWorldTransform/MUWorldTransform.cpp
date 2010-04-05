@@ -8,15 +8,36 @@
 #include "LumpFile.h"
 #include "Color.h"
 #include "CSVFile.h"
+#include "Direct.h"
 
-void fileOffset(const std::string& strSrcFilename, const std::string& strDestFilename,size_t offset)
+void fileOffset(const std::string& strSrcFilename, const std::string& strDestFilename,int offset)
 {
 	FILE* fp = fopen(strSrcFilename.c_str(), "rb");
 	if (fp)
 	{
 		fseek(fp, 0, SEEK_END);
 		size_t size = ftell(fp);
-		if (size>offset)
+		if (offset<0)
+		{
+			size_t addSize=abs(offset);
+			fseek(fp, 0, SEEK_SET);
+			size+=addSize;
+			char* buffer= new char[size];
+			fread(buffer,addSize,1,fp);
+			fseek(fp, 0, SEEK_SET);
+			fread(&buffer[addSize],size-addSize,1,fp);
+			{
+
+				FILE* fpw = fopen(strDestFilename.c_str(), "wb");
+				if (fpw)
+				{
+					fwrite(buffer,size,1,fpw);
+					fclose(fpw);
+				}
+			}
+			delete buffer;
+		}
+		else if (size>offset)
 		{
 			fseek(fp, offset, SEEK_SET);
 			size-=offset;
@@ -37,22 +58,6 @@ void fileOffset(const std::string& strSrcFilename, const std::string& strDestFil
 	}
 }
 
-void ozj2jpg(const std::string& strSrcFilename)
-{
-	std::string strDestFilename = ChangeExtension(strSrcFilename,".jpg");
-	fileOffset(strSrcFilename,strDestFilename,24);
-}
-
-void ozt2tga(const std::string& strSrcFilename)
-{
-	std::string strDestFilename = ChangeExtension(strSrcFilename,".tga");
-	fileOffset(strSrcFilename,strDestFilename,4);
-}
-void ozb2bmp(const std::string& strSrcFilename)
-{
-	std::string strDestFilename = ChangeExtension(strSrcFilename,".bmp");
-	fileOffset(strSrcFilename,strDestFilename,4);
-}
 void decryptMuBuffer(char* buffer, size_t size)
 {
 	const char xorKeys[] = {
@@ -314,6 +319,7 @@ bool isEncBmd(const std::string& strSrcFilename)
 
 int main(int argc, _TCHAR* argv[])
 {
+	mkdir("Dec");mkdir("Enc");
 	std::wstring wstrFindPath = getCurrentDirectory();
 	CDir dir;
 	dir.ReadDir(wstrFindPath);
@@ -325,48 +331,66 @@ int main(int argc, _TCHAR* argv[])
 			std::string strFilename = ws2s(dir.m_FileInfo[i].wstrFilename);
 			if (wstrExt==L".ozj")
 			{
-				ozj2jpg(strFilename);
+				std::string strDestFilename = "Dec\\"+ChangeExtension(strFilename,".jpg");
+				fileOffset(strFilename,strDestFilename,24);
 			}
 			else if (wstrExt==L".ozt")
 			{
-				ozt2tga(strFilename);
+				std::string strDestFilename = "Dec\\"+ChangeExtension(strFilename,".tga");
+				fileOffset(strFilename,strDestFilename,4);
 			}
 			else if (wstrExt==L".ozb")
 			{
-				ozb2bmp(strFilename);
+				std::string strDestFilename = "Dec\\"+ChangeExtension(strFilename,".bmp");
+				fileOffset(strFilename,strDestFilename,4);
+			}
+			else if (wstrExt==L".jpg")
+			{
+				std::string strDestFilename = "Enc\\"+ChangeExtension(strFilename,".ozj");
+				fileOffset(strFilename,strDestFilename,-24);
+			}
+			else if (wstrExt==L".tga")
+			{
+				std::string strDestFilename = "Enc\\"+ChangeExtension(strFilename,".ozt");
+				fileOffset(strFilename,strDestFilename,-4);
+			}
+			else if (wstrExt==L".bmp")
+			{
+				std::string strDestFilename = "Enc\\"+ChangeExtension(strFilename,".ozb");
+				fileOffset(strFilename,strDestFilename,-4);
 			}
 			else if (wstrExt==L".map"||wstrExt==L".obj")
 			{
-				decryptMuFile(strFilename,"dec"+strFilename+"d");
+				decryptMuFile(strFilename,"Dec\\"+strFilename+"d");
 			}
 			else if (wstrExt==L".att")
 			{
-				decryptMuATTFile(strFilename,"dec"+strFilename+"d");
+				decryptMuATTFile(strFilename,"Dec\\"+strFilename+"d");
 			}
 			else if (wstrExt==L".bmd")
 			{
 				if ("item.bmd"==strFilename)
 				{
-					decryptItemBMD(strFilename,strFilename+".csv");
+					decryptItemBMD(strFilename,"Dec\\"+ChangeExtension(strFilename,".csv"));
 				}
 				else if ("BuffEffect.bmd"==strFilename)
 				{
-					decryptBuffEffectFile(strFilename,"dec"+strFilename+"d");
+					decryptBuffEffectFile(strFilename,"Dec\\"+strFilename+"d");
 				}
 				else if (isEncBmd(strFilename))
 				{
-					decryptMuFile(strFilename,"dec"+strFilename+"d");
+					decryptMuFile(strFilename,"Dec\\"+strFilename+"d");
 				}
 				else
 				{
-					decryptMuFileXOR3(strFilename,"dec"+strFilename+"d");
+					decryptMuFileXOR3(strFilename,"Dec\\"+strFilename+"d");
 				}
 			}
 			else if (wstrExt==L".csv")
 			{
-				if ("item.bmd.csv"==strFilename)
+				if ("item.csv"==strFilename)
 				{
-					encryptItemBMD(strFilename,"Enc"+ChangeExtension(strFilename,""));
+					encryptItemBMD(strFilename,"Enc\\"+ChangeExtension(strFilename,".bmd"));
 				}
 			}
 		}
