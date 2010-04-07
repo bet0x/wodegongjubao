@@ -330,7 +330,7 @@ void readGeometryVertexDeclaration(IOReadBase* pRead, std::vector<GeometryVertex
 	}
 }
 
-void readGeometryVertexBuffer(IOReadBase* pRead, iLodMesh * pMesh,std::vector<GeometryVertexElement>& setElement,unsigned int vertexCount)
+void readGeometryVertexBuffer(IOReadBase* pRead, CSubMesh& subMesh,std::vector<GeometryVertexElement>& setElement,unsigned int vertexCount)
 {
 	unsigned short bindIndex, vertexSize;
 	// unsigned short bindIndex;	// Index to bind this buffer to
@@ -347,6 +347,7 @@ void readGeometryVertexBuffer(IOReadBase* pRead, iLodMesh * pMesh,std::vector<Ge
 	{
 		MessageBoxW(NULL, L"Can't find vertex buffer data area",	L"MeshSerializerImpl::readGeometryVertexBuffer",0);
 	}
+
 	for (size_t i=0;i<vertexCount;++i)
 	{
 		for (size_t n=0;n<setElement.size();++n)
@@ -359,49 +360,49 @@ void readGeometryVertexBuffer(IOReadBase* pRead, iLodMesh * pMesh,std::vector<Ge
 					{
 						Vec3D vPos;
 						pRead->Read(&vPos,sizeof(Vec3D));
-						pMesh->addPos(vPos);
+						subMesh.addPos(vPos);
 					}
 					break;
 				case VES_BLEND_WEIGHTS:
 					{
 						unsigned int uWeight;
 						pRead->Read(&uWeight,sizeof(unsigned int));
-						pMesh->addWeight(uWeight);
+						subMesh.addWeight(uWeight);
 					}
 					break;
 				case VES_BLEND_INDICES:
 					{
 						unsigned int uBone;
 						pRead->Read(&uBone,sizeof(unsigned int));
-						pMesh->addBone(uBone);
+						subMesh.addBone(uBone);
 					}
 					break;
 				case VES_NORMAL:
 					{
 						Vec3D vNormal;
 						pRead->Read(&vNormal,sizeof(Vec3D));
-						pMesh->addNormal(vNormal);
+						subMesh.addNormal(vNormal);
 					}
 					break;
 				case VES_DIFFUSE:
 					{
 						Color32 color;
 						pRead->Read(&color,sizeof(Color32));
-						//pMesh->addColor(color);
+						subMesh.addColor(color);
 					}
 					break;
 				case VES_SPECULAR:
 					{
 						Color32 color;
 						pRead->Read(&color,sizeof(Color32));
-						//pMesh->addColor(color);
+						//subMesh.addColor(color);
 					}
 					break;
 				case VES_TEXTURE_COORDINATES:
 					{
 						Vec2D vUV;
 						pRead->Read(&vUV,sizeof(Vec2D));
-						pMesh->addTexcoord(vUV);
+						subMesh.addTexcoord(vUV);
 					}
 					break;
 				case VES_BINORMAL:
@@ -428,7 +429,7 @@ void readGeometryVertexBuffer(IOReadBase* pRead, iLodMesh * pMesh,std::vector<Ge
 
 }
 
-void readGeometry(IOReadBase* pRead, iLodMesh * pMesh)
+void readGeometry(IOReadBase* pRead, CSubMesh& subMesh)
 {
 	unsigned int vertexCount = 0;
 	pRead->Read(&vertexCount,sizeof(unsigned int));
@@ -447,7 +448,7 @@ void readGeometry(IOReadBase* pRead, iLodMesh * pMesh)
 			readGeometryVertexDeclaration(pRead, setElement);
 			break;
 		case M_GEOMETRY_VERTEX_BUFFER:
-			readGeometryVertexBuffer(pRead, pMesh, setElement, vertexCount);
+			readGeometryVertexBuffer(pRead, subMesh, setElement, vertexCount);
 			break;
 		}
 		// Get next stream
@@ -825,13 +826,13 @@ bool readMaterial(iModelData * pModelData, const std::string& strFilename)
 	return true;
 }
 
-void readSubMesh(IOReadBase* pRead, iModelData* pModelData)
+void readSubMesh(IOReadBase* pRead, iModelData* pModelData, const CSubMesh& sharedSubMesh)
 {
 	iLodMesh* pMesh = &pModelData->getMesh();
 	std::string strMaterialName = readString(pRead);
 	int nSubID=pMesh->getSubCount();
 	pModelData->setRenderPass(nSubID,nSubID,strMaterialName);
-
+	
 // 	if(listener)
 // 		listener->processMaterialName(pMesh, &materialName);
 // 	sm->setMaterialName(materialName);
@@ -839,6 +840,17 @@ void readSubMesh(IOReadBase* pRead, iModelData* pModelData)
 	// bool useSharedVertices
 	bool useSharedVertices;
 	pRead->Read(&useSharedVertices,sizeof(bool));
+	CSubMesh& subMesh=pMesh->addSubMesh();
+	if (useSharedVertices)
+	{
+		subMesh.pos			=sharedSubMesh.pos;
+		subMesh.weight		=sharedSubMesh.weight;
+		subMesh.bone		=sharedSubMesh.bone;
+		subMesh.normal		=sharedSubMesh.normal;
+		subMesh.color		=sharedSubMesh.color;
+		subMesh.texcoord	=sharedSubMesh.texcoord;
+		subMesh.texcoord2	=sharedSubMesh.texcoord2;
+	}
 
 	// sm->indexData->indexStart = 0;
 	unsigned int indexCount = 0;
@@ -852,43 +864,34 @@ void readSubMesh(IOReadBase* pRead, iModelData* pModelData)
 	if (idx32bit)
 	{
 		MessageBoxW(0,L"Can't read idx32bit",L"Error",0);
-		FaceIndex faceIndex;
+		VertexIndex vertexIndex;
 		for (size_t i=0;i<indexCount;++i)
 		{
 			unsigned int uVertexIndex;
 			pRead->Read(&uVertexIndex,sizeof(unsigned int));
-			size_t n = i%3;
-			faceIndex.v[n]=uVertexIndex;
-			faceIndex.n[n]=uVertexIndex;
-			faceIndex.c[n]=uVertexIndex;
-			faceIndex.uv1[n]=uVertexIndex;
-			faceIndex.b[n]=uVertexIndex;
-			faceIndex.w[n]=uVertexIndex;
-			if (2==n)
-			{
-				pMesh->addFaceIndex(nSubID,faceIndex);
-			}
+			vertexIndex.p=uVertexIndex;
+			vertexIndex.n=uVertexIndex;
+			vertexIndex.c=uVertexIndex;
+			vertexIndex.uv1=uVertexIndex;
+			vertexIndex.b=uVertexIndex;
+			vertexIndex.w=uVertexIndex;
+			subMesh.m_setVertexIndex.push_back(vertexIndex);
 		}
 	}
 	else // 16-bit
 	{
-		FaceIndex faceIndex;
+		VertexIndex vertexIndex;
 		for (size_t i=0;i<indexCount;++i)
 		{
 			unsigned short uVertexIndex;
 			pRead->Read(&uVertexIndex,sizeof(unsigned short));
-
-			size_t n = i%3;
-			faceIndex.v[n]=uVertexIndex;
-			faceIndex.n[n]=uVertexIndex;
-			faceIndex.c[n]=uVertexIndex;
-			faceIndex.uv1[n]=uVertexIndex;
-			faceIndex.b[n]=uVertexIndex;
-			faceIndex.w[n]=uVertexIndex;
-			if (2==n)
-			{
-				pMesh->addFaceIndex(nSubID,faceIndex);
-			}
+			vertexIndex.p=uVertexIndex;
+			vertexIndex.n=uVertexIndex;
+			vertexIndex.c=uVertexIndex;
+			vertexIndex.uv1=uVertexIndex;
+			vertexIndex.b=uVertexIndex;
+			vertexIndex.w=uVertexIndex;
+			subMesh.m_setVertexIndex.push_back(vertexIndex);
 		}
 	}
 
@@ -903,7 +906,7 @@ void readSubMesh(IOReadBase* pRead, iModelData* pModelData)
 		{
 			MessageBoxW(0,L"Missing geometry data in mesh file",L"readSubMesh",0);
 		}
-		readGeometry(pRead, pMesh);
+		readGeometry(pRead, subMesh);
 	}
 
 
@@ -943,8 +946,8 @@ break;
 					unsigned int uBone = 0;
 					unsigned int uWeight = 0;
 					// get
-					pMesh->getBone(assign.vertexIndex,uBone);
-					pMesh->getWeight(assign.vertexIndex,uWeight);
+					subMesh.getBone(assign.vertexIndex,uBone);
+					subMesh.getWeight(assign.vertexIndex,uWeight);
 					// add
 					for (size_t i=0;i<4;++i)
 					{
@@ -956,8 +959,8 @@ break;
 						}
 					}
 					// set
-					pMesh->setBone(assign.vertexIndex,uBone);
-					pMesh->setWeight(assign.vertexIndex,uWeight);
+					subMesh.setBone(assign.vertexIndex,uBone);
+					subMesh.setWeight(assign.vertexIndex,uWeight);
 
 					//sub->addBoneAssignment(assign);
 				}
@@ -1015,6 +1018,7 @@ void readMesh(IOReadBase* pRead, iModelData* pModelData)
 	// Find all substreams
 	if (!pRead->IsEof())
 	{
+		CSubMesh sharedSubMesh;
 		unsigned short streamID;
 		unsigned int uLength;
 		pRead->Read(&streamID,sizeof(unsigned short));
@@ -1037,11 +1041,12 @@ void readMesh(IOReadBase* pRead, iModelData* pModelData)
 			{
 			case M_GEOMETRY:
 				{
-					readGeometry(pRead, &pModelData->getMesh());
+					//MessageBoxW(NULL, L"M_GEOMETRY",	L"readMesh",0);
+					readGeometry(pRead, sharedSubMesh);
 				}
 				break;
 			case M_SUBMESH:
-				readSubMesh(pRead, pModelData);
+				readSubMesh(pRead, pModelData, sharedSubMesh);
 				break;
 			case M_MESH_SKELETON_LINK:
 				{

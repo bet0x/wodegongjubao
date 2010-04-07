@@ -126,7 +126,7 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 	{
 		CMUBmd::BmdSub& bmdSub = bmd.setBmdSub[i];
 		iLodMesh& mesh = pModelData->getMesh();
-		iSubMesh& subMesh=mesh.addSubMesh();
+		CSubMesh& subMesh=mesh.addSubMesh();
 		VertexIndex vertexIndex;
 		for(std::vector<CMUBmd::BmdSub::BmdTriangle>::iterator it=bmdSub.setTriangle.begin(); it!=bmdSub.setTriangle.end(); it++)
 		{
@@ -137,7 +137,7 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 				vertexIndex.w	= /*mesh.getWeightCount()+*/it->indexVertex[2-j];
 				vertexIndex.n	= /*mesh.getNormalCount()+*/it->indexNormal[2-j];
 				vertexIndex.uv1	= /*mesh.getTexcoordCount()+*/it->indexUV[2-j];
-				subMesh.addVertexIndex(vertexIndex);
+				subMesh.m_setVertexIndex.push_back(vertexIndex);
 			}
 		}
 		for(std::vector<CMUBmd::BmdSub::BmdPos>::iterator it=bmdSub.setVertex.begin(); it!=bmdSub.setVertex.end(); it++)
@@ -288,7 +288,6 @@ bool CMyPlug::exportData(iModelData * pModelData, const std::string& strFilename
 	bmdHead.uAnimCount=pModelData->getSkeleton().m_BoneAnims.size();
 	fwrite(&bmdHead,sizeof(CMUBmd::BmdHead),1,fp);
 	// sub
-	FaceIndex faceIndex;
 	for (size_t i=0; i<bmdHead.uSubCount; ++i)
 	{
 		//size_t uFaceIndexCount=getFaceIndexCount(i);
