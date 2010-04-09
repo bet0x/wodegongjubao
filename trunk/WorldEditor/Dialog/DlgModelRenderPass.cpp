@@ -1,6 +1,7 @@
 #include "DlgModelRenderPass.h"
 #include "ModelDisplay.h"
 #include "DlgMainEditor.h"
+#include "FileSystem.h"
 
 CDlgModelRenderPass::CDlgModelRenderPass()
 {

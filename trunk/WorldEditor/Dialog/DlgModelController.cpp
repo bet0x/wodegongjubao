@@ -6,6 +6,7 @@
 #include "IORead.h"
 #include "DlgMainEditor.h"
 #include "ModelDataMgr.h"
+#include "FileSystem.h"
 
 CDlgModelController::CDlgModelController()
 {

@@ -2,6 +2,7 @@
 #include "..\Config\Config.h"
 #include "DlgModelController.h"
 #include "ModelDisplay.h"
+#include "FileSystem.h"
 
 void CDlgModelPlayer::OnControlRegister()
 {
