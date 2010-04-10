@@ -26,16 +26,6 @@ int CMyPlug::Execute(iScene * pScene, bool bShowDlg, bool bSpecifyFileName)
 	return -1;
 }
 
-bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& strFilename)
-{
-	return true;
-}
-
-bool CMyPlug::importTiles(iTerrain * pTerrain, const std::string& strFilename, const std::string& strPath)
-{
-	return true;
-}
-
 bool CMyPlug::importTileSet(iScene * pScene, const std::string& strFilename, const std::string& strPath)
 {
 	CStringNodeFile file;
@@ -54,29 +44,6 @@ bool CMyPlug::importTileSet(iScene * pScene, const std::string& strFilename, con
 			pCellsNode = file.nextSibling("PIECE");
 		}
 	}
-}
-
-bool CMyPlug::importObjectResources(iScene * pScene, const std::string& strFilename, const std::string& strPath)
-{
-	pScene->clearObjectResources();
-	CCsvFile csvObject;
-	if (csvObject.Open(strFilename))
-	{
-		const CNodeData* pCellsNode = lump.firstChild("PIECE");
-		while (pCellsNode)
-		{
-			pScene->setObjectResources(
-				csvObject.GetInt("ID"),
-				csvObject.GetStr("Name"),
-				getRealFilename(strPath,csvObject.GetStr("Filename")));
-				//Info.bbox				= 
-				//Info.bIsGround			= csvObject.GetBool("IsGround");
-				//Info.bHasShadow			= csvObject.GetBool("HasShadow");
-				//Info.strFilename	= csvObject.GetStr("ModelFilename");
-			pCellsNode = lump.nextSibling("PIECE");
-		}
-		csvObject.Close();
-	}
 	return true;
 }
 
@@ -93,38 +60,32 @@ struct ObjInfo
 bool CMyPlug::importObject(iScene * pScene, const std::string& strFilename)
 {
 	pScene->removeAllObjects();
-	IOReadBase* pRead = IOReadBase::autoOpen(strFilename);
-	if (pRead)
+	CStringNodeFile file;
+	if (file.LoadFile(strFilename))
 	{
-		size_t fileSize = pRead->GetSize();
-		char* buffer = new char[fileSize];
-		pRead->Read(buffer, fileSize);
-		decrypt(buffer,fileSize);
-
-		int m_uUnknow = *((uint16*)(buffer));
-		uint16 uObjCount = *((uint16*)(buffer+2));
-		ObjInfo* pObjInfo = (ObjInfo*)(buffer+4);
-		for (int i=0; i<uObjCount;++i)
+		const CNodeData* pCellsNode = file.firstChild("BASEOBJECT");
+		while (pCellsNode)
 		{
-			Vec3D vPos = Vec3D(pObjInfo->p.x,pObjInfo->p.z,pObjInfo->p.y)*0.01f;
-			Vec3D vRotate = Vec3D(pObjInfo->rotate.x,pObjInfo->rotate.z,pObjInfo->rotate.y)*PI/180.0f;
-
+			uint64 uID;
+			std::string strMeshFile;
+			std::string strName;
+			pCellsNode->GetVal("GUID",uID);
+			pCellsNode->GetVal("NAME",strName);
+			pCellsNode->GetString("FILE",strMeshFile);
+			pScene->setObjectResources(uID,,strPath+strMeshFile);
 			if (false==pScene->add3DMapSceneObj(pObjInfo->id,vPos,vRotate,pObjInfo->fScale))
 			{
 				//MessageBoxA(NULL,"cannot find ID!","Error",0);
 			}
-			pObjInfo++;
+			pCellsNode = file.nextSibling("BASEOBJECT");
 		}
-		delete buffer;
-		IOReadBase::autoClose(pRead);
 	}
 	return true;
 }
 
 int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 {
-
-	importObjectResources(pScene,GetParentPath(strFilename)+"object.csv",GetParentPath(strFilename)); 
+	importTileSet(pScene,"D:\\Program Files\\Runic Games\\TorchED\\media\\levelSets\\Cave.dat","D:\\Program Files\\Runic Games\\TorchED\\");
 	BBox bboxObject;
 	bboxObject.vMin = Vec3D(-20.0f,-100.0f,-20.0f);
 	bboxObject.vMax = Vec3D(pScene->getTerrain()->GetData().GetWidth()+20.0f,100.0f,pScene->getTerrain()->GetData().GetHeight()+20.0f);

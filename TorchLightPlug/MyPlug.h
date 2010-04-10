@@ -18,9 +18,7 @@ public:
 	virtual DWORD GetImportDataType(){return -1;}
 	virtual void Release();
 private:
-	bool importTerrainData(iTerrainData * pTerrainData, const std::string& strFilename);
-	bool importTiles(iTerrain * pTerrain, const std::string& strFilename, const std::string& strPath);
-	bool importObjectResources(iScene * pScene, const std::string& strFilename, const std::string& strPath);
+	bool importTileSet(iScene * pScene, const std::string& strFilename, const std::string& strPath);
 	bool importObject(iScene * pScene, const std::string& strFilename);
 
 	bool exportTerrainData(iTerrainData * pTerrainData, const std::string& strFilename);
