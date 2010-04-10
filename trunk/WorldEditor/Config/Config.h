@@ -20,6 +20,5 @@ public:
 	std::string m_strUIFilename;
 	int			m_nFontSize;
 private:
-	std::string m_strRecentPath;
 };
 CConfig& GetConfig();
