@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="TorchLightPlug"
-	ProjectGUID="{C382D9F0-08B5-44FE-9848-65E7C418AEEE}"
+	ProjectGUID="{C1D1D884-7396-40D5-ABAE-73B0AE3C4EF5}"
 	RootNamespace="TorchLightPlug"
 	Keyword="MFCProj"
 	>
@@ -226,26 +226,6 @@
 			>
 			<File
 				RelativePath="MyPlug.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="outfunc.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"

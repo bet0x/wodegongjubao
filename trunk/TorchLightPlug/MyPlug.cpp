@@ -4,6 +4,12 @@
 #include "LumpFile.h"
 #include "3DMapSceneObj.h"
 
+BOOL WINAPI Scene_Plug_CreateObject(void ** pobj)
+{
+	*pobj = new CMyPlug;
+	return *pobj != NULL;
+}
+
 CMyPlug::CMyPlug(void)
 {
 
