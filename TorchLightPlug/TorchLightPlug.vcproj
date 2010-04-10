@@ -78,7 +78,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="mathd.lib commond.lib fileiod.lib"
-				OutputFile="..\..\bin\WorldEditor\Plugins\debug\$(ProjectName).dll"
+				OutputFile="..\..\bin\WorldEditor\Plugins\debug\$(ProjectName)d.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\Shared\lib;..\..\engine\lib"
