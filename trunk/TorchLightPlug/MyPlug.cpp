@@ -3,6 +3,7 @@
 #include "FileSystem.h"
 #include "LumpFile.h"
 #include "3DMapSceneObj.h"
+#include "StringNodeFile.h"
 
 BOOL WINAPI Scene_Plug_CreateObject(void ** pobj)
 {
@@ -20,59 +21,6 @@ CMyPlug::~CMyPlug(void)
 
 }
 
-#define MAP_FILE_SIZE 65536*3+2
-#define HEIGHT_HEAD_SIZE 1082
-#define HEIGHT_BUFFER_SIZE 65536
-#define ATT_FILE_SIZE_1 65536*2+4
-#define ATT_FILE_SIZE_2 65536*1+4
-
-inline void decrypt2(char* buffer, size_t size)
-{
-	const char xorKeys[] = {0xFC, 0xCF, 0xAB};
-	for (size_t i=0; i<size; ++i)
-	{
-		*buffer ^= xorKeys[i%3];
-		buffer++;
-	}
-}
-
-inline void decrypt(char* buffer, size_t size)
-{
-	const char xorKeys[] = {
-		0xd1, 0x73, 0x52, 0xf6,
-		0xd2, 0x9a, 0xcb, 0x27,
-		0x3e, 0xaf, 0x59, 0x31,
-		0x37, 0xb3, 0xe7, 0xa2
-	};
-	char key = 0x5E;
-	for (size_t i=0; i<size; ++i)
-	{
-		char encode = *buffer;
-		*buffer ^= xorKeys[i%16];
-		*buffer -= key;
-		key = encode+0x3D;
-		buffer++;
-	}
-}
-
-inline void encrypt(char* buffer, size_t size)
-{
-	const char xorKeys[] = {
-		0xd1, 0x73, 0x52, 0xf6,
-		0xd2, 0x9a, 0xcb, 0x27,
-		0x3e, 0xaf, 0x59, 0x31,
-		0x37, 0xb3, 0xe7, 0xa2
-	};
-	char key = 0x5E;
-	for (size_t i=0; i<size; ++i)
-	{
-		*buffer += key;
-		*buffer ^= xorKeys[i%16];
-		key = *buffer+0x3D;
-		buffer++;
-	}
-}
-
 int CMyPlug::Execute(iScene * pScene, bool bShowDlg, bool bSpecifyFileName)
 {
 	return -1;
@@ -80,70 +28,32 @@ int CMyPlug::Execute(iScene * pScene, bool bShowDlg, bool bSpecifyFileName)
 
 bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& strFilename)
 {
-	pTerrainData->clear();
-	CLumpFile lump;
-	if (lump.LoadFile(strFilename))
-	{
-		int nWidth, nHeight, nCubeSize;
-		lump.GetInt("width", nWidth);
-		lump.GetInt("height", nHeight);
-		lump.GetInt("cubesize", nCubeSize);
-		if (pTerrainData->resize(nWidth,nHeight,nCubeSize))
-		{
-			const CNodeData* pCellsNode = lump.firstChild("cells");
-			if (pCellsNode)
-			{
-				pCellsNode->getVector("tile0",		pTerrainData->getTiles(0));
-				pCellsNode->getVector("tile1",		pTerrainData->getTiles(1));
-				pCellsNode->getVector("color",		pTerrainData->getColors());
-				pCellsNode->getVector("height",		pTerrainData->getHeights());
-				pCellsNode->getVector("attribute",	pTerrainData->getAttributes());
-				pCellsNode->getVector("other",		pTerrainData->getOthers());
-				//pCellsNode->getVector("uv",		pTerrainData->getEquableTexUV);
-			}
-		}
-	}
 	return true;
 }
-#include "CsvFile.h"
+
 bool CMyPlug::importTiles(iTerrain * pTerrain, const std::string& strFilename, const std::string& strPath)
 {
-	pTerrain->clearAllTiles();
-	CCsvFile csv;
-	if (!csv.Open(strFilename))
+	return true;
+}
+
+bool CMyPlug::importTileSet(iScene * pScene, const std::string& strFilename, const std::string& strPath)
+{
+	CStringNodeFile file;
+	if (file.LoadFile(strFilename))
 	{
-		return false;
-	}
-	while (csv.SeekNextLine())
-	{
-		const std::string strMaterialName	= csv.GetStr("Name");
-		pTerrain->setTileMaterial(csv.GetInt("ID"), strMaterialName);
+		const CNodeData* pCellsNode = file.firstChild("PIECE");
+		while (pCellsNode)
 		{
-			CMaterial& material = pTerrain->getMaterial(strMaterialName);
-
-			material.strDiffuse		=getRealFilename(strPath,csv.GetStr("Diffuse"));
-			material.strEmissive	=getRealFilename(strPath,csv.GetStr("Emissive"));
-			material.strSpecular	=getRealFilename(strPath,csv.GetStr("Specular"));
-			material.strNormal		=getRealFilename(strPath,csv.GetStr("Normal"));
-			material.strReflection	=getRealFilename(strPath,csv.GetStr("Reflection"));
-			material.strLightMap	=getRealFilename(strPath,csv.GetStr("LightMap"));
-			material.strShader		=getRealFilename(strPath,csv.GetStr("Shader"));
-
-			material.m_fOpacity		=csv.GetFloat("Opacity");
-			material.uCull			=csv.GetInt("Cull");
-			material.bDepthWrite	=csv.GetBool("IsDepthWrite");
-			material.bBlend			=csv.GetBool("IsBlend");
-			material.bAlphaTest		=csv.GetBool("IsAlphaTest");
-			material.uAlphaTestValue=csv.GetInt("AlphaTestValue");
-
-			material.vTexAnim.x		=csv.GetFloat("TexAnimX");
-			material.vTexAnim.y		=csv.GetFloat("TexAnimY");
-			material.vUVScale.x		=1.0f/csv.GetFloat("UScale");
-			material.vUVScale.y		=1.0f/csv.GetFloat("VScale");
+			uint64 uID;
+			std::string strMeshFile;
+			std::string strName;
+			pCellsNode->GetVal("GUID",uID);
+			pCellsNode->GetVal("NAME",strName);
+			pCellsNode->GetString("FILE",strMeshFile);
+			pScene->setObjectResources(uID,,strPath+strMeshFile);
+			pCellsNode = file.nextSibling("PIECE");
 		}
 	}
-	csv.Close();
-	return true;
 }
 
 bool CMyPlug::importObjectResources(iScene * pScene, const std::string& strFilename, const std::string& strPath)
@@ -152,7 +62,8 @@ bool CMyPlug::importObjectResources(iScene * pScene, const std::string& strFilen
 	CCsvFile csvObject;
 	if (csvObject.Open(strFilename))
 	{
-		while (csvObject.SeekNextLine())
+		const CNodeData* pCellsNode = lump.firstChild("PIECE");
+		while (pCellsNode)
 		{
 			pScene->setObjectResources(
 				csvObject.GetInt("ID"),
@@ -162,6 +73,7 @@ bool CMyPlug::importObjectResources(iScene * pScene, const std::string& strFilen
 				//Info.bIsGround			= csvObject.GetBool("IsGround");
 				//Info.bHasShadow			= csvObject.GetBool("HasShadow");
 				//Info.strFilename	= csvObject.GetStr("ModelFilename");
+			pCellsNode = lump.nextSibling("PIECE");
 		}
 		csvObject.Close();
 	}
@@ -211,22 +123,6 @@ bool CMyPlug::importObject(iScene * pScene, const std::string& strFilename)
 
 int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 {
-	{
-		CLumpFile lumpFile;
-		if (lumpFile.LoadFile(ChangeExtension(strFilename,".sce")))
-		{
-			Fog fog;
-			DirectionalLight light;
-			lumpFile.GetVal("fog",fog);
-			lumpFile.GetVal("light",light);
-			pScene->setFog(fog);
-			pScene->setLight(light);
-		}
-	}
-	importTerrainData(&pScene->getTerrain()->GetData(),ChangeExtension(strFilename,".map"));
-	importTiles(pScene->getTerrain(),GetParentPath(strFilename)+"Tile.csv",GetParentPath(strFilename));
-	//pScene->getTerrain()->setLightMapTexture(strFilename+"TerrainLight.OZJ");
-	pScene->getTerrain()->create();
 
 	importObjectResources(pScene,GetParentPath(strFilename)+"object.csv",GetParentPath(strFilename)); 
 	BBox bboxObject;
@@ -239,24 +135,6 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 
 bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& strFilename)
 {
-	CLumpFile lump;
-	lump.SetName("terrain");
-	lump.SetInt(1);
-	lump.SetInt("width", pTerrainData->GetWidth());
-	lump.SetInt("height", pTerrainData->GetHeight());
-	lump.SetInt("cubesize", pTerrainData->GetCubeSize());
-	CNodeData* pCellsNode = lump.AddNode("cells");
-	if (pCellsNode)
-	{
-		pCellsNode->SetVector("tile0",		pTerrainData->getTiles(0));
-		pCellsNode->SetVector("tile1",		pTerrainData->getTiles(1));
-		pCellsNode->SetVector("color",		pTerrainData->getColors());
-		pCellsNode->SetVector("height",		pTerrainData->getHeights());
-		pCellsNode->SetVector("attribute",	pTerrainData->getAttributes());
-		pCellsNode->SetVector("other",		pTerrainData->getOthers());
-		//pCellsNode->SetVector("uv",		pTerrainData->getEquableTexUV);
-	}
-	lump.SaveFile(strFilename);
 	return true;
 }
 
@@ -316,14 +194,6 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 
 int CMyPlug::exportData(iScene * pScene, const std::string& strFilename)
 {
-	{
-		CLumpFile lumpFile;
-		lumpFile.SetName("scene");
-		lumpFile.SetVal("fog",pScene->getFog());
-		lumpFile.SetVal("light",pScene->getLight());
-		lumpFile.SaveFile(ChangeExtension(strFilename,".sce"));
-	}
-	exportTerrainData(&pScene->getTerrain()->GetData(),ChangeExtension(strFilename,".map"));
 	exportObject(pScene,ChangeExtension(strFilename,".obj"));
 	return true;
 }
