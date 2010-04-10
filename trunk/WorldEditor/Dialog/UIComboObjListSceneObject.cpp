@@ -35,7 +35,7 @@ void CUIComboObjListSceneObject::initObject(CScene& scene)
 	}
 }
 
-void CUIComboObjListSceneObject::SelectObjectByObjectID(size_t id)
+void CUIComboObjListSceneObject::SelectObjectByObjectID(uint64 id)
 {
 	if (NULL==m_pScene)
 	{
