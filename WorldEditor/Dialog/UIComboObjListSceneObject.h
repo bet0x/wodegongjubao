@@ -9,7 +9,7 @@ public:
 public:
 	void initObject(CScene& scene);
 	void SelectObjectByObjectID(uint64 id);
-	uint64 getSelectedObjectID();
+	size_t getSelectedObjectID();
 
 
 	void OnListBoxObjectSelection();
