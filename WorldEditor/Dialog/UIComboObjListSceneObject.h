@@ -8,8 +8,8 @@ public:
 	~CUIComboObjListSceneObject();
 public:
 	void initObject(CScene& scene);
-	void SelectObjectByObjectID(size_t id);
-	size_t getSelectedObjectID();
+	void SelectObjectByObjectID(uint64 id);
+	uint64 getSelectedObjectID();
 
 
 	void OnListBoxObjectSelection();
