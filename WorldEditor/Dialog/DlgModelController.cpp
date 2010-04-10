@@ -147,14 +147,7 @@ void CDlgModelController::initRecentPath()
 			RegCloseKey(hKey);
 		}
 	}
-	if (wstrRecentPath.length()>0)
-	{
-		OpenPath(wstrRecentPath,s2ws(CModelDataMgr::getInstance().getAllExtensions()));
-	}
-	else
-	{
-		OpenPath(getCurrentDirectory(),s2ws(CModelDataMgr::getInstance().getAllExtensions()));
-	}
+	OpenPath(wstrRecentPath,s2ws(CModelDataMgr::getInstance().getAllExtensions()));
 }
 
 void CDlgModelController::OpenFile(const std::wstring& wstrFilename)
@@ -176,7 +169,11 @@ void CDlgModelController::OpenPath(const std::wstring& wstrPath, const std::wstr
 	m_ListBoxFolder.RemoveAllItems();
 	//|{"+wstrFileType+L"}";
 	CDir dir;
-	dir.ReadDir(wstrPath);
+	if(dir.ReadDir(m_wstrPath)==false)
+	{
+		m_wstrPath=getCurrentDirectory();
+		dir.ReadDir(m_wstrPath);
+	}
 	for (int i=0; i<dir.m_FileInfo.size(); i++)
 	{
 		if (dir.m_FileInfo[i].IsDirectory())
