@@ -31,66 +31,138 @@ bool CMyPlug::importTileSet(iScene * pScene, const std::string& strFilename, con
 	CStringNodeFile file;
 	if (file.LoadFile(strFilename))
 	{
-		const CNodeData* pCellsNode = file.firstChild("PIECE");
-		while (pCellsNode)
+		const CNodeData* pPieceNode = file.firstChild("PIECE");
+		while (pPieceNode)
 		{
-			uint64 uID;
+			uint64 uGUID;
 			std::string strMeshFile;
 			std::string strName;
-			pCellsNode->GetVal("GUID",uID);
-			pCellsNode->GetVal("NAME",strName);
-			pCellsNode->GetString("FILE",strMeshFile);
-			pScene->setObjectResources(uID,,strPath+strMeshFile);
-			pCellsNode = file.nextSibling("PIECE");
+			pPieceNode->GetVal("GUID",uGUID);
+			pPieceNode->GetString("NAME",strName);
+			pPieceNode->GetString("FILE",strMeshFile);
+			pScene->setObjectResources(uGUID,strName,strPath+strMeshFile);
+			pPieceNode = pPieceNode->nextSibling("PIECE");
 		}
 	}
 	return true;
 }
 
-#pragma pack(push,1)
-struct ObjInfo
+
+
+// Converts a Quaternion to Euler angles (X = Yaw, Y = Pitch, Z = Roll)
+Vec3D QuaternionToEulerAngle(const Vec3D& vForward, const Vec3D& vRight, const Vec3D& vUp)
 {
-	int16 id;
-	Vec3D p;
-	Vec3D rotate;
-	float fScale;
-};
-#pragma pack(pop)
+	Vec3D rot;
+	float _11=vRight.x;
+	float _21=vUp.x;
+	float _31=vForward.x;
+	float _32=vForward.y;
+	float _33=vForward.z;
+
+	rot.x = atan2( _21,_11 );
+	rot.y = atan2(-_31,sqrt(_32*_32+_33*_33));
+	rot.z = atan2( _32,_33 );
+	return rot;
+}
+
+void importObjectByNodeData(iScene * pScene,const CNodeData* pParentNode)
+{
+	const CNodeData* pBaseObjectNode = pParentNode->firstChild("BASEOBJECT");
+	while (pBaseObjectNode)
+	{
+		const CNodeData* pPropertiesNode = pBaseObjectNode->firstChild("PROPERTIES");
+		if (pPropertiesNode)
+		{
+			uint64 uGUID;
+			std::string strGUID;
+			Vec3D vPos(0,0,0);
+			Vec3D vRotate(0,0,0);
+			float fScale = 1;
+			pPropertiesNode->GetString("GUID",strGUID);
+			if (strGUID.length()>0)
+			{
+				uGUID = _atoi64(strGUID.c_str());
+				pPropertiesNode->GetVal("POSITIONX",vPos.x);
+				pPropertiesNode->GetVal("POSITIONY",vPos.y);
+				pPropertiesNode->GetVal("POSITIONZ",vPos.z);
+				Vec3D vForward,vRight,vUp;
+				pPropertiesNode->GetVal("FORWARDX",vForward.x);
+				pPropertiesNode->GetVal("FORWARDY",vForward.y);
+				pPropertiesNode->GetVal("FORWARDZ",vForward.z);
+				pPropertiesNode->GetVal("RIGHTX",vRight.x);
+				pPropertiesNode->GetVal("RIGHTY",vRight.y);
+				pPropertiesNode->GetVal("RIGHTZ",vRight.z);
+				pPropertiesNode->GetVal("UPX",vUp.x);
+				pPropertiesNode->GetVal("UPY",vUp.y);
+				pPropertiesNode->GetVal("UPZ",vUp.z);
+				vForward.normalize();
+				vRotate=QuaternionToEulerAngle(vForward,vRight,vUp);
+				if (false==pScene->add3DMapSceneObj(uGUID,vPos,vRotate,fScale))
+				{
+					MessageBoxA(NULL,"cannot find ID!","Error",0);
+				}
+			}
+		}
+		const CNodeData* pChildrenNode = pBaseObjectNode->firstChild("CHILDREN");
+		if (pChildrenNode)
+		{
+			importObjectByNodeData(pScene,pChildrenNode);
+		}
+		pBaseObjectNode = pBaseObjectNode->nextSibling("BASEOBJECT");
+	}
+}
 
 bool CMyPlug::importObject(iScene * pScene, const std::string& strFilename)
 {
 	pScene->removeAllObjects();
 	CStringNodeFile file;
-	if (file.LoadFile(strFilename))
+	if (!file.LoadFile(strFilename))
 	{
-		const CNodeData* pCellsNode = file.firstChild("BASEOBJECT");
-		while (pCellsNode)
-		{
-			uint64 uID;
-			std::string strMeshFile;
-			std::string strName;
-			pCellsNode->GetVal("GUID",uID);
-			pCellsNode->GetVal("NAME",strName);
-			pCellsNode->GetString("FILE",strMeshFile);
-			pScene->setObjectResources(uID,,strPath+strMeshFile);
-			if (false==pScene->add3DMapSceneObj(pObjInfo->id,vPos,vRotate,pObjInfo->fScale))
-			{
-				//MessageBoxA(NULL,"cannot find ID!","Error",0);
-			}
-			pCellsNode = file.nextSibling("BASEOBJECT");
-		}
+		return false;
 	}
+	if (file.GetName()!="Layout")
+	{
+		return false;
+	}
+	// OBJECTS
+	const CNodeData* pObjectsNode = file.firstChild("OBJECTS");
+	if (pObjectsNode==NULL)
+	{
+		return false;
+	}
+	// BASEOBJECT
+	importObjectByNodeData(pScene, pObjectsNode);
 	return true;
 }
 
 int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 {
 	importTileSet(pScene,"D:\\Program Files\\Runic Games\\TorchED\\media\\levelSets\\Cave.dat","D:\\Program Files\\Runic Games\\TorchED\\");
+	importTileSet(pScene,"D:\\Program Files\\Runic Games\\TorchED\\media\\levelSets\\CaveProps.dat","D:\\Program Files\\Runic Games\\TorchED\\");
+	importTileSet(pScene,"D:\\Program Files\\Runic Games\\TorchED\\media\\levelSets\\Crypt.dat","D:\\Program Files\\Runic Games\\TorchED\\");
+	importTileSet(pScene,"D:\\Program Files\\Runic Games\\TorchED\\media\\levelSets\\CryptProps.dat","D:\\Program Files\\Runic Games\\TorchED\\");
+	importTileSet(pScene,"D:\\Program Files\\Runic Games\\TorchED\\media\\levelSets\\ERROR.dat","D:\\Program Files\\Runic Games\\TorchED\\");
+	importTileSet(pScene,"D:\\Program Files\\Runic Games\\TorchED\\media\\levelSets\\Fortress.dat","D:\\Program Files\\Runic Games\\TorchED\\");
+	importTileSet(pScene,"D:\\Program Files\\Runic Games\\TorchED\\media\\levelSets\\FortressProps.dat","D:\\Program Files\\Runic Games\\TorchED\\");
+	importTileSet(pScene,"D:\\Program Files\\Runic Games\\TorchED\\media\\levelSets\\Lava.dat","D:\\Program Files\\Runic Games\\TorchED\\");
+	importTileSet(pScene,"D:\\Program Files\\Runic Games\\TorchED\\media\\levelSets\\LavaProps.dat","D:\\Program Files\\Runic Games\\TorchED\\");
+	importTileSet(pScene,"D:\\Program Files\\Runic Games\\TorchED\\media\\levelSets\\Mine.dat","D:\\Program Files\\Runic Games\\TorchED\\");
+	importTileSet(pScene,"D:\\Program Files\\Runic Games\\TorchED\\media\\levelSets\\MineProps.dat","D:\\Program Files\\Runic Games\\TorchED\\");
+	importTileSet(pScene,"D:\\Program Files\\Runic Games\\TorchED\\media\\levelSets\\Palace.dat","D:\\Program Files\\Runic Games\\TorchED\\");
+	importTileSet(pScene,"D:\\Program Files\\Runic Games\\TorchED\\media\\levelSets\\PalaceProps.dat","D:\\Program Files\\Runic Games\\TorchED\\");
+	importTileSet(pScene,"D:\\Program Files\\Runic Games\\TorchED\\media\\levelSets\\Props.dat","D:\\Program Files\\Runic Games\\TorchED\\");
+	importTileSet(pScene,"D:\\Program Files\\Runic Games\\TorchED\\media\\levelSets\\STemple.dat","D:\\Program Files\\Runic Games\\TorchED\\");
+	importTileSet(pScene,"D:\\Program Files\\Runic Games\\TorchED\\media\\levelSets\\STempleProps.dat","D:\\Program Files\\Runic Games\\TorchED\\");
+	importTileSet(pScene,"D:\\Program Files\\Runic Games\\TorchED\\media\\levelSets\\town1.dat","D:\\Program Files\\Runic Games\\TorchED\\");
+	importTileSet(pScene,"D:\\Program Files\\Runic Games\\TorchED\\media\\levelSets\\town.dat","D:\\Program Files\\Runic Games\\TorchED\\");
+	importTileSet(pScene,"D:\\Program Files\\Runic Games\\TorchED\\media\\levelSets\\town_02.dat","D:\\Program Files\\Runic Games\\TorchED\\");
+
+
 	BBox bboxObject;
 	bboxObject.vMin = Vec3D(-20.0f,-100.0f,-20.0f);
 	bboxObject.vMax = Vec3D(pScene->getTerrain()->GetData().GetWidth()+20.0f,100.0f,pScene->getTerrain()->GetData().GetHeight()+20.0f);
 	pScene->createObjectTree(bboxObject,16);
-	importObject(pScene,ChangeExtension(strFilename,".obj"));
+	importObject(pScene,strFilename);
 	return true;
 }
 
@@ -116,40 +188,6 @@ bool CMyPlug::exportObjectResourcesFormDir(iScene * pScene,const std::string& st
 
 bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 {
-	FILE* f=fopen(strFilename.c_str(),"wb");
-	if (f)
-	{
-		std::vector<ObjInfo> setObjInfo;
-		DEQUE_MAPOBJ setObject;
-		pScene->getAllObjects(setObject);
-		for (DEQUE_MAPOBJ::iterator it=setObject.begin();it!=setObject.end();it++)
-		{
-			ObjInfo objInfo;
-			C3DMapSceneObj* pObj = (C3DMapSceneObj*)(*it);
-			Vec3D vPos = pObj->getPos();
-			vPos = Vec3D(vPos.x,vPos.z,vPos.y)*100.0f;
-			Vec3D vRotate = pObj->getRotate();
-			vRotate = Vec3D(vRotate.x,vRotate.z,vRotate.y)*180.0f/PI;
-
-			objInfo.id = pObj->getObjectID();
-			objInfo.p = vPos;
-			objInfo.rotate = vRotate;
-			objInfo.fScale = pObj->getScale();
-			setObjInfo.push_back(objInfo);
-		}
-		size_t fileSize = setObjInfo.size()*sizeof(ObjInfo)+4;
-		char* buffer = new char[fileSize];
-		*((uint16*)buffer) = 1;//m_uUnknow;
-		*((uint16*)(buffer+2)) = setObjInfo.size();
-		if (setObjInfo.size()>0)
-		{
-			memcpy(buffer+4,&setObjInfo[0],setObjInfo.size()*sizeof(ObjInfo));
-		}
-		encrypt(buffer,fileSize);
-		fwrite(buffer,fileSize,1,f);
-		fclose(f);
-		delete buffer;
-	}
 	return true;
 }
 

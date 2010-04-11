@@ -170,6 +170,12 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 			m_MeshCoordinate.render(m_vPosPressed);
 		}
 	}
+	else
+	{
+		m_MeshCoordinate.setPos(Vec3D(0,0,0));
+		m_MeshCoordinate.setScale(1);
+		m_MeshCoordinate.render(Vec3D(0,0,0));
+	}
 
 
 	if (0)
