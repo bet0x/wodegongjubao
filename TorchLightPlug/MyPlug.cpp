@@ -47,8 +47,6 @@ bool CMyPlug::importTileSet(iScene * pScene, const std::string& strFilename, con
 	return true;
 }
 
-
-
 // Converts a Quaternion to Euler angles (X = Yaw, Y = Pitch, Z = Roll)
 Vec3D QuaternionToEulerAngle(const Vec3D& vForward, const Vec3D& vRight, const Vec3D& vUp)
 {
@@ -77,27 +75,44 @@ void importObjectByNodeData(iScene * pScene,const CNodeData* pParentNode)
 			std::string strGUID;
 			Vec3D vPos(0,0,0);
 			Vec3D vRotate(0,0,0);
-			float fScale = 1;
+			Vec3D vScale(1,1,1);
 			pPropertiesNode->GetString("GUID",strGUID);
 			if (strGUID.length()>0)
 			{
 				uGUID = _atoi64(strGUID.c_str());
-				pPropertiesNode->GetVal("POSITIONX",vPos.x);
-				pPropertiesNode->GetVal("POSITIONY",vPos.y);
-				pPropertiesNode->GetVal("POSITIONZ",vPos.z);
-				Vec3D vForward,vRight,vUp;
-				pPropertiesNode->GetVal("FORWARDX",vForward.x);
-				pPropertiesNode->GetVal("FORWARDY",vForward.y);
-				pPropertiesNode->GetVal("FORWARDZ",vForward.z);
-				pPropertiesNode->GetVal("RIGHTX",vRight.x);
-				pPropertiesNode->GetVal("RIGHTY",vRight.y);
-				pPropertiesNode->GetVal("RIGHTZ",vRight.z);
-				pPropertiesNode->GetVal("UPX",vUp.x);
-				pPropertiesNode->GetVal("UPY",vUp.y);
-				pPropertiesNode->GetVal("UPZ",vUp.z);
-				vForward.normalize();
-				vRotate=QuaternionToEulerAngle(vForward,vRight,vUp);
-				if (false==pScene->add3DMapSceneObj(uGUID,vPos,vRotate,fScale))
+				{
+					pPropertiesNode->GetFloat("POSITIONX",vPos.x);
+					pPropertiesNode->GetFloat("POSITIONY",vPos.y);
+					pPropertiesNode->GetFloat("POSITIONZ",vPos.z);
+					vPos.x=-vPos.x;
+				}
+				{
+					Vec3D vForward,vRight,vUp;
+					pPropertiesNode->GetFloat("FORWARDX",vForward.x);
+					pPropertiesNode->GetFloat("FORWARDY",vForward.y);
+					pPropertiesNode->GetFloat("FORWARDZ",vForward.z);
+					vForward.x=-vForward.x;
+					vForward.normalize();
+					pPropertiesNode->GetFloat("RIGHTX",vRight.x);
+					pPropertiesNode->GetFloat("RIGHTY",vRight.y);
+					pPropertiesNode->GetFloat("RIGHTZ",vRight.z);
+					vRight.x=-vRight.x;
+					pPropertiesNode->GetFloat("UPX",vUp.x);
+					pPropertiesNode->GetFloat("UPY",vUp.y);
+					pPropertiesNode->GetFloat("UPZ",vUp.z);
+					vUp.x=-vUp.x;
+					vRotate=QuaternionToEulerAngle(vForward,vRight,vUp);
+					vRotate.x+=PI;
+				}
+				{
+					float fScale=1.0f;
+					pPropertiesNode->GetFloat("SCALE",fScale);
+					vScale=Vec3D(fScale,fScale,fScale);
+					pPropertiesNode->GetFloat("X",vScale.x);
+					pPropertiesNode->GetFloat("Y",vScale.y);
+					pPropertiesNode->GetFloat("Z",vScale.z);
+				}
+				if (false==pScene->add3DMapSceneObj(uGUID,vPos,vRotate,vScale))
 				{
 					MessageBoxA(NULL,"cannot find ID!","Error",0);
 				}
@@ -159,8 +174,8 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 
 
 	BBox bboxObject;
-	bboxObject.vMin = Vec3D(-20.0f,-100.0f,-20.0f);
-	bboxObject.vMax = Vec3D(pScene->getTerrain()->GetData().GetWidth()+20.0f,100.0f,pScene->getTerrain()->GetData().GetHeight()+20.0f);
+	bboxObject.vMin = Vec3D(-200.0f,-200.0f,-200.0f);
+	bboxObject.vMax = Vec3D(200.0f,200,200.0f);
 	pScene->createObjectTree(bboxObject,16);
 	importObject(pScene,strFilename);
 	return true;

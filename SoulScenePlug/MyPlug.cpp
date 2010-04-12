@@ -190,8 +190,9 @@ bool CMyPlug::importObject(iScene * pScene, const std::string& strFilename)
 		{
 			Vec3D vPos = Vec3D(pObjInfo->p.x,pObjInfo->p.z,pObjInfo->p.y)*0.01f;
 			Vec3D vRotate = Vec3D(pObjInfo->rotate.x,pObjInfo->rotate.z,pObjInfo->rotate.y)*PI/180.0f;
+			Vec3D vScale= Vec3D(pObjInfo->fScale,pObjInfo->fScale,pObjInfo->fScale);
 
-			if (false==pScene->add3DMapSceneObj(pObjInfo->id,vPos,vRotate,pObjInfo->fScale))
+			if (false==pScene->add3DMapSceneObj(pObjInfo->id,vPos,vRotate,vScale))
 			{
 				//MessageBoxA(NULL,"cannot find ID!","Error",0);
 			}
@@ -289,7 +290,7 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 			objInfo.id = pObj->getObjectID();
 			objInfo.p = vPos;
 			objInfo.rotate = vRotate;
-			objInfo.fScale = pObj->getScale();
+			objInfo.fScale = pObj->getScale().x;
 			setObjInfo.push_back(objInfo);
 		}
 		size_t fileSize = setObjInfo.size()*sizeof(ObjInfo)+4;

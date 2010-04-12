@@ -360,6 +360,7 @@ void readGeometryVertexBuffer(IOReadBase* pRead, CSubMesh& subMesh,std::vector<G
 					{
 						Vec3D vPos;
 						pRead->Read(&vPos,sizeof(Vec3D));
+						vPos.x=-vPos.x;
 						subMesh.addPos(vPos);
 					}
 					break;
@@ -381,6 +382,7 @@ void readGeometryVertexBuffer(IOReadBase* pRead, CSubMesh& subMesh,std::vector<G
 					{
 						Vec3D vNormal;
 						pRead->Read(&vNormal,sizeof(Vec3D));
+						vNormal.x=-vNormal.x;
 						subMesh.addNormal(vNormal);
 					}
 					break;
