@@ -63,6 +63,7 @@ void CDlgToolObject::OnFocusObjectValueChanged()
 		Vec3D vPos(m_NumPosX.getFloat(),m_NumPosY.getFloat(),m_NumPosZ.getFloat());
 		Vec3D vRotate(m_NumRotateX.getFloat()*PI/180,m_NumRotateY.getFloat()*PI/180,m_NumRotateZ.getFloat()*PI/180);
 		float fScale = m_NumScale.getFloat();
+		Vec3D vScale(fScale,fScale,fScale);
 		if (fScale<0.1f||fScale>=100.f)
 		{
 			fScale = 1.0f;
@@ -71,7 +72,7 @@ void CDlgToolObject::OnFocusObjectValueChanged()
 
 		pObject->setPos(vPos);
 		pObject->setRotate(vRotate);
-		pObject->setScale(fScale);
+		pObject->setScale(vScale);
 	}
 }
 
@@ -82,7 +83,7 @@ void CDlgToolObject::OnFocusObjectChanged()
 	{
 		Vec3D vPos = pObject->getPos();
 		Vec3D vRotate = pObject->getRotate();
-		float fScale = pObject->getScale();
+		Vec3D vScale = pObject->getScale();
 
 		m_NumPosX.setFloat(vPos.x);
 		m_NumPosY.setFloat(vPos.y);
@@ -90,7 +91,7 @@ void CDlgToolObject::OnFocusObjectChanged()
 		m_NumRotateX.setFloat(vRotate.x*180/PI);
 		m_NumRotateY.setFloat(vRotate.y*180/PI);
 		m_NumRotateZ.setFloat(vRotate.z*180/PI);
-		m_NumScale.setFloat(fScale);
+		m_NumScale.setFloat(vScale.x);
 
 		if (pObject->GetObjType()==MAP_3DSIMPLE)
 		{
@@ -108,7 +109,8 @@ void CDlgToolObject::OnAddObject()
 		fScale = 1.0f;
 		m_NumScale.setFloat(fScale);
 	}
-	CMapObj* pObject = getDisplay().getScene().add3DMapSceneObj(m_ObjListSceneObject.getSelectedObjectID(),getDisplay().getScene().getTargetPos(),vRotate,fScale);
+	Vec3D vScale=Vec3D(fScale,fScale,fScale);
+	CMapObj* pObject = getDisplay().getScene().add3DMapSceneObj(m_ObjListSceneObject.getSelectedObjectID(),getDisplay().getScene().getTargetPos(),vRotate,vScale);
 
 	getDisplay().getScene().setObjectFocus(pObject);
 	OnFocusObjectChanged();
