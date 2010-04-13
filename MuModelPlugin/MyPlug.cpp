@@ -30,13 +30,13 @@ bool importMaterial(iModelData * pModelData, const std::string& strFilename, con
 		const std::string strMaterialName = csv.GetStr("Name");
 		CMaterial& material = pModelData->getMaterial(strMaterialName);
 
-		material.strDiffuse		=getRealFilename(strPath,csv.GetStr("Diffuse"));
-		material.strEmissive	=getRealFilename(strPath,csv.GetStr("Emissive"));
-		material.strSpecular	=getRealFilename(strPath,csv.GetStr("Specular"));
-		material.strNormal		=getRealFilename(strPath,csv.GetStr("Normal"));
-		material.strReflection	=getRealFilename(strPath,csv.GetStr("Reflection"));
-		material.strLightMap	=getRealFilename(strPath,csv.GetStr("LightMap"));
-		material.strShader		=getRealFilename(strPath,csv.GetStr("Shader"));
+		material.setDiffuse		(getRealFilename(strPath,csv.GetStr("Diffuse")));
+		material.setEmissive	(getRealFilename(strPath,csv.GetStr("Emissive")));
+		material.setSpecular	(getRealFilename(strPath,csv.GetStr("Specular")));
+		material.setNormal		(getRealFilename(strPath,csv.GetStr("Normal")));
+		material.setReflection	(getRealFilename(strPath,csv.GetStr("Reflection")));
+		material.setLightMap	(getRealFilename(strPath,csv.GetStr("LightMap")));
+		material.setShader		(getRealFilename(strPath,csv.GetStr("Shader")));
 
 		material.m_fOpacity		=csv.GetFloat("Opacity");
 		material.uCull			=csv.GetInt("Cull");
@@ -191,7 +191,7 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 			std::string strMaterialName = Format("%s%d",ChangeExtension(GetFilename(strFilename),".sub").c_str(),i);
 			{
 				CMaterial& material = pModelData->getMaterial(strMaterialName);
-				material.strDiffuse=strTexFileName;
+				material.setDiffuse(strTexFileName);
 				material.uCull = 0;
 				material.bAlphaTest=true;
 				material.uAlphaTestValue = 0x80;

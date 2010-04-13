@@ -636,11 +636,11 @@ bool readMaterialTexture(CMaterial& material, IOReadBase* pRead, const std::stri
 	{
 		if (bAdd)
 		{
-			material.strEmissive=strTexture;
+			material.setEmissive(strTexture);
 		}
 		else
 		{
-			material.strDiffuse=strTexture;
+			material.setDiffuse(strTexture);
 		}
 	}
 	return true;
