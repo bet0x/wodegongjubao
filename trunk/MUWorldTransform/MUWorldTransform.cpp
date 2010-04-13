@@ -186,19 +186,24 @@ void encryptItemBMD(const std::string& strSrcFilename, const std::string& strDes
 	{
 		char buffer[512*64];
 		memset(buffer,0,512*64);
+		for (size_t i=0;i<512;++i)
+		{
+			itemdata97* pItem=(itemdata97*)(buffer+i*64);
+			itoa(i,pItem->cName,10);
+		}
 		while (csvFile.SeekNextLine())
 		{
-			int id = csvFile.GetInt(0);
+			int id = csvFile.GetInt(0)*32+csvFile.GetInt(1);
 			if (id>=512)
 			{
 				continue;
 			}
 			itemdata97* pItem=(itemdata97*)(buffer+id*64);
-			std::string strName = csvFile.GetStr(1);
+			std::string strName = csvFile.GetStr(2);
 			strcpy(pItem->cName,strName.c_str());
 			for (size_t n=0;n<34;++n)
 			{
-				pItem->ucInt[n]=csvFile.GetInt(n+2);
+				pItem->ucInt[n]=csvFile.GetInt(n+3);
 			}
 		}
 		csvFile.Close();
@@ -240,13 +245,13 @@ void decryptItemBMD(const std::string& strSrcFilename, const std::string& strDes
 		file.open(strDestFilename.c_str(), std::ios::out);
 		if ( file.is_open() )
 		{
-			file << "ID,物品名称,双手武器,掉物品的怪物等级,所占格子X,所占格子Y,最小攻击力,最大攻击力,防御率,防御力,魔法防御,攻击速度,鞋子属性,持久度,Unknown,力量需求,敏捷需求,等级需求,价格参数,书,22,书极光以上非零,00,类型,法师,战士,精灵,魔剑士,防冰属性,防毒属性,防雷属性,防火属性,9,9,9,9"<< std::endl;
+			file << "分组,索引,物品名称,双手武器,掉怪等级,占格宽度,占格高度,最小攻击力,最大攻击力,防御率,防御力,魔法防御,攻击速度,鞋子属性,耐久度,魔法攻击率,力量需求,敏捷需求,等级需求,价格参数,书,22,书极光以上非零,00,类型,9,9,9,9,法师,战士,精灵,魔剑士,防冰,防毒,防雷,防火"<< std::endl;
 			for (size_t i=0;i<size/64;++i)
 			{
 				itemdata97* pItem = (itemdata97*)(buffer+i*64);
 				if (strlen(pItem->cName)!=0)
 				{
-					file <<i<<","<<pItem->cName;
+					file<<(i/32)<<","<<(i%32)<<","<<pItem->cName;
 					for (size_t n=0;n<34;++n)
 					{
 						file<<","<<(int)pItem->ucInt[n];
@@ -379,11 +384,11 @@ int main(int argc, _TCHAR* argv[])
 				}
 				else if (isEncBmd(strFilename))
 				{
-					decryptMuFile(strFilename,"Dec\\"+strFilename+"d");
+				//	decryptMuFile(strFilename,"Dec\\"+strFilename);
 				}
 				else
 				{
-					decryptMuFileXOR3(strFilename,"Dec\\"+strFilename+"d");
+				//	decryptMuFileXOR3(strFilename,"Dec\\"+strFilename);
 				}
 			}
 			else if (wstrExt==L".csv")
