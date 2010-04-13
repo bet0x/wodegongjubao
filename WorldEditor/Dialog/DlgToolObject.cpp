@@ -114,6 +114,7 @@ void CDlgToolObject::OnAddObject()
 
 	getDisplay().getScene().setObjectFocus(pObject);
 	OnFocusObjectChanged();
+	OnObjectPosChanged();
 }
 
 void CDlgToolObject::OnObjectPosChanged()
