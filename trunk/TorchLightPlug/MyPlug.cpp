@@ -34,7 +34,7 @@ bool CMyPlug::importTileSet(iScene * pScene, const std::string& strFilename, con
 		const CNodeData* pPieceNode = file.firstChild("PIECE");
 		while (pPieceNode)
 		{
-			uint64 uGUID;
+			int64 uGUID;
 			std::string strMeshFile;
 			std::string strName;
 			pPieceNode->GetVal("GUID",uGUID);
@@ -71,7 +71,7 @@ void importObjectByNodeData(iScene * pScene,const CNodeData* pParentNode)
 		const CNodeData* pPropertiesNode = pBaseObjectNode->firstChild("PROPERTIES");
 		if (pPropertiesNode)
 		{
-			uint64 uGUID;
+			int64 uGUID;
 			std::string strGUID;
 			Vec3D vPos(0,0,0);
 			Vec3D vRotate(0,0,0);
@@ -87,7 +87,9 @@ void importObjectByNodeData(iScene * pScene,const CNodeData* pParentNode)
 					vPos.x=-vPos.x;
 				}
 				{
-					Vec3D vForward,vRight,vUp;
+					Vec3D vForward(0.0f,0.0f,1.0f);
+					Vec3D vRight(1.0f,0.0f,0.0f);
+					Vec3D vUp(0.0f,1.0f,0.0f);
 					pPropertiesNode->GetFloat("FORWARDX",vForward.x);
 					pPropertiesNode->GetFloat("FORWARDY",vForward.y);
 					pPropertiesNode->GetFloat("FORWARDZ",vForward.z);
