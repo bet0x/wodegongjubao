@@ -111,6 +111,9 @@ void importObjectByNodeData(iScene * pScene,const CNodeData* pParentNode)
 					pPropertiesNode->GetFloat("X",vScale.x);
 					pPropertiesNode->GetFloat("Y",vScale.y);
 					pPropertiesNode->GetFloat("Z",vScale.z);
+					pPropertiesNode->GetFloat("SCALE X",vScale.x);
+					pPropertiesNode->GetFloat("SCALE Y",vScale.y);
+					pPropertiesNode->GetFloat("SCALE Z",vScale.z);
 				}
 				if (false==pScene->add3DMapSceneObj(uGUID,vPos,vRotate,vScale))
 				{
