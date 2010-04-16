@@ -147,14 +147,14 @@ void CDlgModelController::initRecentPath()
 			RegCloseKey(hKey);
 		}
 	}
-	OpenPath(wstrRecentPath,s2ws(CModelDataMgr::getInstance().getAllExtensions()));
+	OpenPath(wstrRecentPath,s2ws(CModelDataMgr::getInstance().getDataPlugsMgr().getAllExtensions()));
 }
 
 void CDlgModelController::OpenFile(const std::wstring& wstrFilename)
 {
 	if (IOReadBase::Exists(ws2s(wstrFilename)))
 	{
-		OpenPath(GetParentPath(wstrFilename),s2ws(CModelDataMgr::getInstance().getAllExtensions()));
+		OpenPath(GetParentPath(wstrFilename),s2ws(CModelDataMgr::getInstance().getDataPlugsMgr().getAllExtensions()));
 		//m_ListBoxFolder.SetSelec()
 		//GetFilename(wstrFilename)
 		getModelDisplay().LoadModel(ws2s(wstrFilename));
