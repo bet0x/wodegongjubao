@@ -10,12 +10,8 @@
 #include "DlgModelMaterial.h"
 #include "ModelDisplay.h"
 
+#include "DataPlugsMgr.h"
 //#include "DlgFaceDetect.h"
-
-typedef struct{
-	CScenePlugBase * pObj;
-	HINSTANCE hIns;
-}PLUG_ST, * LPPLUG_ST;
 
 class CDlgMainEditor : public CUIMainDialog
 {
@@ -49,9 +45,6 @@ public:
 	CUIWorldEditorDisplay& getDisplay();
 	CModelDisplay& getModelDisplay();
 	CDlgModelMaterial& getMaterialDialog();
-protected:
-	bool loadPlugFromPath(const std::string& strPath);
-	bool createPlug(const std::string& strFilename);
 private:
 	void updateDisplay();
 	CDlgModelController m_DlgModelController;
@@ -67,11 +60,10 @@ private:
 	CUIWorldEditorDisplay	m_WorldEditorDisplay;
 	CDlgToolbar		m_DlgToolbar;
 	CDlgFile		m_DlgFile;
-	std::wstring	m_wstrFileType;
 	//CDlgFPS			m_DlgFPS;
 	CDlgRegister	m_DlgRegister;
 
-	std::vector<PLUG_ST> m_arrPlugObj;
+	CDataPlugsMgr	m_DataPlugsMgr;
 
 
 	CDlgModelMaterial m_DlgMaterialEdit;
