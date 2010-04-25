@@ -80,7 +80,7 @@ void CUIWorldEditorDisplay::OnFrameMove(double fTime, float fElapsedTime)
 
 void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 {
-	if (!IsVisible()&&isHidden())
+	if (!IsVisible()&&!isStyleVisible())
 	{
 		return;
 	}
