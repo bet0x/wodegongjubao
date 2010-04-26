@@ -192,6 +192,7 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 			{
 				CMaterial& material = pModelData->getMaterial(strMaterialName);
 				material.setDiffuse(strTexFileName);
+				material.bLightingEnabled=true;
 				material.uCull = 0;
 				material.bAlphaTest=true;
 				material.uAlphaTestValue = 0x80;

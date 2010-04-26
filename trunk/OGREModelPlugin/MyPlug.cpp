@@ -717,6 +717,7 @@ bool readMaterialPass(CMaterial& material, IOReadBase* pRead, const std::string&
 		}
 		else if ("lighting"==strCommand)
 		{
+			material.bLightingEnabled=true;
 			// 1
 		}
 		else if ("texture_unit"==strCommand)
