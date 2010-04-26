@@ -81,7 +81,7 @@
 				OutputFile="..\..\bin\WorldEditor\Plugins\debug\$(ProjectName)d.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\Shared\lib;..\..\engine\lib"
+				AdditionalLibraryDirectories="..\..\lib"
 				ModuleDefinitionFile=".\$(ProjectName).def"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/$(ProjectName).pdb"
