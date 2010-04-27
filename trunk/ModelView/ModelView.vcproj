@@ -227,14 +227,6 @@
 		<Filter
 			Name="Config"
 			>
-			<File
-				RelativePath=".\Config\Config.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Config\Config.h"
-				>
-			</File>
 		</Filter>
 	</Files>
 	<Globals>

@@ -32,8 +32,6 @@ CConfig::CConfig()
 		m_strTempPath="tempPath";
 		m_strWOWPath="D:\\wow\\Data\\";
 		m_strFontFilename="Data\\font.ttf";
-		m_strThemeFilename="Data\\Themes\\CSS\\UIStyle.xml";
-		m_strUIFilename="Data\\UI\\Dialog_EN.xml";
 		m_nFontSize=15;
 	}
 	else
@@ -64,14 +62,6 @@ CConfig::CConfig()
 		{
 			m_strFontFilename = PathElement->Attribute("font");
 		}
-		if (PathElement->Attribute("theme"))
-		{
-			m_strThemeFilename = PathElement->Attribute("theme");
-		}
-		if (PathElement->Attribute("ui"))
-		{
-			m_strUIFilename = PathElement->Attribute("ui");
-		}
 		if (PathElement->Attribute("font_size"))
 		{
 			m_nFontSize = atoi(PathElement->Attribute("font_size"));
@@ -99,8 +89,6 @@ CConfig::~CConfig()
 	path.SetAttribute("mu",m_strMUPath.c_str());
 //	path.SetAttribute("lastpath",m_strLastPath.c_str());
 	path.SetAttribute("font",m_strFontFilename.c_str());
-	path.SetAttribute("theme",m_strThemeFilename.c_str());
-	path.SetAttribute("ui",m_strUIFilename.c_str());
 	path.SetAttribute("font_size",m_nFontSize);
 	TiXmlElement RootElement("root");
 	RootElement.InsertEndChild(*((TiXmlNode*)&path));
