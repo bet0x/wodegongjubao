@@ -1,8 +1,8 @@
 #include "DlgModelPlayer.h"
-#include "..\Config\Config.h"
 #include "DlgModelController.h"
 #include "ModelDisplay.h"
 #include "FileSystem.h"
+#include "IniFile.h"
 
 void CDlgModelPlayer::OnControlRegister()
 {
@@ -50,7 +50,8 @@ bool CDlgModelPlayer::OnInitDialog()
 	m_ComboBoxBack.AddItem(L"");
 	std::set<std::wstring>	setString;
 
-	std::wstring wstrFindPath = s2ws(GetConfig().m_strMUPath)+L"Player\\";//|{"+wstrFileType+L"}";
+	std::string strDirMU = IniGetStr("WorldEditor.cfg","ResDir","mu");
+	std::wstring wstrFindPath = s2ws(strDirMU)+L"Player\\";//|{"+wstrFileType+L"}";
 	CDir dir;
 	dir.ReadDir(wstrFindPath);
 	for (int i=0; i<dir.m_FileInfo.size(); i++)
@@ -120,7 +121,8 @@ void CDlgModelPlayer::OnUpdatePlayer()
 	{
 		return;
 	}
-	std::string strPlayerPath = GetConfig().m_strMUPath+"Player\\";
+	std::string strDirMU = IniGetStr("WorldEditor.cfg","ResDir","mu");
+	std::string strPlayerPath = strDirMU+"Player\\";
 	getModelDisplay().loadComplexModel(strPlayerPath+ws2s(m_ComboBoxSkeleton.GetText()));
 	CModelComplex* pModelComplex = (CModelComplex*)getModelDisplay().getModelObject();
 	if (pModelComplex)

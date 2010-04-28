@@ -2,7 +2,7 @@
 #include "LumpFile.h"
 #include "FileSystem.h"
 #include "Camera.h"
-#include "..\Config\Config.h"
+#include "RegData.h"
 
 CDlgMainEditor::CDlgMainEditor()
 {
@@ -182,13 +182,15 @@ void CDlgMainEditor::OnBtnNewFile()
 void CDlgMainEditor::OnBtnOpenFile()
 {
 	m_DlgFile.setFileType(s2ws(m_DataPlugsMgr.getAllExtensions()));
-	m_DlgFile.OpenFile(GetConfig().getRecentPath());
+	std::wstring wstrRecentDir=GetRegStr(L"software\\rpgsky\\worldeditor\\",L"recentpath");
+	m_DlgFile.OpenFile(wstrRecentDir);
 }
 
 void CDlgMainEditor::OnBtnSaveFile()
 {
 	m_DlgFile.setFileType(s2ws(m_DataPlugsMgr.getAllExtensions()));
-	m_DlgFile.SaveFile(GetConfig().getRecentPath());
+	std::wstring wstrRecentDir=GetRegStr(L"software\\rpgsky\\worldeditor\\",L"recentpath");
+	m_DlgFile.SaveFile(wstrRecentDir);
 }
 
 void CDlgMainEditor::OnBtnToolbar()
@@ -219,8 +221,7 @@ void CDlgMainEditor::OnFileNew()
 void CDlgMainEditor::OnFileOpen()
 {
 	std::string strFilename = ws2s(m_DlgFile.GetFilename());
-	GetConfig().setRecentPath(GetParentPath(m_DlgFile.GetFilename()));
-
+	SetRegStr(L"software\\rpgsky\\worldeditor\\",L"recentpath",GetParentPath(m_DlgFile.GetFilename()));
 	CScenePlugBase* pScenePlug = (CScenePlugBase*)m_DataPlugsMgr.getPlugByExtension(ws2s(m_DlgFile.getFileType()));
 	if (pScenePlug)
 	{
