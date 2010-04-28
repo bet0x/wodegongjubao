@@ -1,5 +1,4 @@
 #include "DlgModelController.h"
-#include "../Config/Config.h"
 /*#include "mpq/mpq_libmpq.h"*/
 /*#include "database.h"*/
 #include "CsvFile.h"
