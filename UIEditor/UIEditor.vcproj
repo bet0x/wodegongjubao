@@ -61,7 +61,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="uid.lib rendersystemdx9d.lib fileiod.lib winmm.lib comctl32.lib"
-				OutputFile="..\..\RPGSky\bin\Clientame\$(ProjectName)D.exe"
+				OutputFile="..\..\RPGSky\bin\Client\$(ProjectName)D.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\engine\Render\DX9SDK\Lib\x86;..\..\engine\Media\FMOD\api\lib"
 				IgnoreDefaultLibraryNames="LIBCMTD.lib"
@@ -236,18 +236,6 @@
 			</File>
 			<File
 				RelativePath=".\CustomUI\EditingDialog.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Config"
-			>
-			<File
-				RelativePath=".\Config\Config.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Config\Config.h"
 				>
 			</File>
 		</Filter>
