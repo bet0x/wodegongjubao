@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\..\Include&quot;;..\..\Shared\Protection\src"
-				PreprocessorDefinitions="WIN32;_DEBUG;_AUTO_FONT"
+				PreprocessorDefinitions="WIN32;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"

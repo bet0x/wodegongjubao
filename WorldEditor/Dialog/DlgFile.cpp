@@ -188,15 +188,22 @@ void CDlgFile::OnCmbFileTypeSelect()
 
 bool CDlgFile::OpenPath(const std::wstring& wstrPath)
 {
+	if (wstrPath.length()==0)
+	{
+		m_wstrPath=getCurrentDirectory();
+	}
+	else
+	{
+		m_wstrPath = wstrPath;
+	}
 	CDir dir;
-	if(false == dir.ReadDir(wstrPath))
+	if(false == dir.ReadDir(m_wstrPath))
 	{
 		return false;
 	}
 	// Add a path to the list of recent paths.
-	m_setRecentPath.push_back(wstrPath);
+	m_setRecentPath.push_back(m_wstrPath);
 	//
-	m_wstrPath = wstrPath;
 	m_ListBoxFolder.RemoveAllItems();
 	for (size_t i=0; i<dir.m_FileInfo.size(); i++)
 	{
