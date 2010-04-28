@@ -2,7 +2,7 @@
 #include "EditingDialog.h"
 #include "Tinyxml.h"
 #include <List>
-#include "../Config/Config.h"
+#include "IniFile.h"
 
 CDlgUIList::CDlgUIList():
 m_pDlgView(NULL)
@@ -73,7 +73,8 @@ void CDlgUIList::OnDlgListBoxDblClk()
 {
 	if (m_ListBox.GetSelectedItem())
 	{
-		createDialogCodeFromXML(GetConfig().m_strUIFilename,ws2s(m_ListBox.GetSelectedItem()->wstrText));
+		std::string strEditUIFilename = IniGetStr("UIEditorUI.cfg","UIConfig","edit");
+		createDialogCodeFromXML(strEditUIFilename,ws2s(m_ListBox.GetSelectedItem()->wstrText));
 	}
 }
 #include <cctype>
