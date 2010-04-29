@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="OGREModelPlugin"
-	ProjectGUID="{214B8B3A-CD4A-4B0C-8E92-9323A375C242}"
-	RootNamespace="OGREModelPlugin"
+	Name="CSVMaterialDataPlugin"
+	ProjectGUID="{EEB7C1F2-C588-4924-909A-DF7326CC09FF}"
+	RootNamespace="CSVMaterialDataPlugin"
 	Keyword="MFCProj"
 	>
 	<Platforms>
@@ -225,31 +225,11 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
+				RelativePath=".\CSVMaterialDataPlugin.def"
+				>
+			</File>
+			<File
 				RelativePath="MyPlug.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\OGREModelPlugin.def"
-				>
-			</File>
-			<File
-				RelativePath="outfunc.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
