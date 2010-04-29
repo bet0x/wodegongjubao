@@ -1,7 +1,6 @@
 ; OGREModelPlugin.def : Declares the module parameters for the DLL.
 
-LIBRARY      "OGREModelPlugin"
-DESCRIPTION  'OGREModelPlugin Windows Dynamic Link Library'
+LIBRARY      "MaterialDataPlugin"
 
 EXPORTS
-    Model_Plug_CreateObject	@1
+    Material_Data_Plug_CreateObject	@1
