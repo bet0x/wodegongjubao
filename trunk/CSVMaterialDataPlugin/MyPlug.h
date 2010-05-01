@@ -6,8 +6,8 @@ class CMyPlug : public CMaterialDataPlugBase
 public:
 	CMyPlug(void);
 	~CMyPlug(void);
-	virtual const char * GetTitle(){return "OGRE Model File";}
-	virtual const char * GetFormat() {return ".mesh";}
+	virtual const char * GetTitle(){return "CSV Materila Data File";}
+	virtual const char * GetFormat() {return ".csv";}
 	virtual int Execute(std::map<std::string, CMaterial>& mapItems, bool bShowDlg, bool bSpecifyFileName);
 	virtual bool importData(std::map<std::string, CMaterial>& mapItems, const std::string& strFilename);
 	virtual bool exportData(std::map<std::string, CMaterial>& mapItems, const std::string& strFilename);
