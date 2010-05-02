@@ -183,6 +183,18 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\DecryptFuncs.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ItemBMD.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MUBmd.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\MUWorldTransform.cpp"
 				>
 			</File>
@@ -192,6 +204,18 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\DecryptFuncs.h"
+				>
+			</File>
+			<File
+				RelativePath=".\ItemBMD.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MUBmd.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="资源文件"
