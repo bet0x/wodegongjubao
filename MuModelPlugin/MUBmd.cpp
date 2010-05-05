@@ -21,42 +21,36 @@ void decryptMuBuffer(unsigned char* buffer, size_t size)
 
 void CMUBmd::BmdSkeleton::BmdAnim::load(CMemoryStream& s)
 {
-	s.getBuffer(uFrameCount);
-	s.getBuffer(bOffset);
+	s.read(uFrameCount);
+	s.read(bOffset);
 	if (bOffset)
 	{
-		s.getVector(vOffset,uFrameCount);
+		s.readVector(vOffset,uFrameCount);
 	}
 }
 
 void CMUBmd::BmdSkeleton::BmdBone::load(CMemoryStream& s, const std::vector<BmdAnim>& setBmdAnim)
 {
-	s.getBuffer(bEmpty);
+	s.read(bEmpty);
 	if (bEmpty)
 	{
 		return;
 	}
-	s.getBuffer((unsigned char*)szName,32);
-	s.getBuffer(nParent);
+	s.read((unsigned char*)szName,32);
+	s.read(nParent);
 	for (size_t i=0; i<setBmdAnim.size();++i)
 	{
 		for (size_t j=0; j<setBmdAnim[i].uFrameCount;++j)
 		{
 			Vec3D vTrans;
-			s.getBuffer(vTrans);
+			s.read(vTrans);
 			setTrans.push_back(vTrans);
 		}
 		for (size_t j=0; j<setBmdAnim[i].uFrameCount;++j)
 		{
 			Vec3D vRotate;
-			s.getBuffer(vRotate);
+			s.read(vRotate);
 			setRotate.push_back(vRotate);
-		}
-
-		if (setBmdAnim[i].uFrameCount>1)
-		{
-			setTrans.push_back(setTrans[setTrans.size()-setBmdAnim[i].uFrameCount]);
-			setRotate.push_back(setRotate[setRotate.size()-setBmdAnim[i].uFrameCount]);
 		}
 	}
 }
@@ -121,14 +115,14 @@ void CMUBmd::BmdSkeleton:: load(CMemoryStream& s, uint16 uBoneCount, uint16 uAni
 
 void CMUBmd::BmdSub::load(CMemoryStream& s)
 {
-	s.getBuffer(head);
+	s.read(head);
 
-	s.getVector(setVertex,head.uVertexCount);
-	s.getVector(setNormal,head.uNormal);
-	s.getVector(setUV,head.uUVCount);
-	s.getVector(setTriangle,head.uTriangleCount);
+	s.readVector(setVertex,head.uVertexCount);
+	s.readVector(setNormal,head.uNormal);
+	s.readVector(setUV,head.uUVCount);
+	s.readVector(setTriangle,head.uTriangleCount);
 
-	s.getBuffer((unsigned char*)szTexture,32);
+	s.read((unsigned char*)szTexture,32);
 }
 
 bool CMUBmd::LoadFile(const std::string& strFilename)
@@ -146,14 +140,14 @@ bool CMUBmd::LoadFile(const std::string& strFilename)
 	IOReadBase::autoClose(pRead);
 
 	uint32 uTag;
-	s.getBuffer(uTag);
+	s.read(uTag);
 	if (0x0a444d42==uTag)//BMD.
 	{
 	}
 	else if (0x0c444d42==uTag)//BMD.
 	{
 		uint32 uEncodeSize;
-		s.getBuffer(uEncodeSize);
+		s.read(uEncodeSize);
 		if (uEncodeSize!=uFileSize-8)
 		{
 			return false;
@@ -165,7 +159,7 @@ bool CMUBmd::LoadFile(const std::string& strFilename)
 		return false;
 	}
 
-	s.getBuffer(head);
+	s.read(head);
 	assert(head.uSubCount<50);
 	setBmdSub.resize(head.uSubCount);
 	for (size_t i=0; i<setBmdSub.size(); ++i)

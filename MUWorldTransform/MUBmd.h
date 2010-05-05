@@ -52,9 +52,15 @@ public:
 			int16 nParent;
 			std::vector<Vec3D> setTrans;
 			std::vector<Vec3D> setRotate;
+			Matrix	mLocal;
 
 			void load(CMemoryStream& s, const std::vector<BmdAnim>& setBmdAnim);
 		};
+		Matrix	getLocalMatrix(uint8 uBoneID);
+		Matrix	getRotateMatrix(uint8 uBoneID);
+		void	calcLocalMatrix(uint32 uBoneID);
+		void	getLocalMatrix(std::vector<Matrix>& setLocalMatrix);
+
 		std::vector<BmdAnim> setBmdAnim;
 		std::vector<BmdBone> setBmdBone;
 
@@ -101,6 +107,7 @@ public:
 
 		char szTexture[32];// Œ∆¿Ì
 		void load(CMemoryStream& s);
+		void skinMesh(std::vector<Matrix>& setBoneMatrix);
 	};
 
 	bool loadFormBmd(const std::string& strFilename);

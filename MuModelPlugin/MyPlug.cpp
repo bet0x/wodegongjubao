@@ -87,19 +87,19 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 	if (bmd.nFrameCount>1)// if there one frame only, free the animlist
 	{
 		int nFrameCount = 0;
-		for (size_t i=0; i<bmd.head.uAnimCount; ++i)
+		for (size_t uAnimID=0; uAnimID<bmd.head.uAnimCount; ++uAnimID)
 		{
-			long timeStart = nFrameCount*MU_BMD_ANIM_FRAME_TIME;
-			nFrameCount+=bmd.bmdSkeleton.setBmdAnim[i].uFrameCount+1;
-			long timeEnd = (nFrameCount-1)*MU_BMD_ANIM_FRAME_TIME;
+			long uTotalFrames = bmd.bmdSkeleton.setBmdAnim[uAnimID].uFrameCount;
+			
+			long timeEnd = nFrameCount;
 
 			std::string strAnimName;
 			{
 				char szID[256]={0};
-				itoa(i,szID,10);
+				itoa(uAnimID,szID,10);
 				strAnimName=szID;
 			}
-			switch(i)
+			switch(uAnimID)
 			{
 			case 0:strAnimName+="Idle0";
 				break;
@@ -118,7 +118,39 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 			default:strAnimName+="Unknown";
 				break;
 			}
-			pModelData->setAnimation(strAnimName.c_str(),timeStart,timeEnd);
+			
+			std::vector<CMUBmd::BmdSkeleton::BmdBone>& setBmdBone = bmd.bmdSkeleton.setBmdBone;
+			size_t uBoneSize = setBmdBone.size();
+			SkeletonAnim& skeletonAnim=pModelData->getSkeleton().m_Anims[strAnimName];
+			std::vector<BoneAnim>& setBonesAnim=skeletonAnim.setBonesAnim;
+			setBonesAnim.resize(uBoneSize);
+			for (size_t uBoneID = 0;uBoneID<uBoneSize;++uBoneID)
+			{
+				CMUBmd::BmdSkeleton::BmdBone& bmdBone=setBmdBone[uBoneID];
+				if (!bmdBone.bEmpty)
+				{
+					BoneAnim& bonsAnim = setBonesAnim[uBoneID];
+					for (size_t i=0;i<uTotalFrames;++i)
+					{
+						//if (GetFilename(strFilename)=="player.bmd"&&itBmdBone==bmd.bmdSkeleton.setBmdBone.begin())
+						//{
+						/*if (uTime>m_AnimList[15].timeStart&&uTime<m_AnimList[23].timeStart)
+						{
+						Vec3D vPos = fixCoordSystemPos(*it);
+						vPos.x=0;vPos.z=0;
+						itBoneAnim->trans.addValue(uTime,vPos);
+						uTime += MU_BMD_ANIM_FRAME_TIME;
+						continue;
+						}*/
+						//}
+						bonsAnim.trans.addValue(i*MU_BMD_ANIM_FRAME_TIME,fixCoordSystemPos(bmdBone.setTrans[i+nFrameCount]));// 可以设置关键帧播放速度来调控
+						bonsAnim.rot.addValue(i*MU_BMD_ANIM_FRAME_TIME,fixCoordSystemRotate(bmdBone.setRotate[i+nFrameCount]));
+					}
+				}
+			}
+			nFrameCount+=uTotalFrames;
+			skeletonAnim.uTotalFrames = (uTotalFrames-1)*MU_BMD_ANIM_FRAME_TIME;
+			//pModelData->setAnimation(strAnimName.c_str(),timeStart,timeEnd);
 		}
 	}
 
@@ -149,7 +181,7 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 			}
 			else
 			{
-				vPos = bmd.bmdSkeleton.getLocalMatrix(it->uBones)*vPos;
+				//vPos = bmd.bmdSkeleton.getLocalMatrix(it->uBones)*vPos;
 			}
 			if (1<bmd.nFrameCount||bIsPlayerPart)
 			{
@@ -201,51 +233,25 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 		}
 	}
 
-	iSkeleton& skeleton = pModelData->getSkeleton();
-	skeleton.m_BoneAnims.resize(bmd.head.uBoneCount);
-
-	std::vector<BoneAnim>::iterator itBoneAnim = skeleton.m_BoneAnims.begin();
+	std::vector<BoneInfo>& setBonesInfo = pModelData->getSkeleton().m_Bones;
 	for (std::vector<CMUBmd::BmdSkeleton::BmdBone>::iterator itBmdBone=bmd.bmdSkeleton.setBmdBone.begin();itBmdBone!=bmd.bmdSkeleton.setBmdBone.end();itBmdBone++)
 	{
+		BoneInfo boneInfo;
 		if (!itBmdBone->bEmpty)
 		{
-			itBoneAnim->strName = itBmdBone->szName;
+			boneInfo.strName = itBmdBone->szName;
 			Matrix	mInvLocal = itBmdBone->mLocal;
 			mInvLocal.Invert();
-			itBoneAnim->mSkin = mInvLocal;
-			unsigned int uTime =0;
-			for (std::vector<Vec3D>::iterator it= itBmdBone->setTrans.begin();
-				it!=itBmdBone->setTrans.end(); it++)
-			{
-				if (GetFilename(strFilename)=="player.bmd"&&itBmdBone==bmd.bmdSkeleton.setBmdBone.begin())
-				{
-					/*if (uTime>m_AnimList[15].timeStart&&uTime<m_AnimList[23].timeStart)
-					{
-					Vec3D vPos = fixCoordSystemPos(*it);
-					vPos.x=0;vPos.z=0;
-					itBoneAnim->trans.addValue(uTime,vPos);
-					uTime += MU_BMD_ANIM_FRAME_TIME;
-					continue;
-					}*/
-				}
-				itBoneAnim->trans.addValue(uTime,fixCoordSystemPos(*it));
-				uTime += MU_BMD_ANIM_FRAME_TIME;
-			}
-			uTime =0;
-			for (std::vector<Vec3D>::iterator it= itBmdBone->setRotate.begin();
-				it!=itBmdBone->setRotate.end(); it++)
-			{
-				itBoneAnim->rot.addValue(uTime,fixCoordSystemRotate(*it));
-				uTime += MU_BMD_ANIM_FRAME_TIME;
-			}
+			boneInfo.mInvLocal = mInvLocal;
+
 			int nParent = itBmdBone->nParent;
 			if (nParent<0||nParent>255)
 			{
 				nParent = 255;
 			}
-			itBoneAnim->parent=nParent;	
+			boneInfo.parent=nParent;
 		}
-		itBoneAnim++;
+		setBonesInfo.push_back(boneInfo);
 	}
 
 	mesh.update();
@@ -285,8 +291,8 @@ bool CMyPlug::exportData(iModelData * pModelData, const std::string& strFilename
 	CMUBmd::BmdHead bmdHead;
 	strcpy(bmdHead.strFile,GetFilename(pModelData->getItemName()).c_str());
 	bmdHead.uSubCount=pModelData->getMesh().getSubCount();
-	bmdHead.uBoneCount=pModelData->getSkeleton().m_BoneAnims.size();
-	bmdHead.uAnimCount=pModelData->getSkeleton().m_BoneAnims.size();
+	bmdHead.uBoneCount=pModelData->getSkeleton().m_Bones.size();
+	bmdHead.uAnimCount=pModelData->getSkeleton().m_Bones.size();
 	fwrite(&bmdHead,sizeof(CMUBmd::BmdHead),1,fp);
 	// sub
 	for (size_t i=0; i<bmdHead.uSubCount; ++i)
