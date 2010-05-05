@@ -65,13 +65,13 @@ void CDlgFile::OnListBoxFolderItemDblClk()
 	{
 		if (L"\\.."==wstrFolder)
 		{
-			m_wstrPath = GetParentPath(m_wstrPath);
+			m_wstrDir = GetParentPath(m_wstrDir);
 		}
 		else
 		{
-			m_wstrPath = GetChildPath(m_wstrPath,wstrFolder.substr(1));
+			m_wstrDir = GetChildPath(m_wstrDir,wstrFolder.substr(1));
 		}
-		if(false == OpenPath(m_wstrPath))
+		if(false == OpenPath(m_wstrDir))
 		{
 			OpenPath(L"");
 		}
@@ -96,9 +96,9 @@ void CDlgFile::OnListBoxFolderItemDblClk()
 
 void CDlgFile::OnBtnUp()
 {
-	m_wstrPath = GetParentPath(m_wstrPath);
-	OpenPath(m_wstrPath);
-	//if(false == OpenPath(m_wstrPath))
+	m_wstrDir = GetParentPath(m_wstrDir);
+	OpenPath(m_wstrDir);
+	//if(false == OpenPath(m_wstrDir))
 	//{
 	//	OpenPath(L"");
 	//}
@@ -109,8 +109,8 @@ void CDlgFile::OnBtnBack()
 	if (m_setRecentPath.size()>1)
 	{
 		size_t uSize = m_setRecentPath.size();
-		m_wstrPath = m_setRecentPath[uSize-2];
-		OpenPath(m_wstrPath);
+		m_wstrDir = m_setRecentPath[uSize-2];
+		OpenPath(m_wstrDir);
 		m_setRecentPath.resize(uSize-1);
 	}
 }
@@ -121,7 +121,7 @@ void CDlgFile::OnBtnNew()
 	{
 		return;
 	}
-	std::wstring wstrFilename = GetChildPath(m_wstrPath,m_EditBoxFile.GetText());
+	std::wstring wstrFilename = GetChildPath(m_wstrDir,m_EditBoxFile.GetText());
 	if(IOReadBase::Exists(ws2s(wstrFilename)))
 	{
 		//!!
@@ -149,7 +149,7 @@ void CDlgFile::OnBtnOpen()
 	{
 		return;
 	}
-	std::wstring wstrFilename = GetChildPath(m_wstrPath,m_EditBoxFile.GetText());
+	std::wstring wstrFilename = GetChildPath(m_wstrDir,m_EditBoxFile.GetText());
 	if(IOReadBase::Exists(ws2s(wstrFilename)))
 	{
 		m_wstrFilename = wstrFilename;
@@ -169,7 +169,7 @@ void CDlgFile::OnBtnOpen()
 
 void CDlgFile::OnBtnSave()
 {
-	m_wstrFilename = m_wstrPath+m_EditBoxFile.GetText();
+	m_wstrFilename = m_wstrDir+m_EditBoxFile.GetText();
 	SendEvent( EVENT_SAVE, this );
 	SetVisible(false);
 }
@@ -183,26 +183,27 @@ void CDlgFile::OnBtnCancel()
 void CDlgFile::OnCmbFileTypeSelect()
 {
 	m_wstrFileType = m_ComboBoxFileType.GetText();
-	OpenPath(m_wstrPath);
+	OpenPath(m_wstrDir);
 }
 
 bool CDlgFile::OpenPath(const std::wstring& wstrPath)
 {
 	if (wstrPath.length()==0)
 	{
-		m_wstrPath=getCurrentDirectory();
+		m_wstrDir=getCurrentDirectory();
 	}
 	else
 	{
-		m_wstrPath = wstrPath;
+		m_wstrDir = wstrPath;
 	}
+	SetCaptionText(m_wstrDir);
 	CDir dir;
-	if(false == dir.ReadDir(m_wstrPath))
+	if(false == dir.ReadDir(m_wstrDir))
 	{
 		return false;
 	}
 	// Add a path to the list of recent paths.
-	m_setRecentPath.push_back(m_wstrPath);
+	m_setRecentPath.push_back(m_wstrDir);
 	//
 	m_ListBoxFolder.RemoveAllItems();
 	for (size_t i=0; i<dir.m_FileInfo.size(); i++)
@@ -267,8 +268,8 @@ void CDlgFile::SaveFile(const std::wstring& wstrPath)
 	SetVisible(true);
 	m_eOperatingType = OPERATING_TYPE_SAVE;
 	m_BtnSave.SetVisible(true);
-	m_wstrPath = wstrPath;
-	if(false == OpenPath(m_wstrPath))
+	m_wstrDir = wstrPath;
+	if(false == OpenPath(m_wstrDir))
 	{
 		OpenPath(L"");
 	}

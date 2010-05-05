@@ -72,7 +72,7 @@ private:
 	CUIButton m_BtnOpen;
 	CUIButton m_BtnSave;
 	CUIComboBox m_ComboBoxFileType;
-	std::wstring	m_wstrPath;
+	std::wstring	m_wstrDir;
 	std::vector<std::wstring> m_setRecentPath;
 	std::vector<std::wstring> m_setFileType;
 	std::wstring	m_wstrFilename;

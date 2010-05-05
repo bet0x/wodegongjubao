@@ -48,14 +48,15 @@ void CDlgModelAnim::ResetAnim()
 	m_ComboBoxAnim.getListBox().RemoveAllItems();
 	if (getModelDisplay().getModelData())
 	{
-		size_t uAnimSize = getModelDisplay().getModelData()->getAnimationCount();
+		iSkeleton& skeleton=getModelDisplay().getModelData()->getSkeleton();
+		size_t uAnimSize = skeleton.getAnimationCount();
 		if (uAnimSize>0)
 		{
 			for (size_t i=0; i<uAnimSize; ++i)
 			{
 				std::string strAnimName;
-				long timeStart,timeEnd;
-				getModelDisplay().getModelData()->getAnimation(i,strAnimName,timeStart,timeEnd);
+				long timeCount;
+				skeleton.getAnimation(i,strAnimName,timeCount);
 				m_ComboBoxAnim.AddItem(s2ws(strAnimName));
 			}
 			if (nSelected>=uAnimSize)
@@ -98,12 +99,11 @@ void CDlgModelAnim::OnAnimChanged()
 	if (getModelDisplay().getModelData())
 	{
 		std::string strAnimName=ws2s(m_ComboBoxAnim.GetText());
-		long timeStart=0;
-		long timeEnd=0;
+		long timeCount=0;
 		getModelDisplay().getModelObject()->SetAnim(strAnimName);
-		if (getModelDisplay().getModelData()->getAnimation(strAnimName,timeStart,timeEnd))
+		if (getModelDisplay().getModelData()->getSkeleton().getAnimation(strAnimName,timeCount))
 		{
-			m_SliderFrame.SetRange(timeStart, timeEnd);
+			m_SliderFrame.SetRange(0, timeCount);
 		}
 	}
 }
