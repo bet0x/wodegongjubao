@@ -181,7 +181,7 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 			}
 			else
 			{
-				//vPos = bmd.bmdSkeleton.getLocalMatrix(it->uBones)*vPos;
+				vPos = bmd.bmdSkeleton.getLocalMatrix(it->uBones)*vPos;
 			}
 			if (1<bmd.nFrameCount||bIsPlayerPart)
 			{
