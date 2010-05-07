@@ -11,7 +11,6 @@ class CMUBmd
 public:
 	CMUBmd()
 	{
-		nFrameCount=0;
 	}
 	struct BmdHead
 	{
@@ -119,7 +118,6 @@ public:
 	BmdHead head;
 	std::vector<BmdSub> setBmdSub;
 	BmdSkeleton bmdSkeleton;
-	int nFrameCount;
 };
 
 void Bmd2Smd(const std::string& strSrcFilename, const std::string& strDestFilename);

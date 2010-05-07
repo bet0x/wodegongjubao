@@ -244,7 +244,7 @@ void CMUBmd::saveToBmd(const std::string& strFilename)
 	// Sub Mesh
 	for (size_t i=0; i<setBmdSub.size(); ++i)
 	{
-		setBmdSub[i].load(s);
+		//setBmdSub[i].load(s);
 	}
 }
 #include<iostream>
