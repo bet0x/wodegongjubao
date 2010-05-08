@@ -71,6 +71,7 @@
 				AdditionalDependencies="fileio.lib"
 				OutputFile="..\..\RPGSky\bin\Client\$(ProjectName).dll"
 				AdditionalLibraryDirectories="..\..\lib;DX9SDK\Lib\x86"
+				ModuleDefinitionFile=".\$(ProjectName).def"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -97,7 +98,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy $(ProjectDir)\include\*.h $(SolutionDir)..\include\ /y"
+				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration
@@ -155,9 +156,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="fileio.lib"
+				AdditionalDependencies="fileiod.lib"
 				OutputFile="..\..\RPGSky\bin\Client\$(ProjectName)d.dll"
 				AdditionalLibraryDirectories="..\..\lib;DX9SDK\Lib\x86"
+				ModuleDefinitionFile=".\$(ProjectName).def"
+				GenerateDebugInformation="true"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -184,7 +187,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy $(ProjectDir)\include\*.h $(SolutionDir)..\include\ /y"
+				CommandLine=""
 			/>
 		</Configuration>
 	</Configurations>
@@ -196,63 +199,63 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
-				RelativePath=".\include\D3D9HardwareBufferMgr.h"
+				RelativePath=".\D3D9HardwareBufferMgr.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\D3D9HardwareIndexBuffer.h"
+				RelativePath=".\D3D9HardwareIndexBuffer.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\D3D9HardwareVertexBuffer.h"
+				RelativePath=".\D3D9HardwareVertexBuffer.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\D3D9RenderSystem.h"
+				RelativePath=".\D3D9RenderSystem.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\D3D9RenderSystemCommon.h"
+				RelativePath=".\D3D9RenderSystemCommon.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\D3D9RenderWindow.h"
+				RelativePath=".\D3D9RenderWindow.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\D3D9Shader.h"
+				RelativePath=".\D3D9Shader.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\D3D9ShaderMgr.h"
+				RelativePath=".\D3D9ShaderMgr.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\D3D9Texture.h"
+				RelativePath=".\D3D9Texture.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\D3D9TextureMgr.h"
+				RelativePath=".\D3D9TextureMgr.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\D3D9VertexDeclaration.h"
+				RelativePath=".\D3D9VertexDeclaration.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\dxstdafx.h"
+				RelativePath=".\dxstdafx.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\DXUT.h"
+				RelativePath=".\DXUT.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\DXUTenum.h"
+				RelativePath=".\DXUTenum.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\DXUTmisc.h"
+				RelativePath=".\DXUTmisc.h"
 				>
 			</File>
 		</Filter>
@@ -261,59 +264,63 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath=".\src\D3D9HardwareBufferMgr.cpp"
+				RelativePath=".\D3D9HardwareBufferMgr.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\D3D9HardwareIndexBuffer.cpp"
+				RelativePath=".\D3D9HardwareIndexBuffer.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\D3D9HardwareVertexBuffer.cpp"
+				RelativePath=".\D3D9HardwareVertexBuffer.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\D3D9RenderSystem.cpp"
+				RelativePath=".\D3D9RenderSystem.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\D3D9RenderSystemCommon.cpp"
+				RelativePath=".\D3D9RenderSystemCommon.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\D3D9RenderWindow.cpp"
+				RelativePath=".\D3D9RenderWindow.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\D3D9Shader.cpp"
+				RelativePath=".\D3D9Shader.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\D3D9ShaderMgr.cpp"
+				RelativePath=".\D3D9ShaderMgr.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\D3D9Texture.cpp"
+				RelativePath=".\D3D9Texture.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\D3D9TextureMgr.cpp"
+				RelativePath=".\D3D9TextureMgr.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\D3D9VertexDeclaration.cpp"
+				RelativePath=".\D3D9VertexDeclaration.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\DXUT.cpp"
+				RelativePath=".\DXUT.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\DXUTenum.cpp"
+				RelativePath=".\DXUTenum.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\DXUTmisc.cpp"
+				RelativePath=".\DXUTmisc.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RenderSystemDX9.def"
 				>
 			</File>
 		</Filter>

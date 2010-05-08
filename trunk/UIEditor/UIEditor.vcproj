@@ -20,7 +20,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)\$(ProjectName)"
 			IntermediateDirectory="$(SolutionDir)$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="1"
-			CharacterSet="1"
+			CharacterSet="2"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -60,10 +60,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="uid.lib rendersystemdx9d.lib fileiod.lib winmm.lib comctl32.lib"
+				AdditionalDependencies="uid.lib fileiod.lib winmm.lib comctl32.lib"
 				OutputFile="..\..\RPGSky\bin\Client\$(ProjectName)D.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\engine\Render\DX9SDK\Lib\x86;..\..\engine\Media\FMOD\api\lib"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\engine\Media\FMOD\api\lib"
 				IgnoreDefaultLibraryNames="LIBCMTD.lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -99,7 +99,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)\$(ProjectName)"
 			IntermediateDirectory="$(SolutionDir)$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="1"
-			CharacterSet="1"
+			CharacterSet="2"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -138,10 +138,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ui.lib rendersystemdx9.lib fileio.lib winmm.lib comctl32.lib"
+				AdditionalDependencies="ui.lib fileio.lib winmm.lib comctl32.lib"
 				OutputFile="..\..\RPGSky\bin\Client\$(ProjectName).exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\engine\Render\DX9SDK\Lib\x86;..\..\engine\Media\FMOD\api\lib"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\engine\Media\FMOD\api\lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"

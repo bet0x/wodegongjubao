@@ -20,7 +20,7 @@
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)\$(ProjectName)"
 			IntermediateDirectory="$(SolutionDir)$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="1"
-			CharacterSet="1"
+			CharacterSet="2"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -61,10 +61,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="rendersystemdx9d.lib modeld.lib enginecored.lib uid.lib fileiod.lib soundd.lib"
+				AdditionalDependencies="winmm.lib modeld.lib enginecored.lib uid.lib fileiod.lib soundd.lib"
 				OutputFile="..\..\RPGSky\bin\Client\$(ProjectName)D.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\engine\Render\DX9SDK\Lib\x86;..\..\engine\Media\FMOD\api\lib"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\engine\Media\FMOD\api\lib"
 				IgnoreDefaultLibraryNames="LIBCMTD.lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -139,7 +139,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="rendersystemdx9.lib model.lib enginecore.lib ui.lib fileio.lib sound.lib"
+				AdditionalDependencies="winmm.lib model.lib enginecore.lib ui.lib fileio.lib sound.lib"
 				OutputFile="..\..\RPGSky\bin\Client\$(ProjectName).exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\engine\Media\FMOD\api\lib"
