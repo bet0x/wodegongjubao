@@ -36,7 +36,6 @@ public:
 			uint16 uFrameCount;
 			bool bOffset;
 			std::vector<Vec3D> vOffset;
-			void load(CMemoryStream& s);
 		};
 		struct BmdBone
 		{
@@ -52,8 +51,6 @@ public:
 			std::vector<Vec3D> setTrans;
 			std::vector<Vec3D> setRotate;
 			Matrix	mLocal;
-
-			void load(CMemoryStream& s, const std::vector<BmdAnim>& setBmdAnim);
 		};
 		Matrix	getLocalMatrix(uint8 uBoneID);
 		Matrix	getRotateMatrix(uint8 uBoneID);
@@ -62,8 +59,6 @@ public:
 
 		std::vector<BmdAnim> setBmdAnim;
 		std::vector<BmdBone> setBmdBone;
-
-		void load(CMemoryStream& s, uint16 uBoneCount, uint16 uAnimCount);
 	};
 
 	struct BmdSub
@@ -105,7 +100,6 @@ public:
 		std::vector<BmdTriangle> setTriangle;
 
 		char szTexture[32];// Œ∆¿Ì
-		void load(CMemoryStream& s);
 		void skinMesh(std::vector<Matrix>& setBoneMatrix);
 	};
 
