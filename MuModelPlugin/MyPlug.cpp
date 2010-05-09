@@ -132,17 +132,6 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 					BoneAnim& bonsAnim = setBonesAnim[uBoneID];
 					for (size_t i=0;i<uTotalFrames;++i)
 					{
-						//if (GetFilename(strFilename)=="player.bmd"&&itBmdBone==bmd.bmdSkeleton.setBmdBone.begin())
-						//{
-						/*if (uTime>m_AnimList[15].timeStart&&uTime<m_AnimList[23].timeStart)
-						{
-						Vec3D vPos = fixCoordSystemPos(*it);
-						vPos.x=0;vPos.z=0;
-						itBoneAnim->trans.addValue(uTime,vPos);
-						uTime += MU_BMD_ANIM_FRAME_TIME;
-						continue;
-						}*/
-						//}
 						bonsAnim.trans.addValue(i*MU_BMD_ANIM_FRAME_TIME,fixCoordSystemPos(bmdBone.setTrans[i+nFrameCount]));// 可以设置关键帧播放速度来调控
 						bonsAnim.rot.addValue(i*MU_BMD_ANIM_FRAME_TIME,fixCoordSystemRotate(bmdBone.setRotate[i+nFrameCount]));
 					}
@@ -150,7 +139,6 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 			}
 			nFrameCount+=uTotalFrames;
 			skeletonAnim.uTotalFrames = (uTotalFrames-1)*MU_BMD_ANIM_FRAME_TIME;
-			//pModelData->setAnimation(strAnimName.c_str(),timeStart,timeEnd);
 		}
 	}
 

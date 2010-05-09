@@ -36,7 +36,7 @@ void CDlgModelAnim::OnFrameMove(double fTime, float fElapsedTime)
 	if (getModelDisplay().getModelObject())
 	{
 		m_SliderFrame.SetValue(getModelDisplay().getModelObject()->m_AnimMgr.uFrame);
-		std::wstring wstr = FormatW(L"%d", m_SliderFrame.GetValue()-m_SliderFrame.getMin());
+		std::wstring wstr = FormatW(L"%d/%d", m_SliderFrame.GetValue(),m_SliderFrame.getMax());
 		m_StaticFrame.SetText(wstr);
 	}
 	CUIDialog::OnFrameMove(fTime,fElapsedTime);
