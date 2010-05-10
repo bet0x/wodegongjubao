@@ -2,7 +2,10 @@
 #include "EditingDialog.h"
 #include "Tinyxml.h"
 #include <List>
-#include "IniFile.h"
+#include<iostream>
+#include<iomanip>
+#include<fstream>
+#include"IniFile.h"
 
 CDlgUIList::CDlgUIList():
 m_pDlgView(NULL)
@@ -51,6 +54,97 @@ bool CDlgUIList::InitDialogListFromXML(const std::string& strFilename)
 	{
 		m_ListBox.AddItem(*it);
 	}
+	return true;
+}
+
+bool CDlgUIList::createDialogStringFromXML(const std::string& strXMLFilename, const std::string& strStringFilename)
+{
+	TiXmlDocument myDocument( strXMLFilename );
+	myDocument.LoadFile(TIXML_ENCODING_UTF8);
+	if ( myDocument.Error() )
+	{
+		return false;
+	}
+	std::ofstream file;
+	file.open(strStringFilename.c_str(), std::ios::out);
+
+	//获得根元素，即root。
+	TiXmlElement *pRootElement = myDocument.RootElement();
+	//获得第一个dialog节点。
+	TiXmlElement *pDialogElement = pRootElement->FirstChildElement("dialog");
+	WCHAR wszText[256]={0};
+	while ( pDialogElement )
+	{
+		if ( pDialogElement->Attribute("id") )
+		{
+			std::wstring wstrDialog;
+			{
+				MultiByteToWideChar(CP_UTF8,0,pDialogElement->Attribute("id"),-1,wszText,256);
+				std::wstring wstrDialog = wszText;
+				file<<"["<<ws2s(wstrDialog)<<"]"<<std::endl;
+			}
+			TiXmlElement *pCaptionElement = pDialogElement->FirstChildElement("caption");
+			if ( pCaptionElement&&pCaptionElement->GetText() )
+			{
+				std::wstring wstrCaption;
+				MultiByteToWideChar(CP_UTF8,0,pCaptionElement->GetText(),-1,wszText,256);
+				wstrCaption = wszText;
+				file<<"CAPTION="<<ws2s(wstrCaption)<<std::endl;
+			}
+			{
+				TiXmlElement *pControlElement = pDialogElement->FirstChildElement("element");
+				while (pControlElement)
+				{
+					std::wstring wstrControl,wstrText,wstrTip;
+					if ( pControlElement->Attribute("id") )
+					{
+						MultiByteToWideChar(CP_UTF8,0,pControlElement->Attribute("id"),-1,wszText,256);
+						wstrControl = wszText;
+
+						//////////////////////////////////////////////////////////////////////////
+						if ( pControlElement->GetText() )
+						{
+							MultiByteToWideChar(CP_UTF8,0,pControlElement->GetText(),-1,wszText,256);
+							wstrText = wszText;
+							file<<"TEXT_"<<ws2s(wstrControl)<<"="<<ws2s(wstrText)<<std::endl;
+						}
+					}
+					pControlElement = pControlElement->NextSiblingElement("element");
+				}
+			}
+			{
+				TiXmlElement *pControlElement = pDialogElement->FirstChildElement("element");
+				while (pControlElement)
+				{
+					std::wstring wstrControl,wstrText,wstrTip;
+					if ( pControlElement->Attribute("id") )
+					{
+						MultiByteToWideChar(CP_UTF8,0,pControlElement->Attribute("id"),-1,wszText,256);
+						wstrControl = wszText;
+
+						//////////////////////////////////////////////////////////////////////////
+						if ( pControlElement->Attribute("tip") )
+						{
+							MultiByteToWideChar(CP_UTF8,0,pControlElement->Attribute("tip"),-1,wszText,256);
+							wstrTip = wszText;
+							file<<"TIP_"<<ws2s(wstrControl)<<"="<<ws2s(wstrTip)<<std::endl;
+						}
+					}
+					pControlElement = pControlElement->NextSiblingElement("element");
+				}
+			}
+			file<<std::endl;
+		}
+		// 查找下一个dialog
+		pDialogElement = pDialogElement->NextSiblingElement("dialog");
+	}
+	file.close();
+	//
+// 	listString.sort();
+// 	for(std::list<std::wstring>::iterator it=listString.begin(); it!=listString.end(); it++)
+// 	{
+// 		m_ListBox.AddItem(*it);
+// 	}
 	return true;
 }
 
@@ -150,9 +244,6 @@ inline  std::string type2ControlClassName(const std::string& strType)
 	}
 }
 
-#include<iostream>
-#include<iomanip>
-#include<fstream>
 bool CDlgUIList::createDialogCodeFromXML(const std::string& strFilename,const std::string& strDialogName)
 {
 	TiXmlDocument myDocument( strFilename );
@@ -251,7 +342,7 @@ bool CDlgUIList::createDialogCodeFromXML(const std::string& strFilename,const st
 							ofs<<std::endl<<std::endl;
 							ofs<<"void CDlg"<<id2name(strDialogName)<<"::On"<<id2name(strID)<<"()"<<std::endl;
 							ofs<<"{"<<std::endl;
-							ofs<<"	// do your work here."<<std::endl;
+							ofs<<"	// Do it."<<std::endl;
 							ofs<<"}";
 						}
 						pControlElement = pControlElement->NextSiblingElement("element");
