@@ -1,6 +1,6 @@
 #pragma once
 #include "DlgBaseEditor.h"
-#include "UIComboNumber.h"
+#include "UIComboVec3D.h"
 #include "UIComboObjListSceneObject.h"
 
 class CDlgToolObject : public CDlgBaseEditor
@@ -22,11 +22,7 @@ private:
 	CUICheckBox m_CheckBoxCatchAtFloor;
 	CUICheckBox m_CheckBoxCatchAtGrid;
 	CUIComboNumber	m_NumGridSize;
-	CUIComboNumber	m_NumPosX;
-	CUIComboNumber	m_NumPosY;
-	CUIComboNumber	m_NumPosZ;
-	CUIComboNumber	m_NumRotateX;
-	CUIComboNumber	m_NumRotateY;
-	CUIComboNumber	m_NumRotateZ;
+	CUIComboVec3D	m_Vec3DPos;
+	CUIComboVec3D	m_Vec3Rotate;
 	CUIComboNumber	m_NumScale;
 };
