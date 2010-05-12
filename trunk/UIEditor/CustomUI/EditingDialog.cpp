@@ -10,6 +10,11 @@ CEditingDialog::~CEditingDialog()
 
 bool CEditingDialog::OnInitDialog()
 {
+	if (m_rcScale.getWidth()==0&&m_rcScale.getHeight()==0&&
+		m_rcOffset.getWidth()==0&&m_rcOffset.getHeight()==0)
+	{
+		m_rcScale.set(0,0,100,100);
+	}
 	//EnableCaption(true);
 	return true;
 }
