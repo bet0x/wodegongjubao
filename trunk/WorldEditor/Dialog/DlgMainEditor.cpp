@@ -45,12 +45,12 @@ void CDlgMainEditor::OnControlRegister()
 	CUIMainDialog::OnControlRegister();
 
 
-	m_DlgFile.Create("IDD_FILE", this);
 	m_DlgRegister.Create("IDD_REGISTER", this);
 	//m_DlgFPS.Create("IDD_FPS", this);
 	m_DlgMaterialEdit.Create("IDD_MATERIAL", this);
 	m_DlgController.Create("IDD_CONTROLLER", this);
 	//m_DlgFaceDetect.Create("IDD_FACE_DETECT", this);
+	m_DlgFile.Create("IDD_FILE", this);
 
 	m_DlgToolbar.Create("IDD_TOOLBAR", this); // 放到最后是因为前面会 在渲染纹理是 把其他UI消失掉
 
