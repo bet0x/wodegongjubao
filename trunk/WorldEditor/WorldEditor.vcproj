@@ -233,6 +233,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Dialog\DlgController.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Dialog\DlgController.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Dialog\DlgFile.cpp"
 				>
 			</File>
