@@ -48,8 +48,8 @@ void CDlgMainEditor::OnControlRegister()
 	m_DlgFile.Create("IDD_FILE", this);
 	m_DlgRegister.Create("IDD_REGISTER", this);
 	//m_DlgFPS.Create("IDD_FPS", this);
-	m_DlgMaterialEdit.Create("IDD_MODEL_MATERIAL", this);
-	m_DlgModelController.Create("IDD_MODEL_CONTROLLER", this);
+	m_DlgMaterialEdit.Create("IDD_MATERIAL", this);
+	m_DlgController.Create("IDD_CONTROLLER", this);
 	//m_DlgFaceDetect.Create("IDD_FACE_DETECT", this);
 
 	m_DlgToolbar.Create("IDD_TOOLBAR", this); // 放到最后是因为前面会 在渲染纹理是 把其他UI消失掉
@@ -250,7 +250,7 @@ void CDlgMainEditor::OnFileCancel()
 void CDlgMainEditor::updateDisplay()
 {
 	CRect<int> rc(0,0,0,0);
-	if (m_DlgModelController.IsVisible())
+	if (m_DlgController.IsVisible())
 	{
 		rc.left = 200;
 	}
@@ -268,14 +268,14 @@ void CDlgMainEditor::updateDisplay()
 void CDlgMainEditor::CloseController()
 {
 	m_BtnHide.SetVisible(false);
-	m_DlgModelController.SetVisible(false);
+	m_DlgController.SetVisible(false);
 	updateDisplay();
 }
 
 void CDlgMainEditor::OnBtnShowController()
 {
 	m_BtnHide.SetVisible(true);
-	m_DlgModelController.SetVisible(!m_DlgModelController.IsVisible());
+	m_DlgController.SetVisible(!m_DlgController.IsVisible());
 	updateDisplay();
 }
 
