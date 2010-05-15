@@ -12,10 +12,8 @@ public:
 public:
 	void C3Model();
 	void MPQModel();
-	void initRecentPath();
 	virtual void OnControlRegister();
 	virtual bool OnInitDialog();
-	void OnListBoxFolderItemDblClk();
 	void OnTabChanged();
 	void OnTabObjectChanged();
 	void OpenFile(const std::wstring& wstrFilename);
@@ -36,10 +34,4 @@ private:
 	CUIDialog		m_DlgModelAbout;
 	CDlgModelRenderPass	m_DlgModelRenderPass;
 	CUIDialog		m_DlgModelParticle;
-
-	CUIRadioButton m_RadioButtonFile;
-	CUIRadioButton m_RadioButtonPlayer;
-
-	CDlgModelPlayer	m_DlgModelPlayer;
-	CUIListBox		m_ListBoxFolder;
 };
