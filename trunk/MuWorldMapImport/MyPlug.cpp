@@ -1931,9 +1931,10 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 		importObjectResourcesFormDir(pScene,strObjectPath);
 	}
 	BBox bboxObject;
-	bboxObject.vMin = Vec3D(-10.0f,-20.0f,-10.0f);
-	bboxObject.vMax = Vec3D(pScene->getTerrain()->GetData().GetWidth()+10.0f,20.0f,pScene->getTerrain()->GetData().GetHeight()+10.0f);
-	pScene->createObjectTree(bboxObject,16);
+	float fLength = max(pScene->getTerrain()->GetData().GetWidth(),pScene->getTerrain()->GetData().GetHeight());
+	bboxObject.vMin = Vec3D(-10.0f,-fLength*0.5f-10.0f,-10.0f);
+	bboxObject.vMax = Vec3D(fLength+10.0f,fLength*0.5f+10.0f,fLength+10.0f);
+	pScene->createObjectTree(bboxObject,6);
 	importObject(pScene,ChangeExtension(strFilename,".obj"));
 	return true;
 	VMEND
