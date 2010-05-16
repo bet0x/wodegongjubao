@@ -6,6 +6,7 @@
 #include "DlgMainEditor.h"
 #include "ModelDataMgr.h"
 #include "FileSystem.h"
+#include "..\MainRoot.h"
 
 CDlgController::CDlgController()
 {
@@ -21,17 +22,17 @@ void CDlgController::OnControlRegister()
 	RegisterControl("IDC_LISTBOX_FILE",		m_ListBoxFolder);
 
 	RegisterControl("IDC_TAB_OBJECT_FILE",		m_RadioButtonFile);
-	RegisterControl("IDC_TAB_OBJECT_PLAYER",	m_RadioButtonPlayer);
+	RegisterControl("IDC_TAB_OBJECT_AVATAR",	m_RadioButtonAvatar);
 	RegisterControl("IDC_TAB_ABOUT",			m_RadioButtonAbout);
 
 	m_DlgModelAbout.Create("IDD_ABOUT", this);
-	m_DlgModelPlayer.Create("IDD_PLAYER", this);
+	m_DlgModelAvatar.Create("IDD_AVATAR", this);
 
 	RegisterControlEvent("IDC_LISTBOX_FILE",	(PEVENT)&CDlgController::OnListBoxFolderItemDblClk, EVENT_LISTBOX_ITEM_DBLCLK);
 
 
 	RegisterControlEvent("IDC_TAB_OBJECT_FILE",		(PEVENT)&CDlgController::OnTabObjectChanged);
-	RegisterControlEvent("IDC_TAB_OBJECT_PLAYER",	(PEVENT)&CDlgController::OnTabObjectChanged);
+	RegisterControlEvent("IDC_TAB_OBJECT_AVATAR",	(PEVENT)&CDlgController::OnTabObjectChanged);
 	RegisterControlEvent("IDC_TAB_ABOUT",	(PEVENT)&CDlgController::OnTabObjectChanged);
 
 	RegisterControlEvent("IDC_BTN_CLOSE",		(PEVENT)&CDlgController::OnClose);
@@ -141,7 +142,7 @@ void CDlgController::OpenFile(const std::wstring& wstrFilename)
 		//m_ListBoxFolder.SetSelec()
 		//GetFilename(wstrFilename)
 		getModelDisplay().LoadModel(ws2s(wstrFilename));
-		OnUpdate();
+		CMainRoot::getInstance().getMainDialog().getDlgModelController().OnUpdate();
 	}
 }
 
@@ -205,20 +206,14 @@ void CDlgController::OnListBoxFolderItemDblClk()
 		}
 		std::string strFilename = ws2s(m_wstrPath+m_ListBoxFolder.GetSelectedItem()->wstrText);
 		getModelDisplay().LoadModel( strFilename );
-		OnUpdate();
+		CMainRoot::getInstance().getMainDialog().getDlgModelController().OnUpdate();
 	}
 }
-
-void CDlgController::OnUpdate()
-{
-
-}
-
 
 void CDlgController::OnTabObjectChanged()
 {
 	m_ListBoxFolder.SetVisible(m_RadioButtonFile.IsChecked());
-	m_DlgModelPlayer.SetVisible(m_RadioButtonPlayer.IsChecked());
+	m_DlgModelAvatar.SetVisible(m_RadioButtonAvatar.IsChecked());
 	m_DlgModelAbout.SetVisible(m_RadioButtonAbout.IsChecked());
 }
 

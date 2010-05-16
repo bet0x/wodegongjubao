@@ -52,6 +52,7 @@ void CDlgMainEditor::OnControlRegister()
 	//m_DlgFaceDetect.Create("IDD_FACE_DETECT", this);
 	m_DlgFile.Create("IDD_FILE", this);
 
+	m_DlgModelController.Create("IDD_MODEL_CONTROLLER", this);
 	m_DlgToolbar.Create("IDD_TOOLBAR", this); // 放到最后是因为前面会 在渲染纹理是 把其他UI消失掉
 
 	RegisterControl( "IDC_STATIC_POS_X", m_StaticPosX);
@@ -149,6 +150,7 @@ bool CDlgMainEditor::OnInitDialog()
 //#if defined(_MU)
 	SetControlEnabled("IDC_BTN_NEW_FILE",false);
 //#endif
+	m_DlgModelController.SetVisible(false);
 	m_DlgToolbar.SetVisible(false);
 	m_DlgFile.SetVisible(false);
 
@@ -195,7 +197,14 @@ void CDlgMainEditor::OnBtnSaveFile()
 
 void CDlgMainEditor::OnBtnToolbar()
 {
-	m_DlgToolbar.SetVisible(!m_DlgToolbar.IsVisible());
+	if(m_ModelDisplay.IsVisible())
+	{
+		m_DlgModelController.SetVisible(!m_DlgModelController.IsVisible());
+	}
+	else if(m_WorldEditorDisplay.IsVisible())
+	{
+		m_DlgToolbar.SetVisible(!m_DlgToolbar.IsVisible());
+	}
 	updateDisplay();
 }
 
@@ -249,12 +258,12 @@ void CDlgMainEditor::OnFileCancel()
 
 void CDlgMainEditor::updateDisplay()
 {
-	CRect<int> rc(0,0,0,0);
+	CRect<int> rc(0,30,0,0);
 	if (m_DlgController.IsVisible())
 	{
 		rc.left = 200;
 	}
-	if (m_DlgToolbar.IsVisible())
+	if (m_DlgModelController.IsVisible()||m_DlgToolbar.IsVisible())
 	{
 		rc.right = -200;
 	}
@@ -283,12 +292,17 @@ void CDlgMainEditor::OnRadioModel()
 {
 	m_ModelDisplay.SetVisible(true);
 	m_WorldEditorDisplay.SetVisible(false);
+	m_DlgModelController.SetVisible(m_DlgToolbar.IsVisible());
+	m_DlgToolbar.SetVisible(false);
+
 }
 
 void CDlgMainEditor::OnRadioWorld()
 {
 	m_ModelDisplay.SetVisible(false);
 	m_WorldEditorDisplay.SetVisible(true);
+	m_DlgToolbar.SetVisible(m_DlgModelController.IsVisible());
+	m_DlgModelController.SetVisible(false);
 }
 
 void CDlgMainEditor::OnBtnFaceDetect()

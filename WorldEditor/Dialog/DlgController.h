@@ -21,7 +21,6 @@ public:
 	void OpenFile(const std::wstring& wstrFilename);
 	void OpenPath(const std::wstring& wstrPath, const std::wstring& wstrFileType=L"*.*");
 	void OnClose();
-	void OnUpdate();
 protected:
 private:
 	std::wstring	m_wstrPath;
@@ -30,9 +29,9 @@ private:
 	CUIDialog		m_DlgModelAbout;
 
 	CUIRadioButton m_RadioButtonFile;
-	CUIRadioButton m_RadioButtonPlayer;
+	CUIRadioButton m_RadioButtonAvatar;
 	CUIRadioButton m_RadioButtonAbout;
 
-	CDlgModelPlayer	m_DlgModelPlayer;
+	CDlgModelPlayer	m_DlgModelAvatar;
 	CUIListBox		m_ListBoxFolder;
 };
