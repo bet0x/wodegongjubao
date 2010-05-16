@@ -1,8 +1,8 @@
 #include "DlgModelPlayer.h"
-#include "DlgModelController.h"
 #include "ModelDisplay.h"
 #include "FileSystem.h"
 #include "IniFile.h"
+#include "..\MainRoot.h"
 
 void CDlgModelPlayer::OnControlRegister()
 {
@@ -136,7 +136,7 @@ void CDlgModelPlayer::OnUpdatePlayer()
 		pModelComplex->loadSkinModel("pant",strPlayerPath+ ws2s(m_ComboBoxPants.GetText()));
 		pModelComplex->loadSkinModel("boot",strPlayerPath+ ws2s(m_ComboBoxBoot.GetText()));
 	}
-	((CDlgModelController*)GetParentDialog())->OnUpdate();
+	CMainRoot::getInstance().getMainDialog().getDlgModelController().OnUpdate();
 }
 
 void CDlgModelPlayer::OnSelectSet()

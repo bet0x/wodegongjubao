@@ -13,6 +13,7 @@
 #include "DataPlugsMgr.h"
 //#include "DlgFaceDetect.h"
 #include "DlgController.h"
+#include "DlgModelController.h"
 
 class CDlgMainEditor : public CUIMainDialog
 {
@@ -46,19 +47,22 @@ public:
 	CUIWorldEditorDisplay& getDisplay();
 	CModelDisplay& getModelDisplay();
 	CDlgModelMaterial& getMaterialDialog();
+	CDlgModelController& getDlgModelController(){return m_DlgModelController;}
 private:
 	void updateDisplay();
-	CDlgController	m_DlgController;
+	
 	CUIButton		m_BtnHide;
 	CUIButton		m_BtnShow;
-	CModelDisplay	m_ModelDisplay;
 	//CDlgFaceDetect	m_DlgFaceDetect;
 
 	CUIStatic	m_StaticPosX;
 	CUIStatic	m_StaticPosY;
 	CUIStatic	m_StaticPosHeight;
 	CUIStatic	m_StaticInfo;
+	CModelDisplay			m_ModelDisplay;
 	CUIWorldEditorDisplay	m_WorldEditorDisplay;
+	CDlgController	m_DlgController;
+	CDlgModelController	m_DlgModelController;
 	CDlgToolbar		m_DlgToolbar;
 	CDlgFile		m_DlgFile;
 	//CDlgFPS			m_DlgFPS;

@@ -39,7 +39,6 @@ public:
 	CModelData*  getModelData()const;
 public:
 	CCamera				m_Camera;
-	CSkyBox				m_SkyBox;
 	Vec3D				m_vEye;
 	CSceneEffect		m_SceneEffect;
 public:
