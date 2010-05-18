@@ -97,9 +97,12 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 	R.setWorldMatrix(Matrix::UNIT);
 	R.SetSamplerFilter(0, TEXF_LINEAR, TEXF_LINEAR, TEXF_LINEAR);
 	R.SetSamplerFilter(1, TEXF_LINEAR, TEXF_LINEAR, TEXF_LINEAR);
-	R.setViewport(rcViewport);
 	R.setProjectionMatrix(m_Camera.GetProjMatrix());
 	R.setViewMatrix(m_Camera.GetViewMatrix());
+
+
+	m_SceneEffect.renderTargetBegin();
+
 	// äÖÈ¾Ìì¿ÕºÐ
 	//m_SkyBox.Render(m_Camera.GetViewMatrix());
 	//pShader->setTexture("g_texEnvironment",m_SkyBox.m_pCubeMap);
@@ -142,6 +145,10 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 
 	//m_SceneEffect.RenderTemporalBloom();
 	//m_SceneEffect.RenderBloom();
+	m_SceneEffect.renderTargetBloom();
+	m_SceneEffect.renderTargetEnd();
+	R.setViewport(rcViewport);
+	m_SceneEffect.compose();
 	if (0)
 	{
 		m_SceneEffect.glowRenderTargetBegin();
@@ -206,6 +213,7 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 	//		GetSceneEffect().RenderTemporalBloom();
 	//	}
 	//}
+
 	R.SetupRenderState();
 	R.setViewport(GetParentDialog()->GetBoundingBox());
 	
