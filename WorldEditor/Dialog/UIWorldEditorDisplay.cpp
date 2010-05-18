@@ -216,7 +216,7 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 
 	R.SetupRenderState();
 	R.setViewport(GetParentDialog()->GetBoundingBox());
-	
+
 	//TwDraw();
 	CUIDisplay::OnFrameRender(fTime,fElapsedTime);
 	return;
@@ -403,20 +403,31 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 						vPos = (vMousePos+m_vObjectLastPos-m_vLastMousePos)*m_vPosPressed+m_vObjectLastPos*(Vec3D(1,1,1)-m_vPosPressed);
 					}
 
-					//if (m_Terrain.GetBrushDecal().getObjectMoveingClingToFloor())
-					//{
-					//	vPos = vTargetPos;
-					//}
-					//else
-					//{
-					//	vPos = vTargetPos;
-					//	//Matrix mCameraRot;
-					////	mCameraRot.rotationYawPitchRoll(m_Camera.GetYawAngle(),m_Camera.GetPitchAngle(), 0);
-					//	//vPos += mCameraRot * Vec3D(-point.x+m_ptLastMousePosition.x, 0, point.y-m_ptLastMousePosition.y)*0.001f*m_Camera.GetRadius();
-					//}
+
+
+					if (m_vPosPressed.length()>1)
+					{
+						float fGridSize = 0.5f;
+						if (fGridSize<0.1f||fGridSize>=100.f) // check the value is not zero.
+						{
+							fGridSize=0.5f;
+							//m_NumGridSize.setFloat(fGridSize);
+						}
+						for (int i=0;i<3;i++)
+						{
+							vPos.f[i] = floorf((vPos.f[i]/fGridSize+0.5f))*fGridSize;
+						}
+					}
+					if (m_vPosPressed.y==0.0f&&m_Terrain.GetData().GetHeight(Vec2D(m_vObjectLastPos.x,m_vObjectLastPos.z))==m_vObjectLastPos.y)
+					{
+						vPos.y = m_Terrain.GetData().GetHeight(Vec2D(vPos.x,vPos.z));
+					}
+					else if(abs(m_Terrain.GetData().GetHeight(Vec2D(vPos.x,vPos.z))-vPos.y)<0.2f)
+					{
+						vPos.y = m_Terrain.GetData().GetHeight(Vec2D(vPos.x,vPos.z));
+					}
 					pObject->setPos(vPos);
-					//GetParentDialog()->postMsg("MSG_OBJECT_POS_CHANGED");
-					GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
+					//GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
 					m_Scene.updateMapObj(pObject);
 				}
 			}

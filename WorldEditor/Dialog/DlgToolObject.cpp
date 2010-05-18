@@ -111,23 +111,23 @@ void CDlgToolObject::OnObjectPosChanged()
 	if (pObject)
 	{
 		Vec3D vPos = pObject->getPos();
-		if (m_CheckBoxCatchAtGrid.GetCheckValue())
-		{
-			float fGridSize = m_NumGridSize.getFloat();
-			if (fGridSize<0.1f||fGridSize>=100.f) // check the value is not zero.
-			{
-				fGridSize=0.5f;
-				m_NumGridSize.setFloat(fGridSize);
-			}
-			for (int i=0;i<3;i++)
-			{
-				vPos.f[i] = floorf((vPos.f[i]/m_NumGridSize.getFloat()+0.5f))*m_NumGridSize.getFloat();
-			}
-		}
-		if (m_CheckBoxCatchAtFloor.GetCheckValue())
-		{
-			vPos.y = getDisplay().getTerrain().GetData().GetHeight(Vec2D(vPos.x,vPos.z));
-		}
+		//if (m_CheckBoxCatchAtGrid.GetCheckValue())
+		//{
+		//	float fGridSize = m_NumGridSize.getFloat();
+		//	if (fGridSize<0.1f||fGridSize>=100.f) // check the value is not zero.
+		//	{
+		//		fGridSize=0.5f;
+		//		m_NumGridSize.setFloat(fGridSize);
+		//	}
+		//	for (int i=0;i<3;i++)
+		//	{
+		//		vPos.f[i] = floorf((vPos.f[i]/m_NumGridSize.getFloat()+0.5f))*m_NumGridSize.getFloat();
+		//	}
+		//}
+		//if (m_CheckBoxCatchAtFloor.GetCheckValue())
+		//{
+		//	vPos.y = getDisplay().getTerrain().GetData().GetHeight(Vec2D(vPos.x,vPos.z));
+		//}
 		pObject->setPos(vPos);
 		m_Vec3DPos.setVec3D(vPos);
 	}
