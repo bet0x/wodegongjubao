@@ -100,9 +100,18 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 	R.setProjectionMatrix(m_Camera.GetProjMatrix());
 	R.setViewMatrix(m_Camera.GetViewMatrix());
 
-	m_SceneEffect.renderTargetBegin();
-	CRect<int> rcRenderTarget(0,0,rcViewport.getWidth(),rcViewport.getHeight());
-	R.setViewport(rcRenderTarget);
+	bool bBloom = false;
+	if (bBloom)
+	{
+		m_SceneEffect.renderTargetBegin();
+		CRect<int> rcRenderTarget(0,0,rcViewport.getWidth(),rcViewport.getHeight());
+		R.setViewport(rcRenderTarget);
+	}
+	else
+	{
+		R.setViewport(rcViewport);
+	}
+
 	// äÖÈ¾Ìì¿ÕºÐ
 	//m_SkyBox.Render(m_Camera.GetViewMatrix());
 	//pShader->setTexture("g_texEnvironment",m_SkyBox.m_pCubeMap);
@@ -143,6 +152,23 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 	}
 	R.setWorldMatrix(Matrix::UNIT);
 
+
+	if (m_vBeforeCatchPos!=m_vAfterCatchPos&&R.prepareMaterial("Coordinate1"))
+	{
+		R.ClearBuffer(true,false,0x0);
+		CGraphics& G=GetGraphics();
+		G.DrawLine3D(m_vBeforeCatchPos,m_vAfterCatchPos,0xFF00FFFF);
+
+		Pos2D posBeforeCatchPos;
+		R.world2Screen(m_vBeforeCatchPos,posBeforeCatchPos);
+		CRect<float> rcBeforeCatch(posBeforeCatchPos.x,posBeforeCatchPos.y,posBeforeCatchPos.x,posBeforeCatchPos.y);
+		rcBeforeCatch.InflateRect(2,2);
+		G.FillRect(rcBeforeCatch,0xFF00FFFF);
+		rcBeforeCatch.InflateRect(2,2);
+		G.DrawRect(rcBeforeCatch,0xFF00FFFF);
+		R.finishMaterial();
+	}
+
 	if (m_Scene.getObjectFocus())
 	{
 		R.ClearBuffer(true,false,0x0);
@@ -168,14 +194,15 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 		m_MeshCoordinate.render(Vec3D(0,0,0));
 	}
 
-	//m_SceneEffect.RenderTemporalBloom();
-	//m_SceneEffect.RenderBloom();
-	m_SceneEffect.renderTargetBloom();
-	m_SceneEffect.renderTargetEnd();
-	m_SceneEffect.compose(rcViewport);
-	R.setViewport(rcViewport);
-
-
+	if (bBloom)
+	{
+		//m_SceneEffect.RenderTemporalBloom();
+		//m_SceneEffect.RenderBloom();
+		m_SceneEffect.renderTargetBloom();
+		m_SceneEffect.renderTargetEnd();
+		m_SceneEffect.compose(rcViewport);
+		R.setViewport(rcViewport);
+	}
 	if (0)
 	{
 		m_SceneEffect.glowRenderTargetBegin();
@@ -184,33 +211,6 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 		m_SceneEffect.glowRenderTargetEnd();
 		m_SceneEffect.RenderBloom();
 	}
-
-
-	if (m_Scene.getObjectFocus())
-	{
-		R.ClearBuffer(true,false,0x0);
-		m_MeshCoordinate.setPos(m_Scene.getObjectFocus()->getPos());
-		if (!IsPressed())
-		{
-			Vec3D vLength = m_Scene.getObjectFocus()->getPos()-m_Camera.GetEyePt();
-			m_MeshCoordinate.setScale(vLength.length()*0.1f);
-		}
-		if (m_vPosMoveOn.length()>0)
-		{
-			m_MeshCoordinate.render(m_vPosMoveOn);
-		}
-		else
-		{
-			m_MeshCoordinate.render(m_vPosPressed);
-		}
-	}
-	else
-	{
-		m_MeshCoordinate.setPos(Vec3D(0,0,0));
-		m_MeshCoordinate.setScale(1);
-		m_MeshCoordinate.render(Vec3D(0,0,0));
-	}
-
 
 	if (0)
 	{
@@ -423,12 +423,12 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 				CMapObj* pObject = m_Scene.getObjectFocus();
 				if (pObject)
 				{
-					Vec3D vPos;
 					{
 						float t = (m_vObjectLastPos.f[m_CoordPlanType]-vRayPos.f[m_CoordPlanType])/vRayDir.f[m_CoordPlanType];
 						Vec3D vMousePos = vRayDir*t+vRayPos;
-						vPos = (vMousePos+m_vObjectLastPos-m_vLastMousePos)*m_vPosPressed+m_vObjectLastPos*(Vec3D(1,1,1)-m_vPosPressed);
+						m_vBeforeCatchPos = (vMousePos+m_vObjectLastPos-m_vLastMousePos)*m_vPosPressed+m_vObjectLastPos*(Vec3D(1,1,1)-m_vPosPressed);
 					}
+					m_vAfterCatchPos = m_vBeforeCatchPos;
 
 
 
@@ -442,18 +442,18 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 						}
 						for (int i=0;i<3;i++)
 						{
-							vPos.f[i] = floorf((vPos.f[i]/fGridSize+0.5f))*fGridSize;
+							m_vAfterCatchPos.f[i] = floorf((m_vAfterCatchPos.f[i]/fGridSize+0.5f))*fGridSize;
 						}
 					}
 					if (m_vPosPressed.y==0.0f&&m_Terrain.GetData().GetHeight(Vec2D(m_vObjectLastPos.x,m_vObjectLastPos.z))==m_vObjectLastPos.y)
 					{
-						vPos.y = m_Terrain.GetData().GetHeight(Vec2D(vPos.x,vPos.z));
+						m_vAfterCatchPos.y = m_Terrain.GetData().GetHeight(Vec2D(m_vAfterCatchPos.x,m_vAfterCatchPos.z));
 					}
-					else if(abs(m_Terrain.GetData().GetHeight(Vec2D(vPos.x,vPos.z))-vPos.y)<0.2f)
+					else if(abs(m_Terrain.GetData().GetHeight(Vec2D(m_vAfterCatchPos.x,m_vAfterCatchPos.z))-m_vAfterCatchPos.y)<0.2f)
 					{
-						vPos.y = m_Terrain.GetData().GetHeight(Vec2D(vPos.x,vPos.z));
+						m_vAfterCatchPos.y = m_Terrain.GetData().GetHeight(Vec2D(m_vAfterCatchPos.x,m_vAfterCatchPos.z));
 					}
-					pObject->setPos(vPos);
+					pObject->setPos(m_vAfterCatchPos);
 					//GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
 					m_Scene.updateMapObj(pObject);
 				}

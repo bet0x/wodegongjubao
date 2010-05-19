@@ -61,6 +61,9 @@ protected:
 	Vec3D				m_vObjectLastPos;
 	Vec3D				m_vLastMousePos;
 
+	Vec3D				m_vBeforeCatchPos;
+	Vec3D				m_vAfterCatchPos;
+
 	enum COORD_PLAN_TYPE
 	{
 		CPT_YZ,
