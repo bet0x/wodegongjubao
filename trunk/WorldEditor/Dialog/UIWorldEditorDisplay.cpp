@@ -100,9 +100,9 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 	R.setProjectionMatrix(m_Camera.GetProjMatrix());
 	R.setViewMatrix(m_Camera.GetViewMatrix());
 
-
 	m_SceneEffect.renderTargetBegin();
-
+	CRect<int> rcRenderTarget(0,0,rcViewport.getWidth(),rcViewport.getHeight());
+	R.setViewport(rcRenderTarget);
 	// äÖÈ¾Ìì¿ÕºÐ
 	//m_SkyBox.Render(m_Camera.GetViewMatrix());
 	//pShader->setTexture("g_texEnvironment",m_SkyBox.m_pCubeMap);
@@ -143,12 +143,39 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 	}
 	R.setWorldMatrix(Matrix::UNIT);
 
+	if (m_Scene.getObjectFocus())
+	{
+		R.ClearBuffer(true,false,0x0);
+		m_MeshCoordinate.setPos(m_Scene.getObjectFocus()->getPos());
+		if (!IsPressed())
+		{
+			Vec3D vLength = m_Scene.getObjectFocus()->getPos()-m_Camera.GetEyePt();
+			m_MeshCoordinate.setScale(vLength.length()*0.1f);
+		}
+		if (m_vPosMoveOn.length()>0)
+		{
+			m_MeshCoordinate.render(m_vPosMoveOn);
+		}
+		else
+		{
+			m_MeshCoordinate.render(m_vPosPressed);
+		}
+	}
+	else
+	{
+		m_MeshCoordinate.setPos(Vec3D(0,0,0));
+		m_MeshCoordinate.setScale(1);
+		m_MeshCoordinate.render(Vec3D(0,0,0));
+	}
+
 	//m_SceneEffect.RenderTemporalBloom();
 	//m_SceneEffect.RenderBloom();
 	m_SceneEffect.renderTargetBloom();
 	m_SceneEffect.renderTargetEnd();
+	m_SceneEffect.compose(rcViewport);
 	R.setViewport(rcViewport);
-	m_SceneEffect.compose();
+
+
 	if (0)
 	{
 		m_SceneEffect.glowRenderTargetBegin();
@@ -199,7 +226,7 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 		//m_SceneEffect.renderTargetGlow();
 		m_SceneEffect.renderTargetBloom();
 		m_SceneEffect.renderTargetEnd();
-		m_SceneEffect.compose();
+		//m_SceneEffect.compose();
 	}
 	//
 	//if (GetConfig().GetSceneEffectEnable()&&1)
@@ -672,5 +699,5 @@ bool CUIWorldEditorDisplay::HandleMouse(UINT uMsg, POINT pt, WPARAM wParam, LPAR
 void CUIWorldEditorDisplay::OnSize(const CRect<int>& rc)
 {
 	CUIDisplay::OnSize(rc);
-	m_SceneEffect.Reset(rc);
+	m_SceneEffect.Reset(GetBoundingBox());
 }

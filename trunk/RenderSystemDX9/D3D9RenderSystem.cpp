@@ -268,8 +268,8 @@ void CD3D9RenderSystem::setViewport(const CRect<int>& rect)
 	D3DVIEWPORT9 vp;
 	vp.X = rect.left;
 	vp.Y = rect.top;
-	vp.Width = rect.right-rect.left;
-	vp.Height = rect.bottom-rect.top;
+	vp.Width = rect.getWidth();
+	vp.Height = rect.getHeight();
 	vp.MinZ   = 0.0f;
 	vp.MaxZ   = 1.0f;
 	D3DCheckHresult( m_pD3D9Device->SetViewport(&vp) );
