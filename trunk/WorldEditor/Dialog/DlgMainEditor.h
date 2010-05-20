@@ -50,8 +50,7 @@ public:
 	CDlgModelController& getDlgModelController(){return m_DlgModelController;}
 private:
 	void updateDisplay();
-	
-	CUIButton		m_BtnHide;
+
 	CUIButton		m_BtnShow;
 	//CDlgFaceDetect	m_DlgFaceDetect;
 

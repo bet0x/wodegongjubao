@@ -48,7 +48,6 @@ private:
 	CUIComboColor	m_ColorEmissive;
 	CUIComboNumber	m_NumUvscaleX;
 	CUIComboNumber	m_NumUvscaleY;
-	CUIListBox	m_ListboxMaterial;
 
 	CMaterial* m_pSelectedMaterial;
 

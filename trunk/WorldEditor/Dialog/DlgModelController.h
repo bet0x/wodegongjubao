@@ -28,7 +28,6 @@ private:
 	CUIRadioButton m_RadioButtonAnim;
 	CUIRadioButton m_RadioButtonRenderPass;
 	CUIRadioButton m_RadioButtonParticle;
-	CUIRadioButton m_RadioButtonAbout;
 	CDlgModelShow	m_DlgModelShow;
 	CDlgModelAnim	m_DlgModelAnim;
 	CUIDialog		m_DlgModelAbout;

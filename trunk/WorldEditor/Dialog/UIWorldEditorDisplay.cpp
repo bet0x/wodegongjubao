@@ -100,7 +100,7 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 	R.setProjectionMatrix(m_Camera.GetProjMatrix());
 	R.setViewMatrix(m_Camera.GetViewMatrix());
 
-	bool bBloom = false;
+	bool bBloom = true;
 	if (bBloom)
 	{
 		m_SceneEffect.renderTargetBegin();

@@ -22,7 +22,6 @@ void CDlgModelController::OnControlRegister()
 	RegisterControl("IDC_TAB_ANIM",	m_RadioButtonAnim);
 	RegisterControl("IDC_TAB_RENDERPASS",	m_RadioButtonRenderPass);
 	RegisterControl("IDC_TAB_PARTICLE",	m_RadioButtonParticle);
-	RegisterControl("IDC_TAB_ABOUT",m_RadioButtonAbout);
 
 
 	m_DlgModelShow.Create("IDD_MODEL_SHOW", this);
@@ -35,7 +34,6 @@ void CDlgModelController::OnControlRegister()
 	RegisterControlEvent("IDC_TAB_ANIM",		(PEVENT)&CDlgModelController::OnTabChanged);
 	RegisterControlEvent("IDC_TAB_RENDERPASS",	(PEVENT)&CDlgModelController::OnTabChanged);
 	RegisterControlEvent("IDC_TAB_PARTICLE",	(PEVENT)&CDlgModelController::OnTabChanged);
-	RegisterControlEvent("IDC_TAB_ABOUT",		(PEVENT)&CDlgModelController::OnTabChanged);
 
 	RegisterControlEvent("IDC_BTN_CLOSE",		(PEVENT)&CDlgModelController::OnClose);
 }
@@ -59,7 +57,6 @@ void CDlgModelController::OnTabChanged()
 	m_DlgModelAnim.SetVisible(m_RadioButtonAnim.IsChecked());
 	m_DlgModelRenderPass.SetVisible(m_RadioButtonRenderPass.IsChecked());
 	m_DlgModelParticle.SetVisible(m_RadioButtonParticle.IsChecked());
-	m_DlgModelAbout.SetVisible(m_RadioButtonAbout.IsChecked());
 }
 
 void CDlgModelController::OnClose()

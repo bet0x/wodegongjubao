@@ -20,7 +20,7 @@ void CDlgSetting::OnControlRegister()
 	RegisterControl("IDC_NUM_CAMERA_ANGLE",	m_NumCameraAngle);
 	RegisterControl("IDC_NUM_CAMERA_FAR",	m_NumCameraFar);
 	RegisterControl("IDC_NUM_FOG_START",	m_NumFogStart);
-	RegisterControl("IDC_NUM_FOG_End",		m_NumFogEnd);
+	RegisterControl("IDC_NUM_FOG_END",		m_NumFogEnd);
 	RegisterControl("IDC_NUM_FOG_DENSITY",	m_NumFogDensity);
 
 	RegisterControl("IDC_COLOR_FOG",		m_ColorFog);
@@ -43,7 +43,7 @@ void CDlgSetting::OnControlRegister()
 	RegisterControlEvent("IDC_NUM_CAMERA_ANGLE",	(PEVENT)&CDlgSetting::OnCameraChanged);
 	RegisterControlEvent("IDC_NUM_CAMERA_FAR",		(PEVENT)&CDlgSetting::OnCameraChanged);
 	RegisterControlEvent("IDC_NUM_FOG_START",		(PEVENT)&CDlgSetting::OnFogChanged);
-	RegisterControlEvent("IDC_NUM_FOG_End",			(PEVENT)&CDlgSetting::OnFogChanged);
+	RegisterControlEvent("IDC_NUM_FOG_END",			(PEVENT)&CDlgSetting::OnFogChanged);
 	RegisterControlEvent("IDC_NUM_FOG_DENSITY",		(PEVENT)&CDlgSetting::OnFogChanged);
 	RegisterControlEvent("IDC_COLOR_FOG",			(PEVENT)&CDlgSetting::OnFogChanged);
 	RegisterControlEvent("IDC_COLOR_AMBIENT",		(PEVENT)&CDlgSetting::OnMaterialChanged);

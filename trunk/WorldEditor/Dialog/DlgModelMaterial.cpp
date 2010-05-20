@@ -24,7 +24,6 @@ void CDlgModelMaterial::OnControlRegister()
 	RegisterControl("IDC_COLOR_EMISSIVE",	m_ColorEmissive);
 	RegisterControl("IDC_NUM_UVSCALE_X",	m_NumUvscaleX);
 	RegisterControl("IDC_NUM_UVSCALE_Y",	m_NumUvscaleY);
-	RegisterControl("IDC_LISTBOX_MATERIAL",	m_ListboxMaterial);
 
 	RegisterControlEvent("IDC_EDITBOX_DIFFUSE",		(PEVENT)&CDlgModelMaterial::OnEditboxDiffuse);
 	RegisterControlEvent("IDC_EDITBOX_EMISSIVE",	(PEVENT)&CDlgModelMaterial::OnEditboxEmissive);

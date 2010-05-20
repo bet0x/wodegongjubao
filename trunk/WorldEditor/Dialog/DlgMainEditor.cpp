@@ -75,7 +75,6 @@ void CDlgMainEditor::OnControlRegister()
 
 	RegisterControl("IDC_DISPLAY_MODEL", m_ModelDisplay);
 
-	RegisterControl("IDC_BTN_HIDE",	m_BtnHide);
 	RegisterControl("IDC_BTN_SHOW",	m_BtnShow);
 
 	RegisterControlEvent("IDC_BTN_SHOW",		(PEVENT)&CDlgMainEditor::OnBtnShowController);
@@ -155,7 +154,6 @@ bool CDlgMainEditor::OnInitDialog()
 	m_DlgFile.SetVisible(false);
 
 	// model
-	m_BtnHide.SetVisible(true);
 	updateDisplay();
 	return CUIMainDialog::OnInitDialog();
 }
@@ -276,14 +274,12 @@ void CDlgMainEditor::updateDisplay()
 
 void CDlgMainEditor::CloseController()
 {
-	m_BtnHide.SetVisible(false);
 	m_DlgController.SetVisible(false);
 	updateDisplay();
 }
 
 void CDlgMainEditor::OnBtnShowController()
 {
-	m_BtnHide.SetVisible(true);
 	m_DlgController.SetVisible(!m_DlgController.IsVisible());
 	updateDisplay();
 }
