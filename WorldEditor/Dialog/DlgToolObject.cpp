@@ -17,23 +17,18 @@ void CDlgToolObject::OnControlRegister()
 {
 	CUIDialog::OnControlRegister();
 
-	RegisterControl("IDC_CHECKBOX_CATCH_AT_CLING", m_CheckBoxCatchAtFloor);
-	RegisterControl("IDC_CHECKBOX_CATCH_AT_GRID", m_CheckBoxCatchAtGrid);
 
 	RegisterControl("IDC_OBJLIST_SCENE_OBJECTS",		m_ObjListSceneObject);
 
-	RegisterControl("IDC_NUM_GRID_SIZE",		m_NumGridSize);
+	RegisterControl("IDC_NUM_FLOOR_SNAP",		m_NumFloorSnap);
+	RegisterControl("IDC_VEC3D_GRID_SNAP",		m_Vec3DGridSnap);
 
 	RegisterControl("IDC_VEC3D_POS",		m_Vec3DPos);
 	RegisterControl("IDC_VEC3D_ROTATE",		m_Vec3Rotate);
 	RegisterControl("IDC_NUM_SCALE",		m_NumScale);
 
-	RegisterControlEvent("IDC_NUM_POS_X",		(PEVENT)&CDlgToolObject::OnFocusObjectValueChanged);
-	RegisterControlEvent("IDC_NUM_POS_Y",		(PEVENT)&CDlgToolObject::OnFocusObjectValueChanged);
-	RegisterControlEvent("IDC_NUM_POS_Z",		(PEVENT)&CDlgToolObject::OnFocusObjectValueChanged);
-	RegisterControlEvent("IDC_NUM_ROTATE_X",	(PEVENT)&CDlgToolObject::OnFocusObjectValueChanged);
-	RegisterControlEvent("IDC_NUM_ROTATE_Y",	(PEVENT)&CDlgToolObject::OnFocusObjectValueChanged);
-	RegisterControlEvent("IDC_NUM_ROTATE_Z",	(PEVENT)&CDlgToolObject::OnFocusObjectValueChanged);
+	RegisterControlEvent("IDC_VEC3D_POS",		(PEVENT)&CDlgToolObject::OnFocusObjectValueChanged);
+	RegisterControlEvent("IDC_VEC3D_ROTATE",	(PEVENT)&CDlgToolObject::OnFocusObjectValueChanged);
 	RegisterControlEvent("IDC_NUM_SCALE",		(PEVENT)&CDlgToolObject::OnFocusObjectValueChanged);
 
 	RegisterEvent("MSG_FOCUS_OBJECT_CHANGED",(PEVENT)&CDlgToolObject::OnFocusObjectChanged);

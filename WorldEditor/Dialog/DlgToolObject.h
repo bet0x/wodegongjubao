@@ -19,9 +19,8 @@ public:
 private:
 	CUIComboObjListSceneObject m_ObjListSceneObject;
 
-	CUICheckBox m_CheckBoxCatchAtFloor;
-	CUICheckBox m_CheckBoxCatchAtGrid;
-	CUIComboNumber	m_NumGridSize;
+	CUIComboNumber	m_NumFloorSnap;
+	CUIComboVec3D	m_Vec3DGridSnap;
 	CUIComboVec3D	m_Vec3DPos;
 	CUIComboVec3D	m_Vec3Rotate;
 	CUIComboNumber	m_NumScale;
