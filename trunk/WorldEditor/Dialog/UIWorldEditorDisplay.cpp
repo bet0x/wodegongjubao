@@ -19,7 +19,8 @@ m_bKeyCtrl(false),
 m_bKeyUp(false),
 m_bKeyDown(false),
 m_bKeyLeft(false),
-m_bKeyRight(false)
+m_bKeyRight(false),
+m_fCoordScale(0.2f)
 {
 	//// 生成摄像机的视角参数
 	//Vec3D vEye(20.0f, 20.0f, 20.0f);
@@ -100,7 +101,7 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 	R.setProjectionMatrix(m_Camera.GetProjMatrix());
 	R.setViewMatrix(m_Camera.GetViewMatrix());
 
-	bool bBloom = true;
+	bool bBloom = false;
 	if (bBloom)
 	{
 		m_SceneEffect.renderTargetBegin();
@@ -157,7 +158,10 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 	{
 		R.ClearBuffer(true,false,0x0);
 		CGraphics& G=GetGraphics();
-		G.DrawLine3D(m_vBeforeCatchPos,m_vAfterCatchPos,0xFF00FFFF);
+		G.DrawLine3D(m_vObjectLastPos,m_vAfterCatchPos,0xFF00FFFF);
+
+		G.DrawLine3D(m_vObjectLastPos,m_vBeforeCatchPos,0xFF00FFFF);
+
 
 		Pos2D posBeforeCatchPos;
 		R.world2Screen(m_vBeforeCatchPos,posBeforeCatchPos);
@@ -176,7 +180,7 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 		if (!IsPressed())
 		{
 			Vec3D vLength = m_Scene.getObjectFocus()->getPos()-m_Camera.GetEyePt();
-			m_MeshCoordinate.setScale(vLength.length()*0.1f);
+			m_MeshCoordinate.setScale(vLength.length()*m_fCoordScale);
 		}
 		if (m_vPosMoveOn.length()>0)
 		{
@@ -287,6 +291,12 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 				return true;
 			case VK_DELETE:
 				m_Scene.delMapObj(m_Scene.getObjectFocus());
+				return true;
+			case VK_SUBTRACT:
+				m_fCoordScale=max(0.00f,m_fCoordScale-0.05f);
+				return true;
+			case VK_ADD:
+				m_fCoordScale=min(1.0f,m_fCoordScale+0.05f);
 				return true;
 			}
 
@@ -442,7 +452,11 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 						}
 						for (int i=0;i<3;i++)
 						{
-							m_vAfterCatchPos.f[i] = floorf((m_vAfterCatchPos.f[i]/fGridSize+0.5f))*fGridSize;
+							float fSize = floorf((m_vAfterCatchPos.f[i]/fGridSize+0.5f))*fGridSize;
+							if (abs(fSize-m_vAfterCatchPos.f[i])<fGridSize/3)
+							{
+								m_vAfterCatchPos.f[i] = fSize;
+							}
 						}
 					}
 					if (m_vPosPressed.y==0.0f&&m_Terrain.GetData().GetHeight(Vec2D(m_vObjectLastPos.x,m_vObjectLastPos.z))==m_vObjectLastPos.y)

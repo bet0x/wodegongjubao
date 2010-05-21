@@ -75,4 +75,6 @@ protected:
 	bool g_bLeftButtonDown;
 	bool g_bRightButtonDown;
 	bool g_bMiddleButtonDown;
+
+	float m_fCoordScale;
 };
