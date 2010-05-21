@@ -158,11 +158,17 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 	{
 		R.ClearBuffer(true,false,0x0);
 		CGraphics& G=GetGraphics();
-		G.DrawLine3D(m_vObjectLastPos,m_vAfterCatchPos,0xFF00FFFF);
+		//G.DrawLine3D(m_vObjectLastPos,m_vAfterCatchPos,0xFF00FFFF);
 
 		G.DrawLine3D(m_vObjectLastPos,m_vBeforeCatchPos,0xFF00FFFF);
 
-
+		{
+			Pos2D pos;
+			R.world2Screen(m_vObjectLastPos,pos);
+			CRect<float> rc(pos.x,pos.y,pos.x,pos.y);
+			rc.InflateRect(2,2);
+			G.FillRect(rc,0xFF00FFFF);
+		}
 		Pos2D posBeforeCatchPos;
 		R.world2Screen(m_vBeforeCatchPos,posBeforeCatchPos);
 		CRect<float> rcBeforeCatch(posBeforeCatchPos.x,posBeforeCatchPos.y,posBeforeCatchPos.x,posBeforeCatchPos.y);
@@ -293,10 +299,10 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 				m_Scene.delMapObj(m_Scene.getObjectFocus());
 				return true;
 			case VK_SUBTRACT:
-				m_fCoordScale=max(0.00f,m_fCoordScale-0.05f);
+				m_fCoordScale=max(0.0f,m_fCoordScale-0.05f);
 				return true;
 			case VK_ADD:
-				m_fCoordScale=min(1.0f,m_fCoordScale+0.05f);
+				m_fCoordScale=min(0.5f,m_fCoordScale+0.05f);
 				return true;
 			}
 

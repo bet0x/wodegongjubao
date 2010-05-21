@@ -37,6 +37,7 @@ void CDlgToolbar::OnBtnTerrain()
 {
 	closeAllChildDialog();
 	m_DlgTerrainEditor.SetVisible(true);
+	getDisplay().getTerrain().showBrushDecal(true);
 }
 
 void CDlgToolbar::OnBtnObject()
@@ -44,6 +45,7 @@ void CDlgToolbar::OnBtnObject()
 	getBrush().SetBrushType(CTerrainBrush::BRUSH_TYPE_SCENE_OBJECT);
 	closeAllChildDialog();
 	m_DlgToolObject.SetVisible(true);
+	getDisplay().getTerrain().showBrushDecal(false);
 }
 
 void CDlgToolbar::closeAllChildDialog()
