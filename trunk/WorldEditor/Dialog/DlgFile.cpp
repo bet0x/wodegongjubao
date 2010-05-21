@@ -139,7 +139,7 @@ void CDlgFile::OnBtnNew()
 		m_wstrFilename = wstrFilename;
 	}
 	m_wstrFilename=ChangeExtension(m_wstrFilename,m_wstrFileType);
-	SendEvent( EVENT_NEW, this );
+	SendEvent( EVENT_NEW);
 	SetVisible(false);
 }
 
@@ -163,20 +163,20 @@ void CDlgFile::OnBtnOpen()
 		OpenPath(m_EditBoxFile.GetText());
 		return;
 	}
-	SendEvent( EVENT_OPEN, this );
+	SendEvent( EVENT_OPEN);
 	SetVisible(false);
 }
 
 void CDlgFile::OnBtnSave()
 {
 	m_wstrFilename = m_wstrDir+m_EditBoxFile.GetText();
-	SendEvent( EVENT_SAVE, this );
+	SendEvent( EVENT_SAVE);
 	SetVisible(false);
 }
 
 void CDlgFile::OnBtnCancel()
 {
-	SendEvent( EVENT_CANCEL, this );
+	SendEvent( EVENT_CANCEL);
 	SetVisible(false);
 }
 
