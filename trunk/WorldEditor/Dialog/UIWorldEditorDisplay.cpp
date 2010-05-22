@@ -20,7 +20,8 @@ m_bKeyUp(false),
 m_bKeyDown(false),
 m_bKeyLeft(false),
 m_bKeyRight(false),
-m_fCoordScale(0.2f)
+m_fCoordScale(0.2f),
+m_fGridSize(0.5f)
 {
 	//// 生成摄像机的视角参数
 	//Vec3D vEye(20.0f, 20.0f, 20.0f);
@@ -153,31 +154,61 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 	}
 	R.setWorldMatrix(Matrix::UNIT);
 
-
-	if (m_vBeforeCatchPos!=m_vAfterCatchPos&&R.prepareMaterial("Coordinate1"))
+	if (g_bLeftButtonDown)
 	{
-		R.ClearBuffer(true,false,0x0);
 		CGraphics& G=GetGraphics();
-		//G.DrawLine3D(m_vObjectLastPos,m_vAfterCatchPos,0xFF00FFFF);
-
-		G.DrawLine3D(m_vObjectLastPos,m_vBeforeCatchPos,0xFF00FFFF);
-
+		R.ClearBuffer(true,false,0x0);
+		if (R.prepareMaterial("Coordinate1"))
 		{
-			Pos2D pos;
-			R.world2Screen(m_vObjectLastPos,pos);
-			CRect<float> rc(pos.x,pos.y,pos.x,pos.y);
-			rc.InflateRect(2,2);
-			G.FillRect(rc,0xFF00FFFF);
+			G.DrawLine3D(m_vObjectLastPos,m_vAfterCatchPos,0xFF00FFFF);
+			{
+				Pos2D pos;
+				R.world2Screen(m_vObjectLastPos,pos);
+				CRect<float> rc(pos.x,pos.y,pos.x,pos.y);
+				rc.InflateRect(2,2);
+				G.FillRect(rc,0xFF00FFFF);
+			}
 		}
-		Pos2D posBeforeCatchPos;
-		R.world2Screen(m_vBeforeCatchPos,posBeforeCatchPos);
-		CRect<float> rcBeforeCatch(posBeforeCatchPos.x,posBeforeCatchPos.y,posBeforeCatchPos.x,posBeforeCatchPos.y);
-		rcBeforeCatch.InflateRect(2,2);
-		G.FillRect(rcBeforeCatch,0xFF00FFFF);
-		rcBeforeCatch.InflateRect(2,2);
-		G.DrawRect(rcBeforeCatch,0xFF00FFFF);
-		R.finishMaterial();
+
+		if (m_vBeforeCatchPos!=m_vAfterCatchPos)
+		{
+			if (R.prepareMaterial("Coordinate1"))
+			{
+				for (size_t i=0;i<3;++i)
+				{
+					for (size_t j=0;j<2;++j)
+					{
+						Pos2D pos;
+						Vec3D vPos=m_vAfterCatchPos;
+						vPos.f[i]+=(0==j?m_fGridSize:-m_fGridSize);
+						R.world2Screen(vPos,pos);
+						CRect<float> rc(pos.x,pos.y,pos.x,pos.y);
+						rc.InflateRect(2,2);
+						G.FillRect(rc,0xFF00FFFF);
+					}
+				}
+				//G.DrawLine3D(m_vAfterCatchPos+Vec3D(-m_fGridSize,0.0f,0.0f),m_vAfterCatchPos+Vec3D(m_fGridSize,0.0f,0.0f),0xFF00FFFF);
+				//G.DrawLine3D(m_vAfterCatchPos+Vec3D(0.0f,-m_fGridSize,0.0f),m_vAfterCatchPos+Vec3D(0.0f,m_fGridSize,0.0f),0xFF00FFFF);
+				//G.DrawLine3D(m_vAfterCatchPos+Vec3D(0.0f,0.0f,-m_fGridSize),m_vAfterCatchPos+Vec3D(0.0f,0.0f,m_fGridSize),0xFF00FFFF);
+
+
+				G.DrawLine3D(m_vObjectLastPos,m_vBeforeCatchPos,0xFF00FFFF);
+
+	
+				//{
+					Pos2D posBeforeCatchPos;
+					R.world2Screen(m_vBeforeCatchPos,posBeforeCatchPos);
+					CRect<float> rcBeforeCatch(posBeforeCatchPos.x,posBeforeCatchPos.y,posBeforeCatchPos.x,posBeforeCatchPos.y);
+				//	rcBeforeCatch.InflateRect(2,2);
+				//	G.FillRect(rcBeforeCatch,0xFF00FFFF);
+					rcBeforeCatch.InflateRect(4,4);
+					G.DrawRect(rcBeforeCatch,0xFF00FFFF);
+					R.finishMaterial();
+				//}
+			}
+		}
 	}
+
 
 	if (m_Scene.getObjectFocus())
 	{
@@ -450,16 +481,16 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 
 					if (m_vPosPressed.length()>1)
 					{
-						float fGridSize = 0.5f;
-						if (fGridSize<0.1f||fGridSize>=100.f) // check the value is not zero.
-						{
-							fGridSize=0.5f;
-							//m_NumGridSize.setFloat(fGridSize);
-						}
+						//float fGridSize = 0.5f;
+						//if (fGridSize<0.1f||fGridSize>=100.f) // check the value is not zero.
+						//{
+						//	fGridSize=0.5f;
+						//	//m_NumGridSize.setFloat(fGridSize);
+						//}
 						for (int i=0;i<3;i++)
 						{
-							float fSize = floorf((m_vAfterCatchPos.f[i]/fGridSize+0.5f))*fGridSize;
-							if (abs(fSize-m_vAfterCatchPos.f[i])<fGridSize/3)
+							float fSize = floorf((m_vAfterCatchPos.f[i]/m_fGridSize+0.5f))*m_fGridSize;
+							//if (abs(fSize-m_vAfterCatchPos.f[i])<m_fGridSize/3)
 							{
 								m_vAfterCatchPos.f[i] = fSize;
 							}
