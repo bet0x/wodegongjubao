@@ -77,4 +77,5 @@ protected:
 	bool g_bMiddleButtonDown;
 
 	float m_fCoordScale;
+	float m_fGridSize;
 };
