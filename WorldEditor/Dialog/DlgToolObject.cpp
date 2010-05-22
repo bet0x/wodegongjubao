@@ -44,8 +44,7 @@ void CDlgToolObject::initObject()
 
 void CDlgToolObject::OnFocusObjectValueChanged()
 {
-	CMapObj* pObject = getDisplay().getScene().getFocusObject();
-	if (pObject)
+	if (getDisplay().getScene().getFocusObjects().size()>0)
 	{
 		Vec3D vPos=m_Vec3DPos.getVec3D();
 		Vec3D vRotate=m_Vec3Rotate.getVec3D()*(PI/180);
@@ -57,28 +56,31 @@ void CDlgToolObject::OnFocusObjectValueChanged()
 			m_NumScale.setFloat(fScale);
 		}
 
-		pObject->setPos(vPos);
-		pObject->setRotate(vRotate);
-		pObject->setScale(vScale);
+		getDisplay().getScene().setFocusObjectsPos(vPos);
+		getDisplay().getScene().setFocusObjectsRotate(vRotate);
+		getDisplay().getScene().setFocusObjectsScale(vScale);
 	}
 }
 
 void CDlgToolObject::OnFocusObjectChanged()
 {
-	CMapObj* pObject = getDisplay().getScene().getFocusObject();
-	if (pObject)
+	if (getDisplay().getScene().getFocusObjects().size()>0)
 	{
-		Vec3D vPos = pObject->getPos();
-		Vec3D vRotate = pObject->getRotate();
-		Vec3D vScale = pObject->getScale();
+		Vec3D vPos = getDisplay().getScene().getFocusObjectsPos();
+		Vec3D vRotate = getDisplay().getScene().getFocusObjectsRotate();
+		Vec3D vScale = getDisplay().getScene().getFocusObjectsScale();
 
 		m_Vec3DPos.setVec3D(vPos);
 		m_Vec3Rotate.setVec3D(vRotate*180/PI);
 		m_NumScale.setFloat(vScale.x);
 
-		if (pObject->GetObjType()==MAP_3DSIMPLE)
+		if (getDisplay().getScene().getFocusObjects().size()==1)
 		{
-			m_ObjListSceneObject.SelectObjectByObjectID(((C3DMapSceneObj*)pObject)->getObjectID());
+			CMapObj* pObject = getDisplay().getScene().getFocusObjects()[0];
+			if (pObject->GetObjType()==MAP_3DSIMPLE)
+			{
+				m_ObjListSceneObject.SelectObjectByObjectID(((C3DMapSceneObj*)pObject)->getObjectID());
+			}
 		}
 	}
 }
@@ -95,17 +97,16 @@ void CDlgToolObject::OnAddObject()
 	Vec3D vScale=Vec3D(fScale,fScale,fScale);
 	CMapObj* pObject = getDisplay().getScene().add3DMapSceneObj(m_ObjListSceneObject.getSelectedObjectID(),getDisplay().getScene().getTargetPos(),vRotate,vScale);
 
-	getDisplay().getScene().setObjectFocus(pObject);
+	getDisplay().getScene().addFocusObject(pObject);
 	OnFocusObjectChanged();
 	OnObjectPosChanged();
 }
 
 void CDlgToolObject::OnObjectPosChanged()
 {
-	CMapObj* pObject = getDisplay().getScene().getObjectFocus();
-	if (pObject)
+	if (getDisplay().getScene().getFocusObjects().size()>0)
 	{
-		Vec3D vPos = pObject->getPos();
+		Vec3D vPos = getDisplay().getScene().getFocusObjectsPos();
 		//if (m_CheckBoxCatchAtGrid.GetCheckValue())
 		//{
 		//	float fGridSize = m_NumGridSize.getFloat();
@@ -123,7 +124,7 @@ void CDlgToolObject::OnObjectPosChanged()
 		//{
 		//	vPos.y = getDisplay().getTerrain().GetData().GetHeight(Vec2D(vPos.x,vPos.z));
 		//}
-		pObject->setPos(vPos);
+		//pObject->setPos(vPos);
 		m_Vec3DPos.setVec3D(vPos);
 	}
 }

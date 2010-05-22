@@ -154,69 +154,14 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 	}
 	R.setWorldMatrix(Matrix::UNIT);
 
-	if (g_bLeftButtonDown)
+
+	R.ClearBuffer(true,false,0x0);
+	if (m_Scene.getFocusObjects().size()>0)
 	{
-		CGraphics& G=GetGraphics();
-		R.ClearBuffer(true,false,0x0);
-		if (R.prepareMaterial("Coordinate1"))
-		{
-			G.DrawLine3D(m_vObjectLastPos,m_vAfterCatchPos,0xFF00FFFF);
-			{
-				Pos2D pos;
-				R.world2Screen(m_vObjectLastPos,pos);
-				CRect<float> rc(pos.x,pos.y,pos.x,pos.y);
-				rc.InflateRect(2,2);
-				G.FillRect(rc,0xFF00FFFF);
-			}
-		}
-
-		if (m_vBeforeCatchPos!=m_vAfterCatchPos)
-		{
-			if (R.prepareMaterial("Coordinate1"))
-			{
-				for (size_t i=0;i<3;++i)
-				{
-					for (size_t j=0;j<2;++j)
-					{
-						Pos2D pos;
-						Vec3D vPos=m_vAfterCatchPos;
-						vPos.f[i]+=(0==j?m_fGridSize:-m_fGridSize);
-						R.world2Screen(vPos,pos);
-						CRect<float> rc(pos.x,pos.y,pos.x,pos.y);
-						rc.InflateRect(2,2);
-						G.FillRect(rc,0xFF00FFFF);
-					}
-				}
-				//G.DrawLine3D(m_vAfterCatchPos+Vec3D(-m_fGridSize,0.0f,0.0f),m_vAfterCatchPos+Vec3D(m_fGridSize,0.0f,0.0f),0xFF00FFFF);
-				//G.DrawLine3D(m_vAfterCatchPos+Vec3D(0.0f,-m_fGridSize,0.0f),m_vAfterCatchPos+Vec3D(0.0f,m_fGridSize,0.0f),0xFF00FFFF);
-				//G.DrawLine3D(m_vAfterCatchPos+Vec3D(0.0f,0.0f,-m_fGridSize),m_vAfterCatchPos+Vec3D(0.0f,0.0f,m_fGridSize),0xFF00FFFF);
-
-
-				G.DrawLine3D(m_vObjectLastPos,m_vBeforeCatchPos,0xFF00FFFF);
-
-	
-				//{
-					Pos2D posBeforeCatchPos;
-					R.world2Screen(m_vBeforeCatchPos,posBeforeCatchPos);
-					CRect<float> rcBeforeCatch(posBeforeCatchPos.x,posBeforeCatchPos.y,posBeforeCatchPos.x,posBeforeCatchPos.y);
-				//	rcBeforeCatch.InflateRect(2,2);
-				//	G.FillRect(rcBeforeCatch,0xFF00FFFF);
-					rcBeforeCatch.InflateRect(4,4);
-					G.DrawRect(rcBeforeCatch,0xFF00FFFF);
-					R.finishMaterial();
-				//}
-			}
-		}
-	}
-
-
-	if (m_Scene.getObjectFocus())
-	{
-		R.ClearBuffer(true,false,0x0);
-		m_MeshCoordinate.setPos(m_Scene.getObjectFocus()->getPos());
+		m_MeshCoordinate.setPos(m_Scene.getFocusObjectsPos());
 		if (!IsPressed())
 		{
-			Vec3D vLength = m_Scene.getObjectFocus()->getPos()-m_Camera.GetEyePt();
+			Vec3D vLength = m_vBeforeCatchPos-m_Camera.GetEyePt();
 			m_MeshCoordinate.setScale(vLength.length()*m_fCoordScale);
 		}
 		if (m_vPosMoveOn.length()>0)
@@ -233,6 +178,57 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 		m_MeshCoordinate.setPos(Vec3D(0,0,0));
 		m_MeshCoordinate.setScale(1);
 		m_MeshCoordinate.render(Vec3D(0,0,0));
+	}
+	R.setWorldMatrix(Matrix::UNIT);
+	if (g_bLeftButtonDown)
+	{
+		CGraphics& G=GetGraphics();
+		//R.ClearBuffer(true,false,0x0);
+		if (R.prepareMaterial("Coordinate1"))
+		{
+			G.DrawLine3D(m_vObjectLastPos,m_vAfterCatchPos,0xFF00FFFF);
+			{
+				Pos2D pos;
+				R.world2Screen(m_vObjectLastPos,pos);
+				CRect<float> rc(pos.x,pos.y,pos.x,pos.y);
+				rc.InflateRect(2,2);
+				G.FillRect(rc,0xFF00FFFF);
+			}
+		}
+
+		if (m_vBeforeCatchPos!=m_vAfterCatchPos)
+		{
+			if (R.prepareMaterial("Coordinate1"))
+			{
+				//for (size_t i=0;i<3;++i)
+				//{
+				//	for (size_t j=0;j<2;++j)
+				//	{
+				//		Pos2D pos;
+				//		Vec3D vPos=m_vAfterCatchPos;
+				//		vPos.f[i]+=(0==j?m_fGridSize:-m_fGridSize);
+				//		R.world2Screen(vPos,pos);
+				//		CRect<float> rc(pos.x,pos.y,pos.x,pos.y);
+				//		rc.InflateRect(2,2);
+				//		G.FillRect(rc,0xFF00FFFF);
+				//	}
+				//}
+				G.DrawLine3D(m_vObjectLastPos,m_vBeforeCatchPos,0xFF00FFFF);
+
+				G.drawCross3D(m_vAfterCatchPos,m_fGridSize,0xFF00FFFF);
+
+				//{
+					Pos2D posBeforeCatchPos;
+					R.world2Screen(m_vBeforeCatchPos,posBeforeCatchPos);
+					CRect<float> rcBeforeCatch(posBeforeCatchPos.x,posBeforeCatchPos.y,posBeforeCatchPos.x,posBeforeCatchPos.y);
+				//	rcBeforeCatch.InflateRect(2,2);
+				//	G.FillRect(rcBeforeCatch,0xFF00FFFF);
+					rcBeforeCatch.InflateRect(4,4);
+					G.DrawRect(rcBeforeCatch,0xFF00FFFF);
+					R.finishMaterial();
+				//}
+			}
+		}
 	}
 
 	if (bBloom)
@@ -327,7 +323,7 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 				SetCapture(UIGetHWND());
 				return true;
 			case VK_DELETE:
-				m_Scene.delMapObj(m_Scene.getObjectFocus());
+				m_Scene.delMapObjsByFocusObjects();
 				return true;
 			case VK_SUBTRACT:
 				m_fCoordScale=max(0.0f,m_fCoordScale-0.05f);
@@ -340,23 +336,42 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 			//////////////////////////////////////////////////////////////////////////
 			if (m_Terrain.GetBrushDecal().GetBrushType()==CTerrainBrush::BRUSH_TYPE_SCENE_OBJECT)
 			{
-				CMapObj* pObject = m_Scene.getObjectFocus();
-				if (pObject)
+				if (m_Scene.getFocusObjects().size()>0)
 				{
 					if (m_bKeyCtrl)
 					{
 						switch(wParam)
 						{
 						case VK_UP:
+							{
+								Vec3D vPos=m_Scene.getFocusObjectsPos();
+								vPos.y+=m_fGridSize;
+								m_Scene.setFocusObjectsPos(vPos);
+								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
+							}
+							return true;
 						case VK_DOWN:
+							{
+								Vec3D vPos=m_Scene.getFocusObjectsPos();
+								vPos.y-=m_fGridSize;
+								m_Scene.setFocusObjectsPos(vPos);
+								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
+							}
+							return true;
 						case VK_LEFT:
+							{
+								Vec3D vRotate=m_Scene.getFocusObjectsRotate();
+								vRotate.y+=PI/4;
+								m_Scene.setFocusObjectsRotate(vRotate);
+								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
+							}
+							return true;
 						case VK_RIGHT:
 							{
-								//Vec3D vPos;
-								//if (m_Terrain.GetData().Pick(vRayPos, vRayDir,&vPos))
-								{
-									GetParentDialog()->postMsg("MSG_ADD_OBJECT");
-								}
+								Vec3D vRotate=m_Scene.getFocusObjectsRotate();
+								vRotate.y-=PI/4;
+								m_Scene.setFocusObjectsRotate(vRotate);
+								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
 							}
 							return true;
 						}
@@ -367,38 +382,34 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 						{
 						case VK_UP:
 							{
-								Vec3D vPos=pObject->getPos();
-								vPos.z+=1;
-								pObject->setPos(vPos);
+								Vec3D vPos=m_Scene.getFocusObjectsPos();
+								vPos.z+=m_fGridSize;
+								m_Scene.setFocusObjectsPos(vPos);
 								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
-								m_Scene.updateMapObj(pObject);
 							}
 							return true;
 						case VK_DOWN:
 							{
-								Vec3D vPos=pObject->getPos();
-								vPos.z-=1;
-								pObject->setPos(vPos);
+								Vec3D vPos=m_Scene.getFocusObjectsPos();
+								vPos.z-=m_fGridSize;
+								m_Scene.setFocusObjectsPos(vPos);
 								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
-								m_Scene.updateMapObj(pObject);
 							}
 							return true;
 						case VK_LEFT:
 							{
-								Vec3D vPos=pObject->getPos();
-								vPos.x-=1;
-								pObject->setPos(vPos);
+								Vec3D vPos=m_Scene.getFocusObjectsPos();
+								vPos.x-=m_fGridSize;
+								m_Scene.setFocusObjectsPos(vPos);
 								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
-								m_Scene.updateMapObj(pObject);
 							}
 							return true;
 						case VK_RIGHT:
 							{
-								Vec3D vPos=pObject->getPos();
-								vPos.x+=1;
-								pObject->setPos(vPos);
+								Vec3D vPos=m_Scene.getFocusObjectsPos();
+								vPos.x+=m_fGridSize;
+								m_Scene.setFocusObjectsPos(vPos);
 								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
-								m_Scene.updateMapObj(pObject);
 							}
 							return true;
 						}
@@ -467,8 +478,7 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 		{
 			if (m_Terrain.GetBrushDecal().GetBrushType()==CTerrainBrush::BRUSH_TYPE_SCENE_OBJECT)
 			{
-				CMapObj* pObject = m_Scene.getObjectFocus();
-				if (pObject)
+				if (m_Scene.getFocusObjects().size()>0)
 				{
 					{
 						float t = (m_vObjectLastPos.f[m_CoordPlanType]-vRayPos.f[m_CoordPlanType])/vRayDir.f[m_CoordPlanType];
@@ -487,15 +497,20 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 						//	fGridSize=0.5f;
 						//	//m_NumGridSize.setFloat(fGridSize);
 						//}
-						for (int i=0;i<3;i++)
+						if((m_vAfterCatchPos-m_Scene.getFocusObjectsPos()).length()<m_fGridSize*0.8f)
+						{
+							m_vAfterCatchPos = m_Scene.getFocusObjectsPos();
+						}
+						else for (int i=0;i<3;i++)
 						{
 							float fSize = floorf((m_vAfterCatchPos.f[i]/m_fGridSize+0.5f))*m_fGridSize;
-							//if (abs(fSize-m_vAfterCatchPos.f[i])<m_fGridSize/3)
+							if (abs(fSize-m_vAfterCatchPos.f[i])>m_fGridSize/3)
 							{
 								m_vAfterCatchPos.f[i] = fSize;
 							}
 						}
 					}
+					// Îü¸½µØ±í
 					if (m_vPosPressed.y==0.0f&&m_Terrain.GetData().GetHeight(Vec2D(m_vObjectLastPos.x,m_vObjectLastPos.z))==m_vObjectLastPos.y)
 					{
 						m_vAfterCatchPos.y = m_Terrain.GetData().GetHeight(Vec2D(m_vAfterCatchPos.x,m_vAfterCatchPos.z));
@@ -504,9 +519,8 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 					{
 						m_vAfterCatchPos.y = m_Terrain.GetData().GetHeight(Vec2D(m_vAfterCatchPos.x,m_vAfterCatchPos.z));
 					}
-					pObject->setPos(m_vAfterCatchPos);
+					m_Scene.setFocusObjectsPos(m_vAfterCatchPos);
 					//GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
-					m_Scene.updateMapObj(pObject);
 				}
 			}
 			else
@@ -523,7 +537,7 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 	}
 	else
 	{
-		if (m_Scene.getObjectFocus())
+		if (m_Scene.getFocusObjects().size()>0)
 		{
 			if(!m_MeshCoordinate.intersect(vRayPos, vRayDir,m_vPosMoveOn))
 			{
@@ -555,29 +569,40 @@ void CUIWorldEditorDisplay::OnLButtonDown(POINT point)
 			m_Camera.GetPickRay( vRayPos, vRayDir, point.x, point.y,m_rcBoundingBox);
 			if (m_bKeyCtrl)
 			{
-				Vec3D vPos;
-				if (m_Terrain.GetData().Pick(vRayPos, vRayDir,&vPos))
+				CMapObj* pObject = m_Scene.pickObject(vRayPos, vRayDir);
+				if (m_Scene.findFocusObject(pObject))
 				{
-					GetParentDialog()->postMsg("MSG_ADD_OBJECT");
-					//CSceneObject* pObject = m_Scene.getObjectFocus();
-					//if (pObject)
-					//{
-					//	pObject->setPos(vPos);
-					//	GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_CHANGED");
-					//}
+					m_Scene.delFocusObject(pObject);
 				}
+				else
+				{
+					m_Scene.addFocusObject(pObject);
+				}
+				GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_CHANGED");
+				//Vec3D vPos;
+				//if (m_Terrain.GetData().Pick(vRayPos, vRayDir,&vPos))
+				//{
+				//	GetParentDialog()->postMsg("MSG_ADD_OBJECT");
+				//	//CSceneObject* pObject = m_Scene.getFocusObject();
+				//	//if (pObject)
+				//	//{
+				//	//	pObject->setPos(vPos);
+				//	//	GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_CHANGED");
+				//	//}
+				//}
 			}
 			else
 			{
-				if (m_Scene.getObjectFocus()&&m_MeshCoordinate.intersect(vRayPos, vRayDir,m_vPosPressed))
+				if (m_Scene.getFocusObjects().size()>0&&m_MeshCoordinate.intersect(vRayPos, vRayDir,m_vPosPressed))
 				{
 				}
 				else
 				{
 					CMapObj* pObject = m_Scene.pickObject(vRayPos, vRayDir);
-					if (m_Scene.getObjectFocus()!=pObject)
+					if (m_Scene.findFocusObject(pObject)==false)
 					{
-						m_Scene.setObjectFocus(pObject);
+						m_Scene.clearFocusObjects();
+						m_Scene.addFocusObject(pObject);
 						GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_CHANGED");
 					}
 				}
@@ -587,10 +612,10 @@ void CUIWorldEditorDisplay::OnLButtonDown(POINT point)
 		SetPressed(true);
 		SetCapture(UIGetHWND());
 		g_bLeftButtonDown = true;
-		if (m_Scene.getObjectFocus())
+		if (m_Scene.getFocusObjects().size()>0)
 		{
 			m_ptLastMousePosition=point;
-			m_vObjectLastPos = m_Scene.getObjectFocus()->getPos();
+			m_vObjectLastPos = m_Scene.getFocusObjectsPos();
 			{
 				m_CoordPlanType = CPT_XY;
 				if (m_vPosPressed[0]&&m_vPosPressed[1])
