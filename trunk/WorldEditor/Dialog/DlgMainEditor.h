@@ -37,7 +37,6 @@ public:
 	void OnFileSave();
 	void OnFileCancel();
 
-	void CloseController();
 	void OnBtnShowController();
 	void OnBtnFaceDetect();
 
