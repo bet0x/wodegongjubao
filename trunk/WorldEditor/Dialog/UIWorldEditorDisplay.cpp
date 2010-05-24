@@ -161,7 +161,7 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 		m_MeshCoordinate.setPos(m_Scene.getFocusObjectsPos());
 		if (!IsPressed())
 		{
-			Vec3D vLength = m_vBeforeCatchPos-m_Camera.GetEyePt();
+			Vec3D vLength = m_Scene.getFocusObjectsPos()-m_Camera.GetEyePt();
 			m_MeshCoordinate.setScale(vLength.length()*m_fCoordScale);
 		}
 		if (m_vPosMoveOn.length()>0)
