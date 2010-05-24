@@ -61,5 +61,5 @@ void CDlgModelController::OnTabChanged()
 
 void CDlgModelController::OnClose()
 {
-	getMainDialog().CloseController();
+	getMainDialog().OnBtnToolbar();
 }

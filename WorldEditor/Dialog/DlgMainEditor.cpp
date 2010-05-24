@@ -272,12 +272,6 @@ void CDlgMainEditor::updateDisplay()
 	m_WorldEditorDisplay.OnSize(m_rcBoundingBox);
 }
 
-void CDlgMainEditor::CloseController()
-{
-	m_DlgController.SetVisible(false);
-	updateDisplay();
-}
-
 void CDlgMainEditor::OnBtnShowController()
 {
 	m_DlgController.SetVisible(!m_DlgController.IsVisible());
@@ -288,7 +282,7 @@ void CDlgMainEditor::OnRadioModel()
 {
 	m_ModelDisplay.SetVisible(true);
 	m_WorldEditorDisplay.SetVisible(false);
-	m_DlgModelController.SetVisible(m_DlgToolbar.IsVisible());
+	m_DlgModelController.SetVisible(m_DlgModelController.IsVisible()||m_DlgToolbar.IsVisible());
 	m_DlgToolbar.SetVisible(false);
 
 }
@@ -297,7 +291,7 @@ void CDlgMainEditor::OnRadioWorld()
 {
 	m_ModelDisplay.SetVisible(false);
 	m_WorldEditorDisplay.SetVisible(true);
-	m_DlgToolbar.SetVisible(m_DlgModelController.IsVisible());
+	m_DlgToolbar.SetVisible(m_DlgModelController.IsVisible()||m_DlgToolbar.IsVisible());
 	m_DlgModelController.SetVisible(false);
 }
 

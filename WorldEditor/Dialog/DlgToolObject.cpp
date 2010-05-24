@@ -60,6 +60,7 @@ void CDlgToolObject::OnFocusObjectValueChanged()
 		getDisplay().getScene().setFocusObjectsRotate(vRotate);
 		getDisplay().getScene().setFocusObjectsScale(vScale);
 	}
+	OnFocusObjectChanged();
 }
 
 void CDlgToolObject::OnFocusObjectChanged()

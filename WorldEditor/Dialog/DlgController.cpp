@@ -219,5 +219,5 @@ void CDlgController::OnTabObjectChanged()
 
 void CDlgController::OnClose()
 {
-	getMainDialog().CloseController();
+	getMainDialog().OnBtnShowController();
 }
