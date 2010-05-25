@@ -82,6 +82,8 @@ void CDlgMainEditor::OnControlRegister()
 
 	RegisterControlEvent("IDC_RADIO_MODEL",	(PEVENT)&CDlgMainEditor::OnRadioModel);
 	RegisterControlEvent("IDC_RADIO_WORLD",	(PEVENT)&CDlgMainEditor::OnRadioWorld);
+
+	OnRadioWorld();
 }
 #include "IORead.h"
 
@@ -280,11 +282,10 @@ void CDlgMainEditor::OnBtnShowController()
 
 void CDlgMainEditor::OnRadioModel()
 {
-	m_ModelDisplay.SetVisible(true);
 	m_WorldEditorDisplay.SetVisible(false);
+	m_ModelDisplay.SetVisible(true);
 	m_DlgModelController.SetVisible(m_DlgModelController.IsVisible()||m_DlgToolbar.IsVisible());
 	m_DlgToolbar.SetVisible(false);
-
 }
 
 void CDlgMainEditor::OnRadioWorld()

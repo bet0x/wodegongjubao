@@ -68,6 +68,10 @@ CUIWorldEditorDisplay::~CUIWorldEditorDisplay()
 
 void CUIWorldEditorDisplay::OnFrameMove(double fTime, float fElapsedTime)
 {
+	if (!IsVisible())
+	{
+		return;
+	}
 	CRect<int> rcViewport = getViewport();
 	m_Camera.SetProjParams(PI/3, rcViewport.getWidth(), rcViewport.getHeight(), 0.1f, m_Scene.getFog().fEnd);
 	// ¸üÐÂÊÓ¾ØÕó
@@ -82,7 +86,7 @@ void CUIWorldEditorDisplay::OnFrameMove(double fTime, float fElapsedTime)
 
 void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 {
-	if (!IsVisible()&&!isStyleVisible())
+	if (!IsVisible())//&&!isStyleVisible())
 	{
 		return;
 	}
