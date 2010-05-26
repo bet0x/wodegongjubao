@@ -23,9 +23,7 @@ void CDlgController::OnControlRegister()
 
 	RegisterControl("IDC_TAB_OBJECT_FILE",		m_RadioButtonFile);
 	RegisterControl("IDC_TAB_OBJECT_AVATAR",	m_RadioButtonAvatar);
-	RegisterControl("IDC_TAB_ABOUT",			m_RadioButtonAbout);
 
-	m_DlgModelAbout.Create("IDD_ABOUT", this);
 	m_DlgModelAvatar.Create("IDD_AVATAR", this);
 
 	RegisterControlEvent("IDC_LISTBOX_FILE",	(PEVENT)&CDlgController::OnListBoxFolderItemDblClk, EVENT_LISTBOX_ITEM_DBLCLK);
@@ -33,7 +31,6 @@ void CDlgController::OnControlRegister()
 
 	RegisterControlEvent("IDC_TAB_OBJECT_FILE",		(PEVENT)&CDlgController::OnTabObjectChanged);
 	RegisterControlEvent("IDC_TAB_OBJECT_AVATAR",	(PEVENT)&CDlgController::OnTabObjectChanged);
-	RegisterControlEvent("IDC_TAB_ABOUT",	(PEVENT)&CDlgController::OnTabObjectChanged);
 
 	RegisterControlEvent("IDC_BTN_CLOSE",		(PEVENT)&CDlgController::OnClose);
 }
@@ -214,7 +211,6 @@ void CDlgController::OnTabObjectChanged()
 {
 	m_ListBoxFolder.SetVisible(m_RadioButtonFile.IsChecked());
 	m_DlgModelAvatar.SetVisible(m_RadioButtonAvatar.IsChecked());
-	m_DlgModelAbout.SetVisible(m_RadioButtonAbout.IsChecked());
 }
 
 void CDlgController::OnClose()
