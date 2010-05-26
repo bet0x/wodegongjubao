@@ -11,6 +11,7 @@ public:
 	~CMainRoot();
 public:
 	CDlgMainEditor& getMainDialog();
+	void setUILanguage(const std::string& strLanguage);
 	void Run();
 	void OnFrameMove( double fTime, float fElapsedTime );
 	void OnFrameRender( double fTime, float fElapsedTime );
