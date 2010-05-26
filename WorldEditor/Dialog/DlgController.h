@@ -26,11 +26,8 @@ private:
 	std::wstring	m_wstrPath;
 	std::wstring	m_wstrFileType;
 
-	CUIDialog		m_DlgModelAbout;
-
 	CUIRadioButton m_RadioButtonFile;
 	CUIRadioButton m_RadioButtonAvatar;
-	CUIRadioButton m_RadioButtonAbout;
 
 	CDlgModelPlayer	m_DlgModelAvatar;
 	CUIListBox		m_ListBoxFolder;

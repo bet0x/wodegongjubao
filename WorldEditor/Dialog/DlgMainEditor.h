@@ -30,6 +30,7 @@ public:
 	void OnBtnOpenFile();
 	void OnBtnSaveFile();
 	void OnBtnToolbar();
+	void OnBtnHelp();
 	void OnBtnTerrainResize();
 
 	void OnFileNew();
@@ -62,6 +63,7 @@ private:
 	CDlgController	m_DlgController;
 	CDlgModelController	m_DlgModelController;
 	CDlgToolbar		m_DlgToolbar;
+	CUIDialog		m_DlgHelp;
 	CDlgFile		m_DlgFile;
 	//CDlgFPS			m_DlgFPS;
 	CDlgRegister	m_DlgRegister;

@@ -23,12 +23,10 @@ void CDlgModelController::OnControlRegister()
 	RegisterControl("IDC_TAB_RENDERPASS",	m_RadioButtonRenderPass);
 	RegisterControl("IDC_TAB_PARTICLE",	m_RadioButtonParticle);
 
-
 	m_DlgModelShow.Create("IDD_MODEL_SHOW", this);
 	m_DlgModelAnim.Create("IDD_MODEL_ANIM", this);
 	m_DlgModelRenderPass.Create("IDD_MODEL_RENDERPASS", this);
 	m_DlgModelParticle.Create("IDD_MODEL_ABOUT", this);
-	m_DlgModelAbout.Create("IDD_MODEL_ABOUT", this);
 
 	RegisterControlEvent("IDC_TAB_SHOW",		(PEVENT)&CDlgModelController::OnTabChanged);
 	RegisterControlEvent("IDC_TAB_ANIM",		(PEVENT)&CDlgModelController::OnTabChanged);

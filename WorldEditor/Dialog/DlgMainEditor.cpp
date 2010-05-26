@@ -51,6 +51,7 @@ void CDlgMainEditor::OnControlRegister()
 	m_DlgController.Create("IDD_CONTROLLER", this);
 	//m_DlgFaceDetect.Create("IDD_FACE_DETECT", this);
 	m_DlgFile.Create("IDD_FILE", this);
+	m_DlgHelp.Create("IDD_HELP", this);
 
 	m_DlgModelController.Create("IDD_MODEL_CONTROLLER", this);
 	m_DlgToolbar.Create("IDD_TOOLBAR", this); // 放到最后是因为前面会 在渲染纹理是 把其他UI消失掉
@@ -66,6 +67,7 @@ void CDlgMainEditor::OnControlRegister()
 	RegisterControlEvent("IDC_BTN_OPEN_FILE",	(PEVENT)&CDlgMainEditor::OnBtnOpenFile);
 	RegisterControlEvent("IDC_BTN_SAVE_FILE",	(PEVENT)&CDlgMainEditor::OnBtnSaveFile);
 	RegisterControlEvent("IDC_BTN_TOOLBAR",		(PEVENT)&CDlgMainEditor::OnBtnToolbar);
+	RegisterControlEvent("IDC_BTN_HELP",		(PEVENT)&CDlgMainEditor::OnBtnHelp);
 
 	RegisterControlEvent("IDD_FILE", (PEVENT)&CDlgMainEditor::OnFileNew,CDlgFile::EVENT_NEW);
 	RegisterControlEvent("IDD_FILE", (PEVENT)&CDlgMainEditor::OnFileOpen,CDlgFile::EVENT_OPEN);
@@ -154,7 +156,7 @@ bool CDlgMainEditor::OnInitDialog()
 	m_DlgModelController.SetVisible(false);
 	m_DlgToolbar.SetVisible(false);
 	m_DlgFile.SetVisible(false);
-
+	m_DlgHelp.SetVisible(false);
 	// model
 	updateDisplay();
 	return CUIMainDialog::OnInitDialog();
@@ -206,6 +208,11 @@ void CDlgMainEditor::OnBtnToolbar()
 		m_DlgToolbar.SetVisible(!m_DlgToolbar.IsVisible());
 	}
 	updateDisplay();
+}
+
+void CDlgMainEditor::OnBtnHelp()
+{
+	m_DlgHelp.SetVisible(!m_DlgHelp.IsVisible());
 }
 
 void CDlgMainEditor::OnFileNew()
