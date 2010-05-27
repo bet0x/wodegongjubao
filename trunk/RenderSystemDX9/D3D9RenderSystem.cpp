@@ -161,6 +161,15 @@ HRESULT CD3D9RenderSystem::OnResetDevice()
 	uint32 zFormat = D3DFMT_D16;//D3DFMT_D24S8;
 	//m_bitDepth = 24;
 
+	{
+// 		D3DCAPS9 devCaps;
+// 		m_pD3D9Device->GetDeviceCaps(&devCaps);
+// 		if( !(devCaps.Caps2 & D3DCAPS2_CANCALIBRATEGAMMA) )   
+// 		{
+// 			MessageBoxW(NULL, L"不支持应用Gamma坡道之前进行校正效果，SetGammaRamp() 不能使用 D3DSGR_CALIBRATE 标志", L"ERROR", MB_OK|MB_SETFOREGROUND|MB_TOPMOST);
+// 		}
+	}
+
 	if(FAILED(CheckResourceFormatSupport(m_pD3D9Device, D3DFMT_X8R8G8B8, D3DRTYPE_TEXTURE, D3DUSAGE_QUERY_SRGBREAD)))
 	{
 		MessageBoxW(NULL, L"Device does not support hardware D3DRTYPE_TEXTURE  D3DUSAGE_QUERY_SRGBREAD!", L"ERROR", MB_OK|MB_SETFOREGROUND|MB_TOPMOST);
@@ -174,8 +183,10 @@ HRESULT CD3D9RenderSystem::OnResetDevice()
 		//::MessageBoxW(NULL, L"Device does not support hardware D3DRTYPE_TEXTURE  D3DUSAGE_DEPTHSTENCIL!", L"ERROR", MB_OK|MB_SETFOREGROUND|MB_TOPMOST);
 		//return E_FAIL;
 	}
+
 	//SetRenderState(D3DSAMP_SRGBTEXTURE, 1);
 	//SetRenderState(D3DRS_SRGBWRITEENABLE, 1);
+
 	commit();
 	return S_OK;
 }

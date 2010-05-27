@@ -107,7 +107,9 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 	R.setViewMatrix(m_Camera.GetViewMatrix());
 
 	bool bBloom = false;
-	if (bBloom)
+	bool bCamma = true;
+
+	if (bBloom||bCamma)
 	{
 		m_SceneEffect.renderTargetBegin();
 		CRect<int> rcRenderTarget(0,0,rcViewport.getWidth(),rcViewport.getHeight());
@@ -235,11 +237,18 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 		}
 	}
 
-	if (bBloom)
+	if (bBloom||bCamma)
 	{
 		//m_SceneEffect.RenderTemporalBloom();
 		//m_SceneEffect.RenderBloom();
-		m_SceneEffect.renderTargetBloom();
+		if(bCamma)
+		{
+			m_SceneEffect.renderGammaCorrection();
+		}
+		if(bBloom)
+		{
+			m_SceneEffect.renderTargetBloom();
+		}
 		m_SceneEffect.renderTargetEnd();
 		m_SceneEffect.compose(rcViewport);
 		R.setViewport(rcViewport);
