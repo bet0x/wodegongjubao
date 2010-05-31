@@ -1,6 +1,5 @@
 #pragma once
 
-
 #define KEY_WAS_DOWN_MASK 0x80
 #define KEY_IS_DOWN_MASK  0x01
 
@@ -9,25 +8,15 @@
 #define MOUSE_RIGHT_BUTTON  0x04
 #define MOUSE_WHEEL         0x08
 
-
 // Returns the string for the given D3DFORMAT.
 //       bWithPrefix determines whether the string should include the "D3DFMT_"
-
 LPCWSTR DXUTD3DFormatToString(D3DFORMAT format, bool bWithPrefix);
-
-
-
-// Returns a view matrix for rendering to a face of a cubemap.
-
-D3DXMATRIX DXUTGetCubeMapViewMatrix(DWORD dwFace);
 
 // Debug printing support
 // See dxerr.h for more debug printing support
-
 void DXUTOutputDebugStringW(LPCWSTR strMsg, ...);
 void DXUTOutputDebugStringA(LPCSTR strMsg, ...);
 HRESULT WINAPI DXUTTrace(const CHAR* strFile, DWORD dwLine, HRESULT hr, const WCHAR* strMsg, bool bPopMsgBox);
-void DXUTTraceDecl(D3DVERTEXELEMENT9 decl[MAX_FVF_DECL_SIZE]);
 WCHAR* DXUTTraceD3DDECLUSAGEtoString(BYTE u);
 WCHAR* DXUTTraceD3DDECLMETHODtoString(BYTE m);
 WCHAR* DXUTTraceD3DDECLTYPEtoString(BYTE t);
@@ -57,38 +46,6 @@ WCHAR* DXUTTraceD3DDECLTYPEtoString(BYTE t);
 
 
 IDirect3D9 * WINAPI DXUT_Dynamic_Direct3DCreate9(UINT SDKVersion);
-int WINAPI DXUT_Dynamic_D3DPERF_BeginEvent(D3DCOLOR col, LPCWSTR wszName);
-int WINAPI DXUT_Dynamic_D3DPERF_EndEvent(void);
-void WINAPI DXUT_Dynamic_D3DPERF_SetMarker(D3DCOLOR col, LPCWSTR wszName);
-void WINAPI DXUT_Dynamic_D3DPERF_SetRegion(D3DCOLOR col, LPCWSTR wszName);
-BOOL WINAPI DXUT_Dynamic_D3DPERF_QueryRepeatFrame(void);
-void WINAPI DXUT_Dynamic_D3DPERF_SetOptions(DWORD dwOptions);
-DWORD WINAPI DXUT_Dynamic_D3DPERF_GetStatus(void);
-
-
-
-// Profiling/instrumentation support
-
-// The following macros provide a convenient way for your code to call the D3DPERF 
-// functions only when PROFILE is defined.  If PROFILE is not defined (as for the final 
-// release version of a program), these macros evaluate to nothing, so no detailed event
-// information is embedded in your shipping program.  It is recommended that you create
-// and use three build configurations for your projects:
-//     Debug (nonoptimized code, asserts active, PROFILE defined to assist debugging)
-//     Profile (optimized code, asserts disabled, PROFILE defined to assist optimization)
-//     Release (optimized code, asserts disabled, PROFILE not defined)
-
-#ifdef PROFILE
-// PROFILE is defined, so these macros call the D3DPERF functions
-#define DXUT_BeginPerfEvent(color, pstrMessage)   DXUT_Dynamic_D3DPERF_BeginEvent(color, pstrMessage)
-#define DXUT_EndPerfEvent()                         DXUT_Dynamic_D3DPERF_EndEvent()
-#define DXUT_SetPerfMarker(color, pstrMessage)    DXUT_Dynamic_D3DPERF_SetMarker(color, pstrMessage)
-#else
-// PROFILE is not defined, so these macros do nothing
-#define DXUT_BeginPerfEvent(color, pstrMessage)   (__noop)
-#define DXUT_EndPerfEvent()                         (__noop)
-#define DXUT_SetPerfMarker(color, pstrMessage)    (__noop)
-#endif
 
 
 // Multimon handling to support OSes with or without multimon API support.  
@@ -117,14 +74,3 @@ DWORD WINAPI DXUT_Dynamic_D3DPERF_GetStatus(void);
 
 HMONITOR DXUTMonitorFromWindow(HWND hWnd, DWORD dwFlags);
 BOOL     DXUTGetMonitorInfo(HMONITOR hMonitor, LPMONITORINFO lpMonitorInfo);
-void     DXUTGetDesktopResolution(UINT AdapterOrdinal, UINT* pWidth, UINT* pHeight);
-
-
-
-
-
-
-// Creates a REF or NULLREF device and returns that device.  The caller should call
-// Release() when done with the device.
-
-IDirect3DDevice9* DXUTCreateRefDevice(HWND hWnd, bool bNullRef = true);

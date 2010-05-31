@@ -1,8 +1,3 @@
-
-// File: DXUT.cpp
-//
-// Copyright (c) Microsoft Corporation. All rights reserved.
-
 #include "dxstdafx.h"
 #include "D3D9RenderSystem.h"
 
@@ -79,7 +74,6 @@ DXUTState& GetDXUTState()
 typedef IDirect3D9* (WINAPI* LPDIRECT3DCREATE9)(UINT SDKVersion);
 
 int     DXUTMapButtonToArrayIndex(BYTE vButton);
-void    DXUTSetProcessorAffinity();
 
 CD3DEnumeration* DXUTPrepareEnumerationObject(bool bEnumerate = false);
 void    DXUTBuildOptimalDeviceSettings(DXUTDeviceSettings* pOptimalDeviceSettings, DXUTDeviceSettings* pDeviceSettingsIn, DXUTMatchOptions* pMatchOptions);
@@ -3292,15 +3286,11 @@ void DXUTUpdateBackBufferDesc()
 IDirect3D9* DXUTGetD3DObject()                      { return GetDXUTState().GetD3D(); }        
 IDirect3DDevice9* DXUTGetD3DDevice()                { return GetDXUTState().GetD3DDevice(); }  
 const D3DSURFACE_DESC* DXUTGetBackBufferSurfaceDesc() { return GetDXUTState().GetBackBufferSurfaceDesc(); }
-const D3DCAPS9* DXUTGetDeviceCaps()                 { return GetDXUTState().GetCaps(); }
-HINSTANCE DXUTGetHINSTANCE()                        { return GetDXUTState().GetHInstance(); }
 HWND DXUTGetHWND()                                  { return DXUTIsWindowed() ? GetDXUTState().GetHWNDDeviceWindowed() : GetDXUTState().GetHWNDDeviceFullScreen(); }
 HWND DXUTGetHWNDFocus()                             { return GetDXUTState().GetHWNDFocus(); }
 HWND DXUTGetHWNDDeviceFullScreen()                  { return GetDXUTState().GetHWNDDeviceFullScreen(); }
 HWND DXUTGetHWNDDeviceWindowed()                    { return GetDXUTState().GetHWNDDeviceWindowed(); }
 RECT DXUTGetWindowClientRect()                      { RECT rc; GetClientRect(DXUTGetHWND(), &rc); return rc; }
-RECT DXUTGetWindowClientRectAtModeChange()          { RECT rc = { 0, 0, GetDXUTState().GetWindowBackBufferWidthAtModeChange(), GetDXUTState().GetWindowBackBufferHeightAtModeChange() }; return rc; }
-RECT DXUTGetFullsceenClientRectAtModeChange()       { RECT rc = { 0, 0, GetDXUTState().GetFullScreenBackBufferWidthAtModeChange(), GetDXUTState().GetFullScreenBackBufferHeightAtModeChange() }; return rc; }
 double DXUTGetTime()                                { return GetDXUTState().GetTime(); }
 float DXUTGetElapsedTime()                          { return GetDXUTState().GetElapsedTime(); }
 float DXUTGetFPS()                                  { return GetDXUTState().GetFPS(); }
@@ -3308,7 +3298,6 @@ LPCWSTR DXUTGetWindowTitle()                        { return GetDXUTState().GetW
 LPCWSTR DXUTGetDeviceStats()                        { return GetDXUTState().GetDeviceStats(); }
 int DXUTGetExitCode()                               { return GetDXUTState().GetExitCode(); }
 bool DXUTGetShowMsgBoxOnError()                     { return GetDXUTState().GetShowMsgBoxOnError(); }
-bool DXUTGetAutomation()                            { return GetDXUTState().GetAutomation(); }
 bool DXUTIsKeyDown(BYTE vKey)
 { 
     bool* bKeys = GetDXUTState().GetKeys(); 
@@ -3325,20 +3314,14 @@ bool DXUTIsMouseButtonDown(BYTE vButton)
     int nIndex = DXUTMapButtonToArrayIndex(vButton); 
     return bMouseButtons[nIndex]; 
 }
-void DXUTSetMultimonSettings(bool bAutoChangeAdapter)
-{
-    GetDXUTState().SetAutoChangeAdapter(bAutoChangeAdapter);
-}
+
 void DXUTSetCursorSettings(bool bShowCursorWhenFullScreen, bool bClipCursorWhenFullScreen) 
 { 
     GetDXUTState().SetClipCursorWhenFullScreen(bClipCursorWhenFullScreen); 
     GetDXUTState().SetShowCursorWhenFullScreen(bShowCursorWhenFullScreen); 
     DXUTSetupCursor();
 }
-void DXUTSetWindowSettings(bool bCallDefWindowProc)
-{
-    GetDXUTState().SetCallDefWindowProc(bCallDefWindowProc);
-}
+
 void DXUTSetConstantFrameTime(bool bEnabled, float fTimePerFrame) 
 { 
     if(GetDXUTState().GetOverrideConstantFrameTime()) 
@@ -3362,28 +3345,6 @@ bool DXUTIsWindowed()
     else 
         return false; 
 }
-
-
-
-// Return the present params of the current device.  If no device exists yet, then
-// return blank present params
-
-D3DPRESENT_PARAMETERS DXUTGetPresentParameters()    
-{ 
-    DXUTDeviceSettings* pDS = GetDXUTState().GetCurrentDeviceSettings(); 
-    if(pDS) 
-    {
-        return pDS->pp; 
-    }
-    else 
-    {
-        D3DPRESENT_PARAMETERS pp;
-        ZeroMemory(&pp, sizeof(D3DPRESENT_PARAMETERS));
-        return pp; 
-    }
-}
-
-
 
 // Return the device settings of the current device.  If no device exists yet, then
 // return blank device settings 

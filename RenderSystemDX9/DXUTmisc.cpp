@@ -4,50 +4,6 @@
 #undef max // use __max instead
 
 
-// Desc: Returns a view matrix for rendering to a face of a cubemap.
-
-D3DXMATRIX DXUTGetCubeMapViewMatrix(DWORD dwFace)
-{
-    D3DXVECTOR3 vEyePt   = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-    D3DXVECTOR3 vLookDir;
-    D3DXVECTOR3 vUpDir;
-
-    switch(dwFace)
-    {
-        case D3DCUBEMAP_FACE_POSITIVE_X:
-            vLookDir = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
-            vUpDir   = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-            break;
-        case D3DCUBEMAP_FACE_NEGATIVE_X:
-            vLookDir = D3DXVECTOR3(-1.0f, 0.0f, 0.0f);
-            vUpDir   = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-            break;
-        case D3DCUBEMAP_FACE_POSITIVE_Y:
-            vLookDir = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-            vUpDir   = D3DXVECTOR3(0.0f, 0.0f,-1.0f);
-            break;
-        case D3DCUBEMAP_FACE_NEGATIVE_Y:
-            vLookDir = D3DXVECTOR3(0.0f,-1.0f, 0.0f);
-            vUpDir   = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
-            break;
-        case D3DCUBEMAP_FACE_POSITIVE_Z:
-            vLookDir = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
-            vUpDir   = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-            break;
-        case D3DCUBEMAP_FACE_NEGATIVE_Z:
-            vLookDir = D3DXVECTOR3(0.0f, 0.0f,-1.0f);
-            vUpDir   = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-            break;
-    }
-
-    // Set the view transform for this cubemap surface
-    D3DXMATRIXA16 mView;
-   // D3DXMatrixLookAtLH(&mView, &vEyePt, &vLookDir, &vUpDir);
-    return mView;
-}
-
-
-
 // Returns the string for the given D3DFORMAT.
 
 LPCWSTR DXUTD3DFormatToString(D3DFORMAT format, bool bWithPrefix)
@@ -223,81 +179,6 @@ IDirect3D9 * WINAPI DXUT_Dynamic_Direct3DCreate9(UINT SDKVersion)
         return NULL;
 }
 
-int WINAPI DXUT_Dynamic_D3DPERF_BeginEvent(D3DCOLOR col, LPCWSTR wszName)
-{
-    if(DXUT_EnsureD3DAPIs() && s_DynamicD3DPERF_BeginEvent != NULL)
-        return s_DynamicD3DPERF_BeginEvent(col, wszName);
-    else
-        return -1;
-}
-
-int WINAPI DXUT_Dynamic_D3DPERF_EndEvent(void)
-{
-    if(DXUT_EnsureD3DAPIs() && s_DynamicD3DPERF_EndEvent != NULL)
-        return s_DynamicD3DPERF_EndEvent();
-    else
-        return -1;
-}
-
-void WINAPI DXUT_Dynamic_D3DPERF_SetMarker(D3DCOLOR col, LPCWSTR wszName)
-{
-    if(DXUT_EnsureD3DAPIs() && s_DynamicD3DPERF_SetMarker != NULL)
-        s_DynamicD3DPERF_SetMarker(col, wszName);
-}
-
-void WINAPI DXUT_Dynamic_D3DPERF_SetRegion(D3DCOLOR col, LPCWSTR wszName)
-{
-    if(DXUT_EnsureD3DAPIs() && s_DynamicD3DPERF_SetRegion != NULL)
-        s_DynamicD3DPERF_SetRegion(col, wszName);
-}
-
-BOOL WINAPI DXUT_Dynamic_D3DPERF_QueryRepeatFrame(void)
-{
-    if(DXUT_EnsureD3DAPIs() && s_DynamicD3DPERF_QueryRepeatFrame != NULL)
-        return s_DynamicD3DPERF_QueryRepeatFrame();
-    else
-        return FALSE;
-}
-
-void WINAPI DXUT_Dynamic_D3DPERF_SetOptions(DWORD dwOptions)
-{
-    if(DXUT_EnsureD3DAPIs() && s_DynamicD3DPERF_SetOptions != NULL)
-        s_DynamicD3DPERF_SetOptions(dwOptions);
-}
-
-DWORD WINAPI DXUT_Dynamic_D3DPERF_GetStatus(void)
-{
-    if(DXUT_EnsureD3DAPIs() && s_DynamicD3DPERF_GetStatus != NULL)
-        return s_DynamicD3DPERF_GetStatus();
-    else
-        return 0;
-}
-
-
-
-// Trace a string description of a decl 
-
-void DXUTTraceDecl(D3DVERTEXELEMENT9 decl[MAX_FVF_DECL_SIZE])
-{
-    int iDecl=0;
-    for(iDecl=0; iDecl<MAX_FVF_DECL_SIZE; iDecl++)
-    {
-        if(decl[iDecl].Stream == 0xFF)
-            break;
-
-        DXUTOutputDebugString(L"decl[%d]=Stream:%d, Offset:%d, %s, %s, %s, UsageIndex:%d\n", iDecl, 
-                    decl[iDecl].Stream,
-                    decl[iDecl].Offset,
-                    DXUTTraceD3DDECLTYPEtoString(decl[iDecl].Type),
-                    DXUTTraceD3DDECLMETHODtoString(decl[iDecl].Method),
-                    DXUTTraceD3DDECLUSAGEtoString(decl[iDecl].Usage),
-                    decl[iDecl].UsageIndex);
-    }
-
-    DXUTOutputDebugString(L"decl[%d]=D3DDECL_END\n", iDecl);
-}
-
-
 
 WCHAR* DXUTTraceD3DDECLTYPEtoString(BYTE t)
 {
@@ -421,60 +302,6 @@ HMONITOR DXUTMonitorFromWindow(HWND hWnd, DWORD dwFlags)
         return DXUT_PRIMARY_MONITOR;
     return NULL;
 }
-
-
-
-// Get the desktop resolution of an adapter. This isn't the same as the current resolution 
-// from GetAdapterDisplayMode since the device might be fullscreen 
-
-void DXUTGetDesktopResolution(UINT AdapterOrdinal, UINT* pWidth, UINT* pHeight)
-{
-    CD3DEnumeration* pd3dEnum = DXUTGetEnumeration();
-    CD3DEnumAdapterInfo* pAdapterInfo = pd3dEnum->GetAdapterInfo(AdapterOrdinal);                       
-    DEVMODE devMode;
-    ZeroMemory(&devMode, sizeof(DEVMODE));
-    devMode.dmSize = sizeof(DEVMODE);
-    WCHAR strDeviceName[256];
-    MultiByteToWideChar(CP_ACP, 0, pAdapterInfo->AdapterIdentifier.DeviceName, -1, strDeviceName, 256);
-    strDeviceName[255] = 0;
-    EnumDisplaySettings(strDeviceName, ENUM_REGISTRY_SETTINGS, &devMode);
-
-    if(pWidth)
-        *pWidth = devMode.dmPelsWidth;
-    if(pHeight)
-        *pHeight = devMode.dmPelsHeight;
-}
-
-
-
-IDirect3DDevice9* DXUTCreateRefDevice(HWND hWnd, bool bNullRef)
-{
-    HRESULT hr;
-    IDirect3D9* pD3D = DXUT_Dynamic_Direct3DCreate9(D3D_SDK_VERSION);
-    if(NULL == pD3D)
-        return NULL;
-
-    D3DDISPLAYMODE Mode;
-    pD3D->GetAdapterDisplayMode(0, &Mode);
-
-    D3DPRESENT_PARAMETERS pp;
-    ZeroMemory(&pp, sizeof(D3DPRESENT_PARAMETERS));
-    pp.BackBufferWidth  = 1;
-    pp.BackBufferHeight = 1;
-    pp.BackBufferFormat = Mode.Format;
-    pp.BackBufferCount  = 1;
-    pp.SwapEffect       = D3DSWAPEFFECT_COPY;
-    pp.Windowed         = TRUE;
-    pp.hDeviceWindow    = hWnd;
-
-    IDirect3DDevice9* pd3dDevice = NULL;
-    hr = pD3D->CreateDevice(D3DADAPTER_DEFAULT, bNullRef ? D3DDEVTYPE_NULLREF : D3DDEVTYPE_REF,
-                             hWnd, D3DCREATE_HARDWARE_VERTEXPROCESSING, &pp, &pd3dDevice);
-
-    S_REL(pD3D);
-    return pd3dDevice;
-}
-
 
 typedef DWORD (WINAPI* LPXINPUTGETSTATE)(DWORD dwUserIndex, XINPUT_STATE* pState);
 typedef DWORD (WINAPI* LPXINPUTSETSTATE)(DWORD dwUserIndex, XINPUT_VIBRATION* pVibration);
