@@ -1,27 +1,13 @@
-
-// File: DXUTEnum.h
-//
-// Enumerates D3D adapters, devices, modes, etc.
-//
-// Copyright (c) Microsoft Corporation. All rights reserved.
-
 #pragma once
-#ifndef DXUT_ENUM_H
-#define DXUT_ENUM_H
-
 
 // Forward declarations
-
 class CD3DEnumAdapterInfo;
 class CD3DEnumDeviceInfo;
 struct CD3DEnumDeviceSettingsCombo;
 struct CD3DEnumDSMSConflict;
 
-
-
 // Enumerates available Direct3D adapters, devices, modes, etc.
 // Use DXUTGetEnumeration() to access global instance
-
 class CD3DEnumeration
 {
 public:
@@ -97,11 +83,8 @@ private:
 
 CD3DEnumeration* DXUTGetEnumeration(); 
 
-
-
 // A class describing an adapter which contains a unique adapter ordinal 
 // that is installed on the system
-
 class CD3DEnumAdapterInfo
 {
 public:
@@ -115,11 +98,8 @@ public:
     CGrowableArray<CD3DEnumDeviceInfo*> deviceInfoList; // Array of CD3DEnumDeviceInfo* with unique supported DeviceTypes
 };
 
-
-
 // A class describing a Direct3D device that contains a 
 //       unique supported device type 
-
 class CD3DEnumDeviceInfo
 {
 public:
@@ -134,12 +114,9 @@ public:
     CGrowableArray<CD3DEnumDeviceSettingsCombo*> deviceSettingsComboList; 
 };
 
-
-
 // A struct describing device settings that contains a unique combination of 
 // adapter format, back buffer format, and windowed that is compatible with a 
 // particular Direct3D device and the app.
-
 struct CD3DEnumDeviceSettingsCombo
 {
     UINT AdapterOrdinal;
@@ -158,16 +135,10 @@ struct CD3DEnumDeviceSettingsCombo
     CD3DEnumDeviceInfo* pDeviceInfo;
 };
 
-
-
 // A depth/stencil buffer format that is incompatible with a
 // multisample type.
-
 struct CD3DEnumDSMSConflict
 {
     D3DFORMAT DSFormat;
     D3DMULTISAMPLE_TYPE MSType;
 };
-
-
-#endif

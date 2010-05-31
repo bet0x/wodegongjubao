@@ -80,8 +80,6 @@ HRESULT DXUTMainLoop(HACCEL hAccel = NULL);
 
 void DXUTCloseWindow();
 
-
-
 // Finding valid device settings
 
 enum DXUT_MATCH_TYPE
@@ -112,22 +110,14 @@ struct DXUTMatchOptions
 
 HRESULT DXUTFindValidDeviceSettings(DXUTDeviceSettings* pOut, DXUTDeviceSettings* pIn = NULL, DXUTMatchOptions* pMatchOptions = NULL);
 
-
-
 // Common Tasks 
-
 void    DXUTSetCursorSettings(bool bShowCursorWhenFullScreen, bool bClipCursorWhenFullScreen);
-void    DXUTSetMultimonSettings(bool bAutoChangeAdapter);
-void    DXUTSetWindowSettings(bool bCallDefWindowProc = true);
 void    DXUTSetConstantFrameTime(bool bConstantFrameTime, float fTimePerFrame = 0.0333f);
 HRESULT DXUTToggleFullScreen();
 HRESULT DXUTToggleREF();
 void    DXUTResetFrameworkState();
 void    DXUTShutdown(int nExitCode = 0);
 
-//
-//#include "dxstdafx.h"
-//#include "DXUTmisc.h"
 template< typename TYPE >
 class CGrowableArray;
 
@@ -361,17 +351,12 @@ void    DXUTDisplayErrorMessage(HRESULT hr);
 IDirect3D9*             DXUTGetD3DObject(); // Does not addref unlike typical Get* APIs
 IDirect3DDevice9*       DXUTGetD3DDevice(); // Does not addref unlike typical Get* APIs
 DXUTDeviceSettings      DXUTGetDeviceSettings(); 
-D3DPRESENT_PARAMETERS   DXUTGetPresentParameters();
 const D3DSURFACE_DESC*  DXUTGetBackBufferSurfaceDesc();
-const D3DCAPS9*         DXUTGetDeviceCaps();
-HINSTANCE               DXUTGetHINSTANCE();
 HWND                    DXUTGetHWND();
 HWND                    DXUTGetHWNDFocus();
 HWND                    DXUTGetHWNDDeviceFullScreen();
 HWND                    DXUTGetHWNDDeviceWindowed();
 RECT                    DXUTGetWindowClientRect();
-RECT                    DXUTGetWindowClientRectAtModeChange(); // Useful for returning to windowed mode with the same resolution as before toggle to full screen mode
-RECT                    DXUTGetFullsceenClientRectAtModeChange(); // Useful for returning to full screen mode with the same resolution as before toggle to windowed mode
 double                  DXUTGetTime();
 float                   DXUTGetElapsedTime();
 bool                    DXUTIsWindowed();
@@ -384,7 +369,6 @@ int                     DXUTGetExitCode();
 bool                    DXUTGetShowMsgBoxOnError();
 bool                    DXUTIsKeyDown(BYTE vKey); // Pass a virtual-key code, ex. VK_F1, 'A', VK_RETURN, VK_LSHIFT, etc
 bool                    DXUTIsMouseButtonDown(BYTE vButton); // Pass a virtual-key code: VK_LBUTTON, VK_RBUTTON, VK_MBUTTON, VK_XBUTTON1, VK_XBUTTON2
-bool                    DXUTGetAutomation();  // Returns true if -automation parameter is used to launch the app
 
 
 HRESULT DXUTChangeDevice(DXUTDeviceSettings* pNewDeviceSettings, IDirect3DDevice9* pd3dDeviceFromApp, bool bForceRecreate, bool bClipWindowToSingleAdapter);

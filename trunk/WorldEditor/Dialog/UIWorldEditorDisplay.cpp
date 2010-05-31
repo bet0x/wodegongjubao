@@ -107,7 +107,7 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 	R.setViewMatrix(m_Camera.GetViewMatrix());
 
 	bool bBloom = false;
-	bool bCamma = true;
+	bool bCamma = false;
 
 	if (bBloom||bCamma)
 	{
@@ -310,6 +310,14 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 		{
 			switch(wParam)
 			{
+			case VK_SHIFT:
+				{
+					float fStrength = m_Terrain.GetBrushDecal().GetStrength();
+					fStrength = -abs(fStrength);
+					m_Terrain.GetBrushDecal().SetStrength(fStrength);
+					SetCapture(UIGetHWND());
+				}
+				return true;
 			case VK_CONTROL:
 				m_bKeyCtrl=true;
 				SetPressed(true);
@@ -435,6 +443,13 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 		{
 			switch(wParam)
 			{
+			case VK_SHIFT:
+				{
+					float fStrength = m_Terrain.GetBrushDecal().GetStrength();
+					fStrength = abs(fStrength);
+					m_Terrain.GetBrushDecal().SetStrength(fStrength);
+				}
+				return true;
 			case VK_CONTROL:
 				m_bKeyCtrl=false;
 				return true;
@@ -620,6 +635,17 @@ void CUIWorldEditorDisplay::OnLButtonDown(POINT point)
 					}
 				}
 			}
+		}
+		else if(m_bKeyCtrl)
+		{
+			Vec3D vRayPos, vRayDir;
+			Vec3D vTargetPos;
+			m_Camera.GetPickRay( vRayPos, vRayDir, point.x, point.y,m_rcBoundingBox);
+			m_Terrain.GetData().Pick( vRayPos, vRayDir, &vTargetPos );
+
+			Pos2D posCell(vTargetPos.x, vTargetPos.z);
+			int nTileID = m_Terrain.GetData().GetCellTileID(posCell,0);
+			m_Terrain.GetBrushDecal().SetTileID(nTileID);
 		}
 	
 		SetPressed(true);
