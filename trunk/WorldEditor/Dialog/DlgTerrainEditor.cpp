@@ -44,7 +44,7 @@ void CDlgTerrainEditor::SetVisible(bool bVisible)
 		}
 		else if (m_dlgTerrainTileBrush.IsVisible())
 		{
-			getBrush().SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_TEXTURE_PAINT);
+			m_dlgTerrainTileBrush.OnRadioBtnLayerChanged();
 		}
 		else if (m_dlgTerrainAlphaBrush.IsVisible())
 		{
@@ -77,7 +77,7 @@ void CDlgTerrainEditor::OnBtnTerrainAttribute()
 
 void CDlgTerrainEditor::OnBtnTerrainTile()
 {
-	getBrush().SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_TEXTURE_PAINT);
+	m_dlgTerrainTileBrush.OnRadioBtnLayerChanged();
 	closeAllChildDialog();
 	m_dlgTerrainTileBrush.SetVisible(true);
 }

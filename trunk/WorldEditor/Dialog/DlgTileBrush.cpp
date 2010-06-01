@@ -32,7 +32,7 @@ bool CDlgTileBrush::OnInitDialog()
 
 void CDlgTileBrush::OnRadioBtnLayerChanged()
 {
-	getBrush().SetTileLayer(m_RadioBtnFirstLayer.IsChecked()?0:1);
+	getBrush().SetBrushType(m_RadioBtnFirstLayer.IsChecked()?CTerrainBrush::BRUSH_TYPE_TERRAIN_TILE_LAYER1:CTerrainBrush::BRUSH_TYPE_TERRAIN_TILE_LAYER2);
 }
 
 void CDlgTileBrush::initTiles()
