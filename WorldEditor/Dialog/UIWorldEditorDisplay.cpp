@@ -352,6 +352,18 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 			case VK_ADD:
 				m_fCoordScale=min(0.5f,m_fCoordScale+0.05f);
 				return true;
+			case 'Z':
+				if(m_bKeyCtrl)
+				{
+					m_Terrain.rebackEdit();
+				}
+				return true;
+			case 'Y':
+				if(m_bKeyCtrl)
+				{
+					m_Terrain.redoEdit();
+				}
+				return true;
 			}
 
 			//////////////////////////////////////////////////////////////////////////
@@ -590,6 +602,7 @@ void CUIWorldEditorDisplay::OnLButtonDown(POINT point)
 {
 	if(ContainsPoint(point))
 	{
+		m_Terrain.markEdit(); // Mark this edit.
 		SetFocus();
 		if (m_Terrain.GetBrushDecal().GetBrushType()==CTerrainBrush::BRUSH_TYPE_SCENE_OBJECT)
 		{
