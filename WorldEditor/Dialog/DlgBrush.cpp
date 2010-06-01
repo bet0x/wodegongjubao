@@ -29,7 +29,7 @@ bool CDlgBrush::OnInitDialog()
 	m_SliderBrushHardness.SetRange(1,100);
 	m_SliderBrushHardness.SetValue(50);
 	m_SliderBrushStrength.SetRange(1,100);
-	m_SliderBrushStrength.SetValue(50);
+	m_SliderBrushStrength.SetValue(10);
 	return true;
 }
 
