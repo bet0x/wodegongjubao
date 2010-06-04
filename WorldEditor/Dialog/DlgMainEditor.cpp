@@ -22,7 +22,7 @@ CModelDisplay&  CDlgMainEditor::getModelDisplay()
 	return m_ModelDisplay;
 }
 
-CDlgModelMaterial& CDlgMainEditor::getMaterialDialog()
+CDlgMaterial& CDlgMainEditor::getMaterialDialog()
 {
 	return m_DlgMaterialEdit;
 }

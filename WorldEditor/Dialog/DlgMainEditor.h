@@ -7,7 +7,7 @@
 
 #include "DlgRegister.h"
 #include "DlgModelController.h"
-#include "DlgModelMaterial.h"
+#include "DlgMaterial.h"
 #include "ModelDisplay.h"
 
 #include "DataPlugsMgr.h"
@@ -46,7 +46,7 @@ public:
 public:
 	CUIWorldEditorDisplay& getDisplay();
 	CModelDisplay& getModelDisplay();
-	CDlgModelMaterial& getMaterialDialog();
+	CDlgMaterial& getMaterialDialog();
 	CDlgModelController& getDlgModelController(){return m_DlgModelController;}
 private:
 	void updateDisplay();
@@ -71,5 +71,5 @@ private:
 	CDataPlugsMgr	m_DataPlugsMgr;
 
 
-	CDlgModelMaterial m_DlgMaterialEdit;
+	CDlgMaterial m_DlgMaterialEdit;
 };
