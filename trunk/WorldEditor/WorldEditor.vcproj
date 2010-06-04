@@ -424,14 +424,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\Dialog\DlgModelMaterial.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\Dialog\DlgModelMaterial.h"
-					>
-				</File>
-				<File
 					RelativePath=".\Dialog\DlgModelPlayer.cpp"
 					>
 				</File>
@@ -464,6 +456,18 @@
 					>
 				</File>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="Material"
+			>
+			<File
+				RelativePath=".\Dialog\DlgMaterial.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Dialog\DlgMaterial.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>
