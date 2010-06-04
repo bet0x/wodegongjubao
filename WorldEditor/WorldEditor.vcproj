@@ -324,6 +324,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\Dialog\DlgBrushColor.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Dialog\DlgBrushColor.h"
+					>
+				</File>
+				<File
 					RelativePath=".\Dialog\DlgBrushHeight.cpp"
 					>
 				</File>

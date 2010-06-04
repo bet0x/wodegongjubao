@@ -15,13 +15,13 @@ void CDlgTerrainEditor::OnControlRegister()
 
 	m_dlgTerrainHeightBrush.Create("IDD_TERRAIN_BRUSH_HEIGHT",	this);
 	m_dlgTerrainAttributeBrush.Create("IDD_TERRAIN_BRUSH_ATT",	this);
-	m_dlgTerrainTileBrush.Create("IDD_TERRAIN_TILE_BRUSH",		this);
-	m_dlgTerrainAlphaBrush.Create("IDD_TERRAIN_BRUSH_ALPHA",	this);
+	m_dlgTerrainBrushTile.Create("IDD_TERRAIN_BRUSH_TILE",		this);
+	m_dlgTerrainBrushColor.Create("IDD_TERRAIN_BRUSH_COLOR",	this);
 
 	RegisterControlEvent("IDC_BTN_HEIGHT",			(PEVENT)&CDlgTerrainEditor::OnBtnTerrainHeight);
 	RegisterControlEvent("IDC_BTN_ATTRIBUTE",		(PEVENT)&CDlgTerrainEditor::OnBtnTerrainAttribute);
 	RegisterControlEvent("IDC_BTN_TEXTURE_PAINT",	(PEVENT)&CDlgTerrainEditor::OnBtnTerrainTile);
-	RegisterControlEvent("IDC_BTN_ALPHA_PAINT",		(PEVENT)&CDlgTerrainEditor::OnBtnTerrainAlpha);
+	RegisterControlEvent("IDC_BTN_COLOR_PAINT",		(PEVENT)&CDlgTerrainEditor::OnBtnTerrainColor);
 }
 
 bool CDlgTerrainEditor::OnInitDialog()
@@ -42,13 +42,13 @@ void CDlgTerrainEditor::SetVisible(bool bVisible)
 		{
 			getBrush().SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_ATT);
 		}
-		else if (m_dlgTerrainTileBrush.IsVisible())
+		else if (m_dlgTerrainBrushTile.IsVisible())
 		{
-			m_dlgTerrainTileBrush.OnRadioBtnLayerChanged();
+			m_dlgTerrainBrushTile.OnRadioBtnLayerChanged();
 		}
-		else if (m_dlgTerrainAlphaBrush.IsVisible())
+		else if (m_dlgTerrainBrushColor.IsVisible())
 		{
-			getBrush().SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_TEXTURE_ALPHA_PAINT);
+			getBrush().SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_COLOR);
 		}
 	}
 }
@@ -57,8 +57,8 @@ void CDlgTerrainEditor::closeAllChildDialog()
 {
 	m_dlgTerrainHeightBrush.SetVisible(false);
 	m_dlgTerrainAttributeBrush.SetVisible(false);
-	m_dlgTerrainTileBrush.SetVisible(false);
-	m_dlgTerrainAlphaBrush.SetVisible(false);
+	m_dlgTerrainBrushTile.SetVisible(false);
+	m_dlgTerrainBrushColor.SetVisible(false);
 }
 
 void CDlgTerrainEditor::OnBtnTerrainHeight()
@@ -77,19 +77,19 @@ void CDlgTerrainEditor::OnBtnTerrainAttribute()
 
 void CDlgTerrainEditor::OnBtnTerrainTile()
 {
-	m_dlgTerrainTileBrush.OnRadioBtnLayerChanged();
+	m_dlgTerrainBrushTile.OnRadioBtnLayerChanged();
 	closeAllChildDialog();
-	m_dlgTerrainTileBrush.SetVisible(true);
+	m_dlgTerrainBrushTile.SetVisible(true);
 }
 
-void CDlgTerrainEditor::OnBtnTerrainAlpha()
+void CDlgTerrainEditor::OnBtnTerrainColor()
 {
-	getBrush().SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_TEXTURE_ALPHA_PAINT);
+	getBrush().SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_COLOR);
 	closeAllChildDialog();
-	m_dlgTerrainAlphaBrush.SetVisible(true);
+	m_dlgTerrainBrushColor.SetVisible(true);
 }
 
 void CDlgTerrainEditor::reset()
 {
-	m_dlgTerrainTileBrush.initTiles();
+	m_dlgTerrainBrushTile.initTiles();
 }
