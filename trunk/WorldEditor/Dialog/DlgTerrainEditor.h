@@ -3,6 +3,7 @@
 #include "DlgBrushAtt.h"
 #include "DlgBrushHeight.h"
 #include "DlgTileBrush.h"
+#include "DlgBrushColor.h"
 
 class CDlgTerrainEditor : public CDlgBaseEditor
 {
@@ -17,7 +18,7 @@ public:
 	void OnBtnTerrainHeight();
 	void OnBtnTerrainAttribute();
 	void OnBtnTerrainTile();
-	void OnBtnTerrainAlpha();
+	void OnBtnTerrainColor();
 
 	void OnHeightRangChanged();
 	void OnBrushHeightTypeChanged();
@@ -27,6 +28,6 @@ private:
 
 	CDlgBrushHeight	m_dlgTerrainHeightBrush;
 	CDlgBrushAtt	m_dlgTerrainAttributeBrush;
-	CDlgTileBrush	m_dlgTerrainTileBrush;
-	CDlgBrush		m_dlgTerrainAlphaBrush;
+	CDlgTileBrush	m_dlgTerrainBrushTile;
+	CDlgBrushColor	m_dlgTerrainBrushColor;
 };
