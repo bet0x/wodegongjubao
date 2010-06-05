@@ -84,9 +84,10 @@ empty_output_buffer (j_compress_ptr cinfo)
 {
   my_dest_ptr dest = (my_dest_ptr) cinfo->dest;
 
-  if (memcpy(dest->outdata+dest->nOutOffset,dest->buffer,OUTPUT_BUF_SIZE) !=// 由JFWRITE(dest->outfile, dest->buffer, OUTPUT_BUF_SIZE)改写
-      (size_t) OUTPUT_BUF_SIZE)
-    ERREXIT(cinfo, JERR_FILE_WRITE);
+  memcpy(dest->outdata+dest->nOutOffset,dest->buffer,OUTPUT_BUF_SIZE);
+  //if (memcpy(dest->outdata+dest->nOutOffset,dest->buffer,OUTPUT_BUF_SIZE) !=// 由JFWRITE(dest->outfile, dest->buffer, OUTPUT_BUF_SIZE)改写
+  //    (size_t) OUTPUT_BUF_SIZE)
+  //  ERREXIT(cinfo, JERR_FILE_WRITE);
 
   dest->pub.next_output_byte = dest->buffer;
   dest->pub.free_in_buffer = OUTPUT_BUF_SIZE;
@@ -114,8 +115,9 @@ term_destination (j_compress_ptr cinfo)
 
   /* Write any data remaining in the buffer */
   if (datacount > 0) {
-    if (memcpy(dest->outdata+dest->nOutOffset,dest->buffer,datacount) != datacount) // 由JFWRITE(dest->outfile, dest->buffer, datacount)改写
-      ERREXIT(cinfo, JERR_FILE_WRITE);
+	memcpy(dest->outdata+dest->nOutOffset,dest->buffer,datacount);
+    //if (memcpy(dest->outdata+dest->nOutOffset,dest->buffer,datacount) != datacount) // 由JFWRITE(dest->outfile, dest->buffer, datacount)改写
+    //  ERREXIT(cinfo, JERR_FILE_WRITE);
 
 	dest->nOutOffset+=datacount;
 	*(dest->pSize)=dest->nOutOffset;
