@@ -2320,6 +2320,32 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 
 			fclose(f);
 		}
+		std::string strLightMapFilename = GetParentPath(strFilename)+"TerrainHeight.ozb";
+		f=fopen(strHeightFilename.c_str(),"wb+");
+		if (f)
+		{
+			fseek(f,HEIGHT_HEAD_SIZE,SEEK_SET);
+			char buffer[HEIGHT_BUFFER_SIZE];
+			char* p = buffer;
+			int i = 0;
+			for (int y=0; y<254; ++y)
+			{
+				*p =0;++p;
+				*p =0;++p;
+				for (int x=0; x<254; ++x)
+				{
+					*p = max(min(pTerrainData->getVertexHeight(Pos2D(x,y))/0.015f,255),0);
+					p++;
+					i++;
+				}
+			}
+			for (int x=0; x<256*2; ++x)
+			{
+				*p =0;++p;
+			}
+			fwrite(buffer,HEIGHT_BUFFER_SIZE,1,f);
+			fclose(f);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	// check the key
