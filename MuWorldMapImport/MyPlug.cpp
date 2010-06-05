@@ -46,6 +46,7 @@ inline OCTETSTR HexStdStr2OSP(const std::string& str)
 }
 
 //标记开始处.
+#ifdef _VMP
 #define   VMBEGIN\
 	__asm _emit 0xEB \
 	__asm _emit 0x10 \
@@ -83,8 +84,11 @@ inline OCTETSTR HexStdStr2OSP(const std::string& str)
 	__asm _emit 0x6E \
 	__asm _emit 0x64 \
 	__asm _emit 0x00
-#define  MY_PLUGIN_KEY "qSz07781SU"
-//#define  MY_PLUGIN_KEY   "q4UzS808SU"
+#else
+#define   VMBEGIN
+#define   VMEND
+#endif
+
 #define  TITLE   "DiskId32"
 
 char HardDriveSerialNumber [1024];
@@ -1332,6 +1336,8 @@ CMyPlug::~CMyPlug(void)
 
 #define MAP_FILE_SIZE 65536*3+2
 #define HEIGHT_HEAD_SIZE 1082
+#define OZJ_HEAD_SIZE 24
+#define LIGHT_MAP_SIZE 65536*3
 #define HEIGHT_BUFFER_SIZE 65536
 #define ATT_FILE_129KB_SIZE 65536*2+4
 #define ATT_FILE_65KB_SIZE 65536+4
@@ -1501,7 +1507,7 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 
 			//////////////////////////////////////////////////////////////////////////
 			// 打开jpg图像文件，并指定为解压缩对象的源文件
-			jpeg_stdio_src(&cinfo, buffer+24, uFileSize-24);
+			jpeg_stdio_src(&cinfo, buffer+OZJ_HEAD_SIZE, uFileSize-OZJ_HEAD_SIZE);
 
 			//////////////////////////////////////////////////////////////////////////
 			// 读取图像信息
@@ -1529,28 +1535,21 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 			delete[] buffer;
 			IOReadBase::autoClose(pRead);
 
-
-			//CJpeg myJpg;
-
-			//if (myJpg.loadJpegFromBuffer(buffer+24,uFileSize))
+			unsigned char* pImg = (unsigned char*)data;
+			for (int y=0; y<254; ++y)
 			{
-				unsigned char* pImg = (unsigned char*)data;//(uint8*)myJpg.getBuffer();
-				for (int y=0; y<254; ++y)
+				for (int x=0; x<254; ++x)
 				{
-					for (int x=0; x<254; ++x)
-					{
-
-						Color32 c = pTerrainData->getVertexColor(Pos2D(x,y));
-						c.b = *pImg;
-						pImg++;
-						c.g = *pImg;
-						pImg++;
-						c.r = *pImg;
-						pImg++;
-						pTerrainData->setVertexColor(Pos2D(x,y),c);
-					}
-					pImg+=2*3;
+					Color32 c = pTerrainData->getVertexColor(Pos2D(x,y));
+					c.b = *pImg;
+					pImg++;
+					c.g = *pImg;
+					pImg++;
+					c.r = *pImg;
+					pImg++;
+					pTerrainData->setVertexColor(Pos2D(x,y),c);
 				}
+				pImg+=2*3;
 			}
 			delete[] data;
 		}
@@ -1934,8 +1933,14 @@ VMBEGIN
 	// If have not be reg, give user a message for how to reg.
 	if (strKey.size()==0)
 	{
-		std::string strText = std::string("Your HardwareID is \"")+strDecode+"\".\nOrdinary users can only save the EncTerrainX.att and (Server)TerrainX.att!\nDonate to the project for testing the full : www.rpgsky.com";
-		if (MessageBoxA(NULL,strText.c_str(),"Can not save all data!",1)==1)
+		std::string strText = std::string("Your HardwareID: \"")+strDecode+"\".\n"+
+			"EncTerrain.obj                  Load OK  Save Failed!\n"+
+			"EncTerrain.map                  Load OK  Save Failed!\n"+
+			"EncTerrain.att (64&128&Server)  Load OK  Save OK!\n"+
+			"TerrainHeight.OZB               Load OK  Save OK!\n"+
+			"TerrainLight.OZJ                Load OK  Save OK!\n"+
+			"View the latest information : www.rpgsky.com";
+		if (MessageBoxA(NULL,strText.c_str(),"Saving MU World Map!",1)==1)
 		{
 			ShellExecuteA(0, "open", "http://www.rpgsky.com", NULL, NULL, SW_SHOWMAXIMIZED);   
 		}
@@ -1946,7 +1951,6 @@ VMBEGIN
 
 int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 {
-	VMBEGIN
 	importTerrainData(&pScene->getTerrain()->GetData(),strFilename);
 	// tiles
 	std::string strTileFile = GetParentPath(strFilename)+"Tile.csv";
@@ -1981,9 +1985,312 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 	pScene->createObjectTree(bboxObject,6);
 	importObject(pScene,ChangeExtension(strFilename,".obj"));
 	return true;
-	VMEND
 }
 
+bool CMyPlug::exportTerrainAtt(iTerrainData * pTerrainData, const std::string& strFilename)
+{
+	// Calc MU's map id from filename.
+	int nMapID = getMapIDFromFilename(strFilename);
+	// att
+	// for server.att
+	std::string strServerAttFile = GetParentPath(strFilename)+"(Server)Terrain"+ws2s(i2ws(nMapID))+".att";
+	FILE* f=fopen(strServerAttFile.c_str(),"wb+");
+	if (f)
+	{
+		char buffer[ATT_FILE_SERVER_SIZE];
+		char* p = buffer;
+		*((unsigned char*)p)=0x0;++p;
+		*((unsigned char*)p)=0xFF;++p;
+		*((unsigned char*)p)=0xFF;++p;
+		for (int y=0; y<253; ++y)
+		{
+			for (int x=0; x<253; ++x)
+			{
+				*p = pTerrainData->getCellAttribute(Pos2D(x,y));
+				p++;
+			}
+			for (int x=253; x<256; ++x)
+			{
+				*p =0;++p;
+			}
+		}
+		for (int x=0; x<256*3; ++x)
+		{
+			*p =0;++p;
+		}
+		fwrite(buffer,ATT_FILE_SERVER_SIZE,1,f);
+		fclose(f);
+	}
+	// EncTerrain.att
+	std::string strEncTerrain=ChangeExtension(strFilename,".att");
+	bool bAttFileSize128=true;
+	{
+		IOReadBase* pRead = IOReadBase::autoOpen(strEncTerrain);
+		if (pRead)
+		{
+			bAttFileSize128 = (ATT_FILE_129KB_SIZE==pRead->GetSize());
+			IOReadBase::autoClose(pRead);
+		}
+		else
+		{
+			bAttFileSize128 = (MessageBoxA(NULL,"Select the correct file size.\"OK\" as 128KB; \"Cancel\" as 64KB.",
+				"Saving EncTerrain.att!",1)==1);
+		}
+	}
+	f=fopen(strEncTerrain.c_str(),"wb+");
+	if (f)
+	{
+		if (bAttFileSize128)
+		{
+			char buffer[ATT_FILE_129KB_SIZE];
+			char* p = buffer;
+			*((unsigned char*)p)=0x0;++p;
+			*((unsigned char*)p)=nMapID;++p;
+			*((unsigned char*)p)=0xFF;++p;
+			*((unsigned char*)p)=0xFF;++p;
+			{
+				for (int y=0; y<253; ++y)
+				{
+					for (int x=0; x<253; ++x)
+					{
+						*p = pTerrainData->getCellAttribute(Pos2D(x,y));
+						p++;
+						*p =0;++p;
+					}
+					for (int x=253; x<256; ++x)
+					{
+						*p =0;++p;
+						*p =0;++p;
+					}
+				}
+				for (int x=0; x<256*6; ++x)
+				{
+					*p =0;++p;
+				}
+			}
+			decrypt2(buffer,ATT_FILE_129KB_SIZE);
+			encrypt(buffer,ATT_FILE_129KB_SIZE);
+			fwrite(buffer,ATT_FILE_129KB_SIZE,1,f);
+		}
+		else
+		{
+			char buffer[ATT_FILE_65KB_SIZE];
+			char* p = buffer;
+			*((unsigned char*)p)=0x0;++p;
+			*((unsigned char*)p)=nMapID;++p;
+			*((unsigned char*)p)=0xFF;++p;
+			*((unsigned char*)p)=0xFF;++p;
+			{
+				for (int y=0; y<253; ++y)
+				{
+					for (int x=0; x<253; ++x)
+					{
+						*p = pTerrainData->getCellAttribute(Pos2D(x,y));
+						p++;
+					}
+					for (int x=253; x<256; ++x)
+					{
+						*p =0;++p;
+					}
+				}
+				for (int x=0; x<256*3; ++x)
+				{
+					*p =0;++p;
+				}
+			}
+			decrypt2(buffer,ATT_FILE_65KB_SIZE);
+			encrypt(buffer,ATT_FILE_65KB_SIZE);
+			fwrite(buffer,ATT_FILE_65KB_SIZE,1,f);
+		}
+		fclose(f);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	f=fopen(ChangeExtension(strFilename,".64KB.att").c_str(),"wb+");
+	if (f)
+	{
+		char buffer[ATT_FILE_65KB_SIZE];
+		char* p = buffer;
+		*((unsigned char*)p)=0x0;++p;
+		*((unsigned char*)p)=nMapID;++p;
+		*((unsigned char*)p)=0xFF;++p;
+		*((unsigned char*)p)=0xFF;++p;
+		{
+			for (int y=0; y<253; ++y)
+			{
+				for (int x=0; x<253; ++x)
+				{
+					*p = pTerrainData->getCellAttribute(Pos2D(x,y));
+					p++;
+				}
+				for (int x=253; x<256; ++x)
+				{
+					*p =0;++p;
+				}
+			}
+			for (int x=0; x<256*3; ++x)
+			{
+				*p =0;++p;
+			}
+		}
+		decrypt2(buffer,ATT_FILE_65KB_SIZE);
+		encrypt(buffer,ATT_FILE_65KB_SIZE);
+		fwrite(buffer,ATT_FILE_65KB_SIZE,1,f);
+		fclose(f);
+	}
+
+	f=fopen(ChangeExtension(strFilename,".128KB.att").c_str(),"wb+");
+	if (f)
+	{
+		char buffer[ATT_FILE_129KB_SIZE];
+		char* p = buffer;
+		*((unsigned char*)p)=0x0;++p;
+		*((unsigned char*)p)=nMapID;++p;
+		*((unsigned char*)p)=0xFF;++p;
+		*((unsigned char*)p)=0xFF;++p;
+		{
+			for (int y=0; y<253; ++y)
+			{
+				for (int x=0; x<253; ++x)
+				{
+					*p = pTerrainData->getCellAttribute(Pos2D(x,y));
+					p++;
+					*p =0;++p;
+				}
+				for (int x=253; x<256; ++x)
+				{
+					*p =0;++p;
+					*p =0;++p;
+				}
+			}
+			for (int x=0; x<256*6; ++x)
+			{
+				*p =0;++p;
+			}
+		}
+		decrypt2(buffer,ATT_FILE_129KB_SIZE);
+		encrypt(buffer,ATT_FILE_129KB_SIZE);
+		fwrite(buffer,ATT_FILE_129KB_SIZE,1,f);
+
+		fclose(f);
+	}
+	return true;
+}
+
+bool CMyPlug::exportTerrainLightmap(iTerrainData * pTerrainData, const std::string& strFilename)
+{
+	unsigned char buffer[LIGHT_MAP_SIZE];
+	unsigned char* p = buffer;
+	for (int x=0; x<256*2*3; ++x)
+	{
+		*p =0;++p;
+	}
+	for (int y=253; y>=0; --y)
+	{
+
+		for (int x=0; x<254; ++x)
+		{
+			Color32 c = pTerrainData->getVertexColor(Pos2D(x,y));
+			*p = c.b;
+			p++;
+			*p = c.g;
+			p++;
+			*p = c.r;
+			p++;
+		}
+		for (int i=0;i<6;++i)
+		{
+			*p =0;++p;
+		}
+	}
+
+	{
+		// 申请并初始化jpeg压缩对象，同时要指定错误处理器
+		struct jpeg_compress_struct jcs;
+
+		// 声明错误处理器，并赋值给jcs.err域
+		struct jpeg_error_mgr jem;
+		jcs.err = jpeg_std_error(&jem);
+
+		jpeg_create_compress(&jcs);
+
+		// 指定压缩后的图像所存放的目标
+		char jpgBuffer[LIGHT_MAP_SIZE];
+		int nJpgSize = 0;
+		jpeg_stdio_dest(&jcs, jpgBuffer, &nJpgSize);
+		// 设置压缩参数，主要参数有图像宽、高、色彩通道数（１：索引图像，３：其他），色彩空间（JCS_GRAYSCALE表示灰度图，JCS_RGB表示彩色图像），压缩质量等，如下：
+		jcs.image_width = 256;    // 为图的宽和高，单位为像素 
+		jcs.image_height = 256;
+		jcs.input_components = 3;   // 在此为1,表示灰度图， 如果是彩色位图，则为3 
+		jcs.in_color_space = JCS_RGB; //JCS_GRAYSCALE表示灰度图，JCS_RGB表示彩色图像 
+
+		jpeg_set_defaults(&jcs); 
+		jpeg_set_quality (&jcs, 80, true);
+		// 上面的工作准备完成后，就可以压缩了，
+		// 压缩过程非常简单，首先调用jpeg_start_compress，然后可以对每一行进行压缩，也可以对若干行进行压缩，甚至可以对整个的图像进行一次压缩，
+		// 压缩完成后，记得要调用jpeg_finish_compress函数，如下：
+
+		jpeg_start_compress(&jcs, TRUE);
+
+		JSAMPROW row_pointer[1];   // 一行位图
+		int row_stride = jcs.image_width*3;  // 每一行的字节数 如果不是索引图,此处需要乘以3
+
+		// 对每一行进行压缩
+		while (jcs.next_scanline < jcs.image_height)
+		{
+			row_pointer[0] = & buffer[jcs.next_scanline * row_stride];
+			jpeg_write_scanlines(&jcs, row_pointer, 1);
+		}
+
+		jpeg_finish_compress(&jcs);
+
+		if (LIGHT_MAP_SIZE<nJpgSize)
+		{
+			MessageBoxA(NULL,"LIGHT_MAP_SIZE<nJpgSize","LightMap Error", 0);
+		}
+		FILE* f=fopen(strFilename.c_str(),"wb+");
+		if (f)
+		{
+			fseek(f,OZJ_HEAD_SIZE,SEEK_SET);
+			fwrite(jpgBuffer,nJpgSize,1,f);
+			fclose(f);
+		}
+		f=fopen(ChangeExtension(strFilename,".jpg").c_str(),"wb+");
+		if (f)
+		{
+			fwrite(jpgBuffer,nJpgSize,1,f);
+			fclose(f);
+		}
+	}
+	return true;
+}
+
+bool CMyPlug::exportTerrainHeight(iTerrainData * pTerrainData, const std::string& strFilename)
+{
+	FILE* f=fopen(strFilename.c_str(),"wb+");
+	if (f)
+	{
+		fseek(f,HEIGHT_HEAD_SIZE,SEEK_SET);
+		char buffer[HEIGHT_BUFFER_SIZE];
+		char* p = buffer;
+		for (int y=0; y<254; ++y)
+		{
+			*p =0;++p;
+			*p =0;++p;
+			for (int x=0; x<254; ++x)
+			{
+				*p = max(min(pTerrainData->getVertexHeight(Pos2D(x,y))/0.015f,255),0);
+				p++;
+			}
+		}
+		for (int x=0; x<256*2; ++x)
+		{
+			*p =0;++p;
+		}
+		fwrite(buffer,HEIGHT_BUFFER_SIZE,1,f);
+		fclose(f);
+	}
+	return true;
+}
 
 bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& strFilename)
 {
@@ -2135,218 +2442,13 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 	}
 
 	//////////////////////////////////////////////////////////////////////////
+	exportTerrainAtt(pTerrainData, strFilename);
+	exportTerrainLightmap(pTerrainData, GetParentPath(strFilename)+"TerrainLight.ozj");
+	exportTerrainHeight(pTerrainData, GetParentPath(strFilename)+"TerrainHeight.ozb");
+
 	// Calc MU's map id from filename.
 	int nMapID = getMapIDFromFilename(strFilename);
-	{
-		// att
-		// for server.att
-		std::string strServerAttFile = GetParentPath(strFilename)+"(Server)Terrain"+ws2s(i2ws(nMapID))+".att";
-		FILE* f=fopen(strServerAttFile.c_str(),"wb+");
-		if (f)
-		{
-			char buffer[ATT_FILE_SERVER_SIZE];
-			char* p = buffer;
-			*((unsigned char*)p)=0x0;++p;
-			*((unsigned char*)p)=0xFF;++p;
-			*((unsigned char*)p)=0xFF;++p;
-			for (int y=0; y<253; ++y)
-			{
-				for (int x=0; x<253; ++x)
-				{
-					*p = pTerrainData->getCellAttribute(Pos2D(x,y));
-					p++;
-				}
-				for (int x=253; x<256; ++x)
-				{
-					*p =0;++p;
-				}
-			}
-			for (int x=0; x<256*3; ++x)
-			{
-				*p =0;++p;
-			}
-			fwrite(buffer,ATT_FILE_SERVER_SIZE,1,f);
-			fclose(f);
-		}
-		// EncTerrain.att
-		std::string strEncTerrain=ChangeExtension(strFilename,".att");
-		bool bAttFileSize128=true;
-		{
-			IOReadBase* pRead = IOReadBase::autoOpen(strEncTerrain);
-			if (pRead)
-			{
-				bAttFileSize128 = (ATT_FILE_129KB_SIZE==pRead->GetSize());
-				IOReadBase::autoClose(pRead);
-			}
-			else
-			{
-				bAttFileSize128 = (MessageBoxA(NULL,"Select the correct file size.\"OK\" as 128KB; \"Cancel\" as 64KB.",
-					"Saving EncTerrain.att!",1)==1);
-			}
-		}
-		f=fopen(strEncTerrain.c_str(),"wb+");
-		if (f)
-		{
-			if (bAttFileSize128)
-			{
-				char buffer[ATT_FILE_129KB_SIZE];
-				char* p = buffer;
-				*((unsigned char*)p)=0x0;++p;
-				*((unsigned char*)p)=nMapID;++p;
-				*((unsigned char*)p)=0xFF;++p;
-				*((unsigned char*)p)=0xFF;++p;
-				{
-					for (int y=0; y<253; ++y)
-					{
-						for (int x=0; x<253; ++x)
-						{
-							*p = pTerrainData->getCellAttribute(Pos2D(x,y));
-							p++;
-							*p =0;++p;
-						}
-						for (int x=253; x<256; ++x)
-						{
-							*p =0;++p;
-							*p =0;++p;
-						}
-					}
-					for (int x=0; x<256*6; ++x)
-					{
-						*p =0;++p;
-					}
-				}
-				decrypt2(buffer,ATT_FILE_129KB_SIZE);
-				encrypt(buffer,ATT_FILE_129KB_SIZE);
-				fwrite(buffer,ATT_FILE_129KB_SIZE,1,f);
-			}
-			else
-			{
-				char buffer[ATT_FILE_65KB_SIZE];
-				char* p = buffer;
-				*((unsigned char*)p)=0x0;++p;
-				*((unsigned char*)p)=nMapID;++p;
-				*((unsigned char*)p)=0xFF;++p;
-				*((unsigned char*)p)=0xFF;++p;
-				{
-					for (int y=0; y<253; ++y)
-					{
-						for (int x=0; x<253; ++x)
-						{
-							*p = pTerrainData->getCellAttribute(Pos2D(x,y));
-							p++;
-						}
-						for (int x=253; x<256; ++x)
-						{
-							*p =0;++p;
-						}
-					}
-					for (int x=0; x<256*3; ++x)
-					{
-						*p =0;++p;
-					}
-				}
-				decrypt2(buffer,ATT_FILE_65KB_SIZE);
-				encrypt(buffer,ATT_FILE_65KB_SIZE);
-				fwrite(buffer,ATT_FILE_65KB_SIZE,1,f);
-			}
-			fclose(f);
-		}
-		//////////////////////////////////////////////////////////////////////////
-		f=fopen(ChangeExtension(strFilename,".64KB.att").c_str(),"wb+");
-		if (f)
-		{
-			char buffer[ATT_FILE_65KB_SIZE];
-			char* p = buffer;
-			*((unsigned char*)p)=0x0;++p;
-			*((unsigned char*)p)=nMapID;++p;
-			*((unsigned char*)p)=0xFF;++p;
-			*((unsigned char*)p)=0xFF;++p;
-			{
-				for (int y=0; y<253; ++y)
-				{
-					for (int x=0; x<253; ++x)
-					{
-						*p = pTerrainData->getCellAttribute(Pos2D(x,y));
-						p++;
-					}
-					for (int x=253; x<256; ++x)
-					{
-						*p =0;++p;
-					}
-				}
-				for (int x=0; x<256*3; ++x)
-				{
-					*p =0;++p;
-				}
-			}
-			decrypt2(buffer,ATT_FILE_65KB_SIZE);
-			encrypt(buffer,ATT_FILE_65KB_SIZE);
-			fwrite(buffer,ATT_FILE_65KB_SIZE,1,f);
-			fclose(f);
-		}
 
-		f=fopen(ChangeExtension(strFilename,".128KB.att").c_str(),"wb+");
-		if (f)
-		{
-			char buffer[ATT_FILE_129KB_SIZE];
-			char* p = buffer;
-			*((unsigned char*)p)=0x0;++p;
-			*((unsigned char*)p)=nMapID;++p;
-			*((unsigned char*)p)=0xFF;++p;
-			*((unsigned char*)p)=0xFF;++p;
-			{
-				for (int y=0; y<253; ++y)
-				{
-					for (int x=0; x<253; ++x)
-					{
-						*p = pTerrainData->getCellAttribute(Pos2D(x,y));
-						p++;
-						*p =0;++p;
-					}
-					for (int x=253; x<256; ++x)
-					{
-						*p =0;++p;
-						*p =0;++p;
-					}
-				}
-				for (int x=0; x<256*6; ++x)
-				{
-					*p =0;++p;
-				}
-			}
-			decrypt2(buffer,ATT_FILE_129KB_SIZE);
-			encrypt(buffer,ATT_FILE_129KB_SIZE);
-			fwrite(buffer,ATT_FILE_129KB_SIZE,1,f);
-
-			fclose(f);
-		}
-		std::string strLightMapFilename = GetParentPath(strFilename)+"TerrainHeight.ozb";
-		f=fopen(strHeightFilename.c_str(),"wb+");
-		if (f)
-		{
-			fseek(f,HEIGHT_HEAD_SIZE,SEEK_SET);
-			char buffer[HEIGHT_BUFFER_SIZE];
-			char* p = buffer;
-			int i = 0;
-			for (int y=0; y<254; ++y)
-			{
-				*p =0;++p;
-				*p =0;++p;
-				for (int x=0; x<254; ++x)
-				{
-					*p = max(min(pTerrainData->getVertexHeight(Pos2D(x,y))/0.015f,255),0);
-					p++;
-					i++;
-				}
-			}
-			for (int x=0; x<256*2; ++x)
-			{
-				*p =0;++p;
-			}
-			fwrite(buffer,HEIGHT_BUFFER_SIZE,1,f);
-			fclose(f);
-		}
-	}
 	//////////////////////////////////////////////////////////////////////////
 	// check the key
 	{
@@ -2444,33 +2546,7 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 				fwrite(buffer,MAP_FILE_SIZE,1,f);
 				fclose(f);
 			}
-			// Height
-			std::string strHeightFilename = GetParentPath(strFilename)+"TerrainHeight.ozb";
-			f=fopen(strHeightFilename.c_str(),"wb+");
-			if (f)
-			{
-				fseek(f,HEIGHT_HEAD_SIZE,SEEK_SET);
-				char buffer[HEIGHT_BUFFER_SIZE];
-				char* p = buffer;
-				int i = 0;
-				for (int y=0; y<254; ++y)
-				{
-					*p =0;++p;
-					*p =0;++p;
-					for (int x=0; x<254; ++x)
-					{
-						*p = max(min(pTerrainData->getVertexHeight(Pos2D(x,y))/0.015f,255),0);
-						p++;
-						i++;
-					}
-				}
-				for (int x=0; x<256*2; ++x)
-				{
-					*p =0;++p;
-				}
-				fwrite(buffer,HEIGHT_BUFFER_SIZE,1,f);
-				fclose(f);
-			}
+			
 		}
 	}
 	VMEND
@@ -2737,12 +2813,10 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 
 int CMyPlug::exportData(iScene * pScene, const std::string& strFilename)
 {
-VMBEGIN
 	checkKey();
 	exportTerrainData(&pScene->getTerrain()->GetData(),strFilename);
 	exportObject(pScene,ChangeExtension(strFilename,".obj"));
 	return true;
-VMEND
 }
 
 void CMyPlug::Release()

@@ -24,6 +24,9 @@ private:
 	bool importObjectResourcesFormDir(iScene * pScene,const std::string& strPath);
 	bool importObject(iScene * pScene, const std::string& strFilename);
 
+	bool exportTerrainAtt(iTerrainData * pTerrainData, const std::string& strFilename);
+	bool exportTerrainLightmap(iTerrainData * pTerrainData, const std::string& strFilename);
+	bool exportTerrainHeight(iTerrainData * pTerrainData, const std::string& strFilename);
 	bool exportTerrainData(iTerrainData * pTerrainData, const std::string& strFilename);
 	bool exportTiles(iTerrain * pTerrain, const std::string& strFilename, const std::string& strPath);
 	bool exportObjectResources(iScene * pScene, const std::string& strFilename, const std::string& strPath);
