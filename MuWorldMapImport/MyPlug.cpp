@@ -7,6 +7,10 @@
 #include "borzoi.h"    // Include this to use the elliptic curve and
 #include "nist_curves.h" // Include this to use the curves recommended by NIST
 
+extern "C" {
+#include "jpeg\jpeglib.h"
+}
+
 inline OCTETSTR StdStr2OSP(const std::string& str)
 {
 	OCTETSTR osp;
@@ -1486,10 +1490,51 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 			size_t uFileSize = pRead->GetSize();
 			char* buffer = new char[uFileSize];
 			pRead->Read(buffer,uFileSize);
-			CJpeg myJpg;
-			if (myJpg.loadJpegFromBuffer(buffer+24,uFileSize))
+
+			//////////////////////////////////////////////////////////////////////////
+			// 声明并初始化解压缩对象，同时制定错误信息管理器
+			struct jpeg_decompress_struct cinfo;
+			struct jpeg_error_mgr jerr;
+
+			cinfo.err = jpeg_std_error(&jerr);
+			jpeg_create_decompress(&cinfo);
+
+			//////////////////////////////////////////////////////////////////////////
+			// 打开jpg图像文件，并指定为解压缩对象的源文件
+			jpeg_stdio_src(&cinfo, buffer+24, uFileSize-24);
+
+			//////////////////////////////////////////////////////////////////////////
+			// 读取图像信息
+			jpeg_read_header(&cinfo, TRUE);
+
+			//////////////////////////////////////////////////////////////////////////
+			// 根据图像信息申请一个图像缓冲区
+			BYTE* data = new BYTE[cinfo.image_width*cinfo.image_height*cinfo.num_components];
+			//////////////////////////////////////////////////////////////////////////
+			// 开始解压缩
+			jpeg_start_decompress(&cinfo);
+
+			JSAMPROW row_pointer[1];
+			while (cinfo.output_scanline < cinfo.output_height)
 			{
-				uint8* pImg = (uint8*)myJpg.getBuffer();
+				row_pointer[0] = &data[(cinfo.output_height - cinfo.output_scanline-1)*cinfo.image_width*cinfo.num_components];
+				jpeg_read_scanlines(&cinfo,row_pointer ,
+					1);
+			}
+			jpeg_finish_decompress(&cinfo);
+
+			//////////////////////////////////////////////////////////////////////////
+			// 释放资源
+			jpeg_destroy_decompress(&cinfo);
+			delete[] buffer;
+			IOReadBase::autoClose(pRead);
+
+
+			//CJpeg myJpg;
+
+			//if (myJpg.loadJpegFromBuffer(buffer+24,uFileSize))
+			{
+				unsigned char* pImg = (unsigned char*)data;//(uint8*)myJpg.getBuffer();
 				for (int y=0; y<254; ++y)
 				{
 					for (int x=0; x<254; ++x)
@@ -1507,8 +1552,7 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 					pImg+=2*3;
 				}
 			}
-			delete[] buffer;
-			IOReadBase::autoClose(pRead);
+			delete[] data;
 		}
 
 		// TerrainHeight

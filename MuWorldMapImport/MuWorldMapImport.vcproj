@@ -225,10 +225,6 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath=".\jpeg.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\MuWorldMapPlugin.def"
 				>
 			</File>
@@ -277,10 +273,6 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
-			<File
-				RelativePath=".\jpeg.h"
-				>
-			</File>
 			<File
 				RelativePath="MyPlug.h"
 				>
