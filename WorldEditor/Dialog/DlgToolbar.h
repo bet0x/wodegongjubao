@@ -15,7 +15,7 @@ public:
 	void OnBtnSetting();
 	void OnBtnTerrain();
 	void OnBtnObject();
-
+	void OnClose();
 	void reset();
 private:
 	void closeAllChildDialog();
