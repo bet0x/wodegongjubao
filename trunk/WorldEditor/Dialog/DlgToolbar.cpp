@@ -1,4 +1,5 @@
 #include "DlgToolbar.h"
+#include "..\MainRoot.h"
 
 CDlgToolbar::CDlgToolbar()
 {
@@ -19,6 +20,7 @@ void CDlgToolbar::OnControlRegister()
 	RegisterControlEvent("IDC_BTN_SETTING",			(PEVENT)&CDlgToolbar::OnBtnSetting);
 	RegisterControlEvent("IDC_BTN_TERRAIN",			(PEVENT)&CDlgToolbar::OnBtnTerrain);
 	RegisterControlEvent("IDC_BTN_OBJECT",			(PEVENT)&CDlgToolbar::OnBtnObject);
+	RegisterControlEvent("IDC_BTN_CLOSE",			(PEVENT)&CDlgToolbar::OnClose);
 }
 
 bool CDlgToolbar::OnInitDialog()
@@ -60,4 +62,9 @@ void CDlgToolbar::reset()
 	m_DlgTerrainEditor.reset();
 	m_DlgToolObject.initObject();
 	m_dlgSetting.init();
+}
+
+void CDlgToolbar::OnClose()
+{
+	getMainDialog().OnBtnToolbar();
 }
