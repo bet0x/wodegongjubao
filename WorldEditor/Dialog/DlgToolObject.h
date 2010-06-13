@@ -11,6 +11,8 @@ public:
 public:
 	virtual void OnControlRegister();
 	void initObject();
+	void OnNumFloorSnapChanged();
+	void OnNumGridSnapChanged();
 	void OnFocusObjectValueChanged();
 	void OnFocusObjectChanged();
 	void OnAddObject();
@@ -20,7 +22,7 @@ private:
 	CUIComboObjListSceneObject m_ObjListSceneObject;
 
 	CUIComboNumber	m_NumFloorSnap;
-	CUIComboVec3D	m_Vec3DGridSnap;
+	CUIComboNumber	m_NumGridSnap;
 	CUIComboVec3D	m_Vec3DPos;
 	CUIComboVec3D	m_Vec3Rotate;
 	CUIComboNumber	m_NumScale;

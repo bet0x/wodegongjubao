@@ -44,17 +44,18 @@ void CDlgMainEditor::OnControlRegister()
 {
 	CUIMainDialog::OnControlRegister();
 
+	m_DlgController.Create("IDD_CONTROLLER", this);
+
+	m_DlgModelController.Create("IDD_MODEL_CONTROLLER", this);
+	m_DlgToolbar.Create("IDD_TOOLBAR", this); // 放到最后是因为前面会 在渲染纹理是 把其他UI消失掉
 
 	m_DlgRegister.Create("IDD_REGISTER", this);
 	//m_DlgFPS.Create("IDD_FPS", this);
 	m_DlgMaterialEdit.Create("IDD_MATERIAL", this);
-	m_DlgController.Create("IDD_CONTROLLER", this);
 	//m_DlgFaceDetect.Create("IDD_FACE_DETECT", this);
-	m_DlgFile.Create("IDD_FILE", this);
 	m_DlgHelp.Create("IDD_HELP", this);
+	m_DlgFile.Create("IDD_FILE", this);
 
-	m_DlgModelController.Create("IDD_MODEL_CONTROLLER", this);
-	m_DlgToolbar.Create("IDD_TOOLBAR", this); // 放到最后是因为前面会 在渲染纹理是 把其他UI消失掉
 
 	RegisterControl( "IDC_STATIC_POS_X", m_StaticPosX);
 	RegisterControl( "IDC_STATIC_POS_Y", m_StaticPosY);
@@ -154,7 +155,7 @@ bool CDlgMainEditor::OnInitDialog()
 	SetControlEnabled("IDC_BTN_NEW_FILE",false);
 //#endif
 	m_DlgModelController.SetVisible(false);
-	m_DlgToolbar.SetVisible(false);
+	m_DlgToolbar.SetVisible(true);
 	m_DlgFile.SetVisible(false);
 	m_DlgHelp.SetVisible(false);
 	// model

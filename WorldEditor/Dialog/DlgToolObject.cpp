@@ -4,9 +4,6 @@
 
 CDlgToolObject::CDlgToolObject()
 {
-	m_Vec3DPos.setExtentSize(0.5f);
-	m_Vec3Rotate.setExtentSize(45.0f);
-	m_NumScale.setExtentSize(0.2f);
 }
 
 CDlgToolObject::~CDlgToolObject()
@@ -21,7 +18,7 @@ void CDlgToolObject::OnControlRegister()
 	RegisterControl("IDC_OBJLIST_SCENE_OBJECTS",		m_ObjListSceneObject);
 
 	RegisterControl("IDC_NUM_FLOOR_SNAP",		m_NumFloorSnap);
-	RegisterControl("IDC_VEC3D_GRID_SNAP",		m_Vec3DGridSnap);
+	RegisterControl("IDC_NUM_GRID_SNAP",		m_NumGridSnap);
 
 	RegisterControl("IDC_VEC3D_POS",		m_Vec3DPos);
 	RegisterControl("IDC_VEC3D_ROTATE",		m_Vec3Rotate);
@@ -30,6 +27,9 @@ void CDlgToolObject::OnControlRegister()
 	RegisterControlEvent("IDC_VEC3D_POS",		(PEVENT)&CDlgToolObject::OnFocusObjectValueChanged);
 	RegisterControlEvent("IDC_VEC3D_ROTATE",	(PEVENT)&CDlgToolObject::OnFocusObjectValueChanged);
 	RegisterControlEvent("IDC_NUM_SCALE",		(PEVENT)&CDlgToolObject::OnFocusObjectValueChanged);
+
+	RegisterControlEvent("IDC_NUM_FLOOR_SNAP",	(PEVENT)&CDlgToolObject::OnNumFloorSnapChanged);
+	RegisterControlEvent("IDC_NUM_GRID_SNAP",	(PEVENT)&CDlgToolObject::OnNumGridSnapChanged);
 
 	RegisterEvent("MSG_FOCUS_OBJECT_CHANGED",(PEVENT)&CDlgToolObject::OnFocusObjectChanged);
 	RegisterEvent("MSG_ADD_OBJECT",(PEVENT)&CDlgToolObject::OnAddObject);
@@ -40,6 +40,16 @@ void CDlgToolObject::OnControlRegister()
 void CDlgToolObject::initObject()
 {
 	m_ObjListSceneObject.initObject(getDisplay().getScene());
+}
+
+void CDlgToolObject::OnNumFloorSnapChanged()
+{
+	getDisplay().setFloorSnap(m_NumFloorSnap.getFloat());
+}
+
+void CDlgToolObject::OnNumGridSnapChanged()
+{
+	getDisplay().setGridSnap(m_NumGridSnap.getFloat());
 }
 
 void CDlgToolObject::OnFocusObjectValueChanged()
