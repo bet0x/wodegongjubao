@@ -43,6 +43,12 @@ virtual bool CanHaveFocus() { return (m_bVisible && m_bEnabled); }
 	//virtual void OnPressed()
 
 	void MoveCamera(int x,int y);
+
+	// Snap
+	float getFloorSnap(){return m_fFloorSnap;}
+	float getGridSnap(){return m_fGridSnap;}
+	void setFloorSnap(float fFloorSnap){m_fFloorSnap=fFloorSnap;}
+	void setGridSnap(float fGridSnap){m_fGridSnap=fGridSnap;}
 protected:
 	POINT				m_ptLastMousePosition;
 	CCamera				m_Camera;
@@ -77,5 +83,7 @@ protected:
 	bool g_bMiddleButtonDown;
 
 	float m_fCoordScale;
-	float m_fGridSize;
+
+	float m_fFloorSnap;
+	float m_fGridSnap;
 };

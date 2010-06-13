@@ -21,7 +21,8 @@ m_bKeyDown(false),
 m_bKeyLeft(false),
 m_bKeyRight(false),
 m_fCoordScale(0.2f),
-m_fGridSize(0.5f)
+m_fFloorSnap(0.2f),
+m_fGridSnap(0.5f)
 {
 	//// 生成摄像机的视角参数
 	//Vec3D vEye(20.0f, 20.0f, 20.0f);
@@ -212,7 +213,7 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 				//	{
 				//		Pos2D pos;
 				//		Vec3D vPos=m_vAfterCatchPos;
-				//		vPos.f[i]+=(0==j?m_fGridSize:-m_fGridSize);
+				//		vPos.f[i]+=(0==j?m_fGridSnap:-m_fGridSnap);
 				//		R.world2Screen(vPos,pos);
 				//		CRect<float> rc(pos.x,pos.y,pos.x,pos.y);
 				//		rc.InflateRect(2,2);
@@ -221,7 +222,7 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 				//}
 				G.DrawLine3D(m_vObjectLastPos,m_vBeforeCatchPos,0xFF00FFFF);
 
-				G.drawCross3D(m_vAfterCatchPos,m_fGridSize,0xFF00FFFF);
+				G.drawCross3D(m_vAfterCatchPos,m_fGridSnap,0xFF00FFFF);
 
 				//{
 					Pos2D posBeforeCatchPos;
@@ -378,7 +379,7 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 						case VK_UP:
 							{
 								Vec3D vPos=m_Scene.getFocusObjectsPos();
-								vPos.y+=m_fGridSize;
+								vPos.y+=m_fGridSnap;
 								m_Scene.setFocusObjectsPos(vPos);
 								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
 							}
@@ -386,7 +387,7 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 						case VK_DOWN:
 							{
 								Vec3D vPos=m_Scene.getFocusObjectsPos();
-								vPos.y-=m_fGridSize;
+								vPos.y-=m_fGridSnap;
 								m_Scene.setFocusObjectsPos(vPos);
 								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
 							}
@@ -416,7 +417,7 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 						case VK_UP:
 							{
 								Vec3D vPos=m_Scene.getFocusObjectsPos();
-								vPos.z+=m_fGridSize;
+								vPos.z+=m_fGridSnap;
 								m_Scene.setFocusObjectsPos(vPos);
 								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
 							}
@@ -424,7 +425,7 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 						case VK_DOWN:
 							{
 								Vec3D vPos=m_Scene.getFocusObjectsPos();
-								vPos.z-=m_fGridSize;
+								vPos.z-=m_fGridSnap;
 								m_Scene.setFocusObjectsPos(vPos);
 								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
 							}
@@ -432,7 +433,7 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 						case VK_LEFT:
 							{
 								Vec3D vPos=m_Scene.getFocusObjectsPos();
-								vPos.x-=m_fGridSize;
+								vPos.x-=m_fGridSnap;
 								m_Scene.setFocusObjectsPos(vPos);
 								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
 							}
@@ -440,7 +441,7 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 						case VK_RIGHT:
 							{
 								Vec3D vPos=m_Scene.getFocusObjectsPos();
-								vPos.x+=m_fGridSize;
+								vPos.x+=m_fGridSnap;
 								m_Scene.setFocusObjectsPos(vPos);
 								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
 							}
@@ -537,14 +538,14 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 						//	fGridSize=0.5f;
 						//	//m_NumGridSize.setFloat(fGridSize);
 						//}
-						if((m_vAfterCatchPos-m_Scene.getFocusObjectsPos()).length()<m_fGridSize*0.8f)
+						if((m_vAfterCatchPos-m_Scene.getFocusObjectsPos()).length()<m_fGridSnap*0.8f)
 						{
 							m_vAfterCatchPos = m_Scene.getFocusObjectsPos();
 						}
 						else for (int i=0;i<3;i++)
 						{
-							float fSize = floorf((m_vAfterCatchPos.f[i]/m_fGridSize+0.5f))*m_fGridSize;
-							if (abs(fSize-m_vAfterCatchPos.f[i])>m_fGridSize/3)
+							float fSize = floorf((m_vAfterCatchPos.f[i]/m_fGridSnap+0.5f))*m_fGridSnap;
+							if (abs(fSize-m_vAfterCatchPos.f[i])>m_fGridSnap/3)
 							{
 								m_vAfterCatchPos.f[i] = fSize;
 							}
@@ -555,7 +556,7 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 					{
 						m_vAfterCatchPos.y = m_Terrain.GetData().GetHeight(Vec2D(m_vAfterCatchPos.x,m_vAfterCatchPos.z));
 					}
-					else if(abs(m_Terrain.GetData().GetHeight(Vec2D(m_vAfterCatchPos.x,m_vAfterCatchPos.z))-m_vAfterCatchPos.y)<0.2f)
+					else if(abs(m_Terrain.GetData().GetHeight(Vec2D(m_vAfterCatchPos.x,m_vAfterCatchPos.z))-m_vAfterCatchPos.y)<m_fFloorSnap)
 					{
 						m_vAfterCatchPos.y = m_Terrain.GetData().GetHeight(Vec2D(m_vAfterCatchPos.x,m_vAfterCatchPos.z));
 					}
