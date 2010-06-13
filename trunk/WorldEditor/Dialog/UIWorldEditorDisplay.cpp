@@ -15,7 +15,6 @@
 #include "Graphics.h"
 #include "TextRender.h"
 CUIWorldEditorDisplay::CUIWorldEditorDisplay():
-m_bKeyCtrl(false),
 m_bKeyUp(false),
 m_bKeyDown(false),
 m_bKeyLeft(false),
@@ -319,11 +318,6 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 					SetCapture(UIGetHWND());
 				}
 				return true;
-			case VK_CONTROL:
-				m_bKeyCtrl=true;
-				SetPressed(true);
-				SetCapture(UIGetHWND());
-				return true;
 			case 'W':
 				m_bKeyUp=true;
 				SetPressed(true);
@@ -354,13 +348,13 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 				m_fCoordScale=min(0.5f,m_fCoordScale+0.05f);
 				return true;
 			case 'Z':
-				if(m_bKeyCtrl)
+				if(GetKeyState(VK_CONTROL)<0)
 				{
 					m_Terrain.rebackEdit();
 				}
 				return true;
 			case 'Y':
-				if(m_bKeyCtrl)
+				if(GetKeyState(VK_CONTROL)<0)
 				{
 					m_Terrain.redoEdit();
 				}
@@ -372,7 +366,7 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 			{
 				if (m_Scene.getFocusObjects().size()>0)
 				{
-					if (m_bKeyCtrl)
+					if (GetKeyState(VK_CONTROL)<0)
 					{
 						switch(wParam)
 						{
@@ -462,9 +456,6 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 					fStrength = abs(fStrength);
 					m_Terrain.GetBrushDecal().SetStrength(fStrength);
 				}
-				return true;
-			case VK_CONTROL:
-				m_bKeyCtrl=false;
 				return true;
 			case 'W':
 				m_bKeyUp=false;
@@ -609,7 +600,21 @@ void CUIWorldEditorDisplay::OnLButtonDown(POINT point)
 		{
 			Vec3D vRayPos, vRayDir;
 			m_Camera.GetPickRay( vRayPos, vRayDir, point.x, point.y,m_rcBoundingBox);
-			if (m_bKeyCtrl)
+			if (GetKeyState(VK_MENU)<0)// new oject
+			{
+				Vec3D vPos;
+				if (m_Terrain.GetData().Pick(vRayPos, vRayDir,&vPos))
+				{
+					GetParentDialog()->postMsg("MSG_ADD_OBJECT");
+					//CSceneObject* pObject = m_Scene.getFocusObject();
+					//if (pObject)
+					//{
+					//	pObject->setPos(vPos);
+					//	GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_CHANGED");
+					//}
+				}
+			}
+			if (GetKeyState(VK_CONTROL)<0)
 			{
 				CMapObj* pObject = m_Scene.pickObject(vRayPos, vRayDir);
 				if (m_Scene.findFocusObject(pObject))
@@ -621,17 +626,6 @@ void CUIWorldEditorDisplay::OnLButtonDown(POINT point)
 					m_Scene.addFocusObject(pObject);
 				}
 				GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_CHANGED");
-				//Vec3D vPos;
-				//if (m_Terrain.GetData().Pick(vRayPos, vRayDir,&vPos))
-				//{
-				//	GetParentDialog()->postMsg("MSG_ADD_OBJECT");
-				//	//CSceneObject* pObject = m_Scene.getFocusObject();
-				//	//if (pObject)
-				//	//{
-				//	//	pObject->setPos(vPos);
-				//	//	GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_CHANGED");
-				//	//}
-				//}
 			}
 			else
 			{
@@ -650,7 +644,7 @@ void CUIWorldEditorDisplay::OnLButtonDown(POINT point)
 				}
 			}
 		}
-		else if(m_bKeyCtrl)
+		else if(GetKeyState(VK_CONTROL)<0)
 		{
 			Vec3D vRayPos, vRayDir;
 			Vec3D vTargetPos;
@@ -799,7 +793,6 @@ void CUIWorldEditorDisplay::OnFocusOut()
 	g_bLeftButtonDown = false;
 	g_bRightButtonDown = false;
 	g_bMiddleButtonDown = false;
-	m_bKeyCtrl = false;
 	m_bKeyUp = false;
 	m_bKeyDown = false;
 	m_bKeyLeft = false;

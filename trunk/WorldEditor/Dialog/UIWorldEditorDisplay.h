@@ -56,7 +56,6 @@ protected:
 	CTerrainEditor		m_Terrain;
 	CScene				m_Scene;
 	CSceneEffect		m_SceneEffect;
-	bool				m_bKeyCtrl;
 	bool				m_bKeyUp;
 	bool				m_bKeyDown;
 	bool				m_bKeyLeft;
