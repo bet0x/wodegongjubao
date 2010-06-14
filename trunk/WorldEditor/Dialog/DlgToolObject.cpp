@@ -31,10 +31,8 @@ void CDlgToolObject::OnControlRegister()
 	RegisterControlEvent("IDC_NUM_FLOOR_SNAP",	(PEVENT)&CDlgToolObject::OnNumFloorSnapChanged);
 	RegisterControlEvent("IDC_NUM_GRID_SNAP",	(PEVENT)&CDlgToolObject::OnNumGridSnapChanged);
 
-	RegisterEvent("MSG_FOCUS_OBJECT_CHANGED",(PEVENT)&CDlgToolObject::OnFocusObjectChanged);
+	RegisterEvent("MSG_FOCUS_OBJECT_UPDATE",(PEVENT)&CDlgToolObject::OnFocusObjectUpdate);
 	RegisterEvent("MSG_ADD_OBJECT",(PEVENT)&CDlgToolObject::OnAddObject);
-
-	RegisterEvent(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED,(PEVENT)&CDlgToolObject::OnObjectPosChanged);
 }
 
 void CDlgToolObject::initObject()
@@ -70,10 +68,10 @@ void CDlgToolObject::OnFocusObjectValueChanged()
 		getDisplay().getScene().setFocusObjectsRotate(vRotate);
 		getDisplay().getScene().setFocusObjectsScale(vScale);
 	}
-	OnFocusObjectChanged();
+	OnFocusObjectUpdate();
 }
 
-void CDlgToolObject::OnFocusObjectChanged()
+void CDlgToolObject::OnFocusObjectUpdate()
 {
 	if (getDisplay().getScene().getFocusObjects().size()>0)
 	{
@@ -109,33 +107,5 @@ void CDlgToolObject::OnAddObject()
 	CMapObj* pObject = getDisplay().getScene().add3DMapSceneObj(m_ObjListSceneObject.getSelectedObjectID(),getDisplay().getScene().getTargetPos(),vRotate,vScale);
 
 	getDisplay().getScene().addFocusObject(pObject);
-	OnFocusObjectChanged();
-	OnObjectPosChanged();
-}
-
-void CDlgToolObject::OnObjectPosChanged()
-{
-	if (getDisplay().getScene().getFocusObjects().size()>0)
-	{
-		Vec3D vPos = getDisplay().getScene().getFocusObjectsPos();
-		//if (m_CheckBoxCatchAtGrid.GetCheckValue())
-		//{
-		//	float fGridSize = m_NumGridSize.getFloat();
-		//	if (fGridSize<0.1f||fGridSize>=100.f) // check the value is not zero.
-		//	{
-		//		fGridSize=0.5f;
-		//		m_NumGridSize.setFloat(fGridSize);
-		//	}
-		//	for (int i=0;i<3;i++)
-		//	{
-		//		vPos.f[i] = floorf((vPos.f[i]/m_NumGridSize.getFloat()+0.5f))*m_NumGridSize.getFloat();
-		//	}
-		//}
-		//if (m_CheckBoxCatchAtFloor.GetCheckValue())
-		//{
-		//	vPos.y = getDisplay().getTerrain().GetData().GetHeight(Vec2D(vPos.x,vPos.z));
-		//}
-		//pObject->setPos(vPos);
-		m_Vec3DPos.setVec3D(vPos);
-	}
+	OnFocusObjectUpdate();
 }

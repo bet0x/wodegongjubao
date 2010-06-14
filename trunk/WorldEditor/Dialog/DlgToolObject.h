@@ -14,9 +14,8 @@ public:
 	void OnNumFloorSnapChanged();
 	void OnNumGridSnapChanged();
 	void OnFocusObjectValueChanged();
-	void OnFocusObjectChanged();
+	void OnFocusObjectUpdate();
 	void OnAddObject();
-	void OnObjectPosChanged();
 	void OnObjectListReload();
 private:
 	CUIComboObjListSceneObject m_ObjListSceneObject;

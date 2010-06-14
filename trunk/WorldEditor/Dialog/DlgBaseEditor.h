@@ -40,11 +40,6 @@
 #include "UIComboNumber.h"
 #include "UIComboColor.h"
 
-enum USER_DEFINED_MSG_TYPE
-{
-	USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED=10000,
-};
-
 class CModelDisplay;
 class CUIWorldEditorDisplay;
 class CDlgMainEditor;

@@ -20,8 +20,6 @@ void CUIComboObjList::OnControlRegister()
 	RegisterControlEvent("IDC_LIST_BOX",	(PEVENT)&CUIComboObjList::OnListBoxObjectSelection, EVENT_LISTBOX_SELECTION);
 	RegisterControlEvent("IDC_BTN_RELOAD",	(PEVENT)&CUIComboObjList::OnObjectListReload);
 	RegisterControlEvent("IDC_BTN_EDIT",	(PEVENT)&CUIComboObjList::OnObjectListEdit);
-
-	//RegisterEvent("MSG_FOCUS_OBJECT_CHANGED",(PEVENT)&CUIComboObjList::OnFocusObjectChanged);
 }
 
 //void CUIComboObjList::initObject()
