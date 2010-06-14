@@ -375,7 +375,7 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 								Vec3D vPos=m_Scene.getFocusObjectsPos();
 								vPos.y+=m_fGridSnap;
 								m_Scene.setFocusObjectsPos(vPos);
-								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
+								GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 							}
 							return true;
 						case VK_DOWN:
@@ -383,7 +383,7 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 								Vec3D vPos=m_Scene.getFocusObjectsPos();
 								vPos.y-=m_fGridSnap;
 								m_Scene.setFocusObjectsPos(vPos);
-								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
+								GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 							}
 							return true;
 						case VK_LEFT:
@@ -391,7 +391,7 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 								Vec3D vRotate=m_Scene.getFocusObjectsRotate();
 								vRotate.y+=PI/4;
 								m_Scene.setFocusObjectsRotate(vRotate);
-								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
+								GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 							}
 							return true;
 						case VK_RIGHT:
@@ -399,7 +399,7 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 								Vec3D vRotate=m_Scene.getFocusObjectsRotate();
 								vRotate.y-=PI/4;
 								m_Scene.setFocusObjectsRotate(vRotate);
-								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
+								GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 							}
 							return true;
 						}
@@ -413,7 +413,7 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 								Vec3D vPos=m_Scene.getFocusObjectsPos();
 								vPos.z+=m_fGridSnap;
 								m_Scene.setFocusObjectsPos(vPos);
-								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
+								GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 							}
 							return true;
 						case VK_DOWN:
@@ -421,7 +421,7 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 								Vec3D vPos=m_Scene.getFocusObjectsPos();
 								vPos.z-=m_fGridSnap;
 								m_Scene.setFocusObjectsPos(vPos);
-								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
+								GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 							}
 							return true;
 						case VK_LEFT:
@@ -429,7 +429,7 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 								Vec3D vPos=m_Scene.getFocusObjectsPos();
 								vPos.x-=m_fGridSnap;
 								m_Scene.setFocusObjectsPos(vPos);
-								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
+								GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 							}
 							return true;
 						case VK_RIGHT:
@@ -437,7 +437,7 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 								Vec3D vPos=m_Scene.getFocusObjectsPos();
 								vPos.x+=m_fGridSnap;
 								m_Scene.setFocusObjectsPos(vPos);
-								GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
+								GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 							}
 							return true;
 						}
@@ -519,26 +519,19 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 					}
 					m_vAfterCatchPos = m_vBeforeCatchPos;
 
-
-
 					if (m_vPosPressed.length()>1)
 					{
-						//float fGridSize = 0.5f;
-						//if (fGridSize<0.1f||fGridSize>=100.f) // check the value is not zero.
-						//{
-						//	fGridSize=0.5f;
-						//	//m_NumGridSize.setFloat(fGridSize);
-						//}
-						if((m_vAfterCatchPos-m_Scene.getFocusObjectsPos()).length()<m_fGridSnap*0.8f)
-						{
-							m_vAfterCatchPos = m_Scene.getFocusObjectsPos();
-						}
-						else for (int i=0;i<3;i++)
+						Vec3D vOldPos = m_Scene.getFocusObjectsPos();
+						for (int i=0;i<3;i++)
 						{
 							float fSize = floorf((m_vAfterCatchPos.f[i]/m_fGridSnap+0.5f))*m_fGridSnap;
-							if (abs(fSize-m_vAfterCatchPos.f[i])>m_fGridSnap/3)
+							if (abs(fSize-m_vAfterCatchPos.f[i])<m_fGridSnap/3)
 							{
 								m_vAfterCatchPos.f[i] = fSize;
+							}
+							else
+							{
+								m_vAfterCatchPos.f[i] = vOldPos.f[i];
 							}
 						}
 					}
@@ -552,7 +545,7 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 						m_vAfterCatchPos.y = m_Terrain.GetData().GetHeight(Vec2D(m_vAfterCatchPos.x,m_vAfterCatchPos.z));
 					}
 					m_Scene.setFocusObjectsPos(m_vAfterCatchPos);
-					//GetParentDialog()->postMsg(USER_DEFINED_MSG_TYPE_OBJECT_POS_CHANGED);
+					GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 				}
 			}
 			else
@@ -606,12 +599,6 @@ void CUIWorldEditorDisplay::OnLButtonDown(POINT point)
 				if (m_Terrain.GetData().Pick(vRayPos, vRayDir,&vPos))
 				{
 					GetParentDialog()->postMsg("MSG_ADD_OBJECT");
-					//CSceneObject* pObject = m_Scene.getFocusObject();
-					//if (pObject)
-					//{
-					//	pObject->setPos(vPos);
-					//	GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_CHANGED");
-					//}
 				}
 			}
 			if (GetKeyState(VK_CONTROL)<0)
@@ -625,7 +612,7 @@ void CUIWorldEditorDisplay::OnLButtonDown(POINT point)
 				{
 					m_Scene.addFocusObject(pObject);
 				}
-				GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_CHANGED");
+				GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 			}
 			else
 			{
@@ -639,7 +626,7 @@ void CUIWorldEditorDisplay::OnLButtonDown(POINT point)
 					{
 						m_Scene.clearFocusObjects();
 						m_Scene.addFocusObject(pObject);
-						GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_CHANGED");
+						GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 					}
 				}
 			}

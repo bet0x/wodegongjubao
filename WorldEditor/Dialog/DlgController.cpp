@@ -7,6 +7,7 @@
 #include "ModelDataMgr.h"
 #include "FileSystem.h"
 #include "..\MainRoot.h"
+#include "RegData.h"
 
 CDlgController::CDlgController()
 {
@@ -110,24 +111,7 @@ void CDlgController::MPQModel()
 void CDlgController::initRecentPath()
 {
 	// read the recent path from reg.
-	std::wstring wstrRecentPath;
-	{
-		HKEY hKey;
-		if (ERROR_SUCCESS==RegOpenKeyExW(HKEY_LOCAL_MACHINE,L"software\\rpgsky\\modelview\\",
-			0, KEY_READ, &hKey))
-		{
-			DWORD dwType = REG_SZ;
-			wchar_t wszFilename[256];
-			DWORD dwSize = sizeof(wszFilename);
-
-			if (ERROR_SUCCESS==RegQueryValueExW(hKey, L"recentpath",
-				NULL, &dwType, (PBYTE)&wszFilename, &dwSize))
-			{
-				wstrRecentPath = wszFilename;
-			}
-			RegCloseKey(hKey);
-		}
-	}
+	std::wstring wstrRecentPath = GetRegStr(L"software\\rpgsky\\modelview\\",L"recentpath");
 	OpenPath(wstrRecentPath,s2ws(CModelDataMgr::getInstance().getDataPlugsMgr().getAllExtensions()));
 }
 
@@ -192,15 +176,7 @@ void CDlgController::OnListBoxFolderItemDblClk()
 	else
 	{
 		// write the recent path to reg.
-		{
-			HKEY hKey;
-			if (ERROR_SUCCESS==RegCreateKeyExW(HKEY_LOCAL_MACHINE,L"software\\rpgsky\\modelview\\",
-				NULL,NULL,REG_OPTION_NON_VOLATILE,KEY_WRITE,NULL,&hKey,NULL))
-			{
-				RegSetValueExW(hKey,L"recentpath",0,REG_SZ,(LPBYTE)m_wstrPath.c_str(),sizeof(wchar_t)*m_wstrPath.length());
-				RegCloseKey(hKey);
-			}
-		}
+		SetRegStr(L"software\\rpgsky\\modelview\\",L"recentpath",m_wstrPath);
 		std::string strFilename = ws2s(m_wstrPath+m_ListBoxFolder.GetSelectedItem()->wstrText);
 		getModelDisplay().LoadModel( strFilename );
 		CMainRoot::getInstance().getMainDialog().getDlgModelController().OnUpdate();
