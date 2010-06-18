@@ -755,7 +755,7 @@ void CD3D9RenderSystem::SetupRenderState()
 	SetDepthBufferFunc(true, true, CMPF_LESS_EQUAL);
 	SetAlphaTestFunc(false);
 	SetBlendFunc(true, BLENDOP_ADD,SBF_SOURCE_ALPHA, SBF_ONE_MINUS_SOURCE_ALPHA);
-	SetCullingMode(CULL_ANTI_CLOCK_WISE);
+	SetCullingMode(CULL_NONE);
 
 	SetTexCoordIndex(0, 0);
 	SetTexCoordIndex(1, 0);
