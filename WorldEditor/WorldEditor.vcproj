@@ -139,7 +139,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="winmm.lib model.lib enginecore.lib ui.lib fileio.lib sound.lib"
+				AdditionalDependencies="winmm.lib model.lib rendersystem.lib enginecore.lib ui.lib fileio.lib sound.lib"
 				OutputFile="..\..\RPGSky\bin\Client\$(ProjectName).exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\engine\Media\FMOD\api\lib"
