@@ -16,7 +16,7 @@ public:
 	void	LoadModel(const std::string& strFilename);
 	void	loadComplexModel(const std::string& strFilename);
 	void	OnFrameMove( double fTime, float fElapsedTime );
-	void	OnFrameRender( double fTime, float fElapsedTime );
+	void	OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime );
 	bool	HandleMouse(UINT uMsg, POINT pt, WPARAM wParam, LPARAM lParam);
 	void	MouseProc( bool bLeftButtonDown, bool bRightButtonDown, bool bMiddleButtonDown,
 		bool bSideButton1Down, bool bSideButton2Down, int nMouseWheelDelta, int xPos, int yPos );

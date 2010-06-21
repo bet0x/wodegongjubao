@@ -12,7 +12,7 @@ void CUICoordDisplay::SetViewDir(Vec3D& vViewDir)
 	//m_Coord.FrameMove( vViewDir );
 }
 
-void CUICoordDisplay::OnFrameRender(double fTime, float fElapsedTime)
+void CUICoordDisplay::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 {
 	CRenderSystem& R = GetRenderSystem();
 

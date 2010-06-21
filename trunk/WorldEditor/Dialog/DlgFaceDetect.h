@@ -22,7 +22,7 @@
 //	virtual void OnControlRegister();
 //	virtual bool OnInitDialog();
 //	virtual void OnFrameMove(double fTime, float fElapsedTime);
-//	virtual void OnFrameRender(double fTime, float fElapsedTime);
+//	virtual void OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime);
 //	void SetAR(bool bAR){m_bAR = bAR;}
 //	bool GetAR(){return m_bAR;}
 //protected:

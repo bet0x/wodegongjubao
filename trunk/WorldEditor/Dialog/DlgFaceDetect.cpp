@@ -141,7 +141,7 @@
 //	}
 //}
 //
-//void CDlgFaceDetect::OnFrameRender(double fTime, float fElapsedTime)
+//void CDlgFaceDetect::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 //{
 //	CDlgBaseEditor::OnFrameRender(fTime, fElapsedTime);
 //	if (m_pTexCapture)

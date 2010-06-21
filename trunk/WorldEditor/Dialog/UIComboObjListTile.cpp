@@ -92,9 +92,9 @@ void CUIComboObjListTile::OnFrameMove(double fTime, float fElapsedTime)
 	CUIComboObjList::OnFrameMove(fTime, fElapsedTime);
 }
 
-void CUIComboObjListTile::OnFrameRender(double fTime, float fElapsedTime)
+void CUIComboObjListTile::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 {
-	CUIComboObjList::OnFrameRender(fTime, fElapsedTime);
+	CUIComboObjList::OnFrameRender(mTransform,fTime, fElapsedTime);
 	GetGraphics().DrawTex(m_ListBoxDisplay.GetBoundingBox().getRECT(),m_uTileTexID,0xFFFFFFFF);
 }
 

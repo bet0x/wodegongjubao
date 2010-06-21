@@ -13,7 +13,7 @@ public:
 	virtual bool MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 	virtual void OnControlRegister();
 	void OnBtnClose();
-	void OnFrameRender(double fTime, float fElapsedTime);
+	void OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime);
 	void SetViewDir(Vec3D& vViewDir);
 protected:
 private:

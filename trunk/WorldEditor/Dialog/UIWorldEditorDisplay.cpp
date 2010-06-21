@@ -84,7 +84,7 @@ void CUIWorldEditorDisplay::OnFrameMove(double fTime, float fElapsedTime)
 				m_bKeyUp?1000.0f*fElapsedTime:(m_bKeyDown?-1000.0f*fElapsedTime:0));
 }
 
-void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
+void CUIWorldEditorDisplay::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 {
 	if (!IsVisible())//&&!isStyleVisible())
 	{
@@ -295,7 +295,7 @@ void CUIWorldEditorDisplay::OnFrameRender(double fTime, float fElapsedTime)
 	R.setViewport(GetParentDialog()->GetBoundingBox());
 
 	//TwDraw();
-	CUIDisplay::OnFrameRender(fTime,fElapsedTime);
+	CUIDisplay::OnFrameRender(mTransform,fTime,fElapsedTime);
 	return;
 }
 

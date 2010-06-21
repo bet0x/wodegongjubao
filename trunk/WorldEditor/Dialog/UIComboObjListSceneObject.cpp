@@ -83,9 +83,9 @@ void CUIComboObjListSceneObject::OnFrameMove(double fTime, float fElapsedTime)
 	m_ModelObject.updateEmitters(Matrix::UNIT,fElapsedTime);
 }
 
-void CUIComboObjListSceneObject::OnFrameRender(double fTime, float fElapsedTime)
+void CUIComboObjListSceneObject::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 {
-	CUIComboObjList::OnFrameRender(fTime, fElapsedTime);
+	CUIComboObjList::OnFrameRender(mTransform,fTime, fElapsedTime);
 	CRenderSystem& R = GetRenderSystem();
 	R.setViewport(m_ListBoxDisplay.GetBoundingBox());
 	R.SetSamplerFilter(0, TEXF_LINEAR, TEXF_LINEAR, TEXF_LINEAR);
