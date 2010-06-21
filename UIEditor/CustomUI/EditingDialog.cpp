@@ -19,7 +19,7 @@ bool CEditingDialog::OnInitDialog()
 	return true;
 }
 
-void CEditingDialog::OnFrameRender(double fTime, float fElapsedTime)
+void CEditingDialog::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 {
 	CUIDialog::OnFrameRender(fTime, fElapsedTime);
 	/*UIGraph::DrawRect( GetBoundingBox(), 0xA00000FF );

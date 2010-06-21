@@ -16,7 +16,7 @@ public:
 	// Ö¡¸üÐÂ
 	virtual void OnFrameMove(double fTime, float fElapsedTime);
 	// Ö¡äÖÈ¾
-	virtual void OnFrameRender(double fTime, float fElapsedTime);
+	virtual void OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime);
 	//
 	void Render();
 

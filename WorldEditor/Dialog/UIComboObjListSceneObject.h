@@ -16,7 +16,7 @@ public:
 	void OnObjectListReload();
 	void OnObjectListEdit();
 	virtual void OnFrameMove(double fTime, float fElapsedTime);
-	virtual void OnFrameRender(double fTime, float fElapsedTime);
+	virtual void OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime);
 public:
 	CModelObject	m_ModelObject;
 };

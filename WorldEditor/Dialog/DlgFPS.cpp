@@ -35,7 +35,7 @@ void CDlgFPS::OnBtnClose()
 	//SetVisible(false);
 }
 
-void CDlgFPS::OnFrameRender(double fTime, float fElapsedTime)
+void CDlgFPS::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 {
 	static float fFps = 0.0f;
 	if (fElapsedTime!=0.0f)
@@ -57,7 +57,7 @@ void CDlgFPS::OnFrameRender(double fTime, float fElapsedTime)
 	//	GetTextRender().SetForegroundColor( D3DXCOLOR( 1.0f, 0.6f, 1.0f, 0.6f ) );
 	//	GetTextRender().drawText( DXUTGetDeviceStats());
 	//}
-	CUIDialog::OnFrameRender(fTime, fElapsedTime);
+	CUIDialog::OnFrameRender(mTransform,fTime,fElapsedTime);
 	{
 		static CUBB g_TestUBB;
 		if (  1 && GetTextRender().m_bHasUpdata )

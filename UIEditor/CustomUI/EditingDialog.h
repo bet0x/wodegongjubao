@@ -21,7 +21,7 @@ public:
 	~CEditingDialog();
 public:
 	bool OnInitDialog();
-	void OnFrameRender(double fTime, float fElapsedTime);
+	void OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime);
 protected:
 private:
 };

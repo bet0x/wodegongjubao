@@ -8,7 +8,7 @@ class CUICoordDisplay: public CUIDisplay
 public:
 	CUICoordDisplay();
 	void SetViewDir(Vec3D& vViewDir);
-	virtual void	OnFrameRender(double fTime, float fElapsedTime);
+	virtual void	OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime);
 protected:
 //	CCoordinate		m_Coord;
 };
