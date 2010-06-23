@@ -1,7 +1,6 @@
 #include "MyPlug.h"
 #include "IORead.h"
 #include "FileSystem.h"
-#include "Jpeg.h"
 #include "3DMapSceneObj.h"
 
 #include "borzoi.h"    // Include this to use the elliptic curve and
