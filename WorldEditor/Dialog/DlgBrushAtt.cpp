@@ -13,7 +13,6 @@ void CDlgBrushAtt::OnControlRegister()
 {
 	CDlgBrush::OnControlRegister();
 
-
 	RegisterControl("IDC_RADIO_BTN_SAFE",	m_RadioBtnSafe);
 	RegisterControl("IDC_RADIO_BTN_BALK",	m_RadioBtnBalk);
 	RegisterControl("IDC_RADIO_BTN_CLEAR",	m_RadioBtnClear);
