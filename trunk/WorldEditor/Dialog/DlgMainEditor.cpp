@@ -70,6 +70,9 @@ void CDlgMainEditor::OnControlRegister()
 	RegisterControlEvent("IDC_BTN_TOOLBAR",		(PEVENT)&CDlgMainEditor::OnBtnToolbar);
 	RegisterControlEvent("IDC_BTN_HELP",		(PEVENT)&CDlgMainEditor::OnBtnHelp);
 
+	RegisterControlEvent("IDD_TOOLBAR",			(PEVENT)&CDlgMainEditor::updateDisplay, EVENT_VISIBLE);
+	RegisterControlEvent("IDD_MODEL_CONTROLLER",(PEVENT)&CDlgMainEditor::updateDisplay, EVENT_VISIBLE);
+
 	RegisterControlEvent("IDD_FILE", (PEVENT)&CDlgMainEditor::OnFileNew,CDlgFile::EVENT_NEW);
 	RegisterControlEvent("IDD_FILE", (PEVENT)&CDlgMainEditor::OnFileOpen,CDlgFile::EVENT_OPEN);
 	RegisterControlEvent("IDD_FILE", (PEVENT)&CDlgMainEditor::OnFileSave,CDlgFile::EVENT_SAVE);

@@ -1,5 +1,4 @@
 #include "DlgToolbar.h"
-#include "..\MainRoot.h"
 
 CDlgToolbar::CDlgToolbar()
 {
@@ -66,5 +65,5 @@ void CDlgToolbar::reset()
 
 void CDlgToolbar::OnClose()
 {
-	getMainDialog().OnBtnToolbar();
+	SetVisible(false);
 }
