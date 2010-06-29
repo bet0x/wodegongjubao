@@ -1,11 +1,4 @@
 #include "DlgModelController.h"
-/*#include "mpq/mpq_libmpq.h"*/
-/*#include "database.h"*/
-#include "CsvFile.h"
-#include "IORead.h"
-#include "DlgMainEditor.h"
-#include "ModelDataMgr.h"
-#include "FileSystem.h"
 
 CDlgModelController::CDlgModelController()
 {
@@ -38,7 +31,6 @@ void CDlgModelController::OnControlRegister()
 
 bool CDlgModelController::OnInitDialog()
 {
-	//SetButtonGroup();
 	OnTabChanged();
 	return true;
 }
@@ -59,5 +51,5 @@ void CDlgModelController::OnTabChanged()
 
 void CDlgModelController::OnClose()
 {
-	getMainDialog().OnBtnToolbar();
+	SetVisible(false);
 }

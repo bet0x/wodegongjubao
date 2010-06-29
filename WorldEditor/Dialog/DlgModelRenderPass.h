@@ -16,6 +16,7 @@ private:
 	void OnEditBoxMaterialChanged();
 	void OnBtnAdd();
 	void OnBtnDelete();
+private:
 	// Controls' variable.
 	CUIListBox	m_ListboxRenderPass;
 	CUIComboBox	m_CmbSubID;

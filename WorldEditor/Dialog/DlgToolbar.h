@@ -12,12 +12,12 @@ public:
 	virtual void OnControlRegister();
 	virtual bool OnInitDialog();
 
+	void reset();
+private:
 	void OnBtnSetting();
 	void OnBtnTerrain();
 	void OnBtnObject();
 	void OnClose();
-	void reset();
-private:
 	void closeAllChildDialog();
 	CDlgSetting			m_dlgSetting;
 	CDlgTerrainEditor	m_DlgTerrainEditor;
