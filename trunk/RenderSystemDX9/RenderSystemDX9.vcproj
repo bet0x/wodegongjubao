@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="gb2312"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="RenderSystemDX9"
 	ProjectGUID="{6CBDDBA0-9652-41E5-8FB4-79CE71041D1C}"
 	RootNamespace="RenderSystemDX9"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -72,6 +73,8 @@
 				OutputFile="..\..\RPGSky\bin\Client\$(ProjectName).dll"
 				AdditionalLibraryDirectories="..\..\lib;DX9SDK\Lib\x86"
 				ModuleDefinitionFile=".\$(ProjectName).def"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -92,9 +95,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -161,6 +161,8 @@
 				AdditionalLibraryDirectories="..\..\lib;DX9SDK\Lib\x86"
 				ModuleDefinitionFile=".\$(ProjectName).def"
 				GenerateDebugInformation="true"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -181,9 +183,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
