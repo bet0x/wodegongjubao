@@ -13,8 +13,8 @@ public:
 public:
 	CDlgModelMain& getMainDialog();
 	void Run();
-	void OnFrameMove( double fTime, float fElapsedTime );
-	void OnFrameRender( double fTime, float fElapsedTime );
+	void OnFrameMove(double fTime, float fElapsedTime);
+	void OnFrameRender(double fTime, float fElapsedTime);
 
 	bool MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 protected:

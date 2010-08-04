@@ -21,7 +21,7 @@ bool CEditingDialog::OnInitDialog()
 
 void CEditingDialog::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 {
-	CUIDialog::OnFrameRender(fTime, fElapsedTime);
+	CUIDialog::OnFrameRender(mTransform,fTime,fElapsedTime);
 	/*UIGraph::DrawRect( GetBoundingBox(), 0xA00000FF );
 	if( m_bCaption )// ª≠±ÍÃ‚
 	{
