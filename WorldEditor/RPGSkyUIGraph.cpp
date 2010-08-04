@@ -5,6 +5,7 @@
 
 // 
 static RPGSkyUIGraph g_uiGraph;
+UIGraph* UIGraph::m_pInstace = &g_uiGraph;
 
 struct UI_SCREEN_VERTEX
 {
