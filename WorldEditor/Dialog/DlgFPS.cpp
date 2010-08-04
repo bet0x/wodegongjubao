@@ -59,7 +59,7 @@ void CDlgFPS::OnFrameRender(const Matrix& mTransform, double fTime, float fElaps
 	//}
 	CUIDialog::OnFrameRender(mTransform,fTime,fElapsedTime);
 	{
-		static CUBB g_TestUBB;
+		/*static CUBB g_TestUBB;
 		if (  1 && GetTextRender().m_bHasUpdata )
 		{
 			GetTextRender().m_bHasUpdata = false;
@@ -123,8 +123,9 @@ void CDlgFPS::OnFrameRender(const Matrix& mTransform, double fTime, float fElaps
 		}
 		if (s_bShowUBB)
 		{
-			GetTextRender().DrawUBB( &g_TestUBB );
-		}
+			//UIGraph::getInstance().getTextRender
+			//GetTextRender().DrawUBB( &g_TestUBB );
+		}*/
 	}
 }
 

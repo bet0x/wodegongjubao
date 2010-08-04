@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\..\Include&quot;;..\..\Shared\Protection\src"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\..\Include&quot;;..\..\3dgui\include;..\..\Shared\Protection\src"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -62,10 +62,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="winmm.lib modeld.lib enginecored.lib uid.lib fileiod.lib soundd.lib"
+				AdditionalDependencies="winmm.lib modeld.lib enginecored.lib 3DGUI.lib TextRender.lib FreeType.lib fileiod.lib soundd.lib"
 				OutputFile="..\..\RPGSky\bin\Client\$(ProjectName)D.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\engine\Media\FMOD\api\lib"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\3dgui\Debug;..\..\engine\Media\FMOD\api\lib"
 				IgnoreDefaultLibraryNames="LIBCMTD.lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -139,10 +139,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="winmm.lib model.lib rendersystem.lib enginecore.lib ui.lib fileio.lib sound.lib"
+				AdditionalDependencies="winmm.lib model.lib rendersystem.lib enginecore.lib 3DGUI.lib TextRender.lib fileio.lib sound.lib"
 				OutputFile="..\..\RPGSky\bin\Client\$(ProjectName).exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\engine\Media\FMOD\api\lib"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\3dgui\Release;..\..\engine\Media\FMOD\api\lib"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -191,6 +191,14 @@
 				RelativePath=".\MainRoot.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\RPGSkyTextRender.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\RPGSkyUIGraph.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Í·ÎÄ¼þ"
@@ -203,6 +211,14 @@
 			</File>
 			<File
 				RelativePath=".\resource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RPGSkyTextRender.h"
+				>
+			</File>
+			<File
+				RelativePath=".\RPGSkyUIGraph.h"
 				>
 			</File>
 		</Filter>
