@@ -50,7 +50,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\Shared\Common\Include;..\..\Shared\Math\Include;..\..\Shared\IO\FileIO\Include;..\..\Shared\IO\tinyxml;..\..\engine\Render\RenderSystem\Include;..\..\engine\Render\RenderSystemDX9\Include;..\..\engine\EngineCore\Include;..\..\engine\Model\Include;..\..\engine\Media\Sound\Include;..\..\engine\UI\Include;..\..\Shared\Protection\src"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\..\Include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
