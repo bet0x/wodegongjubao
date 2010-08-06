@@ -15,5 +15,6 @@ public:
 	void DrawText(const std::wstring& wstrText, CUIStyle& style, int nIndex, const CRect<float>& rcDest, bool bShadow = false, int nCount = -1);
 	void InitFont(const std::wstring& wstrFontName, uint32 uSize);
 	int	GetFontSize();
+	Matrix setUIMatrix(const Matrix& mTransform, const CRect<float>& rc, const Vec3D& vTranslation, const Vec3D& vRotate);
 	CTextRender& getTextRender();
 };
