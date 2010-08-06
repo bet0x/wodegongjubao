@@ -27,6 +27,11 @@ struct UI_SCREEN_VERTEX_UNTEX
 };
 DWORD UI_SCREEN_VERTEX_UNTEX::FVF = FVF_XYZRHW | FVF_DIFFUSE;
 
+void RPGSkyUIGraph::frameUpdate()
+{
+	getTextRender().OnFrameMove();
+}
+
 void RPGSkyUIGraph::DrawRect(const CRect<float>& rcDest, Color32 color)
 {
 	CRenderSystem& R = GetRenderSystem();
@@ -139,7 +144,7 @@ void RPGSkyUIGraph::CalcTextRect(const std::wstring& wstrText, CRect<float>& rcD
 	}
 }
 
-void RPGSkyUIGraph::DrawText(const std::wstring& wstrText, CUIStyle& style, int nIndex,const CRect<float>& rcDest, bool bShadow, int nCount)
+void RPGSkyUIGraph::DrawText(const std::wstring& wstrText, CUIStyle& style, int nIndex,const CRect<float>& rcDest, int nCount)
 {
 	Color32 color = 0xFFFFFFFF;//style.m_mapFont[nIndex].color.getColor();
 	uint32 uFormat =  0;//style.GetCyclostyle().m_FontStyle[nIndex].uFormat;
@@ -148,6 +153,22 @@ void RPGSkyUIGraph::DrawText(const std::wstring& wstrText, CUIStyle& style, int 
 		return;
 
 	getTextRender().drawText(wstrText,nCount,rcDest.getRECT(),uFormat, color.c);
+}
+
+void RPGSkyUIGraph::drawText(const std::wstring& strText, int cchText, const RECT& rc, UINT format, unsigned long color, RECT* prcRet)
+{
+	getTextRender().drawText(strText,cchText,rc,format,color,prcRet);
+}
+
+void RPGSkyUIGraph::drawUBB(const std::wstring& wstrText,const RECT& rc,const unsigned long& color)
+{
+	CRenderSystem& R = GetRenderSystem();
+	R.SetTextureFactor(color);
+	R.SetTextureColorOP(1,TBOP_MODULATE,TBS_CURRENT,TBS_TFACTOR);
+	R.SetTextureAlphaOP(1,TBOP_MODULATE,TBS_CURRENT,TBS_TFACTOR);
+	getTextRender().DrawUBB(wstrText,rc);
+	R.SetTextureColorOP(1,TBOP_DISABLE);
+	R.SetTextureAlphaOP(1,TBOP_DISABLE);
 }
 
 void RPGSkyUIGraph::InitFont(const std::wstring& wstrFontName, uint32 uSize)
