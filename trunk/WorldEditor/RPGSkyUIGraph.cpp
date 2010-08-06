@@ -161,6 +161,31 @@ int RPGSkyUIGraph::GetFontSize()
 	return getTextRender().GetCharHeight();
 }
 
+Matrix RPGSkyUIGraph::setUIMatrix(const Matrix& mTransform, const CRect<float>& rc, const Vec3D& vTranslation, const Vec3D& vRotate)
+{
+	CRenderSystem& R = GetRenderSystem();
+	R.SetDepthBufferFunc(false,false);
+	//R.SetDepthBufferFunc(true,true);
+	//////////////////////////////////////////////////////////////////////////
+	CRect<int> rcViewport;
+	R.getViewport(rcViewport);
+	Matrix mView;
+	//mView.MatrixLookAtLH(Vec3D(0,0,0),Vec3D(0,0,1.0f),Vec3D(0,1.0f,0));
+	mView.unit();
+	R.setViewMatrix(mView);
+	Matrix mProjection;
+	mProjection.MatrixPerspectiveFovLH(PI/4,(float)rcViewport.right/(float)rcViewport.bottom,0.1f,100);
+	R.setProjectionMatrix(mProjection);
+	//////////////////////////////////////////////////////////////////////////
+	Matrix mRotate;
+	mRotate.rotate(vRotate);
+	Matrix mTrans;
+	mTrans.translation(vTranslation);
+	Matrix mWorld = mTransform*Matrix::newTranslation(Vec3D(rc.left+0.5f*rc.getWidth(),rc.top+0.5f*rc.getHeight(),0))*mTrans*mRotate*Matrix::newTranslation(Vec3D(-0.5f*rc.getWidth(),-0.5f*rc.getHeight(),0));
+	GetRenderSystem().setWorldMatrix(mWorld);
+	return mWorld;
+}
+
 CTextRender& RPGSkyUIGraph::getTextRender()
 {
 	static CRPGSkyTextRender s_RPGSkyTextRender;
