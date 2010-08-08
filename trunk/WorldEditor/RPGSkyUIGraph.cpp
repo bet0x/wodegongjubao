@@ -171,10 +171,10 @@ void RPGSkyUIGraph::drawUBB(const std::wstring& wstrText,const RECT& rc,const un
 	R.SetTextureAlphaOP(1,TBOP_DISABLE);
 }
 
-void RPGSkyUIGraph::InitFont(const std::wstring& wstrFontName, uint32 uSize)
+void RPGSkyUIGraph::InitFont(const std::wstring& wstrFontName, size_t size)
 {
 	getTextRender().load(ws2s(wstrFontName).c_str());
-	getTextRender().setFontSize(uSize);
+	getTextRender().setFontSize(size);
 }
 
 int RPGSkyUIGraph::GetFontSize()

@@ -16,7 +16,7 @@ public:
 	void DrawText(const std::wstring& wstrText, CUIStyle& style, int nIndex, const CRect<float>& rcDest, int nCount = -1);
 	void drawText(const std::wstring& strText, int cchText, const RECT& rc, UINT format, unsigned long color = 0xffffffff, RECT* prcRet=NULL);
 	void drawUBB(const std::wstring& wstrText,const RECT& rc,const unsigned long& color);
-	void InitFont(const std::wstring& wstrFontName, uint32 uSize);
+	void InitFont(const std::wstring& wstrFontName, size_t size);
 	int	GetFontSize();
 	Matrix setUIMatrix(const Matrix& mTransform, const CRect<float>& rc, const Vec3D& vTranslation, const Vec3D& vRotate);
 	CTextRender& getTextRender();
