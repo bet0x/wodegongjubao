@@ -241,7 +241,7 @@ void CDlgMainEditor::OnFileNew()
 void CDlgMainEditor::OnFileOpen()
 {
 	std::string strFilename = ws2s(m_DlgFile.GetFilename());
-	SetRegStr(L"software\\rpgsky\\worldeditor\\",L"recentpath",GetParentPath(m_DlgFile.GetFilename()));
+	SetRegStr(L"software\\rpgsky\\worldeditor\\",L"recentpath",GetParentPath(m_DlgFile.GetFilename()).c_str());
 	CScenePlugBase* pScenePlug = (CScenePlugBase*)m_DataPlugsMgr.getPlugByExtension(ws2s(m_DlgFile.getFileType()));
 	if (pScenePlug)
 	{

@@ -120,7 +120,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\..\Include&quot;;..\..\3dgui\include;..\..\Shared\Protection\src"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\..\Include&quot;;..\..\3dgui\include"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
