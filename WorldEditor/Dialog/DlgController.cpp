@@ -176,7 +176,7 @@ void CDlgController::OnListBoxFolderItemDblClk()
 	else
 	{
 		// write the recent path to reg.
-		SetRegStr(L"software\\rpgsky\\modelview\\",L"recentpath",m_wstrPath);
+		SetRegStr(L"software\\rpgsky\\modelview\\",L"recentpath",m_wstrPath.c_str());
 		std::string strFilename = ws2s(m_wstrPath+m_ListBoxFolder.GetSelectedItem()->wstrText);
 		getModelDisplay().LoadModel( strFilename );
 		CMainRoot::getInstance().getMainDialog().getDlgModelController().OnUpdate();
