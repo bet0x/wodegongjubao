@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\..\Include&quot;;..\..\3dgui\include;..\..\Shared\Protection\src"
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\..\Include&quot;;..\..\3dgui\include"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
