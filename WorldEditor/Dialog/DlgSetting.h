@@ -1,9 +1,7 @@
 #pragma once
-#include "DlgBaseEditor.h"
-#include "UIComboColor.h"
-#include "UIComboNumber.h"
+#include "UIDialog.h"
 
-class CDlgSetting : public CDlgBaseEditor
+class CDlgSetting
 {
 public:
 	CDlgSetting();

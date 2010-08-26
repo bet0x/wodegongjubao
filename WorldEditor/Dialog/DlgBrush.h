@@ -1,7 +1,7 @@
 #pragma once
-#include "DlgBaseEditor.h"
+#include "UIDialog.h"
 
-class CDlgBrush : public CDlgBaseEditor
+class CDlgBrush
 {
 public:
 	CDlgBrush();

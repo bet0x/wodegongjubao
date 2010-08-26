@@ -1,5 +1,5 @@
 #include "DlgBrushAtt.h"
-#include "Terrain.h"
+#include "..\MainRoot.h"
 
 CDlgBrushAtt::CDlgBrushAtt()
 {
@@ -30,7 +30,7 @@ bool CDlgBrushAtt::OnInitDialog()
 
 void CDlgBrushAtt::SetVisible(bool bVisible)
 {
-	getDisplay().getTerrain().showAttribute(bVisible);
+	WE_TERRAIN.showAttribute(bVisible);
 	CDlgBrush::SetVisible(bVisible);
 }
 
@@ -50,5 +50,5 @@ void CDlgBrushAtt::OnRadioBtnAttChanged()
 	{
 		uAtt |= TERRAIN_ATT_TYPE_CLEAR;
 	}
-	getBrush().SetAtt(uAtt);
+	WE_BRUSH.SetAtt(uAtt);
 }

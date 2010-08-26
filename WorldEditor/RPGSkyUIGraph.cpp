@@ -2,6 +2,7 @@
 #include "RenderSystem.h"
 #include "Graphics.h"
 #include "RPGSkyTextRender.h"
+#include "Audio.h"
 
 // 
 static RPGSkyUIGraph g_uiGraph;
@@ -55,11 +56,10 @@ void RPGSkyUIGraph::FillRect(const CRect<float>& rcDest, Color32 color)
 	// Since we're doing our own drawing here we need to flush the sprites
 	R.SetFVF(UI_SCREEN_VERTEX::FVF);
 
-
 	R.SetTextureColorOP(0, TBOP_SOURCE2);
 	R.SetTextureAlphaOP(0, TBOP_SOURCE2);
 
-	GetGraphics().FillRect(rcDest, color.c);
+	GetGraphics().FillRect3D(rcDest.left,rcDest.top,rcDest.right,rcDest.bottom,color.c);
 
 	R.SetTextureColorOP(0, TBOP_MODULATE);
 	R.SetTextureAlphaOP(0, TBOP_MODULATE);
@@ -101,27 +101,27 @@ void RPGSkyUIGraph::DrawPolyLine(POINT* apPoints, UINT nNumPoints, Color32 color
 	S_DELS(vertices);
 }
 
-void RPGSkyUIGraph::DrawSprite3x3Grid(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest,const std::string& strTexture, Color32 color)
+void RPGSkyUIGraph::DrawSprite3x3Grid(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest,const char* szTexture, Color32 color)
 {
 	if(color.a == 0)
 		return;
-	int TextureID = GetRenderSystem().GetTextureMgr().RegisterTexture(strTexture);
+	int TextureID = GetRenderSystem().GetTextureMgr().RegisterTexture(szTexture);
 	GetGraphics().Draw3x3Grid3D(rcSrc, rcCenterSrc, rcDest, TextureID, color);
 }
 
-void RPGSkyUIGraph::DrawSprite(const CRect<float>& rcSrc, const CRect<float>& rcDest, const std::string& strTexture, Color32 color)
+void RPGSkyUIGraph::DrawSprite(const CRect<float>& rcSrc, const CRect<float>& rcDest, const char* szTexture, Color32 color)
 {
 	if(color.a == 0)
 		return;
-	int TextureID = GetRenderSystem().GetTextureMgr().RegisterTexture(strTexture);
+	int TextureID = GetRenderSystem().GetTextureMgr().RegisterTexture(szTexture);
 	GetGraphics().DrawTex3D(rcSrc, rcDest, TextureID, color);
 }
 
-void RPGSkyUIGraph::DrawSprite(const CRect<float>& rcDest, const std::string& strTexture, Color32 color)
+void RPGSkyUIGraph::DrawSprite(const CRect<float>& rcDest, const char* szTexture, Color32 color)
 {
 	if(color.a == 0)
 		return;
-	int TextureID = GetRenderSystem().GetTextureMgr().RegisterTexture(strTexture);
+	int TextureID = GetRenderSystem().GetTextureMgr().RegisterTexture(szTexture);
 	GetGraphics().DrawTex(rcDest, TextureID, color);
 }
 
@@ -157,7 +157,13 @@ void RPGSkyUIGraph::DrawText(const std::wstring& wstrText, CUIStyle& style, int 
 
 void RPGSkyUIGraph::drawText(const std::wstring& strText, int cchText, const RECT& rc, UINT format, unsigned long color, RECT* prcRet)
 {
+	CRenderSystem& R = GetRenderSystem();
+	R.SetTextureFactor(color);
+	R.SetTextureColorOP(1,TBOP_MODULATE,TBS_CURRENT,TBS_TFACTOR);
+	R.SetTextureAlphaOP(1,TBOP_MODULATE,TBS_CURRENT,TBS_TFACTOR);
 	getTextRender().drawText(strText,cchText,rc,format,color,prcRet);
+	R.SetTextureColorOP(1,TBOP_DISABLE);
+	R.SetTextureAlphaOP(1,TBOP_DISABLE);
 }
 
 void RPGSkyUIGraph::drawUBB(const std::wstring& wstrText,const RECT& rc,const unsigned long& color)
@@ -205,6 +211,16 @@ Matrix RPGSkyUIGraph::setUIMatrix(const Matrix& mTransform, const CRect<float>& 
 	Matrix mWorld = mTransform*Matrix::newTranslation(Vec3D(rc.left+0.5f*rc.getWidth(),rc.top+0.5f*rc.getHeight(),0))*mTrans*mRotate*Matrix::newTranslation(Vec3D(-0.5f*rc.getWidth(),-0.5f*rc.getHeight(),0));
 	GetRenderSystem().setWorldMatrix(mWorld);
 	return mWorld;
+}
+
+bool RPGSkyUIGraph::scriptStringAnalyse(CScriptStringAnalysis& analysis, const std::wstring& strText)
+{
+	return getTextRender().scriptStringAnalyse(analysis,strText);
+}
+
+void RPGSkyUIGraph::playSound(const char* szFilename)
+{
+	GetAudio().playSound(szFilename);
 }
 
 CTextRender& RPGSkyUIGraph::getTextRender()

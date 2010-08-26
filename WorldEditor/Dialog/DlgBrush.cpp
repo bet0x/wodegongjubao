@@ -1,5 +1,7 @@
 #include "DlgBrush.h"
 #include "DlgToolbar.h"
+#include "..\MainRoot.h"
+
 CDlgBrush::CDlgBrush()
 {
 }
@@ -47,17 +49,17 @@ void CDlgBrush::SetVisible(bool bVisible)
 void CDlgBrush::OnSliderBrushRandiusChanged()
 {
 	float fRandius = m_SliderBrushRandius.GetValue()/100.0f;
-	getBrush().SetSize(fRandius);
+	WE_BRUSH.SetSize(fRandius);
 }
 
 void CDlgBrush::OnSliderBrushHardnessChanged()
 {
 	float fHardness = m_SliderBrushHardness.GetValue()/100.0f;
-	getBrush().SetHardness(fHardness);
+	WE_BRUSH.SetHardness(fHardness);
 }
 
 void CDlgBrush::OnSliderBrushStrengthChanged()
 {
 	float fStrength = m_SliderBrushStrength.GetValue()/100.0f;
-	getBrush().SetStrength(fStrength);
+	WE_BRUSH.SetStrength(fStrength);
 }

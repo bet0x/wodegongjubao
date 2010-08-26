@@ -119,14 +119,14 @@ bool CDlgModelPlayer::OnInitDialog()
 
 void CDlgModelPlayer::OnUpdatePlayer()
 {
-	if (m_ComboBoxSkeleton.GetText().length()==0)
+	if (wcslen(m_ComboBoxSkeleton.GetText()))
 	{
 		return;
 	}
 	std::string strDirMU = IniGetStr("WorldEditor.cfg","ResDir","mu");
 	std::string strPlayerPath = strDirMU+"Player\\";
-	getModelDisplay().loadComplexModel(strPlayerPath+ws2s(m_ComboBoxSkeleton.GetText()));
-	CModelComplex* pModelComplex = (CModelComplex*)getModelDisplay().getModelObject();
+	CMainRoot::getInstance().getMainDialog().getModelDisplay().loadComplexModel(strPlayerPath+ws2s(m_ComboBoxSkeleton.GetText()));
+	CModelComplex* pModelComplex = (CModelComplex*)CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelObject();
 	if (pModelComplex)
 	{
 		pModelComplex->loadSkinModel("head",strPlayerPath+ ws2s(m_ComboBoxHead.GetText()));

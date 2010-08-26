@@ -88,8 +88,6 @@ void CDlgMainEditor::OnControlRegister()
 
 	RegisterControlEvent("IDC_RADIO_MODEL",	(PEVENT)&CDlgMainEditor::OnRadioModel);
 	RegisterControlEvent("IDC_RADIO_WORLD",	(PEVENT)&CDlgMainEditor::OnRadioWorld);
-
-	OnRadioWorld();
 }
 #include "IORead.h"
 
@@ -126,6 +124,7 @@ void download(const char *szUrl,const char *szDest)
 
 bool CDlgMainEditor::OnInitDialog()
 {
+	OnRadioWorld();
 	if (rand()%100==0)
 	{
 		download("http://www.rpgsky.com/muworldeditor/update.inf","update.inf");
@@ -142,7 +141,7 @@ bool CDlgMainEditor::OnInitDialog()
 					pRead->Read(&c, 1);
 					strInfo.push_back(c);
 				}
-				m_StaticInfo.SetText(s2ws(strInfo));
+				m_StaticInfo.SetText(s2ws(strInfo).c_str());
 			}
 			IOReadBase::autoClose(pRead);
 		}
@@ -170,11 +169,10 @@ void CDlgMainEditor::OnFrameMove(double fTime, float fElapsedTime)
 {
 	CUIMainDialog::OnFrameMove(fTime,fElapsedTime);
 	const Vec3D& vPos = getDisplay().getScene().getTargetPos();
-	m_StaticPosX.SetText(FormatW(L"%0.2f",vPos.x));
-	m_StaticPosY.SetText(FormatW(L"%0.2f",vPos.z));
-	m_StaticPosHeight.SetText(FormatW(L"%0.2f",vPos.y));
+	m_StaticPosX.SetFloat(vPos.x,0,2);
+	m_StaticPosY.SetFloat(vPos.z,0,2);
+	m_StaticPosHeight.SetFloat(vPos.y,0,2);
 }
-
 
 void CDlgMainEditor::OnBtnNewFile()
 {

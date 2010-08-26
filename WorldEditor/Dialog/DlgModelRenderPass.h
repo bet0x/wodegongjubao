@@ -1,7 +1,7 @@
 #pragma once
-#include "DlgBaseEditor.h"
+#include "UIDialog.h"
 
-class CDlgModelRenderPass: public CDlgBaseEditor
+class CDlgModelRenderPass
 {
 public:
 	CDlgModelRenderPass();

@@ -42,7 +42,7 @@ void CDlgFPS::OnFrameRender(const Matrix& mTransform, double fTime, float fElaps
 	{
 		fFps = fFps*0.99f+0.01f/fElapsedTime;
 	}
-	m_StaticFps.SetText(f2ws(fFps,0,6));
+	m_StaticFps.SetFloat(fFps,0,2);
 	//m_StaticInfo.SetText(DXUTGetDeviceStats());
 	// Show FPS
 	//if( GetConfig().IsShowFPS() )

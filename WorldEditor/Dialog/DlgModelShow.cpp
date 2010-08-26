@@ -1,5 +1,6 @@
 #include "DlgModelShow.h"
 #include "ModelDisplay.h"
+#include "..\MainRoot.h"
 
 void CDlgModelShow::OnControlRegister()
 {
@@ -22,10 +23,10 @@ void CDlgModelShow::OnControlRegister()
 
 void CDlgModelShow::OnUpdateShow()
 {
-	getModelDisplay().m_bShowBones		= m_CheckBoxBones.IsChecked();
-	getModelDisplay().m_bShowBounds		= m_CheckBoxBounds.IsChecked();
-	getModelDisplay().m_bShowModel		= m_CheckBoxModel.IsChecked();
-	getModelDisplay().m_bShowWireframe	= m_CheckBoxWireframe.IsChecked();
-	getModelDisplay().m_bShowMaterial	= m_CheckBoxMaterial.IsChecked();
-	getModelDisplay().m_bShowParticles	= m_CheckBoxParticles.IsChecked();
+	CMainRoot::getInstance().getMainDialog().getModelDisplay().m_bShowBones		= m_CheckBoxBones.IsChecked();
+	CMainRoot::getInstance().getMainDialog().getModelDisplay().m_bShowBounds		= m_CheckBoxBounds.IsChecked();
+	CMainRoot::getInstance().getMainDialog().getModelDisplay().m_bShowModel		= m_CheckBoxModel.IsChecked();
+	CMainRoot::getInstance().getMainDialog().getModelDisplay().m_bShowWireframe	= m_CheckBoxWireframe.IsChecked();
+	CMainRoot::getInstance().getMainDialog().getModelDisplay().m_bShowMaterial	= m_CheckBoxMaterial.IsChecked();
+	CMainRoot::getInstance().getMainDialog().getModelDisplay().m_bShowParticles	= m_CheckBoxParticles.IsChecked();
 }

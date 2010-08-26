@@ -12,7 +12,6 @@ public:
 public:
 	CDlgMainEditor& getMainDialog();
 	void setUILanguage(const std::string& strLanguage);
-	void Run();
 	void OnFrameMove( double fTime, float fElapsedTime );
 	void OnFrameRender( double fTime, float fElapsedTime );
 
@@ -20,3 +19,7 @@ public:
 protected:
 	CDlgMainEditor	m_dlgMain;
 };
+
+#define WE_SCENE	CMainRoot::getInstance().getMainDialog().getDisplay().getScene()
+#define WE_TERRAIN	CMainRoot::getInstance().getMainDialog().getDisplay().getTerrain()
+#define WE_BRUSH	CMainRoot::getInstance().getMainDialog().getDisplay().getTerrain().GetBrushDecal()

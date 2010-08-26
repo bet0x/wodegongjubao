@@ -1,5 +1,6 @@
 #include "DlgModelAnim.h"
 #include "ModelDisplay.h"
+#include "..\MainRoot.h"
 
 void CDlgModelAnim::OnControlRegister()
 {
@@ -33,11 +34,11 @@ bool CDlgModelAnim::OnInitDialog()
 
 void CDlgModelAnim::OnFrameMove(double fTime, float fElapsedTime)
 {
-	if (getModelDisplay().getModelObject())
+	if (CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelObject())
 	{
-		m_SliderFrame.SetValue(getModelDisplay().getModelObject()->m_AnimMgr.uFrame);
+		m_SliderFrame.SetValue(CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelObject()->m_AnimMgr.uFrame);
 		std::wstring wstr = FormatW(L"%d/%d", m_SliderFrame.GetValue(),m_SliderFrame.getMax());
-		m_StaticFrame.SetText(wstr);
+		m_StaticFrame.SetText(wstr.c_str());
 	}
 	CUIDialog::OnFrameMove(fTime,fElapsedTime);
 }
@@ -46,9 +47,9 @@ void CDlgModelAnim::ResetAnim()
 {
 	int nSelected = m_ComboBoxAnim.getListBox().GetSelectedIndex();
 	m_ComboBoxAnim.getListBox().RemoveAllItems();
-	if (getModelDisplay().getModelData())
+	if (CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelData())
 	{
-		iSkeleton& skeleton=getModelDisplay().getModelData()->getSkeleton();
+		iSkeleton& skeleton=CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelData()->getSkeleton();
 		size_t uAnimSize = skeleton.getAnimationCount();
 		if (uAnimSize>0)
 		{
@@ -72,36 +73,36 @@ void CDlgModelAnim::ResetAnim()
 
 void CDlgModelAnim::OnPlay()
 {
-	//if (getModelDisplay().getModelAnimManager())
+	//if (CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelAnimManager())
 	//{
-	//	getModelDisplay().getModelAnimManager()->Pause();
+	//	CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelAnimManager()->Pause();
 	//}
 }
 
 void CDlgModelAnim::OnPrev()
 {
-	//if (getModelDisplay().getModelAnimManager())
+	//if (CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelAnimManager())
 	//{
-	//	getModelDisplay().getModelAnimManager()->PrevFrame();
+	//	CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelAnimManager()->PrevFrame();
 	//}
 }
 
 void CDlgModelAnim::OnNext()
 {
-	//if (getModelDisplay().getModelAnimManager())
+	//if (CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelAnimManager())
 	//{
-	//	getModelDisplay().getModelAnimManager()->NextFrame();
+	//	CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelAnimManager()->NextFrame();
 	//}
 }
 
 void CDlgModelAnim::OnAnimChanged()
 {
-	if (getModelDisplay().getModelData())
+	if (CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelData())
 	{
 		std::string strAnimName=ws2s(m_ComboBoxAnim.GetText());
 		long timeCount=0;
-		getModelDisplay().getModelObject()->SetAnim(strAnimName);
-		if (getModelDisplay().getModelData()->getSkeleton().getAnimation(strAnimName,timeCount))
+		CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelObject()->SetAnim(strAnimName);
+		if (CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelData()->getSkeleton().getAnimation(strAnimName,timeCount))
 		{
 			m_SliderFrame.SetRange(0, timeCount);
 		}
@@ -111,19 +112,18 @@ void CDlgModelAnim::OnAnimChanged()
 void CDlgModelAnim::OnSpeedChanged()
 {
 	float fSpeed = m_SliderSpeed.GetValue()*0.1f;
-	if (getModelDisplay().getModelObject())
+	if (CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelObject())
 	{
-		getModelDisplay().getModelObject()->m_AnimMgr.fSpeed=fSpeed;
+		CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelObject()->m_AnimMgr.fSpeed=fSpeed;
 	}
-	std::wstring wstr = FormatW(L"%.1fx", fSpeed);
-	m_StaticSpeed.SetText(wstr);
+	m_StaticSpeed.SetFloat(fSpeed,0,1);
 }
 
 void CDlgModelAnim::OnFrameChanged()
 {
-	if (getModelDisplay().getModelObject())
+	if (CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelObject())
 	{
 		int nFrame = m_SliderFrame.GetValue();
-		getModelDisplay().getModelObject()->m_AnimMgr.uFrame=nFrame;
+		CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelObject()->m_AnimMgr.uFrame=nFrame;
 	}
 }

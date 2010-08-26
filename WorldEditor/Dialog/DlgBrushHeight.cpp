@@ -1,5 +1,5 @@
 #include "DlgBrushHeight.h"
-#include "Terrain.h"
+#include "..\MainRoot.h"
 
 CDlgBrushHeight::CDlgBrushHeight()
 {
@@ -30,11 +30,11 @@ void CDlgBrushHeight::OnControlRegister()
 bool CDlgBrushHeight::OnInitDialog()
 {
 #if defined(_MU)
-	m_NumMin.setFloat(0.0f);
-	m_NumMax.setFloat(255.0f*0.015f);
+	m_NumMin.setFloat(0.0f,0,2);
+	m_NumMax.setFloat(255.0f*0.015f,0,2);
 #else
-	m_NumMin.setFloat(-100.0f);
-	m_NumMax.setFloat(100.0f);
+	m_NumMin.setFloat(-100.0f,0,2);
+	m_NumMax.setFloat(100.0f,0,2);
 #endif
 	OnHeightRangChanged();
 	//m_ListBoxTiles.SetSelectedByIndex(0);
@@ -43,10 +43,10 @@ bool CDlgBrushHeight::OnInitDialog()
 
 void CDlgBrushHeight::OnHeightRangChanged()
 {
-	getBrush().setHeightRang(m_NumMin.getFloat(),m_NumMax.getFloat());
+	WE_BRUSH.setHeightRang(m_NumMin.getFloat(),m_NumMax.getFloat());
 }
 
 void CDlgBrushHeight::OnBrushHeightTypeChanged()
 {
-	getBrush().setBrushHeightType(m_RadioBtnNoraml.IsChecked()?CTerrainBrush::BHT_NORMAL:CTerrainBrush::BHT_SMOOTH);
+	WE_BRUSH.setBrushHeightType(m_RadioBtnNoraml.IsChecked()?CTerrainBrush::BHT_NORMAL:CTerrainBrush::BHT_SMOOTH);
 }

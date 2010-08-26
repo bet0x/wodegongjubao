@@ -62,10 +62,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="winmm.lib modeld.lib enginecored.lib 3DGUI.lib TextRender.lib RenderSystemD.lib FreeType.lib fileiod.lib soundd.lib"
+				AdditionalDependencies="winmm.lib modeld.lib enginecored.lib 3DGUI.lib TextRender.lib RenderSystemD.lib FreeType.lib fileiod.lib Audiod.lib lua51.lib"
 				OutputFile="..\..\RPGSky\bin\Client\$(ProjectName)D.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\3dgui\Debug;..\..\engine\Media\FMOD\api\lib"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\3dgui\lua;..\..\3dgui\Debug;..\..\engine\Media\FMOD\api\lib"
 				IgnoreDefaultLibraryNames="LIBCMTD.lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -139,7 +139,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="winmm.lib model.lib rendersystem.lib enginecore.lib 3DGUI.lib TextRender.lib RenderSystem.lib fileio.lib FreeType.lib sound.lib"
+				AdditionalDependencies="winmm.lib model.lib rendersystem.lib enginecore.lib 3DGUI.lib TextRender.lib RenderSystem.lib fileio.lib FreeType.lib Audio.lib lua51.lib"
 				OutputFile="..\..\RPGSky\bin\Client\$(ProjectName).exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\3dgui\Release;..\..\engine\Media\FMOD\api\lib"
@@ -239,14 +239,6 @@
 		<Filter
 			Name="Dialog"
 			>
-			<File
-				RelativePath=".\Dialog\DlgBaseEditor.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\Dialog\DlgBaseEditor.h"
-				>
-			</File>
 			<File
 				RelativePath=".\Dialog\DlgController.cpp"
 				>

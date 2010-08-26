@@ -1,5 +1,6 @@
 #include "DlgSetting.h"
 #include "DlgToolbar.h"
+#include "..\MainRoot.h"
 
 CDlgSetting::CDlgSetting()
 {
@@ -52,10 +53,10 @@ void CDlgSetting::OnControlRegister()
 
 bool CDlgSetting::OnInitDialog()
 {
-	//getDisplay().getTerrain().showLayer0(!getDisplay().getTerrain().isShowLayer0());
-	//getDisplay().getTerrain().showLayer1(!getDisplay().getTerrain().isShowLayer1());
-	//getDisplay().getTerrain().showGrid(!getDisplay().getTerrain().isShowGrid());
-	//getDisplay().getTerrain().ShowBox(!getDisplay().getTerrain().IsShowBox());
+	//WE_TERRAIN.showLayer0(!WE_TERRAIN.isShowLayer0());
+	//WE_TERRAIN.showLayer1(!WE_TERRAIN.isShowLayer1());
+	//WE_TERRAIN.showGrid(!WE_TERRAIN.isShowGrid());
+	//WE_TERRAIN.ShowBox(!WE_TERRAIN.IsShowBox());
 	return true;
 }
 
@@ -64,54 +65,54 @@ void CDlgSetting::SetVisible(bool bVisible)
 	CUIDialog::SetVisible(bVisible);
 	if (bVisible)
 	{
-		m_EditBoxWidth.SetInt(getDisplay().getTerrain().GetData().GetWidth());
-		m_EditBoxHeight.SetInt(getDisplay().getTerrain().GetData().GetHeight());
+		m_EditBoxWidth.SetInt(WE_TERRAIN.GetData().GetWidth());
+		m_EditBoxHeight.SetInt(WE_TERRAIN.GetData().GetHeight());
 	}
 }
 
 void CDlgSetting::OnBtnTerrainLayer0Visible()
 {
-	getDisplay().getTerrain().showLayer0(!getDisplay().getTerrain().isShowLayer0());
+	WE_TERRAIN.showLayer0(!WE_TERRAIN.isShowLayer0());
 }
 
 void CDlgSetting::OnBtnTerrainLayer1Visible()
 {
-	getDisplay().getTerrain().showLayer1(!getDisplay().getTerrain().isShowLayer1());
+	WE_TERRAIN.showLayer1(!WE_TERRAIN.isShowLayer1());
 }
 
 void CDlgSetting::OnBtnTerrainGridVisible()
 {
-	getDisplay().getTerrain().showGrid(!getDisplay().getTerrain().isShowGrid());
+	WE_TERRAIN.showGrid(!WE_TERRAIN.isShowGrid());
 }
 
 void CDlgSetting::OnBtnTerrainBBoxVisible()
 {
-	getDisplay().getTerrain().ShowBox(!getDisplay().getTerrain().IsShowBox());
+	WE_TERRAIN.ShowBox(!WE_TERRAIN.IsShowBox());
 }
 
 void CDlgSetting::OnBtnStaticObjectVisible()
 {
-	getDisplay().getScene().showStaticObject(!getDisplay().getScene().isShowStaticObject());
+	WE_SCENE.showStaticObject(!WE_SCENE.isShowStaticObject());
 }
 
 void CDlgSetting::OnBtnAnimObjectVisible()
 {
-	getDisplay().getScene().showAnimObject(!getDisplay().getScene().isShowAnimObject());
+	WE_SCENE.showAnimObject(!WE_SCENE.isShowAnimObject());
 }
 
 void CDlgSetting::OnBtnObjectBBoxVisible()
 {
-	getDisplay().getScene().showObjectBBox(!getDisplay().getScene().isShowObjectBBox());
+	WE_SCENE.showObjectBBox(!WE_SCENE.isShowObjectBBox());
 }
 
 void CDlgSetting::OnBtnTerrainResize()
 {
-	getDisplay().getTerrain().resize(m_EditBoxWidth.GetInt(),m_EditBoxHeight.GetInt(),0);
+	WE_TERRAIN.resize(m_EditBoxWidth.GetInt(),m_EditBoxHeight.GetInt(),0);
 }
 
 void CDlgSetting::OnBtnCalcLightMap()
 {
-	getDisplay().getScene().CalcLightMap();
+	WE_SCENE.CalcLightMap();
 }
 
 void CDlgSetting::OnCameraChanged()
@@ -125,7 +126,7 @@ void CDlgSetting::OnFogChanged()
 	fog.fEnd=m_NumFogEnd.getFloat();
 	fog.fDensity=m_NumFogDensity.getFloat();
 	fog.color=m_ColorFog.getColor();
-	getDisplay().getScene().setFog(fog);
+	WE_SCENE.setFog(fog);
 }
 
 void CDlgSetting::OnMaterialChanged()
@@ -135,18 +136,18 @@ void CDlgSetting::OnMaterialChanged()
 	light.vDiffuse = Vec4D(m_ColorDiffuse.getColor());
 	light.vSpecular = Vec4D(1.0f,1.0f,1.0f,1.0f);
 	light.vDirection = Vec3D(-1.0f,-1.0f,1.0f);
-	getDisplay().getScene().setLight(light);
+	WE_SCENE.setLight(light);
 }
 
 void CDlgSetting::init()
 {
-	const Fog& fog = getDisplay().getScene().getFog();
-	m_NumFogStart.setFloat(fog.fStart);
-	m_NumFogEnd.setFloat(fog.fEnd);
-	m_NumFogDensity.setFloat(fog.fDensity);
+	const Fog& fog = WE_SCENE.getFog();
+	m_NumFogStart.setFloat(fog.fStart,0,2);
+	m_NumFogEnd.setFloat(fog.fEnd,0,2);
+	m_NumFogDensity.setFloat(fog.fDensity,0,2);
 	m_ColorFog.setColor(fog.color);
 
-	const DirectionalLight& light = getDisplay().getScene().getLight();
+	const DirectionalLight& light = WE_SCENE.getLight();
 	m_ColorAmbient.setColor(light.vAmbient);
 	m_ColorDiffuse.setColor(light.vDiffuse);
 }

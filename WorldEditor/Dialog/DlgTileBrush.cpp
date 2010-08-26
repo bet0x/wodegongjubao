@@ -1,7 +1,7 @@
 #include "DlgTileBrush.h"
-#include "Terrain.h"
 // For Material
 #include "DlgMainEditor.h"
+#include "..\MainRoot.h"
 
 CDlgTileBrush::CDlgTileBrush()
 {
@@ -32,16 +32,16 @@ bool CDlgTileBrush::OnInitDialog()
 
 void CDlgTileBrush::OnRadioBtnLayerChanged()
 {
-	getBrush().SetBrushType(m_RadioBtnFirstLayer.IsChecked()?CTerrainBrush::BRUSH_TYPE_TERRAIN_TILE_LAYER1:CTerrainBrush::BRUSH_TYPE_TERRAIN_TILE_LAYER2);
+	WE_BRUSH.SetBrushType(m_RadioBtnFirstLayer.IsChecked()?CTerrainBrush::BRUSH_TYPE_TERRAIN_TILE_LAYER1:CTerrainBrush::BRUSH_TYPE_TERRAIN_TILE_LAYER2);
 }
 
 void CDlgTileBrush::initTiles()
 {
-	m_ObjListTiles.initObject(getDisplay().getScene());
+	m_ObjListTiles.initObject(WE_SCENE);
 }
 
 void CDlgTileBrush::OnBtnTileEdit()
 {
-	getMainDialog().getMaterialDialog().setMaterial(m_ObjListTiles.getSelectedTileMaterial(),"");
-	getMainDialog().getMaterialDialog().SetVisible(true);
+	CMainRoot::getInstance().getMainDialog().getMaterialDialog().setMaterial(m_ObjListTiles.getSelectedTileMaterial(),"");
+	CMainRoot::getInstance().getMainDialog().getMaterialDialog().SetVisible(true);
 }
