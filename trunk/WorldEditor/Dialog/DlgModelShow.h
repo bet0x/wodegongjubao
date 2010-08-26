@@ -1,7 +1,7 @@
 #pragma once
-#include "DlgBaseEditor.h"
+#include "UIDialog.h"
 
-class CDlgModelShow: public CDlgBaseEditor
+class CDlgModelShow
 {
 public:
 	virtual void OnControlRegister();

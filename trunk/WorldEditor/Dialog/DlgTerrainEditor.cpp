@@ -1,5 +1,6 @@
 #include "DlgTerrainEditor.h"
 #include "Terrain.h"
+#include "..\MainRoot.h"
 
 CDlgTerrainEditor::CDlgTerrainEditor()
 {
@@ -36,11 +37,11 @@ void CDlgTerrainEditor::SetVisible(bool bVisible)
 	{
 		if (m_dlgTerrainHeightBrush.IsVisible())
 		{
-			getBrush().SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_HEIGHT);
+			WE_BRUSH.SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_HEIGHT);
 		}
 		else if (m_dlgTerrainAttributeBrush.IsVisible())
 		{
-			getBrush().SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_ATT);
+			WE_BRUSH.SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_ATT);
 		}
 		else if (m_dlgTerrainBrushTile.IsVisible())
 		{
@@ -48,7 +49,7 @@ void CDlgTerrainEditor::SetVisible(bool bVisible)
 		}
 		else if (m_dlgTerrainBrushColor.IsVisible())
 		{
-			getBrush().SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_COLOR);
+			WE_BRUSH.SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_COLOR);
 		}
 	}
 }
@@ -63,14 +64,14 @@ void CDlgTerrainEditor::closeAllChildDialog()
 
 void CDlgTerrainEditor::OnBtnTerrainHeight()
 {
-	getBrush().SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_HEIGHT);
+	WE_BRUSH.SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_HEIGHT);
 	closeAllChildDialog();
 	m_dlgTerrainHeightBrush.SetVisible(true);
 }
 
 void CDlgTerrainEditor::OnBtnTerrainAttribute()
 {
-	getBrush().SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_ATT);
+	WE_BRUSH.SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_ATT);
 	closeAllChildDialog();
 	m_dlgTerrainAttributeBrush.SetVisible(true);
 }
@@ -84,7 +85,7 @@ void CDlgTerrainEditor::OnBtnTerrainTile()
 
 void CDlgTerrainEditor::OnBtnTerrainColor()
 {
-	getBrush().SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_COLOR);
+	WE_BRUSH.SetBrushType(CTerrainBrush::BRUSH_TYPE_TERRAIN_COLOR);
 	closeAllChildDialog();
 	m_dlgTerrainBrushColor.SetVisible(true);
 }

@@ -3,7 +3,7 @@
 #include "DlgTerrainEditor.h"
 #include "DlgToolObject.h"
 
-class CDlgToolbar : public CDlgBaseEditor
+class CDlgToolbar
 {
 public:
 	CDlgToolbar();

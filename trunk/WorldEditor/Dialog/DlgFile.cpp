@@ -54,7 +54,7 @@ void CDlgFile::OnListBoxFolderSelection()
 	std::wstring wstrFilename = m_ListBoxFolder.GetSelectedItem()->wstrText;
 	if (wstrFilename.length()>0&&wstrFilename[0]!=L'\\')
 	{
-		m_EditBoxFile.SetText(wstrFilename);
+		m_EditBoxFile.SetText(wstrFilename.c_str());
 	}
 }
 
@@ -117,7 +117,7 @@ void CDlgFile::OnBtnBack()
 
 void CDlgFile::OnBtnNew()
 {
-	if (m_EditBoxFile.GetText().length()==0)
+	if (wcslen(m_EditBoxFile.GetText())==0)
 	{
 		return;
 	}
@@ -145,7 +145,7 @@ void CDlgFile::OnBtnNew()
 
 void CDlgFile::OnBtnOpen()
 {
-	if (m_EditBoxFile.GetText().length()==0)
+	if (wcslen(m_EditBoxFile.GetText())==0)
 	{
 		return;
 	}

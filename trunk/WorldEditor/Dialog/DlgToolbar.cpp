@@ -1,4 +1,5 @@
 #include "DlgToolbar.h"
+#include "..\MainRoot.h"
 
 CDlgToolbar::CDlgToolbar()
 {
@@ -38,15 +39,15 @@ void CDlgToolbar::OnBtnTerrain()
 {
 	closeAllChildDialog();
 	m_DlgTerrainEditor.SetVisible(true);
-	getDisplay().getTerrain().showBrushDecal(true);
+	WE_TERRAIN.showBrushDecal(true);
 }
 
 void CDlgToolbar::OnBtnObject()
 {
-	getBrush().SetBrushType(CTerrainBrush::BRUSH_TYPE_SCENE_OBJECT);
+	WE_BRUSH.SetBrushType(CTerrainBrush::BRUSH_TYPE_SCENE_OBJECT);
 	closeAllChildDialog();
 	m_DlgToolObject.SetVisible(true);
-	getDisplay().getTerrain().showBrushDecal(false);
+	WE_TERRAIN.showBrushDecal(false);
 }
 
 void CDlgToolbar::closeAllChildDialog()

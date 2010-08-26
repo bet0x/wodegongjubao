@@ -4,7 +4,7 @@
 #include "DlgModelPlayer.h"
 #include "DlgModelRenderPass.h"
 
-class CDlgModelController: public CDlgBaseEditor
+class CDlgModelController
 {
 public:
 	CDlgModelController();

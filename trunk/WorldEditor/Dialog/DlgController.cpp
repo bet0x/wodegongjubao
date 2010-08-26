@@ -122,7 +122,7 @@ void CDlgController::OpenFile(const std::wstring& wstrFilename)
 		OpenPath(GetParentPath(wstrFilename),s2ws(CModelDataMgr::getInstance().getDataPlugsMgr().getAllExtensions()));
 		//m_ListBoxFolder.SetSelec()
 		//GetFilename(wstrFilename)
-		getModelDisplay().LoadModel(ws2s(wstrFilename));
+		CMainRoot::getInstance().getMainDialog().getModelDisplay().LoadModel(ws2s(wstrFilename));
 		CMainRoot::getInstance().getMainDialog().getDlgModelController().OnUpdate();
 	}
 }
@@ -178,7 +178,7 @@ void CDlgController::OnListBoxFolderItemDblClk()
 		// write the recent path to reg.
 		SetRegStr(L"software\\rpgsky\\modelview\\",L"recentpath",m_wstrPath.c_str());
 		std::string strFilename = ws2s(m_wstrPath+m_ListBoxFolder.GetSelectedItem()->wstrText);
-		getModelDisplay().LoadModel( strFilename );
+		CMainRoot::getInstance().getMainDialog().getModelDisplay().LoadModel( strFilename );
 		CMainRoot::getInstance().getMainDialog().getDlgModelController().OnUpdate();
 	}
 }
@@ -191,5 +191,5 @@ void CDlgController::OnTabObjectChanged()
 
 void CDlgController::OnClose()
 {
-	getMainDialog().OnBtnShowController();
+	CMainRoot::getInstance().getMainDialog().OnBtnShowController();
 }

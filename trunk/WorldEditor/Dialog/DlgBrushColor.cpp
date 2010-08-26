@@ -1,5 +1,6 @@
 #include "DlgBrushColor.h"
 #include "Terrain.h"
+#include "..\MainRoot.h"
 
 CDlgBrushColor::CDlgBrushColor()
 {
@@ -30,5 +31,5 @@ void CDlgBrushColor::SetVisible(bool bVisible)
 
 void CDlgBrushColor::OnColorPaintChanged()
 {
-	getBrush().setColor(m_ColorPaint.getColor());
+	WE_BRUSH.setColor(m_ColorPaint.getColor());
 }

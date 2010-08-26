@@ -1,9 +1,8 @@
 #pragma once
-#include "DlgBaseEditor.h"
-#include "UIComboVec3D.h"
+#include "UIDialog.h"
 #include "UIComboObjListSceneObject.h"
 
-class CDlgToolObject : public CDlgBaseEditor
+class CDlgToolObject
 {
 public:
 	CDlgToolObject();

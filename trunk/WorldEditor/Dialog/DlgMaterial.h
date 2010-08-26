@@ -1,8 +1,8 @@
 #pragma once
-#include "DlgBaseEditor.h"
+#include "UIDialog.h"
 #include "Material.h"
 
-class CDlgMaterial: public CDlgBaseEditor
+class CDlgMaterial
 {
 public:
 	CDlgMaterial();

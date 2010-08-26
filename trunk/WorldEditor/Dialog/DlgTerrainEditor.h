@@ -1,11 +1,10 @@
 #pragma once
-#include "DlgBaseEditor.h"
 #include "DlgBrushAtt.h"
 #include "DlgBrushHeight.h"
 #include "DlgTileBrush.h"
 #include "DlgBrushColor.h"
 
-class CDlgTerrainEditor : public CDlgBaseEditor
+class CDlgTerrainEditor
 {
 public:
 	CDlgTerrainEditor();

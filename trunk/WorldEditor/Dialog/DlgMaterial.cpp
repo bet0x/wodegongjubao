@@ -54,23 +54,23 @@ void CDlgMaterial::setMaterial(const std::string& strMaterial, const std::string
 		CShaderMgr& SM=GetRenderSystem().GetShaderMgr();
 		m_strPath = strPath;
 
-		m_EditboxDiffuse.	SetText(s2ws(getSimpleFilename(strPath,TM.getItemName(m_pSelectedMaterial->uDiffuse))));
-		m_EditboxEmissive.	SetText(s2ws(getSimpleFilename(strPath,TM.getItemName(m_pSelectedMaterial->uEmissive))));
-		m_EditboxSpecular.	SetText(s2ws(getSimpleFilename(strPath,TM.getItemName(m_pSelectedMaterial->uSpecular))));
-		m_EditboxBump.		SetText(s2ws(getSimpleFilename(strPath,TM.getItemName(m_pSelectedMaterial->uNormal))));
-		m_EditboxReflection.SetText(s2ws(getSimpleFilename(strPath,TM.getItemName(m_pSelectedMaterial->uReflection))));
-		m_EditboxLightmap.	SetText(s2ws(getSimpleFilename(strPath,TM.getItemName(m_pSelectedMaterial->uLightMap))));
-		m_EditboxEffect.	SetText(s2ws(getSimpleFilename(strPath,SM.getItemName(m_pSelectedMaterial->uShader))));
+		m_EditboxDiffuse.	SetText(s2ws(getSimpleFilename(strPath,TM.getItemName(m_pSelectedMaterial->uDiffuse))).c_str());
+		m_EditboxEmissive.	SetText(s2ws(getSimpleFilename(strPath,TM.getItemName(m_pSelectedMaterial->uEmissive))).c_str());
+		m_EditboxSpecular.	SetText(s2ws(getSimpleFilename(strPath,TM.getItemName(m_pSelectedMaterial->uSpecular))).c_str());
+		m_EditboxBump.		SetText(s2ws(getSimpleFilename(strPath,TM.getItemName(m_pSelectedMaterial->uNormal))).c_str());
+		m_EditboxReflection.SetText(s2ws(getSimpleFilename(strPath,TM.getItemName(m_pSelectedMaterial->uReflection))).c_str());
+		m_EditboxLightmap.	SetText(s2ws(getSimpleFilename(strPath,TM.getItemName(m_pSelectedMaterial->uLightMap))).c_str());
+		m_EditboxEffect.	SetText(s2ws(getSimpleFilename(strPath,SM.getItemName(m_pSelectedMaterial->uShader))).c_str());
 		m_CheckboxAlphatest.SetChecked(m_pSelectedMaterial->bAlphaTest);
-		m_NumAlphatestvalue.setFloat(m_pSelectedMaterial->uAlphaTestValue);
+		m_NumAlphatestvalue.setFloat(m_pSelectedMaterial->uAlphaTestValue,0,2);
 		m_CheckboxBlend.SetChecked(m_pSelectedMaterial->bBlend);
 		m_CheckboxCull.SetChecked(m_pSelectedMaterial->uCull);
-		m_NumTexanimX.setFloat(m_pSelectedMaterial->vTexAnim.x);
-		m_NumTexanimY.setFloat(m_pSelectedMaterial->vTexAnim.y);
-		m_NumOpacity.setFloat(m_pSelectedMaterial->m_fOpacity);
+		m_NumTexanimX.setFloat(m_pSelectedMaterial->vTexAnim.x,0,2);
+		m_NumTexanimY.setFloat(m_pSelectedMaterial->vTexAnim.y,0,2);
+		m_NumOpacity.setFloat(m_pSelectedMaterial->m_fOpacity,0,2);
 		m_ColorEmissive.setColor(m_pSelectedMaterial->cEmissive);
-		m_NumUvscaleX.setFloat(m_pSelectedMaterial->vUVScale.x);
-		m_NumUvscaleY.setFloat(m_pSelectedMaterial->vUVScale.y);
+		m_NumUvscaleX.setFloat(m_pSelectedMaterial->vUVScale.x,0,2);
+		m_NumUvscaleY.setFloat(m_pSelectedMaterial->vUVScale.y,0,2);
 	}
 }
 
