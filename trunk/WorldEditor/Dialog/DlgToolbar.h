@@ -3,7 +3,7 @@
 #include "DlgTerrainEditor.h"
 #include "DlgToolObject.h"
 
-class CDlgToolbar
+class CDlgToolbar :public CUIDialog
 {
 public:
 	CDlgToolbar();

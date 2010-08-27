@@ -12,8 +12,6 @@ CDlgTerrainEditor::~CDlgTerrainEditor()
 
 void CDlgTerrainEditor::OnControlRegister()
 {
-	CDlgBaseEditor::OnControlRegister();
-
 	m_dlgTerrainHeightBrush.Create("IDD_TERRAIN_BRUSH_HEIGHT",	this);
 	m_dlgTerrainAttributeBrush.Create("IDD_TERRAIN_BRUSH_ATT",	this);
 	m_dlgTerrainBrushTile.Create("IDD_TERRAIN_BRUSH_TILE",		this);
@@ -32,7 +30,7 @@ bool CDlgTerrainEditor::OnInitDialog()
 }
 void CDlgTerrainEditor::SetVisible(bool bVisible)
 {
-	CDlgBaseEditor::SetVisible(bVisible);
+	CUIDialog::SetVisible(bVisible);
 	if (bVisible)
 	{
 		if (m_dlgTerrainHeightBrush.IsVisible())

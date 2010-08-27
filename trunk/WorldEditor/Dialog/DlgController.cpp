@@ -19,7 +19,6 @@ CDlgController::~CDlgController()
 
 void CDlgController::OnControlRegister()
 {
-	CUIDialog::OnControlRegister();
 	RegisterControl("IDC_LISTBOX_FILE",		m_ListBoxFolder);
 
 	RegisterControl("IDC_TAB_OBJECT_FILE",		m_RadioButtonFile);

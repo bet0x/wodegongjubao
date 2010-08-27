@@ -1,5 +1,6 @@
 #pragma once
 #include "UIComboObjList.h"
+#include "ModelComplex.h"
 
 class CUIComboObjListSceneObject : public CUIComboObjList
 {

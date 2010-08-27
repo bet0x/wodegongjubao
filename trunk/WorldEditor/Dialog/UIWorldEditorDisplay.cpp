@@ -1,19 +1,13 @@
 #include "UIWorldEditorDisplay.h"
 #include "RenderSystem.h"
-
-/*#include "AntTweakBar/AntTweakBar.h"*/
 #include "Scene.h"
 #include "SkyBox.h"
 #include "Shader.h"
-//#include "SceneEffect.h"
-//#include "Config.h"
 //#include "Quake3Bsp.h"
 #include "UIDialog.h"
 
-#include "DlgBaseEditor.h"
-
 #include "Graphics.h"
-#include "TextRender.h"
+//#include "TextRender.h"
 CUIWorldEditorDisplay::CUIWorldEditorDisplay():
 m_bKeyUp(false),
 m_bKeyDown(false),
@@ -23,13 +17,8 @@ m_fCoordScale(0.2f),
 m_fFloorSnap(0.2f),
 m_fGridSnap(0.5f)
 {
-	//// 生成摄像机的视角参数
-	//Vec3D vEye(20.0f, 20.0f, 20.0f);
-	//Vec3D vAt (0.0f, -1.0f, 2.0f);
-	//vAt+=vEye;
-	//m_Camera.SetViewParams(vEye, vAt);
+	// 生成摄像机的视角参数
 	//m_Camera.setTargetPos(Vec3D(10,10,10));
-
 	m_Camera.setYawAngle(PI/4);
 	m_Camera.setPitchAngle(-PI/4);
 	m_Scene.SetTerrain(&m_Terrain);
@@ -42,29 +31,6 @@ m_fGridSnap(0.5f)
 CUIWorldEditorDisplay::~CUIWorldEditorDisplay()
 {
 }
-
-//HRESULT CUIWorldEditorDisplay::OnCreateDevice(LPDIRECT3DDEVICE9 pd3dDevice)
-//{
-//	HRESULT hr = S_OK;
-//	int i=0;
-
-
-	// bsp
-	//GetBsp()->LoadBSP("Data/maps/tutorial.bsp");
-
-	//GetSkyBox().Create();
-
-// 	TwInit(TW_DIRECT3D9, pd3dDevice);
-// 	TwBar *bar = TwNewBar("RPGSky");
-// 	TwDefine(" GLOBAL help='How are you, world?' "); // Message added to the help bar.
-// 	TwAddVarRW(bar, "FogColor", TW_TYPE_COLOR32, &GetFog().dwColor, " label='Background color' help='Number of segments of the strip.' ");
-// 	// Add 'color' to 'bar': it is a modifable variable of type TW_TYPE_COLOR3F (3 floats color)
-// 	TwAddVarRW(bar, "FogStart", TW_TYPE_FLOAT, &GetFog().fStart, " label='Background color' help='Number of segments of the strip.' ");
-// 	TwAddVarRW(bar, "FogEnd", TW_TYPE_FLOAT, &GetFog().fEnd, " label='Background color' help='Number of segments of the strip.' ");
-// 	TwAddVarRW(bar, "FogDensity", TW_TYPE_FLOAT, &GetFog().fDensity, " label='Background color' help='Number of segments of the strip.' ");
-
-//	return S_OK;
-//}
 
 void CUIWorldEditorDisplay::OnFrameMove(double fTime, float fElapsedTime)
 {

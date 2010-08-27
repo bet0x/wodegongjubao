@@ -1,7 +1,7 @@
 #pragma once
 #include "UIDialog.h"
 
-class CDlgSetting
+class CDlgSetting :public CUIDialog
 {
 public:
 	CDlgSetting();

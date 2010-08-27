@@ -2,7 +2,7 @@
 #include "UIDialog.h"
 #include "Material.h"
 
-class CDlgMaterial
+class CDlgMaterial :public CUIDialog
 {
 public:
 	CDlgMaterial();

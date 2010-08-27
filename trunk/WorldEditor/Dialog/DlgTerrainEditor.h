@@ -4,7 +4,7 @@
 #include "DlgTileBrush.h"
 #include "DlgBrushColor.h"
 
-class CDlgTerrainEditor
+class CDlgTerrainEditor :public CUIDialog
 {
 public:
 	CDlgTerrainEditor();

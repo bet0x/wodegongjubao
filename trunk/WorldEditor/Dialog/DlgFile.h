@@ -1,20 +1,7 @@
 #pragma once
 #include "Manager.h"
 #include "UIDialog.h"
-#include "UIControl.h"
-//#include "ControlID.h"
 
-#include "UIStatic.h"
-#include "UIButton.h"
-#include "UICheckBox.h"
-#include "UIComboBox.h"
-#include "UIRadioButton.h"
-#include "UIImage.h"
-#include "UIListBox.h"
-#include "UIScrollBar.h"
-#include "UISlider.h"
-#include "UIEditBox.h"
-#include "UIIMEEditBox.h"
 class CDlgFile : public CUIDialog
 {
 public:

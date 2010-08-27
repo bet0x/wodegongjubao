@@ -142,7 +142,7 @@
 				AdditionalDependencies="winmm.lib model.lib rendersystem.lib enginecore.lib 3DGUI.lib TextRender.lib RenderSystem.lib fileio.lib FreeType.lib Audio.lib lua51.lib"
 				OutputFile="..\..\RPGSky\bin\Client\$(ProjectName).exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\3dgui\Release;..\..\engine\Media\FMOD\api\lib"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\3dgui\lua;..\..\3dgui\Release;..\..\engine\Media\FMOD\api\lib"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
