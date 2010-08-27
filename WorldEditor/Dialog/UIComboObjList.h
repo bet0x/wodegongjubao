@@ -1,6 +1,5 @@
 #pragma once
-#include "DlgBaseEditor.h"
-#include "UIComboNumber.h"
+#include "UIDialog.h"
 
 class CScene;
 class CUIComboObjList : public CUICombo

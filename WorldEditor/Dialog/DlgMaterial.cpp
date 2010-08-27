@@ -1,5 +1,6 @@
 #include "DlgMaterial.h"
 #include "FileSystem.h"
+#include "RenderSystem.h"
 
 CDlgMaterial::CDlgMaterial():m_pSelectedMaterial(NULL)
 {

@@ -1,7 +1,7 @@
 #pragma once
 #include "UIDialog.h"
 
-class CDlgBrush
+class CDlgBrush :public CUIDialog
 {
 public:
 	CDlgBrush();

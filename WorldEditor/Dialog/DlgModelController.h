@@ -4,7 +4,7 @@
 #include "DlgModelPlayer.h"
 #include "DlgModelRenderPass.h"
 
-class CDlgModelController
+class CDlgModelController :public CUIDialog
 {
 public:
 	CDlgModelController();

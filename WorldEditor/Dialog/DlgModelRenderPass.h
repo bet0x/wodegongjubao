@@ -1,7 +1,7 @@
 #pragma once
 #include "UIDialog.h"
 
-class CDlgModelRenderPass
+class CDlgModelRenderPass :public CUIDialog
 {
 public:
 	CDlgModelRenderPass();

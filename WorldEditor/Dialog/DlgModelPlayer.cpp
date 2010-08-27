@@ -119,7 +119,7 @@ bool CDlgModelPlayer::OnInitDialog()
 
 void CDlgModelPlayer::OnUpdatePlayer()
 {
-	if (wcslen(m_ComboBoxSkeleton.GetText()))
+	if (wcslen(m_ComboBoxSkeleton.GetText())==0)
 	{
 		return;
 	}

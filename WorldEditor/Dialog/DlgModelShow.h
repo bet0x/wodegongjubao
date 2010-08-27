@@ -1,7 +1,7 @@
 #pragma once
 #include "UIDialog.h"
 
-class CDlgModelShow
+class CDlgModelShow :public CUIDialog
 {
 public:
 	virtual void OnControlRegister();

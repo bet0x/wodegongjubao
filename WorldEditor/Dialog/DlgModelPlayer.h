@@ -1,7 +1,7 @@
 #pragma once
 #include "UIDialog.h"
 
-class CDlgModelPlayer
+class CDlgModelPlayer :public CUIDialog
 {
 public:
 	virtual void OnControlRegister();

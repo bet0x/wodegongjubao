@@ -2,7 +2,7 @@
 #include "UIDialog.h"
 #include "UIComboObjListSceneObject.h"
 
-class CDlgToolObject
+class CDlgToolObject :public CUIDialog
 {
 public:
 	CDlgToolObject();
