@@ -9,10 +9,6 @@
 #include "Graphics.h"
 //#include "TextRender.h"
 CUIWorldEditorDisplay::CUIWorldEditorDisplay():
-m_bKeyUp(false),
-m_bKeyDown(false),
-m_bKeyLeft(false),
-m_bKeyRight(false),
 m_fCoordScale(0.2f),
 m_fFloorSnap(0.2f),
 m_fGridSnap(0.5f)
@@ -22,10 +18,6 @@ m_fGridSnap(0.5f)
 	m_Camera.setYawAngle(PI/4);
 	m_Camera.setPitchAngle(-PI/4);
 	m_Scene.SetTerrain(&m_Terrain);
-
-	g_bLeftButtonDown = false;
-	g_bRightButtonDown = false;
-	g_bMiddleButtonDown = false;
 }
 
 CUIWorldEditorDisplay::~CUIWorldEditorDisplay()
@@ -46,8 +38,12 @@ void CUIWorldEditorDisplay::OnFrameMove(double fTime, float fElapsedTime)
 	CUIDisplay::OnFrameMove(fTime, fElapsedTime);
 	m_Scene.OnFrameMove(fTime, fElapsedTime);
 
-	MoveCamera(	m_bKeyLeft?-1000.0f*fElapsedTime:(m_bKeyRight?1000.0f*fElapsedTime:0),
-				m_bKeyUp?1000.0f*fElapsedTime:(m_bKeyDown?-1000.0f*fElapsedTime:0));
+	if (IsFocus())
+	{
+		float fMoveX = (GetKeyState('D')<0?1:(GetKeyState('A')<0?-1:0))*1000.0f*fElapsedTime;
+		float fMoveY = (GetKeyState('W')<0?1:(GetKeyState('S')<0?-1:0))*1000.0f*fElapsedTime;
+		MoveCamera(	fMoveX,fMoveY);
+	}
 }
 
 void CUIWorldEditorDisplay::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
@@ -152,7 +148,7 @@ void CUIWorldEditorDisplay::OnFrameRender(const Matrix& mTransform, double fTime
 		m_MeshCoordinate.render(Vec3D(0,0,0));
 	}
 	R.setWorldMatrix(Matrix::UNIT);
-	if (g_bLeftButtonDown)
+	if (GetKeyState(VK_LBUTTON)<0)
 	{
 		CGraphics& G=GetGraphics();
 		//R.ClearBuffer(true,false,0x0);
@@ -276,34 +272,6 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 		{
 			switch(wParam)
 			{
-			case VK_SHIFT:
-				{
-					float fStrength = m_Terrain.GetBrushDecal().GetStrength();
-					fStrength = -abs(fStrength);
-					m_Terrain.GetBrushDecal().SetStrength(fStrength);
-					SetCapture(UIGetHWND());
-				}
-				return true;
-			case 'W':
-				m_bKeyUp=true;
-				SetPressed(true);
-				SetCapture(UIGetHWND());
-				return true;
-			case 'S':
-				m_bKeyDown=true;
-				SetPressed(true);
-				SetCapture(UIGetHWND());
-				return true;
-			case 'A':
-				m_bKeyLeft=true;
-				SetPressed(true);
-				SetCapture(UIGetHWND());
-				return true;
-			case 'D':
-				m_bKeyRight=true;
-				SetPressed(true);
-				SetCapture(UIGetHWND());
-				return true;
 			case VK_DELETE:
 				m_Scene.delMapObjsByFocusObjects();
 				return true;
@@ -414,28 +382,6 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 		}
 	case WM_KEYUP:
 		{
-			switch(wParam)
-			{
-			case VK_SHIFT:
-				{
-					float fStrength = m_Terrain.GetBrushDecal().GetStrength();
-					fStrength = abs(fStrength);
-					m_Terrain.GetBrushDecal().SetStrength(fStrength);
-				}
-				return true;
-			case 'W':
-				m_bKeyUp=false;
-				return true;
-			case 'S':
-				m_bKeyDown=false;
-				return true;
-			case 'A':
-				m_bKeyLeft=false;
-				return true;
-			case 'D':
-				m_bKeyRight=false;
-				return true;
-			}
 		}
 	}
 	return false;
@@ -462,17 +408,17 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 	m_Terrain.GetBrushDecal().SetPos(vTargetPos.x, vTargetPos.z);
 	if (IsPressed())
 	{
-		if (g_bRightButtonDown)
+		if (GetKeyState(VK_RBUTTON)<0)
 		{
 			m_Camera.addMouseDelta(Vec3D(m_ptLastMousePosition.x-point.x,m_ptLastMousePosition.y-point.y,0));
 			m_ptLastMousePosition=point;
 		}
-		else if (g_bMiddleButtonDown)
+		else if (GetKeyState(VK_MBUTTON)<0)
 		{
 			MoveCamera(-point.x+m_ptLastMousePosition.x, point.y-m_ptLastMousePosition.y);
 			m_ptLastMousePosition=point;
 		}
-		else if (g_bLeftButtonDown)
+		else if (GetKeyState(VK_LBUTTON)<0)
 		{
 			if (m_Terrain.GetBrushDecal().GetBrushType()==CTerrainBrush::BRUSH_TYPE_SCENE_OBJECT)
 			{
@@ -516,6 +462,13 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 			}
 			else
 			{
+				float fStrength = m_Terrain.GetBrushDecal().GetStrength();
+				fStrength = abs(fStrength);
+				if(GetKeyState(VK_SHIFT)<0)
+				{
+					fStrength=-fStrength;
+				}
+				m_Terrain.GetBrushDecal().SetStrength(fStrength);
 				m_Terrain.Brush(vTargetPos.x, vTargetPos.z);
 			}
 
@@ -540,235 +493,191 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 
 void CUIWorldEditorDisplay::OnMouseWheel(POINT point,short wheelDelta)
 {
-	if(ContainsPoint(point))
+	if (wheelDelta!=0)
 	{
-		if (wheelDelta!=0)
-		{
-			m_Camera.addMouseDelta(Vec3D(0,0,-wheelDelta/12.0f*m_Camera.GetRadius()));
-		}
+		m_Camera.addMouseDelta(Vec3D(0,0,-wheelDelta/12.0f*m_Camera.GetRadius()));
 	}
 }
 
 void CUIWorldEditorDisplay::OnLButtonDown(POINT point)
 {
-	if(ContainsPoint(point))
+	SetFocus();
+	m_Terrain.markEdit(); // Mark this edit.
+	if (m_Terrain.GetBrushDecal().GetBrushType()==CTerrainBrush::BRUSH_TYPE_SCENE_OBJECT)
 	{
-		m_Terrain.markEdit(); // Mark this edit.
-		SetFocus();
-		if (m_Terrain.GetBrushDecal().GetBrushType()==CTerrainBrush::BRUSH_TYPE_SCENE_OBJECT)
+		Vec3D vRayPos, vRayDir;
+		m_Camera.GetPickRay( vRayPos, vRayDir, point.x, point.y,m_rcBoundingBox);
+		if (GetKeyState(VK_MENU)<0)// new oject
 		{
-			Vec3D vRayPos, vRayDir;
-			m_Camera.GetPickRay( vRayPos, vRayDir, point.x, point.y,m_rcBoundingBox);
-			if (GetKeyState(VK_MENU)<0)// new oject
+			Vec3D vPos;
+			if (m_Terrain.GetData().Pick(vRayPos, vRayDir,&vPos))
 			{
-				Vec3D vPos;
-				if (m_Terrain.GetData().Pick(vRayPos, vRayDir,&vPos))
-				{
-					GetParentDialog()->postMsg("MSG_ADD_OBJECT");
-				}
+				GetParentDialog()->postMsg("MSG_ADD_OBJECT");
 			}
-			if (GetKeyState(VK_CONTROL)<0)
+		}
+		if (GetKeyState(VK_CONTROL)<0)
+		{
+			CMapObj* pObject = m_Scene.pickObject(vRayPos, vRayDir);
+			if (m_Scene.findFocusObject(pObject))
 			{
-				CMapObj* pObject = m_Scene.pickObject(vRayPos, vRayDir);
-				if (m_Scene.findFocusObject(pObject))
-				{
-					m_Scene.delFocusObject(pObject);
-				}
-				else
-				{
-					m_Scene.addFocusObject(pObject);
-				}
-				GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
+				m_Scene.delFocusObject(pObject);
 			}
 			else
 			{
-				if (m_Scene.getFocusObjects().size()>0&&m_MeshCoordinate.intersect(vRayPos, vRayDir,m_vPosPressed))
-				{
-				}
-				else
-				{
-					CMapObj* pObject = m_Scene.pickObject(vRayPos, vRayDir);
-					if (m_Scene.findFocusObject(pObject)==false)
-					{
-						m_Scene.clearFocusObjects();
-						m_Scene.addFocusObject(pObject);
-						GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
-					}
-				}
+				m_Scene.addFocusObject(pObject);
 			}
+			GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 		}
-		else if(GetKeyState(VK_CONTROL)<0)
+		else
 		{
-			Vec3D vRayPos, vRayDir;
-			Vec3D vTargetPos;
-			m_Camera.GetPickRay( vRayPos, vRayDir, point.x, point.y,m_rcBoundingBox);
-			m_Terrain.GetData().Pick( vRayPos, vRayDir, &vTargetPos );
-
-			Pos2D posCell(vTargetPos.x, vTargetPos.z);
-			int nTileID = m_Terrain.GetData().GetCellTileID(posCell,0);
-			m_Terrain.GetBrushDecal().SetTileID(nTileID);
-		}
-	
-		SetPressed(true);
-		SetCapture(UIGetHWND());
-		g_bLeftButtonDown = true;
-		if (m_Scene.getFocusObjects().size()>0)
-		{
-			m_ptLastMousePosition=point;
-			m_vObjectLastPos = m_Scene.getFocusObjectsPos();
+			if (m_Scene.getFocusObjects().size()>0&&m_MeshCoordinate.intersect(vRayPos, vRayDir,m_vPosPressed))
 			{
-				m_CoordPlanType = CPT_XY;
-				if (m_vPosPressed[0]&&m_vPosPressed[1])
+			}
+			else
+			{
+				CMapObj* pObject = m_Scene.pickObject(vRayPos, vRayDir);
+				if (m_Scene.findFocusObject(pObject)==false)
 				{
-					m_CoordPlanType=CPT_XY;
-				}
-				else if (m_vPosPressed[1]&&m_vPosPressed[2])
-				{
-					m_CoordPlanType=CPT_YZ;
-				}
-				else if (m_vPosPressed[2]&&m_vPosPressed[0])
-				{
-					m_CoordPlanType=CPT_ZX;
-				}
-				else
-				{
-					Matrix mProjXView = m_Camera.GetProjXView();
-					Vec3D vOrigin = mProjXView*m_vObjectLastPos;
-					Vec3D vX = mProjXView*(m_vObjectLastPos+Vec3D(1,0,0))-vOrigin;
-					Vec3D vY = mProjXView*(m_vObjectLastPos+Vec3D(0,1,0))-vOrigin;
-					Vec3D vZ = mProjXView*(m_vObjectLastPos+Vec3D(0,0,1))-vOrigin;
-					vX.z=0;vY.z=0;vZ.z=0;
-					vX.normalize();vY.normalize();vZ.normalize();
-					float fDotXY = vX.dot(vY);
-					float fDotYZ = vY.dot(vZ);
-					float fDotZX = vZ.dot(vX);
-
-					if (m_vPosPressed[0])
-					{
-						if (abs(fDotXY)<abs(fDotZX))
-						{
-							m_CoordPlanType=CPT_XY;
-						}
-						else
-						{
-							m_CoordPlanType=CPT_ZX;
-						}
-					}
-					else if (m_vPosPressed[1])
-					{
-						if (abs(fDotXY)<abs(fDotYZ))
-						{
-							m_CoordPlanType=CPT_XY;
-						}
-						else
-						{
-							m_CoordPlanType=CPT_YZ;
-						}
-					}
-					else if (m_vPosPressed[2])
-					{
-						if (abs(fDotYZ)<abs(fDotZX))
-						{
-							m_CoordPlanType=CPT_YZ;
-						}
-						else
-						{
-							m_CoordPlanType=CPT_ZX;
-						}
-					}
+					m_Scene.clearFocusObjects();
+					m_Scene.addFocusObject(pObject);
+					GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 				}
 			}
-			{
-				Vec3D vLastMouseRayPos, vLastMouseRayDir;
-				m_Camera.GetPickRay(vLastMouseRayPos, vLastMouseRayDir, m_ptLastMousePosition.x, m_ptLastMousePosition.y,m_rcBoundingBox);
-				float t = (m_vObjectLastPos.f[m_CoordPlanType]-vLastMouseRayPos.f[m_CoordPlanType])/vLastMouseRayDir.f[m_CoordPlanType];
-				m_vLastMousePos = vLastMouseRayDir*t+vLastMouseRayPos;
-			}
-
 		}
 	}
+	else if(GetKeyState(VK_CONTROL)<0)
+	{
+		Vec3D vRayPos, vRayDir;
+		Vec3D vTargetPos;
+		m_Camera.GetPickRay( vRayPos, vRayDir, point.x, point.y,m_rcBoundingBox);
+		m_Terrain.GetData().Pick( vRayPos, vRayDir, &vTargetPos );
 
+		Pos2D posCell(vTargetPos.x, vTargetPos.z);
+		int nTileID = m_Terrain.GetData().GetCellTileID(posCell,0);
+		m_Terrain.GetBrushDecal().SetTileID(nTileID);
+	}
 
+	SetPressed(true);
+	if (m_Scene.getFocusObjects().size()>0)
+	{
+		m_ptLastMousePosition=point;
+		m_vObjectLastPos = m_Scene.getFocusObjectsPos();
+		{
+			m_CoordPlanType = CPT_XY;
+			if (m_vPosPressed[0]&&m_vPosPressed[1])
+			{
+				m_CoordPlanType=CPT_XY;
+			}
+			else if (m_vPosPressed[1]&&m_vPosPressed[2])
+			{
+				m_CoordPlanType=CPT_YZ;
+			}
+			else if (m_vPosPressed[2]&&m_vPosPressed[0])
+			{
+				m_CoordPlanType=CPT_ZX;
+			}
+			else
+			{
+				Matrix mProjXView = m_Camera.GetProjXView();
+				Vec3D vOrigin = mProjXView*m_vObjectLastPos;
+				Vec3D vX = mProjXView*(m_vObjectLastPos+Vec3D(1,0,0))-vOrigin;
+				Vec3D vY = mProjXView*(m_vObjectLastPos+Vec3D(0,1,0))-vOrigin;
+				Vec3D vZ = mProjXView*(m_vObjectLastPos+Vec3D(0,0,1))-vOrigin;
+				vX.z=0;vY.z=0;vZ.z=0;
+				vX.normalize();vY.normalize();vZ.normalize();
+				float fDotXY = vX.dot(vY);
+				float fDotYZ = vY.dot(vZ);
+				float fDotZX = vZ.dot(vX);
+
+				if (m_vPosPressed[0])
+				{
+					if (abs(fDotXY)<abs(fDotZX))
+					{
+						m_CoordPlanType=CPT_XY;
+					}
+					else
+					{
+						m_CoordPlanType=CPT_ZX;
+					}
+				}
+				else if (m_vPosPressed[1])
+				{
+					if (abs(fDotXY)<abs(fDotYZ))
+					{
+						m_CoordPlanType=CPT_XY;
+					}
+					else
+					{
+						m_CoordPlanType=CPT_YZ;
+					}
+				}
+				else if (m_vPosPressed[2])
+				{
+					if (abs(fDotYZ)<abs(fDotZX))
+					{
+						m_CoordPlanType=CPT_YZ;
+					}
+					else
+					{
+						m_CoordPlanType=CPT_ZX;
+					}
+				}
+			}
+		}
+		{
+			Vec3D vLastMouseRayPos, vLastMouseRayDir;
+			m_Camera.GetPickRay(vLastMouseRayPos, vLastMouseRayDir, m_ptLastMousePosition.x, m_ptLastMousePosition.y,m_rcBoundingBox);
+			float t = (m_vObjectLastPos.f[m_CoordPlanType]-vLastMouseRayPos.f[m_CoordPlanType])/vLastMouseRayDir.f[m_CoordPlanType];
+			m_vLastMousePos = vLastMouseRayDir*t+vLastMouseRayPos;
+		}
+
+	}
 }
 
 void CUIWorldEditorDisplay::OnLButtonUp(POINT point)
 {
-	g_bLeftButtonDown = false;
 	if (IsPressed())
 	{
-		ReleaseCapture();
+		SetPressed(false);
 	}
 }
 
 void CUIWorldEditorDisplay::OnRButtonDown(POINT point)
 {
-	if(ContainsPoint(point))
-	{
-		SetPressed(true);
-		SetCapture(UIGetHWND());
-		m_ptLastMousePosition=point;
-		g_bRightButtonDown = true;
-	}
+	SetFocus();
+	SetPressed(true);
+	m_ptLastMousePosition=point;
 }
 
 void CUIWorldEditorDisplay::OnRButtonUp(POINT point)
 {
-	g_bRightButtonDown = false;
 	if (IsPressed())
 	{
-		ReleaseCapture();
+		SetPressed(false);
 	}
 }
 
 void CUIWorldEditorDisplay::OnMButtonDown(POINT point)
 {
-	if(ContainsPoint(point))
-	{
-		SetPressed(true);
-		SetCapture(UIGetHWND());
-		m_ptLastMousePosition=point;
-		g_bMiddleButtonDown=true;
-	}
-
+	SetFocus();
+	SetPressed(true);
+	m_ptLastMousePosition=point;
 }
 
 void CUIWorldEditorDisplay::OnMButtonUp(POINT point)
 {
-	g_bMiddleButtonDown=false;
 	if (IsPressed())
 	{
-		ReleaseCapture();
+		SetPressed(false);
 	}
 }
 
 void CUIWorldEditorDisplay::OnFocusOut()
 {
-	g_bLeftButtonDown = false;
-	g_bRightButtonDown = false;
-	g_bMiddleButtonDown = false;
-	m_bKeyUp = false;
-	m_bKeyDown = false;
-	m_bKeyLeft = false;
-	m_bKeyRight = false;
 	if (IsPressed())
 	{
-		ReleaseCapture();
+		SetPressed(false);
 	}
-}
-
-bool CUIWorldEditorDisplay::HandleMouse(UINT uMsg, POINT pt, WPARAM wParam, LPARAM lParam)
-{
-	if (WM_CAPTURECHANGED==uMsg)
-	{
-		if((HWND)lParam != UIGetHWND())
-		{
-			if (IsPressed())
-			{
-				ReleaseCapture();
-			}
-		}
-	}
-	return true;
 }
 
 void CUIWorldEditorDisplay::OnSize(const CRect<int>& rc)

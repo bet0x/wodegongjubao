@@ -87,13 +87,7 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 			const CNodeData* pCellsNode = lump.firstChild("cells");
 			if (pCellsNode)
 			{
-				pCellsNode->getVector("tile0",		pTerrainData->getTiles(0));
-				pCellsNode->getVector("tile1",		pTerrainData->getTiles(1));
-				pCellsNode->getVector("color",		pTerrainData->getColors());
-				pCellsNode->getVector("height",		pTerrainData->getHeights());
-				pCellsNode->getVector("attribute",	pTerrainData->getAttributes());
-				pCellsNode->getVector("other",		pTerrainData->getOthers());
-				//pCellsNode->getVector("uv",		pTerrainData->getEquableTexUV);
+				pCellsNode->getVector("cells", pTerrainData->getCells());
 			}
 		}
 	}
@@ -243,13 +237,7 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 	CNodeData* pCellsNode = lump.AddNode("cells");
 	if (pCellsNode)
 	{
-		pCellsNode->SetVector("tile0",		pTerrainData->getTiles(0));
-		pCellsNode->SetVector("tile1",		pTerrainData->getTiles(1));
-		pCellsNode->SetVector("color",		pTerrainData->getColors());
-		pCellsNode->SetVector("height",		pTerrainData->getHeights());
-		pCellsNode->SetVector("attribute",	pTerrainData->getAttributes());
-		pCellsNode->SetVector("other",		pTerrainData->getOthers());
-		//pCellsNode->SetVector("uv",		pTerrainData->getEquableTexUV);
+		pCellsNode->SetVector("cells", pTerrainData->getCells());
 	}
 	lump.SaveFile(strFilename);
 	return true;

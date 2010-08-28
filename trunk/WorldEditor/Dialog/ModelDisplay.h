@@ -17,7 +17,6 @@ public:
 	void	loadComplexModel(const std::string& strFilename);
 	void	OnFrameMove( double fTime, float fElapsedTime );
 	void	OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime );
-	bool	HandleMouse(UINT uMsg, POINT pt, WPARAM wParam, LPARAM lParam);
 	void	MouseProc( bool bLeftButtonDown, bool bRightButtonDown, bool bMiddleButtonDown,
 		bool bSideButton1Down, bool bSideButton2Down, int nMouseWheelDelta, int xPos, int yPos );
 	void	SetRealEye(const Vec3D& vEye){m_vEye = vEye;}
@@ -32,7 +31,6 @@ public:
 	virtual void OnMButtonDown(POINT point);
 	virtual void OnMButtonUp(POINT point);
 
-	virtual void OnDropRect();
 	virtual void OnSize(const CRect<int>& rc);
 
 	CModelObject* getModelObject();
@@ -49,15 +47,6 @@ public:
 	bool m_bShowWireframe;
 	bool m_bShowMaterial;
 	bool m_bShowParticles;
-
-
-	bool m_bLbuttonDrop;
-	CRect<float> m_DropRect;
-	
-	Vec3D m_vPickRectLeft;
-	Vec3D m_vPickRectBottom;
-
-	VERTEX_XYZ_DIF m_PickPlane[5];
 
 	CMeshCoordinate		m_MeshCoordinate;
 private:
