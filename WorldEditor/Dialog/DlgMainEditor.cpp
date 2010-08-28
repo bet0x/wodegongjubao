@@ -60,6 +60,7 @@ void CDlgMainEditor::OnControlRegister()
 	RegisterControl( "IDC_STATIC_POS_X", m_StaticPosX);
 	RegisterControl( "IDC_STATIC_POS_Y", m_StaticPosY);
 	RegisterControl( "IDC_STATIC_POS_HEIGHT", m_StaticPosHeight);
+	RegisterControl( "IDC_STATIC_FPS", m_StaticFPS);
 
 	RegisterControl( "IDC_STATIC_INFO", m_StaticInfo);
 	RegisterControl( "IDC_DISPLAY_WORLDEDITOR", m_WorldEditorDisplay);
@@ -172,6 +173,12 @@ void CDlgMainEditor::OnFrameMove(double fTime, float fElapsedTime)
 	m_StaticPosX.SetFloat(vPos.x,0,2);
 	m_StaticPosY.SetFloat(vPos.z,0,2);
 	m_StaticPosHeight.SetFloat(vPos.y,0,2);
+	static float fFps = 0.0f;
+	if (fElapsedTime!=0.0f)
+	{
+		fFps = fFps*0.9f+0.1f/fElapsedTime;
+	}
+	m_StaticFPS.SetFloat(fFps,0,2);
 }
 
 void CDlgMainEditor::OnBtnNewFile()

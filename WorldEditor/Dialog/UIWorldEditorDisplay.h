@@ -23,7 +23,6 @@ public:
 	CTerrainEditor& getTerrain(){return m_Terrain;}
 	CScene&	getScene(){return m_Scene;}
 	//CQuake3BSP			g_SceneBsp;
-	virtual bool HandleMouse(UINT uMsg, POINT pt, WPARAM wParam, LPARAM lParam);
 virtual bool CanHaveFocus() { return (m_bVisible && m_bEnabled); }
 	virtual bool HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lParam);
 	virtual void OnMouseMove(POINT point);
@@ -56,10 +55,6 @@ protected:
 	CTerrainEditor		m_Terrain;
 	CScene				m_Scene;
 	CSceneEffect		m_SceneEffect;
-	bool				m_bKeyUp;
-	bool				m_bKeyDown;
-	bool				m_bKeyLeft;
-	bool				m_bKeyRight;
 	CMeshCoordinate		m_MeshCoordinate;
 	Vec3D				m_vPosPressed;
 	Vec3D				m_vPosMoveOn;
@@ -76,10 +71,6 @@ protected:
 		CPT_XY,
 	};
 	COORD_PLAN_TYPE		m_CoordPlanType;
-
-	bool g_bLeftButtonDown;
-	bool g_bRightButtonDown;
-	bool g_bMiddleButtonDown;
 
 	float m_fCoordScale;
 

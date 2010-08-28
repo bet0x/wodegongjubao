@@ -57,6 +57,7 @@ private:
 	CUIStatic	m_StaticPosX;
 	CUIStatic	m_StaticPosY;
 	CUIStatic	m_StaticPosHeight;
+	CUIStatic	m_StaticFPS;
 	CUIStatic	m_StaticInfo;
 	CModelDisplay			m_ModelDisplay;
 	CUIWorldEditorDisplay	m_WorldEditorDisplay;
