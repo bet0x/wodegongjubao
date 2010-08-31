@@ -552,8 +552,9 @@ void CUIWorldEditorDisplay::OnLButtonDown(POINT point)
 		m_Camera.GetPickRay( vRayPos, vRayDir, point.x, point.y,m_rcBoundingBox);
 		m_Terrain.GetData().Pick( vRayPos, vRayDir, &vTargetPos );
 
-		Pos2D posCell(vTargetPos.x, vTargetPos.z);
-		int nTileID = m_Terrain.GetData().GetCellTileID(posCell,0);
+		int nTargetX = (int)vTargetPos.x;
+		int nTargetY = (int)vTargetPos.z;
+		int nTileID = m_Terrain.GetData().GetCellTileID(nTargetX,nTargetY,0);
 		m_Terrain.GetBrushDecal().SetTileID(nTileID);
 	}
 

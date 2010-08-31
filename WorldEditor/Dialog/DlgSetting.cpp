@@ -20,8 +20,8 @@ void CDlgSetting::OnControlRegister()
 
 	RegisterControl("IDC_NUM_CAMERA_ANGLE",	m_NumCameraAngle);
 	RegisterControl("IDC_NUM_CAMERA_FAR",	m_NumCameraFar);
-	RegisterControl("IDC_NUM_FOG_START",	m_NumFogStart);
-	RegisterControl("IDC_NUM_FOG_END",		m_NumFogEnd);
+	RegisterControl("IDC_SLIDER_FOG_START",	m_SliderFogStart);
+	RegisterControl("IDC_SLIDER_FOG_END",	m_SliderFogEnd);
 	RegisterControl("IDC_NUM_FOG_DENSITY",	m_NumFogDensity);
 
 	RegisterControl("IDC_COLOR_FOG",		m_ColorFog);
@@ -43,8 +43,8 @@ void CDlgSetting::OnControlRegister()
 
 	RegisterControlEvent("IDC_NUM_CAMERA_ANGLE",	(PEVENT)&CDlgSetting::OnCameraChanged);
 	RegisterControlEvent("IDC_NUM_CAMERA_FAR",		(PEVENT)&CDlgSetting::OnCameraChanged);
-	RegisterControlEvent("IDC_NUM_FOG_START",		(PEVENT)&CDlgSetting::OnFogChanged);
-	RegisterControlEvent("IDC_NUM_FOG_END",			(PEVENT)&CDlgSetting::OnFogChanged);
+	RegisterControlEvent("IDC_SLIDER_FOG_START",	(PEVENT)&CDlgSetting::OnFogChanged);
+	RegisterControlEvent("IDC_SLIDER_FOG_END",		(PEVENT)&CDlgSetting::OnFogChanged);
 	RegisterControlEvent("IDC_NUM_FOG_DENSITY",		(PEVENT)&CDlgSetting::OnFogChanged);
 	RegisterControlEvent("IDC_COLOR_FOG",			(PEVENT)&CDlgSetting::OnFogChanged);
 	RegisterControlEvent("IDC_COLOR_AMBIENT",		(PEVENT)&CDlgSetting::OnMaterialChanged);
@@ -57,6 +57,10 @@ bool CDlgSetting::OnInitDialog()
 	//WE_TERRAIN.showLayer1(!WE_TERRAIN.isShowLayer1());
 	//WE_TERRAIN.showGrid(!WE_TERRAIN.isShowGrid());
 	//WE_TERRAIN.ShowBox(!WE_TERRAIN.IsShowBox());
+	m_SliderFogStart.SetRange(0,100);
+	m_SliderFogStart.SetPageSize(1);
+	m_SliderFogEnd.SetRange(0,255);
+	m_SliderFogEnd.SetPageSize(1);
 	return true;
 }
 
@@ -122,8 +126,8 @@ void CDlgSetting::OnCameraChanged()
 void CDlgSetting::OnFogChanged()
 {
 	Fog fog;
-	fog.fStart=m_NumFogStart.getFloat();
-	fog.fEnd=m_NumFogEnd.getFloat();
+	fog.fStart=m_SliderFogEnd.GetValue()*0.01f*m_SliderFogStart.GetValue();
+	fog.fEnd=m_SliderFogEnd.GetValue();
 	fog.fDensity=m_NumFogDensity.getFloat();
 	fog.color=m_ColorFog.getColor();
 	WE_SCENE.setFog(fog);
@@ -142,8 +146,8 @@ void CDlgSetting::OnMaterialChanged()
 void CDlgSetting::init()
 {
 	const Fog& fog = WE_SCENE.getFog();
-	m_NumFogStart.setFloat(fog.fStart,0,2);
-	m_NumFogEnd.setFloat(fog.fEnd,0,2);
+	m_SliderFogStart.SetValue(fog.fStart*100/fog.fEnd);
+	m_SliderFogEnd.SetValue(fog.fEnd);
 	m_NumFogDensity.setFloat(fog.fDensity,0,2);
 	m_ColorFog.setColor(fog.color);
 

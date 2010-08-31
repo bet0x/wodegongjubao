@@ -101,28 +101,34 @@ void RPGSkyUIGraph::DrawPolyLine(POINT* apPoints, UINT nNumPoints, Color32 color
 	S_DELS(vertices);
 }
 
-void RPGSkyUIGraph::DrawSprite3x3Grid(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest,const char* szTexture, Color32 color)
+void* RPGSkyUIGraph::createTexture(const char* szTexture)
 {
-	if(color.a == 0)
-		return;
-	int TextureID = GetRenderSystem().GetTextureMgr().RegisterTexture(szTexture);
-	GetGraphics().Draw3x3Grid3D(rcSrc, rcCenterSrc, rcDest, TextureID, color);
+	return (void*)GetRenderSystem().GetTextureMgr().RegisterTexture(szTexture);
 }
 
-void RPGSkyUIGraph::DrawSprite(const CRect<float>& rcSrc, const CRect<float>& rcDest, const char* szTexture, Color32 color)
+void RPGSkyUIGraph::releaseTexture(void* pTexture)
 {
-	if(color.a == 0)
-		return;
-	int TextureID = GetRenderSystem().GetTextureMgr().RegisterTexture(szTexture);
-	GetGraphics().DrawTex3D(rcSrc, rcDest, TextureID, color);
 }
 
-void RPGSkyUIGraph::DrawSprite(const CRect<float>& rcDest, const char* szTexture, Color32 color)
+void RPGSkyUIGraph::DrawSprite3x3Grid(const CRect<float>& rcSrc, const CRect<float>& rcCenterSrc, const CRect<float>& rcDest, void* pTexture, Color32 color)
 {
 	if(color.a == 0)
 		return;
-	int TextureID = GetRenderSystem().GetTextureMgr().RegisterTexture(szTexture);
-	GetGraphics().DrawTex(rcDest, TextureID, color);
+	GetGraphics().Draw3x3Grid3D(rcSrc, rcCenterSrc, rcDest, (int)pTexture, color);
+}
+
+void RPGSkyUIGraph::DrawSprite(const CRect<float>& rcSrc, const CRect<float>& rcDest, void* pTexture, Color32 color)
+{
+	if(color.a == 0)
+		return;
+	GetGraphics().DrawTex3D(rcSrc, rcDest, (int)pTexture, color);
+}
+
+void RPGSkyUIGraph::DrawSprite(const CRect<float>& rcDest, void* pTexture, Color32 color)
+{
+	if(color.a == 0)
+		return;
+	GetGraphics().DrawTex(rcDest, (int)pTexture, color);
 }
 
 void RPGSkyUIGraph::CalcTextRect(const std::wstring& wstrText, CRect<float>& rcDest)
@@ -155,24 +161,24 @@ void RPGSkyUIGraph::DrawText(const std::wstring& wstrText, CUIStyle& style, int 
 	getTextRender().drawText(wstrText,nCount,rcDest.getRECT(),uFormat, color.c);
 }
 
-void RPGSkyUIGraph::drawText(const std::wstring& strText, int cchText, const RECT& rc, UINT format, unsigned long color, RECT* prcRet)
+void RPGSkyUIGraph::drawText(const std::wstring& wstrText, int cchText, const RECT& rc, UINT format, unsigned long color, RECT* prcRet)
 {
 	CRenderSystem& R = GetRenderSystem();
 	R.SetTextureFactor(color);
 	R.SetTextureColorOP(1,TBOP_MODULATE,TBS_CURRENT,TBS_TFACTOR);
 	R.SetTextureAlphaOP(1,TBOP_MODULATE,TBS_CURRENT,TBS_TFACTOR);
-	getTextRender().drawText(strText,cchText,rc,format,color,prcRet);
-	R.SetTextureColorOP(1,TBOP_DISABLE);
-	R.SetTextureAlphaOP(1,TBOP_DISABLE);
-}
-
-void RPGSkyUIGraph::drawUBB(const std::wstring& wstrText,const RECT& rc,const unsigned long& color)
-{
-	CRenderSystem& R = GetRenderSystem();
-	R.SetTextureFactor(color);
-	R.SetTextureColorOP(1,TBOP_MODULATE,TBS_CURRENT,TBS_TFACTOR);
-	R.SetTextureAlphaOP(1,TBOP_MODULATE,TBS_CURRENT,TBS_TFACTOR);
-	getTextRender().DrawUBB(wstrText,rc);
+	if(wstrText.empty())
+	{
+		return;
+	}
+	if(wstrText[0]==L'[')// Need change to format
+	{
+		getTextRender().DrawUBB(wstrText,rc);
+	}
+	else
+	{
+		getTextRender().drawText(wstrText,cchText,rc,format,color,prcRet);
+	}
 	R.SetTextureColorOP(1,TBOP_DISABLE);
 	R.SetTextureAlphaOP(1,TBOP_DISABLE);
 }

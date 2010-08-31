@@ -1197,7 +1197,7 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 				{
 					for (int x=0; x<253; ++x)
 					{
-						pTerrainData->SetCellTileID(Pos2D(x,y),*p,0);
+						pTerrainData->SetCellTileID(x,y,*p,0);
 						p++;
 					}
 					p+=3;
@@ -1207,7 +1207,7 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 				{
 					for (int x=0; x<253; ++x)
 					{
-						pTerrainData->SetCellTileID(Pos2D(x,y),*p,1);
+						pTerrainData->SetCellTileID(x,y,*p,1);
 						p++;
 					}
 					p+=3;
@@ -1217,7 +1217,7 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 				{
 					for (int x=0; x<254; ++x)
 					{
-						pTerrainData->setVertexColor(Pos2D(x,y),Color32(*p,255,255,255));
+						pTerrainData->setVertexColor(x,y,Color32(*p,255,255,255));
 						p++;
 					}
 					p+=2;
@@ -1242,7 +1242,7 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 				{
 					for (int x=0; x<253; ++x)
 					{
-						pTerrainData->setCellAttribute(Pos2D(x,y),*p);
+						pTerrainData->setCellAttribute(x,y,*p);
 						p+=2;
 					}
 					p+=6;
@@ -1261,7 +1261,7 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 				{
 					for (int x=0; x<253; ++x)
 					{
-						pTerrainData->setCellAttribute(Pos2D(x,y),*p);
+						pTerrainData->setCellAttribute(x,y,*p);
 						p++;
 					}
 					p+=3;
@@ -1321,14 +1321,14 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 			{
 				for (int x=0; x<254; ++x)
 				{
-					Color32 c = pTerrainData->getVertexColor(Pos2D(x,y));
+					Color32 c = pTerrainData->getVertexColor(x,y);
 					c.b = *pImg;
 					pImg++;
 					c.g = *pImg;
 					pImg++;
 					c.r = *pImg;
 					pImg++;
-					pTerrainData->setVertexColor(Pos2D(x,y),c);
+					pTerrainData->setVertexColor(x,y,c);
 				}
 				pImg+=2*3;
 			}
@@ -1350,7 +1350,7 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 					{
 						uint8 uVal;
 						pRead->Read(&uVal,1);
-						pTerrainData->setVertexHeight(Pos2D(x,y),uVal*0.015f);
+						pTerrainData->setVertexHeight(x,y,uVal*0.015f);
 					}
 				}
 			}
@@ -1787,7 +1787,7 @@ bool CMyPlug::exportTerrainAtt(iTerrainData * pTerrainData, const std::string& s
 		{
 			for (int x=0; x<253; ++x)
 			{
-				*p = pTerrainData->getCellAttribute(Pos2D(x,y));
+				*p = pTerrainData->getCellAttribute(x,y);
 				p++;
 			}
 			for (int x=253; x<256; ++x)
@@ -1834,7 +1834,7 @@ bool CMyPlug::exportTerrainAtt(iTerrainData * pTerrainData, const std::string& s
 				{
 					for (int x=0; x<253; ++x)
 					{
-						*p = pTerrainData->getCellAttribute(Pos2D(x,y));
+						*p = pTerrainData->getCellAttribute(x,y);
 						p++;
 						*p =0;++p;
 					}
@@ -1866,7 +1866,7 @@ bool CMyPlug::exportTerrainAtt(iTerrainData * pTerrainData, const std::string& s
 				{
 					for (int x=0; x<253; ++x)
 					{
-						*p = pTerrainData->getCellAttribute(Pos2D(x,y));
+						*p = pTerrainData->getCellAttribute(x,y);
 						p++;
 					}
 					for (int x=253; x<256; ++x)
@@ -1900,7 +1900,7 @@ bool CMyPlug::exportTerrainAtt(iTerrainData * pTerrainData, const std::string& s
 			{
 				for (int x=0; x<253; ++x)
 				{
-					*p = pTerrainData->getCellAttribute(Pos2D(x,y));
+					*p = pTerrainData->getCellAttribute(x,y);
 					p++;
 				}
 				for (int x=253; x<256; ++x)
@@ -1933,7 +1933,7 @@ bool CMyPlug::exportTerrainAtt(iTerrainData * pTerrainData, const std::string& s
 			{
 				for (int x=0; x<253; ++x)
 				{
-					*p = pTerrainData->getCellAttribute(Pos2D(x,y));
+					*p = pTerrainData->getCellAttribute(x,y);
 					p++;
 					*p =0;++p;
 				}
@@ -1970,7 +1970,7 @@ bool CMyPlug::exportTerrainLightmap(iTerrainData * pTerrainData, const std::stri
 
 		for (int x=0; x<254; ++x)
 		{
-			Color32 c = pTerrainData->getVertexColor(Pos2D(x,y));
+			Color32 c = pTerrainData->getVertexColor(x,y);
 			*p = c.b;
 			p++;
 			*p = c.g;
@@ -2059,7 +2059,7 @@ bool CMyPlug::exportTerrainHeight(iTerrainData * pTerrainData, const std::string
 			*p =0;++p;
 			for (int x=0; x<254; ++x)
 			{
-				*p = max(min(pTerrainData->getVertexHeight(Pos2D(x,y))/0.015f,255),0);
+				*p = max(min(pTerrainData->getVertexHeight(x,y)/0.015f,255),0);
 				p++;
 			}
 		}
@@ -2294,7 +2294,7 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 					{
 						for (int x=0; x<253; ++x)
 						{
-							*p = pTerrainData->GetCellTileID(Pos2D(x,y),layer);
+							*p = pTerrainData->GetCellTileID(x,y,layer);
 							p++;
 						}
 						*p =0;++p;
@@ -2312,7 +2312,7 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 					{
 						for (int x=0; x<254; ++x)
 						{
-							*p = pTerrainData->getVertexColor(Pos2D(x,y)).a;
+							*p = pTerrainData->getVertexColor(x,y).a;
 							p++;
 						}
 						*p =0;++p;
