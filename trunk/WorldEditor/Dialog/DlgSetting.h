@@ -33,6 +33,8 @@ private:
 
 	CUIComboNumber	m_NumCameraAngle;
 	CUIComboNumber	m_NumCameraFar;
+	CUISlider		m_SliderFogStart;
+	CUISlider		m_SliderFogEnd;
 	CUIComboNumber	m_NumFogStart;
 	CUIComboNumber	m_NumFogEnd;
 	CUIComboNumber	m_NumFogDensity;

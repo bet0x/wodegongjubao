@@ -283,14 +283,14 @@ void CD3D9RenderWindow::FrameEnd()
 
 #if defined(DEBUG) || defined(_DEBUG)
 	// check backbuffer covers the entire window
-	RECT rcClient;
+	/*RECT rcClient;
 	GetClientRect(GetHWND(), &rcClient);
 	if(!IsIconic(GetHWND()))
 	{
 		GetClientRect(GetHWND(), &rcClient);
 		assert(DXUTGetBackBufferSurfaceDesc()->Width == (UINT)rcClient.right);
 		assert(DXUTGetBackBufferSurfaceDesc()->Height == (UINT)rcClient.bottom);
-	}        
+	}*/
 #endif
 
 	// Show the frame on the primary surface.
