@@ -135,10 +135,15 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 						bonsAnim.trans.addValue(i*MU_BMD_ANIM_FRAME_TIME,fixCoordSystemPos(bmdBone.setTrans[i+nFrameCount]));// 可以设置关键帧播放速度来调控
 						bonsAnim.rot.addValue(i*MU_BMD_ANIM_FRAME_TIME,fixCoordSystemRotate(bmdBone.setRotate[i+nFrameCount]));
 					}
+					// 补帧
+					bonsAnim.trans.addValue(uTotalFrames*MU_BMD_ANIM_FRAME_TIME,fixCoordSystemPos(bmdBone.setTrans[nFrameCount]));
+					bonsAnim.rot.addValue(uTotalFrames*MU_BMD_ANIM_FRAME_TIME,fixCoordSystemRotate(bmdBone.setRotate[nFrameCount]));
 				}
 			}
 			nFrameCount+=uTotalFrames;
-			skeletonAnim.uTotalFrames = (uTotalFrames-1)*MU_BMD_ANIM_FRAME_TIME;
+			//skeletonAnim.uTotalFrames = (uTotalFrames-1)*MU_BMD_ANIM_FRAME_TIME;
+			// 补帧
+			skeletonAnim.uTotalFrames = uTotalFrames*MU_BMD_ANIM_FRAME_TIME;
 		}
 	}
 
