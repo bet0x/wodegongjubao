@@ -463,18 +463,18 @@
 					>
 				</File>
 			</Filter>
-		</Filter>
-		<Filter
-			Name="Material"
-			>
-			<File
-				RelativePath=".\Dialog\DlgMaterial.cpp"
+			<Filter
+				Name="Material"
 				>
-			</File>
-			<File
-				RelativePath=".\Dialog\DlgMaterial.h"
-				>
-			</File>
+				<File
+					RelativePath=".\Dialog\DlgMaterial.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\Dialog\DlgMaterial.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>
