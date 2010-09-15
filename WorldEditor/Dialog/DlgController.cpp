@@ -67,7 +67,7 @@ void CDlgController::C3Model()
 	{
 		while (csvFile.SeekNextLine())
 		{
-			m_ListBoxFolder.AddItem(s2ws(csvFile.GetStr("Name")));
+			m_ListBoxFolder.AddItem(s2ws(csvFile.GetStr("Name")).c_str());
 		}
 		csvFile.Close();
 	}
@@ -142,7 +142,7 @@ void CDlgController::OpenPath(const std::wstring& wstrPath, const std::wstring& 
 	{
 		if (dir.m_FileInfo[i].IsDirectory())
 		{
-			m_ListBoxFolder.AddItem(L'\\'+dir.m_FileInfo[i].wstrFilename);
+			m_ListBoxFolder.AddItem((L'\\'+dir.m_FileInfo[i].wstrFilename).c_str());
 		}
 	}
 	for (int i=0; i<dir.m_FileInfo.size(); i++)
@@ -151,7 +151,7 @@ void CDlgController::OpenPath(const std::wstring& wstrPath, const std::wstring& 
 		{
 			if (wstrFileType.find(GetExtension(dir.m_FileInfo[i].wstrFilename))!=std::wstring::npos)
 			{
-				m_ListBoxFolder.AddItem(dir.m_FileInfo[i].wstrFilename);
+				m_ListBoxFolder.AddItem(dir.m_FileInfo[i].wstrFilename.c_str());
 			}
 		}
 

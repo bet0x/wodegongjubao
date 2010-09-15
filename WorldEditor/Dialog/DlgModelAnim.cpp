@@ -58,7 +58,7 @@ void CDlgModelAnim::ResetAnim()
 				std::string strAnimName;
 				long timeCount;
 				skeleton.getAnimation(i,strAnimName,timeCount);
-				m_ComboBoxAnim.AddItem(s2ws(strAnimName));
+				m_ComboBoxAnim.AddItem(s2ws(strAnimName).c_str());
 			}
 			if (nSelected>=uAnimSize)
 			{

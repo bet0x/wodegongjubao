@@ -70,7 +70,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="fileio.lib"
-				OutputFile="..\..\RPGSky\bin\Client\$(ProjectName).dll"
+				OutputFile="..\..\RPGSky\bin\Client\Plugins\$(ProjectName).dll"
 				AdditionalLibraryDirectories="..\..\lib;DX9SDK\Lib\x86"
 				ModuleDefinitionFile=".\$(ProjectName).def"
 				RandomizedBaseAddress="1"
@@ -157,7 +157,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="fileiod.lib"
-				OutputFile="..\..\RPGSky\bin\Client\$(ProjectName)d.dll"
+				OutputFile="..\..\RPGSky\bin\Client\Pluginsd\$(ProjectName)d.dll"
 				AdditionalLibraryDirectories="..\..\lib;DX9SDK\Lib\x86"
 				ModuleDefinitionFile=".\$(ProjectName).def"
 				GenerateDebugInformation="true"

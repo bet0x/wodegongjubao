@@ -212,7 +212,7 @@ bool CDlgFile::OpenPath(const std::wstring& wstrPath)
 		{
 			if(dir.m_FileInfo[i].wstrFilename!=L".")
 			{
-				m_ListBoxFolder.AddItem(L"\\"+dir.m_FileInfo[i].wstrFilename);
+				m_ListBoxFolder.AddItem((L"\\"+dir.m_FileInfo[i].wstrFilename).c_str());
 			}
 		}
 	}
@@ -223,7 +223,7 @@ bool CDlgFile::OpenPath(const std::wstring& wstrPath)
 			if (m_wstrFileType.find(GetExtension(dir.m_FileInfo[i].wstrFilename))!=std::wstring::npos)
 			{
 
-				m_ListBoxFolder.AddItem(dir.m_FileInfo[i].wstrFilename);
+				m_ListBoxFolder.AddItem(dir.m_FileInfo[i].wstrFilename.c_str());
 			}
 		}
 	}
@@ -237,7 +237,7 @@ void CDlgFile::setFileType(const std::wstring& wstrFileType)
 	TokenizerW(wstrFileType,m_setFileType,L"|");
 	for (size_t i=0;i<m_setFileType.size();++i)
 	{
-		m_ComboBoxFileType.AddItem(m_setFileType[i]);
+		m_ComboBoxFileType.AddItem(m_setFileType[i].c_str());
 	}
 }
 

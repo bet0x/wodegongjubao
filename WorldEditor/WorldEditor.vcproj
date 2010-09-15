@@ -62,10 +62,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="winmm.lib modeld.lib enginecored.lib 3DGUI.lib TextRender.lib RenderSystemD.lib FreeType.lib fileiod.lib Audiod.lib lua51.lib"
+				AdditionalDependencies="winmm.lib modeld.lib enginecored.lib 3DGUId.lib TextRenderd.lib RenderSystemD.lib FreeType.lib fileiod.lib Audiod.lib lua51.lib"
 				OutputFile="..\..\RPGSky\bin\Client\$(ProjectName)D.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\3dgui\lua;..\..\3dgui\Debug;..\..\engine\Media\FMOD\api\lib"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\3dgui\lua;..\..\3dgui\lib;..\..\engine\Media\FMOD\api\lib"
 				IgnoreDefaultLibraryNames="LIBCMTD.lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -142,7 +142,7 @@
 				AdditionalDependencies="winmm.lib model.lib rendersystem.lib enginecore.lib 3DGUI.lib TextRender.lib RenderSystem.lib fileio.lib FreeType.lib Audio.lib lua51.lib"
 				OutputFile="..\..\RPGSky\bin\Client\$(ProjectName).exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\3dgui\lua;..\..\3dgui\Release;..\..\engine\Media\FMOD\api\lib"
+				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\3dgui\lua;..\..\3dgui\lib;..\..\engine\Media\FMOD\api\lib"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="2"
