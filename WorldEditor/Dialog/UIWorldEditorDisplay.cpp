@@ -58,7 +58,7 @@ void CUIWorldEditorDisplay::OnFrameRender(const Matrix& mTransform, double fTime
 	pShader->setFloat("g_fTime",fTime);
 	pShader->setMatrix("g_mViewProj",m_Camera.GetProjXView());
 	pShader->setMatrix("g_mView",m_Camera.GetViewMatrix());
-	pShader->setVec3D("g_vLightDir",m_Scene.getTerrain()->GetData().GetLightDir());
+	pShader->setVec3D("g_vLightDir",m_Scene.getTerrain()->GetLightDir());
 	pShader->setVec3D("g_vEyePot",m_Camera.GetEyePt());
 
 	R.SetupRenderState();
@@ -394,7 +394,7 @@ void CUIWorldEditorDisplay::MoveCamera(int x,int y)
 	Matrix mCameraRot;
 	mCameraRot.rotationYawPitchRoll(m_Camera.getYawAngle(), 0, 0);
 	vPos += mCameraRot * Vec3D(x, 0, y)*0.001f*m_Camera.GetRadius();
-	vPos.y=m_Terrain.GetData().GetHeight(Vec2D(vPos.x,vPos.z));
+	vPos.y=m_Terrain.GetHeight(Vec2D(vPos.x,vPos.z));
 	m_Camera.setTargetPos(vPos);
 }
 
@@ -403,7 +403,7 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 	Vec3D vRayPos, vRayDir;
 	Vec3D vTargetPos;
 	m_Camera.GetPickRay( vRayPos, vRayDir, point.x, point.y,m_rcBoundingBox);
-	m_Terrain.GetData().Pick( vRayPos, vRayDir, &vTargetPos );
+	m_Terrain.Pick( vRayPos, vRayDir, &vTargetPos );
 	m_Scene.setTargetPos(vTargetPos);
 	m_Terrain.GetBrushDecal().SetPos(vTargetPos.x, vTargetPos.z);
 	if (IsPressed())
@@ -448,13 +448,13 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 						}
 					}
 					// Îü¸½µØ±í
-					if (m_vPosPressed.y==0.0f&&m_Terrain.GetData().GetHeight(Vec2D(m_vObjectLastPos.x,m_vObjectLastPos.z))==m_vObjectLastPos.y)
+					if (m_vPosPressed.y==0.0f&&m_Terrain.GetHeight(Vec2D(m_vObjectLastPos.x,m_vObjectLastPos.z))==m_vObjectLastPos.y)
 					{
-						m_vAfterCatchPos.y = m_Terrain.GetData().GetHeight(Vec2D(m_vAfterCatchPos.x,m_vAfterCatchPos.z));
+						m_vAfterCatchPos.y = m_Terrain.GetHeight(Vec2D(m_vAfterCatchPos.x,m_vAfterCatchPos.z));
 					}
-					else if(abs(m_Terrain.GetData().GetHeight(Vec2D(m_vAfterCatchPos.x,m_vAfterCatchPos.z))-m_vAfterCatchPos.y)<m_fFloorSnap)
+					else if(abs(m_Terrain.GetHeight(Vec2D(m_vAfterCatchPos.x,m_vAfterCatchPos.z))-m_vAfterCatchPos.y)<m_fFloorSnap)
 					{
-						m_vAfterCatchPos.y = m_Terrain.GetData().GetHeight(Vec2D(m_vAfterCatchPos.x,m_vAfterCatchPos.z));
+						m_vAfterCatchPos.y = m_Terrain.GetHeight(Vec2D(m_vAfterCatchPos.x,m_vAfterCatchPos.z));
 					}
 					m_Scene.setFocusObjectsPos(m_vAfterCatchPos);
 					GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
@@ -510,7 +510,7 @@ void CUIWorldEditorDisplay::OnLButtonDown(POINT point)
 		if (GetKeyState(VK_MENU)<0)// new oject
 		{
 			Vec3D vPos;
-			if (m_Terrain.GetData().Pick(vRayPos, vRayDir,&vPos))
+			if (m_Terrain.Pick(vRayPos, vRayDir,&vPos))
 			{
 				GetParentDialog()->postMsg("MSG_ADD_OBJECT");
 			}
@@ -550,11 +550,11 @@ void CUIWorldEditorDisplay::OnLButtonDown(POINT point)
 		Vec3D vRayPos, vRayDir;
 		Vec3D vTargetPos;
 		m_Camera.GetPickRay( vRayPos, vRayDir, point.x, point.y,m_rcBoundingBox);
-		m_Terrain.GetData().Pick( vRayPos, vRayDir, &vTargetPos );
+		m_Terrain.Pick( vRayPos, vRayDir, &vTargetPos );
 
 		int nTargetX = (int)vTargetPos.x;
 		int nTargetY = (int)vTargetPos.z;
-		int nTileID = m_Terrain.GetData().GetCellTileID(nTargetX,nTargetY,0);
+		int nTileID = m_Terrain.GetCellTileID(nTargetX,nTargetY,0);
 		m_Terrain.GetBrushDecal().SetTileID(nTileID);
 	}
 

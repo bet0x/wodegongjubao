@@ -191,7 +191,7 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 	return true;
 }
 
-bool CMyPlug::exportTiles(iTerrain * pTerrain, const std::string& strFilename, const std::string& strPath)
+bool CMyPlug::exportTiles(iTerrainData * pTerrain, const std::string& strFilename, const std::string& strPath)
 {
 	return true;
 }

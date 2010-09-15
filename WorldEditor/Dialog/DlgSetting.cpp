@@ -69,8 +69,8 @@ void CDlgSetting::SetVisible(bool bVisible)
 	CUIDialog::SetVisible(bVisible);
 	if (bVisible)
 	{
-		m_EditBoxWidth.SetInt(WE_TERRAIN.GetData().GetWidth());
-		m_EditBoxHeight.SetInt(WE_TERRAIN.GetData().GetHeight());
+		m_EditBoxWidth.SetInt(WE_TERRAIN.GetWidth());
+		m_EditBoxHeight.SetInt(WE_TERRAIN.GetHeight());
 	}
 }
 

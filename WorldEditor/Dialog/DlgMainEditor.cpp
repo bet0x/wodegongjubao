@@ -183,7 +183,7 @@ void CDlgMainEditor::OnFrameMove(double fTime, float fElapsedTime)
 
 void CDlgMainEditor::OnBtnNewFile()
 {
-	std::wstring wstrPath = s2ws(GetParentPath(getDisplay().getTerrain().GetData().getFilename()));
+	std::wstring wstrPath = s2ws(GetParentPath(getDisplay().getTerrain().getFilename()));
 	if (wstrPath.length()==0)
 	{
 		wstrPath=getCurrentDirectory();
