@@ -94,7 +94,7 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 	return true;
 }
 #include "CsvFile.h"
-bool CMyPlug::importTiles(iTerrain * pTerrain, const std::string& strFilename, const std::string& strPath)
+bool CMyPlug::importTiles(iTerrainData * pTerrain, const std::string& strFilename, const std::string& strPath)
 {
 	pTerrain->clearAllTiles();
 	CCsvFile csv;
@@ -212,7 +212,7 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 			pScene->setLight(light);
 		}
 	}
-	importTerrainData(&pScene->getTerrain()->GetData(),ChangeExtension(strFilename,".map"));
+	importTerrainData(pScene->getTerrain(),ChangeExtension(strFilename,".map"));
 	importTiles(pScene->getTerrain(),GetParentPath(strFilename)+"Tile.csv",GetParentPath(strFilename));
 	//pScene->getTerrain()->setLightMapTexture(strFilename+"TerrainLight.OZJ");
 	pScene->getTerrain()->create();
@@ -220,7 +220,7 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 	importObjectResources(pScene,GetParentPath(strFilename)+"object.csv",GetParentPath(strFilename)); 
 	BBox bboxObject;
 	bboxObject.vMin = Vec3D(-20.0f,-100.0f,-20.0f);
-	bboxObject.vMax = Vec3D(pScene->getTerrain()->GetData().GetWidth()+20.0f,100.0f,pScene->getTerrain()->GetData().GetHeight()+20.0f);
+	bboxObject.vMax = Vec3D(pScene->getTerrain()->GetWidth()+20.0f,100.0f,pScene->getTerrain()->GetHeight()+20.0f);
 	pScene->createObjectTree(bboxObject,16);
 	importObject(pScene,ChangeExtension(strFilename,".obj"));
 	return true;
@@ -243,7 +243,7 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 	return true;
 }
 
-bool CMyPlug::exportTiles(iTerrain * pTerrain, const std::string& strFilename, const std::string& strPath)
+bool CMyPlug::exportTiles(iTerrainData * pTerrain, const std::string& strFilename, const std::string& strPath)
 {
 	return true;
 }
@@ -306,7 +306,7 @@ int CMyPlug::exportData(iScene * pScene, const std::string& strFilename)
 		lumpFile.SetVal("light",pScene->getLight());
 		lumpFile.SaveFile(ChangeExtension(strFilename,".sce"));
 	}
-	exportTerrainData(&pScene->getTerrain()->GetData(),ChangeExtension(strFilename,".map"));
+	exportTerrainData(pScene->getTerrain(),ChangeExtension(strFilename,".map"));
 	exportObject(pScene,ChangeExtension(strFilename,".obj"));
 	return true;
 }

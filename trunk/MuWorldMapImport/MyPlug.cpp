@@ -1361,7 +1361,7 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 }
 #include "CsvFile.h"
 
-bool CMyPlug::importTiles(iTerrain * pTerrain, const std::string& strFilename, const std::string& strPath)
+bool CMyPlug::importTiles(iTerrainData * pTerrain, const std::string& strFilename, const std::string& strPath)
 {
 	pTerrain->clearAllTiles();
 	CCsvFile csv;
@@ -1732,7 +1732,7 @@ VMBEGIN
 
 int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 {
-	importTerrainData(&pScene->getTerrain()->GetData(),strFilename);
+	importTerrainData(pScene->getTerrain(),strFilename);
 	// tiles
 	std::string strTileFile = GetParentPath(strFilename)+"Tile.csv";
 	if (!IOReadBase::Exists(strTileFile))
@@ -1760,7 +1760,7 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 		importObjectResourcesFormDir(pScene,strObjectPath);
 	}
 	BBox bboxObject;
-	float fLength = max(pScene->getTerrain()->GetData().GetWidth(),pScene->getTerrain()->GetData().GetHeight());
+	float fLength = max(pScene->getTerrain()->GetWidth(),pScene->getTerrain()->GetHeight());
 	bboxObject.vMin = Vec3D(-10.0f,-fLength*0.5f-10.0f,-10.0f);
 	bboxObject.vMax = Vec3D(fLength+10.0f,fLength*0.5f+10.0f,fLength+10.0f);
 	pScene->createObjectTree(bboxObject,6);
@@ -2334,7 +2334,7 @@ bool CMyPlug::exportTerrainData(iTerrainData * pTerrainData, const std::string& 
 	return true;
 }
 
-bool CMyPlug::exportTiles(iTerrain * pTerrain, const std::string& strFilename, const std::string& strPath)
+bool CMyPlug::exportTiles(iTerrainData * pTerrain, const std::string& strFilename, const std::string& strPath)
 {
 	return true;
 }
@@ -2595,7 +2595,7 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 int CMyPlug::exportData(iScene * pScene, const std::string& strFilename)
 {
 	checkKey();
-	exportTerrainData(&pScene->getTerrain()->GetData(),strFilename);
+	exportTerrainData(pScene->getTerrain(),strFilename);
 	exportObject(pScene,ChangeExtension(strFilename,".obj"));
 	return true;
 }

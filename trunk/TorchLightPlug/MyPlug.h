@@ -22,7 +22,7 @@ private:
 	bool importObject(iScene * pScene, const std::string& strFilename);
 
 	bool exportTerrainData(iTerrainData * pTerrainData, const std::string& strFilename);
-	bool exportTiles(iTerrain * pTerrain, const std::string& strFilename, const std::string& strPath);
+	bool exportTiles(iTerrainData * pTerrain, const std::string& strFilename, const std::string& strPath);
 	bool exportObjectResources(iScene * pScene, const std::string& strFilename, const std::string& strPath);
 	bool exportObjectResourcesFormDir(iScene * pScene,const std::string& strPath);
 	bool exportObject(iScene * pScene, const std::string& strFilename);
