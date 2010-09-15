@@ -79,7 +79,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="mathd.lib commond.lib fileiod.lib borZoid.lib wininet.lib"
-				OutputFile="..\..\RPGSky\bin\Client\Plugins\debug\$(ProjectName)d.dll"
+				OutputFile="..\..\RPGSky\bin\Client\Pluginsd\$(ProjectName)d.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(ProjectDir)..\..\lib"

@@ -79,7 +79,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="mathd.lib commond.lib fileiod.lib"
-				OutputFile="..\..\RPGSky\bin\Client\Plugins\debug\$(ProjectName)d.dll"
+				OutputFile="..\..\RPGSky\bin\Client\Pluginsd\$(ProjectName)d.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(ProjectDir)..\..\lib"
@@ -224,10 +224,6 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
 			<File
-				RelativePath=".\$(ProjectName).def"
-				>
-			</File>
-			<File
 				RelativePath="MyPlug.cpp"
 				>
 				<FileConfiguration
@@ -246,6 +242,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\$(ProjectName).def"
+				>
 			</File>
 		</Filter>
 		<Filter

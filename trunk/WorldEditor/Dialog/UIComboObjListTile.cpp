@@ -38,7 +38,7 @@ void CUIComboObjListTile::initObject(CScene& scene)
 	CTerrain::MAP_TILES& tiles =((CTerrain*)(scene.getTerrain()))->GetTiles();
 	for (CTerrain::MAP_TILES::iterator it=tiles.begin(); it!=tiles.end(); it++)
 	{
-		m_ListBoxObject.AddItem(s2ws(it->second),(LPVOID)it->first);
+		m_ListBoxObject.AddItem(s2ws(it->second).c_str(),(LPVOID)it->first);
 	}
 }
 

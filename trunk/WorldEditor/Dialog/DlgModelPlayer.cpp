@@ -11,11 +11,11 @@ void CDlgModelPlayer::OnControlRegister()
 	RegisterControl("IDC_CMB_SKELETON",		m_ComboBoxSkeleton);
 	RegisterControl("IDC_CMB_HEAD",			m_ComboBoxHead);
 	RegisterControl("IDC_CMB_SET",			m_ComboBoxSet);
-	RegisterControl("IDC_CMB_HELM",			m_ComboBoxHelm);
-	RegisterControl("IDC_CMB_ARMOR",		m_ComboBoxArmor);
-	RegisterControl("IDC_CMB_GLOVE",		m_ComboBoxGlove);
-	RegisterControl("IDC_CMB_PANTS",		m_ComboBoxPants);
-	RegisterControl("IDC_CMB_BOOT",			m_ComboBoxBoot);
+	RegisterControl("IDC_CMB_HELM",			m_ComboBoxEquips[ET_HELM]);
+	RegisterControl("IDC_CMB_ARMOR",		m_ComboBoxEquips[ET_ARMOR]);
+	RegisterControl("IDC_CMB_GLOVE",		m_ComboBoxEquips[ET_GLOVE]);
+	RegisterControl("IDC_CMB_PANTS",		m_ComboBoxEquips[ET_PANTS]);
+	RegisterControl("IDC_CMB_BOOT",			m_ComboBoxEquips[ET_BOOT]);
 	RegisterControl("IDC_CMB_LEFTHAND",		m_ComboBoxLeftHand);
 	RegisterControl("IDC_CMB_RIGHTHAND",	m_ComboBoxRightHand);
 	RegisterControl("IDC_CMB_BACK",			m_ComboBoxBack);
@@ -41,11 +41,10 @@ bool CDlgModelPlayer::OnInitDialog()
 	m_ComboBoxSkeleton.AddItem(L"");
 	m_ComboBoxHead.AddItem(L"");
 	m_ComboBoxSet.AddItem(L"");
-	m_ComboBoxHelm.AddItem(L"");
-	m_ComboBoxArmor.AddItem(L"");
-	m_ComboBoxGlove.AddItem(L"");
-	m_ComboBoxPants.AddItem(L"");
-	m_ComboBoxBoot.AddItem(L"");
+	for (size_t i=0;i<ET_MAX;++i)
+	{
+		m_ComboBoxEquips[i].AddItem(L"");
+	}
 	m_ComboBoxLeftHand.AddItem(L"");
 	m_ComboBoxRightHand.AddItem(L"");
 	m_ComboBoxBack.AddItem(L"");
@@ -55,64 +54,43 @@ bool CDlgModelPlayer::OnInitDialog()
 	std::wstring wstrFindPath = s2ws(strDirMU)+L"Player\\";//|{"+wstrFileType+L"}";
 	CDir dir;
 	dir.ReadDir(wstrFindPath);
-	for (int i=0; i<dir.m_FileInfo.size(); i++)
+	for (size_t i=0; i<dir.m_FileInfo.size(); i++)
 	{
 		if (!dir.m_FileInfo[i].IsDirectory())
 		{
 			std::wstring wstrFilename = dir.m_FileInfo[i].wstrFilename;
-			std::transform(wstrFilename.begin(),wstrFilename.end(),wstrFilename.begin(),std::tolower);
+			std::transform(wstrFilename.begin(),wstrFilename.end(),wstrFilename.begin(),std::toupper);
 			//if (wstrFileType.find(GetExtension(dir.m_FileInfo[i].wstrFilename))!=std::wstring::npos)
 			if (GetExtension(wstrFilename)==L".bmd")
 			{
-				if (wstrFilename.find(L"helmclass")!=std::wstring::npos)
+				if (wstrFilename.find(L"HELMCLASS")!=std::wstring::npos)
 				{
-					m_ComboBoxHead.AddItem(wstrFilename);
+					m_ComboBoxHead.AddItem(wstrFilename.c_str());
 				}
-				else if (wstrFilename.find(L"helm")!=std::wstring::npos)
+				else if (wstrFilename.find(L"PLAYER")!=std::wstring::npos)
 				{
-					m_ComboBoxHelm.AddItem(wstrFilename);
-					int index=wstrFilename.find(L"helm");
-					wstrFilename.replace(index, wcslen(L"helm"), L"*");
-					setString.insert(wstrFilename);
+					m_ComboBoxSkeleton.AddItem(wstrFilename.c_str());
 				}
-				else if (wstrFilename.find(L"armor")!=std::wstring::npos)
+				else
 				{
-					m_ComboBoxArmor.AddItem(wstrFilename);
-					int index=wstrFilename.find(L"armor");
-					wstrFilename.replace(index, wcslen(L"armor"), L"*");
-					setString.insert(wstrFilename);
-				}
-				else if (wstrFilename.find(L"glove")!=std::wstring::npos)
-				{
-					m_ComboBoxGlove.AddItem(wstrFilename);
-					int index=wstrFilename.find(L"glove");
-					wstrFilename.replace(index, wcslen(L"glove"), L"*");
-					setString.insert(wstrFilename);
-				}
-				else if (wstrFilename.find(L"pant")!=std::wstring::npos)
-				{
-					m_ComboBoxPants.AddItem(wstrFilename);
-					int index=wstrFilename.find(L"pant");
-					wstrFilename.replace(index, wcslen(L"pant"), L"*");
-					setString.insert(wstrFilename);
-				}
-				else if (wstrFilename.find(L"boot")!=std::wstring::npos)
-				{
-					m_ComboBoxBoot.AddItem(wstrFilename);
-					int index=wstrFilename.find(L"boot");
-					wstrFilename.replace(index, wcslen(L"boot"), L"*");
-					setString.insert(wstrFilename);
-				}
-				else if (wstrFilename.find(L"player")!=std::wstring::npos)
-				{
-					m_ComboBoxSkeleton.AddItem(wstrFilename);
+					for (size_t i=0;i<ET_MAX;++i)
+					{
+						if (wstrFilename.find(s2ws(g_EquipNames[i]))!=std::wstring::npos)
+						{
+							m_ComboBoxEquips[i].AddItem(wstrFilename.c_str());
+							int index=wstrFilename.find(s2ws(g_EquipNames[i]));
+							wstrFilename.replace(index, strlen(g_EquipNames[i]), L"*");
+							setString.insert(wstrFilename);
+							break;
+						}
+					}
 				}
 			}
 		}
 	}
 	for (std::set<std::wstring>::iterator it=setString.begin();it!=setString.end();it++)
 	{
-		m_ComboBoxSet.AddItem(*it);
+		m_ComboBoxSet.AddItem(it->c_str());
 	}
 	return true;
 }
@@ -130,11 +108,11 @@ void CDlgModelPlayer::OnUpdatePlayer()
 	if (pModelComplex)
 	{
 		pModelComplex->loadSkinModel("head",strPlayerPath+ ws2s(m_ComboBoxHead.GetText()));
-		pModelComplex->loadSkinModel("helm",strPlayerPath+ ws2s(m_ComboBoxHelm.GetText()));
-		pModelComplex->loadSkinModel("armor",strPlayerPath+ ws2s(m_ComboBoxArmor.GetText()));
-		pModelComplex->loadSkinModel("glove",strPlayerPath+ ws2s(m_ComboBoxGlove.GetText()));
-		pModelComplex->loadSkinModel("pant",strPlayerPath+ ws2s(m_ComboBoxPants.GetText()));
-		pModelComplex->loadSkinModel("boot",strPlayerPath+ ws2s(m_ComboBoxBoot.GetText()));
+
+		for (size_t i=0;i<ET_MAX;++i)
+		{
+			pModelComplex->loadSkinModel(g_EquipNames[i],strPlayerPath+ ws2s(m_ComboBoxEquips[i].GetText()));
+		}
 	}
 	CMainRoot::getInstance().getMainDialog().getDlgModelController().OnUpdate();
 }
@@ -143,43 +121,15 @@ void CDlgModelPlayer::OnSelectSet()
 {
 	std::wstring wstrSet = m_ComboBoxSet.GetText();
 	int index=wstrSet.find(L"*");
-	if (index!=std::wstring::npos)
+	if (index==std::wstring::npos)
 	{
-		{
-			m_ComboBoxHelm.getListBox().SelectItem(0);
-			std::wstring wstrPart=wstrSet;
-			wstrPart.replace(index, wcslen(L"*"), L"helm");
-			m_ComboBoxHead.getListBox().selectByText(wstrPart);
-		}
-		{
-			m_ComboBoxHelm.getListBox().SelectItem(0);
-			std::wstring wstrPart=wstrSet;
-			wstrPart.replace(index, wcslen(L"*"), L"helm");
-			m_ComboBoxHelm.getListBox().selectByText(wstrPart);
-			if (m_ComboBoxHelm.getListBox().GetSelectedIndex()==0)
-			{
-				m_ComboBoxHead.getListBox().selectByText(wstrPart);
-			}
-		}
-		{
-			std::wstring wstrPart=wstrSet;
-			wstrPart.replace(index, wcslen(L"*"), L"armor");
-			m_ComboBoxArmor.getListBox().selectByText(wstrPart);
-		}
-		{
-			std::wstring wstrPart=wstrSet;
-			wstrPart.replace(index, wcslen(L"*"), L"glove");
-			m_ComboBoxGlove.getListBox().selectByText(wstrPart);
-		}
-		{
-			std::wstring wstrPart=wstrSet;
-			wstrPart.replace(index, wcslen(L"*"), L"pant");
-			m_ComboBoxPants.getListBox().selectByText(wstrPart);
-		}
-		{
-			std::wstring wstrPart=wstrSet;
-			wstrPart.replace(index, wcslen(L"*"), L"boot");
-			m_ComboBoxBoot.getListBox().selectByText(wstrPart);
-		}
+		return;
+	}
+	m_ComboBoxHead.getListBox().SelectItem(0);
+	for (size_t i=0;i<ET_MAX;++i)
+	{
+		std::wstring wstrPart=wstrSet;
+		wstrPart.replace(index, wcslen(L"*"),s2ws(g_EquipNames[i]));
+		m_ComboBoxEquips[i].getListBox().selectByText(wstrPart.c_str());
 	}
 }

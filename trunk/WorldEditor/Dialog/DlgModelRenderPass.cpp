@@ -42,7 +42,7 @@ void CDlgModelRenderPass::onReset()
 		{
 			for (size_t i=0; i<uCount; ++i)
 			{
-				m_ListboxRenderPass.AddItem(FormatW(L"[%d]",i));
+				m_ListboxRenderPass.AddItem(FormatW(L"[%d]",i).c_str());
 			}
 			if (nSelected>=uCount)
 			{
@@ -59,7 +59,7 @@ void CDlgModelRenderPass::onReset()
 			m_CmbSubID.AddItem(L"Full",(void*)(-1));
 			for (size_t i=0; i<uSubCount; ++i)
 			{
-				m_CmbSubID.AddItem(FormatW(L"[%d]",i),(void*)i);
+				m_CmbSubID.AddItem(FormatW(L"[%d]",i).c_str(),(void*)i);
 			}
 		}
 	}
