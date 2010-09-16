@@ -177,8 +177,8 @@ bool CMyPlug::importObject(iScene * pScene, const std::string& strFilename)
 		pRead->Read(buffer, fileSize);
 		decrypt(buffer,fileSize);
 
-		int m_uUnknow = *((uint16*)(buffer));
-		uint16 uObjCount = *((uint16*)(buffer+2));
+		int m_uUnknow = *((unsigned short*)(buffer));
+		unsigned short uObjCount = *((unsigned short*)(buffer+2));
 		ObjInfo* pObjInfo = (ObjInfo*)(buffer+4);
 		for (int i=0; i<uObjCount;++i)
 		{
@@ -283,8 +283,8 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 		}
 		size_t fileSize = setObjInfo.size()*sizeof(ObjInfo)+4;
 		char* buffer = new char[fileSize];
-		*((uint16*)buffer) = 1;//m_uUnknow;
-		*((uint16*)(buffer+2)) = setObjInfo.size();
+		*((unsigned short*)buffer) = 1;//m_uUnknow;
+		*((unsigned short*)(buffer+2)) = setObjInfo.size();
 		if (setObjInfo.size()>0)
 		{
 			memcpy(buffer+4,&setObjInfo[0],setObjInfo.size()*sizeof(ObjInfo));

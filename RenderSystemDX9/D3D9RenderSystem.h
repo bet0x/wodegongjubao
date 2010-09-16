@@ -57,12 +57,12 @@ public:
 	void setWorldMatrix(const Matrix& m);
 	void setViewMatrix(const Matrix& m);
 	void setProjectionMatrix(const Matrix& m);
-	void setTextureMatrix(uint8 uTexChannel, TextureTransformFlag flag, const Matrix& m = Matrix::ZERO);
+	void setTextureMatrix(unsigned char uTexChannel, TextureTransformFlag flag, const Matrix& m = Matrix::ZERO);
 	// get matrix
 	void getWorldMatrix(Matrix& m)const;
 	void getViewMatrix(Matrix& m)const;
 	void getProjectionMatrix(Matrix& m)const;
-	void getTextureMatrix(uint8 uTexChannel, Matrix& m)const;
+	void getTextureMatrix(unsigned char uTexChannel, Matrix& m)const;
 
 	// Func
 	void SetDepthBufferFunc(bool bDepthTest = true, bool bDepthWrite = true,				// 深度检测
@@ -91,21 +91,21 @@ public:
 	void SetTextureStageStateDecolor();
 	// 设置shader
 	void SetShader(CShader* pShader);
-	void SetShader(uint32 id);
+	void SetShader(unsigned long id);
 	//
 	void SetMaterial(const Vec4D& vAmbient, const Vec4D& vDiffuse);
 	// Light
-	void SetDirectionalLight(uint32 uIndex,const DirectionalLight& light);
-	void LightEnable(uint32 Index, bool bEnable);
+	void SetDirectionalLight(unsigned long uIndex,const DirectionalLight& light);
+	void LightEnable(unsigned long Index, bool bEnable);
 	void SetLightingEnabled(bool bEnable);
 	//
-	void SetTexCoordIndex(uint32 stage, uint32 index);
+	void SetTexCoordIndex(unsigned long stage, unsigned long index);
 
 	// 设置纹理
-	void SetTexture(uint32 Stage, uint32 TextureID);
-	void SetTexture(uint32 Stage, const CTexture* pTexture);
+	void SetTexture(unsigned long Stage, unsigned long TextureID);
+	void SetTexture(unsigned long Stage, const CTexture* pTexture);
 	// Get
-	CTexture* GetTexture(uint32 Stage);
+	CTexture* GetTexture(unsigned long Stage);
 
 	CVertexDeclaration* CreateVertexDeclaration();
 	// 创建VB IB
@@ -116,18 +116,18 @@ public:
 	// 顶点
 	void SetVB(int nVBID);
 	// 设置FVF顶点格式
-	void SetFVF(uint32 FVF);
+	void SetFVF(unsigned long FVF);
 	//
 	void SetVertexDeclaration(CVertexDeclaration* pDecl);
 	//
-	void SetStreamSource(uint32 StreamNumber, CHardwareVertexBuffer* pStreamData,uint32 OffsetInBytes,uint32 Stride);
+	void SetStreamSource(unsigned long StreamNumber, CHardwareVertexBuffer* pStreamData,unsigned long OffsetInBytes,unsigned long Stride);
 	void SetIndices(CHardwareIndexBuffer* pIndexData);
 
 	// 绘制
-	void DrawPrimitive(VertexRenderOperationType PrimitiveType,uint32 StartVertex,uint32 PrimitiveCount);
-	void DrawIndexedPrimitive(VertexRenderOperationType PrimitiveType,int32 BaseVertexIndex,uint32 MinVertexIndex,uint32 NumVertices,uint32 startIndex,uint32 primCount);
-	void DrawPrimitiveUP(VertexRenderOperationType PrimitiveType,uint32 PrimitiveCount,const void* pVertexStreamZeroData,uint32 VertexStreamZeroStride);
-	void DrawIndexedPrimitiveUP(VertexRenderOperationType PrimitiveType,uint32 MinVertexIndex,uint32 NumVertices,uint32 PrimitiveCount,const void* pIndexData,const void* pVertexStreamZeroData,uint32 VertexStreamZeroStride);
+	void DrawPrimitive(VertexRenderOperationType PrimitiveType,unsigned long StartVertex,unsigned long PrimitiveCount);
+	void DrawIndexedPrimitive(VertexRenderOperationType PrimitiveType,int32 BaseVertexIndex,unsigned long MinVertexIndex,unsigned long NumVertices,unsigned long startIndex,unsigned long primCount);
+	void DrawPrimitiveUP(VertexRenderOperationType PrimitiveType,unsigned long PrimitiveCount,const void* pVertexStreamZeroData,unsigned long VertexStreamZeroStride);
+	void DrawIndexedPrimitiveUP(VertexRenderOperationType PrimitiveType,unsigned long MinVertexIndex,unsigned long NumVertices,unsigned long PrimitiveCount,const void* pIndexData,const void* pVertexStreamZeroData,unsigned long VertexStreamZeroStride);
 	
 	void drawIndexedSubset(const IndexedSubset& subset);
 
@@ -136,14 +136,14 @@ public:
 
 	void StretchRect(CTexture* pSource,const CRect<int>* pSourceRect,CTexture* pDest,const CRect<int>* pDestRect,TextureFilterType filter);
 protected:
-	void SetTexture(uint32 Stage, IDirect3DTexture9* pD3D9Texture);
+	void SetTexture(unsigned long Stage, IDirect3DTexture9* pD3D9Texture);
 	// 设置顶点采样器状态
-	void SetSamplerState(uint32 Sampler, uint32 Type, uint32 Value);
+	void SetSamplerState(unsigned long Sampler, unsigned long Type, unsigned long Value);
 	//
 	//void SetVertexShader(IDirect3DVertexShader9* pShader);
 	//void SetPixelShader(IDirect3DPixelShader9* pShader);
 	// 设置顶点纹理状态
-	void SetTextureStageState(uint32 Stage, uint32 Type, uint32 Value);
+	void SetTextureStageState(unsigned long Stage, unsigned long Type, unsigned long Value);
 	// 提交
 	bool commitRenderState();
 	bool commitSamplerstate();
@@ -156,7 +156,7 @@ protected:
 	//void SetTransform(D3DTRANSFORMSTATETYPE State,const D3DMATRIX* pMatrix);
 	//void GetTransform(D3DTRANSFORMSTATETYPE State, D3DMATRIX* pMatrix);
 	bool commit();
-	void SetRenderState(uint32 State, uint32 Value);// 设置顶点渲染状态
+	void SetRenderState(unsigned long State, unsigned long Value);// 设置顶点渲染状态
 	//
 protected:
 	CD3D9TextureMgr				m_D3D9TextureMgr;
@@ -170,8 +170,8 @@ protected:
 	struct D3D9StreamSource 
 	{
 		IDirect3DVertexBuffer9* pStreamData;
-		uint32 uOffsetInBytes;
-		uint32 uStride;
+		unsigned long uOffsetInBytes;
+		unsigned long uStride;
 		bool operator!= (const D3D9StreamSource &s) const
 		{
 			return pStreamData != s.pStreamData||
@@ -179,18 +179,18 @@ protected:
 				uStride != s.uStride;
 		}
 	};
-	std::map<uint32,uint32>						m_mapChangeRenderState;
-	std::map<uint32,uint32>						m_mapChangeSamplerState;
-	std::map<uint32,uint32>						m_mapChangeTextureStage;
-	std::map<uint32,IDirect3DTexture9*>			m_mapChangeTexture;
-	std::map<uint32,D3D9StreamSource>			m_mapChangeStreamSource;
-	uint32										m_uChangeFVF;
+	std::map<unsigned long,unsigned long>						m_mapChangeRenderState;
+	std::map<unsigned long,unsigned long>						m_mapChangeSamplerState;
+	std::map<unsigned long,unsigned long>						m_mapChangeTextureStage;
+	std::map<unsigned long,IDirect3DTexture9*>			m_mapChangeTexture;
+	std::map<unsigned long,D3D9StreamSource>			m_mapChangeStreamSource;
+	unsigned long										m_uChangeFVF;
 	IDirect3DIndexBuffer9*						m_pChangeIB;
 	CShader*									m_pChangeShader;
 	CShader*									m_pOldShader;
 
-	//std::map<uint32,D3DLIGHT9>					m_LightsChangeMap;
-	//std::map<uint32,bool>						m_LightEnableChangeMap;
+	//std::map<unsigned long,D3DLIGHT9>					m_LightsChangeMap;
+	//std::map<unsigned long,bool>						m_LightEnableChangeMap;
 
 	//////////////////////////////////////////////////////////////////////////
 

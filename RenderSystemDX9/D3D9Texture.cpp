@@ -194,7 +194,7 @@ void CD3D9Texture::FillLevel(void* pBuf, int nSize, int nWidth, int nHeight, int
 	D3DLOCKED_RECT lockedRect;
 
 	m_pd3dTexture->LockRect(nLevel, &lockedRect, 0, 0);
-	uint32* imageData = (uint32*)lockedRect.pBits;
+	unsigned long* imageData = (unsigned long*)lockedRect.pBits;
 	memcpy(imageData,pBuf,nWidth*nHeight*4);
 	m_pd3dTexture->UnlockRect(0);
 }

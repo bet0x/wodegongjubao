@@ -1191,7 +1191,7 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 				pRead->Read(buffer,MAP_FILE_SIZE);
 				decrypt(buffer,MAP_FILE_SIZE);
 				char* p = buffer;
-				uint16 uMuFlgMap = *((uint16*)p);
+				unsigned short uMuFlgMap = *((unsigned short*)p);
 				p+=2;
 				for (int y=0; y<253; ++y)
 				{
@@ -1236,7 +1236,7 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 				decrypt(buffer,ATT_FILE_129KB_SIZE);
 				decrypt2(buffer,ATT_FILE_129KB_SIZE);
 				char* p = buffer;
-				uint32 uMuFlgAtt = *((uint32*)p);
+				unsigned long uMuFlgAtt = *((unsigned long*)p);
 				p+=4;
 				for (int y=0; y<253; ++y)
 				{
@@ -1255,7 +1255,7 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 				decrypt(buffer,ATT_FILE_65KB_SIZE);
 				decrypt2(buffer,ATT_FILE_65KB_SIZE);
 				char* p = buffer;
-				uint32 uMuFlgAtt = *((uint32*)p);
+				unsigned long uMuFlgAtt = *((unsigned long*)p);
 				p+=4;
 				for (int y=0; y<253; ++y)
 				{
@@ -1348,7 +1348,7 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 					pRead->Move(2);
 					for (int x=0; x<254; ++x)
 					{
-						uint8 uVal;
+						unsigned char uVal;
 						pRead->Read(&uVal,1);
 						pTerrainData->setVertexHeight(x,y,uVal*0.015f);
 					}
@@ -1464,8 +1464,8 @@ bool CMyPlug::importObject(iScene * pScene, const std::string& strFilename)
 		pRead->Read(buffer, fileSize);
 		decrypt(buffer,fileSize);
 
-		uint16 uMapID = *((uint16*)(buffer));
-		uint16 uObjCount = *((uint16*)(buffer+2));
+		unsigned short uMapID = *((unsigned short*)(buffer));
+		unsigned short uObjCount = *((unsigned short*)(buffer+2));
 		ObjInfo* pObjInfo = (ObjInfo*)(buffer+4);
 		for (int i=0; i<uObjCount;++i)
 		{
@@ -2575,7 +2575,7 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 				*((unsigned char*)buffer)=0x0;
 				unsigned char uMapID = getMapIDFromFilename(strFilename);
 				*((unsigned char*)(buffer+1))=uMapID;
-				*((uint16*)(buffer+2)) = setObjInfo.size();
+				*((unsigned short*)(buffer+2)) = setObjInfo.size();
 				if (setObjInfo.size()>0)
 				{
 					memcpy(buffer+4,&setObjInfo[0],setObjInfo.size()*sizeof(ObjInfo));

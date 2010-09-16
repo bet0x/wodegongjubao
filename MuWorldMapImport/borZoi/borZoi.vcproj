@@ -84,7 +84,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy $(ProjectDir)src\*.h $(SolutionDir)..\include\ /y"
+				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration
@@ -156,7 +156,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy $(ProjectDir)src\*.h $(SolutionDir)..\include\ /y"
+				CommandLine=""
 			/>
 		</Configuration>
 	</Configurations>

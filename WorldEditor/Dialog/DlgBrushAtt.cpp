@@ -36,7 +36,7 @@ void CDlgBrushAtt::SetVisible(bool bVisible)
 
 void CDlgBrushAtt::OnRadioBtnAttChanged()
 {
-	uint8 uAtt= 0;
+	unsigned char uAtt= 0;
 
 	if (m_RadioBtnSafe.IsChecked())
 	{

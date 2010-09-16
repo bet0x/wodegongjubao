@@ -10,5 +10,5 @@ public:
 
 	CShader* createItem(const std::string& strFilename);
 protected:
-	uint32	m_uShareShaderID;
+	unsigned long	m_uShareShaderID;
 };

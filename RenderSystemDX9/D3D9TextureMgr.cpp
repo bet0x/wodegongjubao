@@ -26,7 +26,7 @@ void CD3D9TextureMgr::OnDestroyDevice()
 	{
 		((CD3D9Texture*)*it)->OnDestroyDevice();
 	}
-	for (std::map<uint32, CManagedItem>::iterator it=m_Items.begin(); it!=m_Items.end(); ++it)
+	for (std::map<unsigned long, CManagedItem>::iterator it=m_Items.begin(); it!=m_Items.end(); ++it)
 	{
 		((CD3D9Texture*)it->second.pItem)->OnDestroyDevice();
 	}

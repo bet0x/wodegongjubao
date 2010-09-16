@@ -238,7 +238,7 @@ enum MeshChunkID {
 
 	*/
 };
-const long STREAM_OVERHEAD_SIZE = sizeof(uint16) + sizeof(uint32);
+const long STREAM_OVERHEAD_SIZE = sizeof(unsigned short) + sizeof(unsigned long);
 
 int CMyPlug::Execute(iModelData * pModelData, bool bShowDlg, bool bSpecifyFileName)
 {

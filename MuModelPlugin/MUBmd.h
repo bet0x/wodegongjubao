@@ -52,9 +52,9 @@ public:
 			memset(this,0,sizeof(*this));
 		}
 		char strFile[32];
-		uint16 uSubCount;
-		uint16 uBoneCount;
-		uint16 uAnimCount;
+		unsigned short uSubCount;
+		unsigned short uBoneCount;
+		unsigned short uAnimCount;
 	};
 
 	struct BmdSkeleton
@@ -66,7 +66,7 @@ public:
 				uFrameCount=0;
 				bOffset=false;
 			}
-			uint16 uFrameCount;
+			unsigned short uFrameCount;
 			bool bOffset;
 			std::vector<Vec3D> vOffset;
 			void load(CMemoryStream& s);
@@ -92,43 +92,43 @@ public:
 		std::vector<BmdAnim> setBmdAnim;
 		std::vector<BmdBone> setBmdBone;
 
-		Matrix getLocalMatrix(uint8 uBoneID);
-		Matrix getRotateMatrix(uint8 uBoneID);
-		void calcLocalMatrix(uint32 uBoneID);
+		Matrix getLocalMatrix(unsigned char uBoneID);
+		Matrix getRotateMatrix(unsigned char uBoneID);
+		void calcLocalMatrix(unsigned long uBoneID);
 
-		void load(CMemoryStream& s, uint16 uBoneCount, uint16 uAnimCount);
+		void load(CMemoryStream& s, unsigned short uBoneCount, unsigned short uAnimCount);
 	};
 
 	struct BmdSub
 	{
 		struct BmdSubHead
 		{
-			uint16 uVertexCount;
-			uint16 uNormal;
-			uint16 uUVCount;
-			uint16 uTriangleCount;
-			uint16 uID;//?
+			unsigned short uVertexCount;
+			unsigned short uNormal;
+			unsigned short uUVCount;
+			unsigned short uTriangleCount;
+			unsigned short uID;//?
 		};
 		struct BmdPos
 		{
-			uint32 uBones;
+			unsigned long uBones;
 			Vec3D vPos;
 		};
 		struct BmdNormal
 		{
-			uint32 uBones;//?
+			unsigned long uBones;//?
 			Vec3D vNormal;
-			uint32 uUnknown2;
+			unsigned long uUnknown2;
 		};
 		struct BmdTriangle
 		{
-			uint16 uUnknown1;//03
-			uint16 indexVertex[3];
-			uint16 uUnknown2;//CD
-			uint16 indexNormal[3];
-			uint16 uUnknown3;//CD
-			uint16 indexUV[3];
-			uint16 uUnknown[20];//CDCDCDCD
+			unsigned short uUnknown1;//03
+			unsigned short indexVertex[3];
+			unsigned short uUnknown2;//CD
+			unsigned short indexNormal[3];
+			unsigned short uUnknown3;//CD
+			unsigned short indexUV[3];
+			unsigned short uUnknown[20];//CDCDCDCD
 		};
 
 		BmdSubHead head;

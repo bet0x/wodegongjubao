@@ -3,7 +3,7 @@
 #include "FileSystem.h"
 #include <algorithm>
 
-Matrix CMUBmd::BmdSkeleton::getLocalMatrix(uint8 uBoneID)
+Matrix CMUBmd::BmdSkeleton::getLocalMatrix(unsigned char uBoneID)
 {
 	if (setBmdBone.size()>uBoneID)
 	{
@@ -12,7 +12,7 @@ Matrix CMUBmd::BmdSkeleton::getLocalMatrix(uint8 uBoneID)
 	return Matrix::UNIT;
 }
 
-Matrix CMUBmd::BmdSkeleton::getRotateMatrix(uint8 uBoneID)
+Matrix CMUBmd::BmdSkeleton::getRotateMatrix(unsigned char uBoneID)
 {
 	Matrix mRotate=getLocalMatrix(uBoneID);
 	mRotate._14=0;mRotate._24=0;mRotate._34=0;
@@ -56,7 +56,7 @@ inline Quaternion fixCoordSystemRotate2(const Vec3D& v)
 	return Quaternion(q);
 }
 
-void CMUBmd::BmdSkeleton::calcLocalMatrix(uint32 uBoneID)
+void CMUBmd::BmdSkeleton::calcLocalMatrix(unsigned long uBoneID)
 {
 	//m_bCalc
 	if (setBmdBone.size()<=uBoneID)
@@ -124,14 +124,14 @@ bool CMUBmd::loadFormBmd(const std::string& strFilename)
 	pRead->Read(s.getBuffer(),uFileSize);
 	IOReadBase::autoClose(pRead);
 
-	uint32 uTag;
+	unsigned long uTag;
 	s.read(uTag);
 	if (0x0a444d42==uTag)//BMD.
 	{
 	}
 	else if (0x0c444d42==uTag)//BMD.
 	{
-		uint32 uEncodeSize;
+		unsigned long uEncodeSize;
 		s.read(uEncodeSize);
 		if (uEncodeSize!=uFileSize-8)
 		{
@@ -400,7 +400,7 @@ void CMUBmd::saveToBmd(const std::string& strFilename)
 		return;
 	}
 	// Tag
-	uint32 uTag=0x0a444d42;//BMD.
+	unsigned long uTag=0x0a444d42;//BMD.
 	fwrite(&uTag,4,1,f);
 	CMemoryStream s;
 	s.resize(4000000);

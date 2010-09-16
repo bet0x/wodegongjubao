@@ -134,7 +134,7 @@ void CD3D9Shader::setMatrix(const std::string& strMatrix, const Matrix& mat)
 	m_pEffect->SetMatrix(strMatrix.c_str(),(D3DXMATRIX*)&mDx);
 }
 
-void CD3D9Shader::setTexture(const std::string& strTexture, uint32 uTexID)
+void CD3D9Shader::setTexture(const std::string& strTexture, unsigned long uTexID)
 {
 	CTexture* pTexture = GetD3D9RenderSystem().GetTextureMgr().getLoadedTexture(uTexID);
 	setTexture(strTexture, pTexture);

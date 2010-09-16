@@ -2,7 +2,7 @@
 
 void decryptMuBuffer(unsigned char* buffer, size_t size)
 {
-	static const uint8 xorKeys[16] = {
+	static const unsigned char xorKeys[16] = {
 		0xd1, 0x73, 0x52, 0xf6,
 		0xd2, 0x9a, 0xcb, 0x27,
 		0x3e, 0xaf, 0x59, 0x31,
@@ -55,7 +55,7 @@ void CMUBmd::BmdSkeleton::BmdBone::load(CMemoryStream& s, const std::vector<BmdA
 	}
 }
 
-Matrix CMUBmd::BmdSkeleton::getLocalMatrix(uint8 uBoneID)
+Matrix CMUBmd::BmdSkeleton::getLocalMatrix(unsigned char uBoneID)
 {
 	if (setBmdBone.size()>uBoneID)
 	{
@@ -64,14 +64,14 @@ Matrix CMUBmd::BmdSkeleton::getLocalMatrix(uint8 uBoneID)
 	return Matrix::UNIT;
 }
 
-Matrix CMUBmd::BmdSkeleton::getRotateMatrix(uint8 uBoneID)
+Matrix CMUBmd::BmdSkeleton::getRotateMatrix(unsigned char uBoneID)
 {
 	Matrix mRotate=getLocalMatrix(uBoneID);
 	mRotate._14=0;mRotate._24=0;mRotate._34=0;
 	return mRotate;
 }
 
-void CMUBmd::BmdSkeleton::calcLocalMatrix(uint32 uBoneID)
+void CMUBmd::BmdSkeleton::calcLocalMatrix(unsigned long uBoneID)
 {
 	//m_bCalc
 	if (setBmdBone.size()<=uBoneID)
@@ -99,7 +99,7 @@ void CMUBmd::BmdSkeleton::calcLocalMatrix(uint32 uBoneID)
 	}
 }
 
-void CMUBmd::BmdSkeleton:: load(CMemoryStream& s, uint16 uBoneCount, uint16 uAnimCount)
+void CMUBmd::BmdSkeleton:: load(CMemoryStream& s, unsigned short uBoneCount, unsigned short uAnimCount)
 {
 	setBmdAnim.resize(uAnimCount);
 	setBmdBone.resize(uBoneCount);
@@ -139,14 +139,14 @@ bool CMUBmd::LoadFile(const std::string& strFilename)
 	pRead->Read(s.getBuffer(),uFileSize);
 	IOReadBase::autoClose(pRead);
 
-	uint32 uTag;
+	unsigned long uTag;
 	s.read(uTag);
 	if (0x0a444d42==uTag)//BMD.
 	{
 	}
 	else if (0x0c444d42==uTag)//BMD.
 	{
-		uint32 uEncodeSize;
+		unsigned long uEncodeSize;
 		s.read(uEncodeSize);
 		if (uEncodeSize!=uFileSize-8)
 		{

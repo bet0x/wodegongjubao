@@ -4,7 +4,7 @@
 
 void CD3D9ShaderMgr::OnResetDevice()
 {
-	for (std::map<uint32, CManagedItem>::iterator it=m_Items.begin(); it!=m_Items.end(); ++it)
+	for (std::map<unsigned long, CManagedItem>::iterator it=m_Items.begin(); it!=m_Items.end(); ++it)
 	{
 		((CD3D9Shader*)it->second.pItem)->OnResetDevice();
 	}
@@ -12,7 +12,7 @@ void CD3D9ShaderMgr::OnResetDevice()
 
 void CD3D9ShaderMgr::OnLostDevice()
 {
-	for (std::map<uint32, CManagedItem>::iterator it=m_Items.begin(); it!=m_Items.end(); ++it)
+	for (std::map<unsigned long, CManagedItem>::iterator it=m_Items.begin(); it!=m_Items.end(); ++it)
 	{
 		((CD3D9Shader*)it->second.pItem)->OnLostDevice();
 	}
@@ -20,7 +20,7 @@ void CD3D9ShaderMgr::OnLostDevice()
 
 void CD3D9ShaderMgr::OnDestroyDevice()
 {
-	for (std::map<uint32, CManagedItem>::iterator it=m_Items.begin(); it!=m_Items.end(); ++it)
+	for (std::map<unsigned long, CManagedItem>::iterator it=m_Items.begin(); it!=m_Items.end(); ++it)
 	{
 		((CD3D9Shader*)it->second.pItem)->OnDestroyDevice();
 	}

@@ -78,7 +78,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="mathd.lib commond.lib fileiod.lib borZoid.lib wininet.lib"
+				AdditionalDependencies="mathd.lib commond.lib fileiod.lib wininet.lib"
 				OutputFile="..\..\RPGSky\bin\Client\Pluginsd\$(ProjectName)d.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -178,7 +178,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="math.lib common.lib fileio.lib borZoi.lib wininet.lib"
+				AdditionalDependencies="math.lib common.lib fileio.lib wininet.lib"
 				OutputFile="..\..\RPGSky\bin\Client\Plugins\$(ProjectName).dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
