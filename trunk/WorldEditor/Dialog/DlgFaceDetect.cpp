@@ -118,14 +118,14 @@
 //	}
 //	if (m_pTexCapture)
 //	{
-//		uint32* imageData = new uint32[TEXTURE_WIDTH*TEXTURE_HEIGHT];
+//		unsigned long* imageData = new unsigned long[TEXTURE_WIDTH*TEXTURE_HEIGHT];
 //		for (int y=0; y<FRAME_HEIGHT; ++y)
 //		{
-//			uint32* pDest= (uint32*)imageData+TEXTURE_WIDTH*y;
+//			unsigned long* pDest= (unsigned long*)imageData+TEXTURE_WIDTH*y;
 //			char* pSrc= (frame_copy->imageData+frame_copy->widthStep*y);
 //			for (int x=0; x<FRAME_WIDTH; ++x)
 //			{
-//				uint8 r,g,b;
+//				unsigned char r,g,b;
 //				b=*pSrc;pSrc++;
 //				g=*pSrc;pSrc++;
 //				r=*pSrc;pSrc++;
@@ -174,8 +174,8 @@
 //		}
 //	}
 //
-//	uint32 uTexLaughingMan1 = GetRenderSystem().GetTextureMgr().RegisterTexture("Data/UI/Texture/LaughingMan1.tga");
-//	uint32 uTexLaughingMan2 = GetRenderSystem().GetTextureMgr().RegisterTexture("Data/UI/Texture/LaughingMan2.tga");
+//	unsigned long uTexLaughingMan1 = GetRenderSystem().GetTextureMgr().RegisterTexture("Data/UI/Texture/LaughingMan1.tga");
+//	unsigned long uTexLaughingMan2 = GetRenderSystem().GetTextureMgr().RegisterTexture("Data/UI/Texture/LaughingMan2.tga");
 //				GetRenderSystem().SetTexture(0, uTexLaughingMan1);
 //
 //	GetRenderSystem().SetDepthBufferFunc(false,false);
@@ -243,8 +243,8 @@
 //	//}
 //
 //	R.setWorldMatrix(Matrix::UNIT);
-//	uint32 uTexLaughingMan1 = GetRenderSystem().GetTextureMgr().RegisterTexture("Data/Textures/LaughingMan1.tga");
-//	uint32 uTexLaughingMan2 = GetRenderSystem().GetTextureMgr().RegisterTexture("Data/Textures/LaughingMan2.tga");
+//	unsigned long uTexLaughingMan1 = GetRenderSystem().GetTextureMgr().RegisterTexture("Data/Textures/LaughingMan1.tga");
+//	unsigned long uTexLaughingMan2 = GetRenderSystem().GetTextureMgr().RegisterTexture("Data/Textures/LaughingMan2.tga");
 //	//R.SetTexture(0, uTexLaughingMan1);
 //
 //	//R.SetDepthBufferFunc(false,false);

@@ -95,7 +95,7 @@ bool CD3D9RenderWindow::Create(WNDPROC pWndProc, const std::wstring& wstrWindowT
 	return true;
 }
 
-void CD3D9RenderWindow::SetFullscreen(bool bFullScreen, uint32 width, uint32 height)
+void CD3D9RenderWindow::SetFullscreen(bool bFullScreen, unsigned long width, unsigned long height)
 {
 
 }

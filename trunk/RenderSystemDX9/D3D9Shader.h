@@ -18,7 +18,7 @@ public:
 	void setVec3D(const std::string& strVec3D, const Vec3D& val);
 	void setVec4D(const std::string& strVec4D, const Vec4D& val);
 	void setMatrix(const std::string& strMatrix, const Matrix& mat);
-	void setTexture(const std::string& strTexture, uint32 uTexID);
+	void setTexture(const std::string& strTexture, unsigned long uTexID);
 	void setTexture(const std::string& strTexture, const CTexture* pTexture);
 	bool begin(const std::string& strTec);
 	void end();

@@ -27,6 +27,6 @@ private:
 	bool exportObjectResourcesFormDir(iScene * pScene,const std::string& strPath);
 	bool exportObject(iScene * pScene, const std::string& strFilename);
 
-	uint16					m_uMuFlgMap;
-	uint32					m_uMuFlgAtt;
+	unsigned short					m_uMuFlgMap;
+	unsigned long					m_uMuFlgAtt;
 };

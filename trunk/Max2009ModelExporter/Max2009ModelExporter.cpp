@@ -1177,7 +1177,7 @@ bool Max2009ModelExporter::DumpPos(IGameControl * pGameControl,BoneAnim& boneAni
 	{
 		//Warn(TSTR("IGAME_INDEPENDENT_POS:"));
 		Animated<float> anim[3];
-		std::set<uint32> setTime;
+		std::set<unsigned long> setTime;
 		for (int id=0;id<3;++id)
 		{
 			IGameKeyTab keys;
@@ -1187,7 +1187,7 @@ bool Max2009ModelExporter::DumpPos(IGameControl * pGameControl,BoneAnim& boneAni
 				{
 					const IGameKey& key=keys[i];
 					float k = key.bezierKey.fval*exportScale;
-					uint32 uTime = key.t*1000/m_pIgame->GetSceneTicks()/GetFrameRate();
+					unsigned long uTime = key.t*1000/m_pIgame->GetSceneTicks()/GetFrameRate();
 					setTime.insert(uTime);
 					anim[id].m_KeyTimes.push_back(uTime);
 					anim[id].m_KeyData.push_back(k);
@@ -1199,7 +1199,7 @@ bool Max2009ModelExporter::DumpPos(IGameControl * pGameControl,BoneAnim& boneAni
 				{
 					const IGameKey& key=keys[i];
 					float k = key.linearKey.fval*exportScale;
-					uint32 uTime = key.t*1000/m_pIgame->GetSceneTicks()/GetFrameRate();
+					unsigned long uTime = key.t*1000/m_pIgame->GetSceneTicks()/GetFrameRate();
 					setTime.insert(uTime);
 					anim[id].m_KeyTimes.push_back(uTime);
 					anim[id].m_KeyData.push_back(k);
@@ -1210,7 +1210,7 @@ bool Max2009ModelExporter::DumpPos(IGameControl * pGameControl,BoneAnim& boneAni
 				Warn(TSTR("IGAME_INDEPENDENT_POS::IGAME_POS_?"));
 			}
 		}
-		for(std::set<uint32>::iterator it=setTime.begin();it!=setTime.end();it++)
+		for(std::set<unsigned long>::iterator it=setTime.begin();it!=setTime.end();it++)
 		{
 			boneAnim.trans.m_KeyTimes.push_back(*it);
 			Vec3D vPos;
@@ -1282,7 +1282,7 @@ bool Max2009ModelExporter::DumpRot(IGameControl * pGameControl,BoneAnim& boneAni
 	{
 		//Warn(TSTR("IGAME_EULER:"));
 		Animated<float> anim[3];
-		std::set<uint32> setTime;
+		std::set<unsigned long> setTime;
 		for (int id=0;id<3;++id)
 		{
 			IGameKeyTab keys;
@@ -1294,7 +1294,7 @@ bool Max2009ModelExporter::DumpRot(IGameControl * pGameControl,BoneAnim& boneAni
 					if (key.t>=0)
 					{
 						float k = key.bezierKey.fval;
-						uint32 uTime = key.t*1000/m_pIgame->GetSceneTicks()/GetFrameRate();
+						unsigned long uTime = key.t*1000/m_pIgame->GetSceneTicks()/GetFrameRate();
 						setTime.insert(uTime);
 						anim[id].m_KeyTimes.push_back(uTime);
 						anim[id].m_KeyData.push_back(k);
@@ -1309,7 +1309,7 @@ bool Max2009ModelExporter::DumpRot(IGameControl * pGameControl,BoneAnim& boneAni
 					if (key.t>=0)
 					{
 						float k = key.linearKey.fval;
-						uint32 uTime = key.t*1000/m_pIgame->GetSceneTicks()/GetFrameRate();
+						unsigned long uTime = key.t*1000/m_pIgame->GetSceneTicks()/GetFrameRate();
 						setTime.insert(uTime);
 						anim[id].m_KeyTimes.push_back(uTime);
 						anim[id].m_KeyData.push_back(k);
@@ -1321,7 +1321,7 @@ bool Max2009ModelExporter::DumpRot(IGameControl * pGameControl,BoneAnim& boneAni
 				Warn(TSTR("IGAME_EULER::IGAME_EULER_?"));
 			}
 		}
-		for(std::set<uint32>::iterator it=setTime.begin();it!=setTime.end();it++)
+		for(std::set<unsigned long>::iterator it=setTime.begin();it!=setTime.end();it++)
 		{
 			boneAnim.rot.m_KeyTimes.push_back(*it);
 			//float x = anim[0].getValue(*it);
@@ -1679,8 +1679,8 @@ void Max2009ModelExporter::DumpMesh(IGameNode * child, IGameMesh * gm, CModelDat
 					int type=s->GetVertexType(x);
 					if(type==IGameSkin::IGAME_RIGID)
 					{
-						uint32 uBondID=0;
-						uint32 uWeight=0;
+						unsigned long uBondID=0;
+						unsigned long uWeight=0;
 						INode* pNodeBone = s->GetBone(x,0);
 						if (pNodeBone)
 						{
@@ -1701,8 +1701,8 @@ void Max2009ModelExporter::DumpMesh(IGameNode * child, IGameMesh * gm, CModelDat
 					}
 					else if (type==IGameSkin::IGAME_RIGID_BLENDED)
 					{
-						uint32 uBondID=0;
-						uint32 uWeight=0;
+						unsigned long uBondID=0;
+						unsigned long uWeight=0;
 						float	weights[4];
 						float	allWeight=0;
 						memset(weights,0,sizeof(weights));
@@ -1720,7 +1720,7 @@ void Max2009ModelExporter::DumpMesh(IGameNode * child, IGameMesh * gm, CModelDat
 							INode* pNodeBone = s->GetBone(x,y);
 							if (pNodeBone)
 							{
-								uint8 id = model.m_Skeleton.getIDByName(pNodeBone->GetName());
+								unsigned char id = model.m_Skeleton.getIDByName(pNodeBone->GetName());
 								uBondID|=(id<<(y*8));
 								if (255!=id)
 								{
@@ -1745,7 +1745,7 @@ void Max2009ModelExporter::DumpMesh(IGameNode * child, IGameMesh * gm, CModelDat
 
 						for (size_t i=0;i<4;++i)
 						{
-							uWeight|=((uint8(weights[i]/allWeight*255))<<(i*8));
+							uWeight|=((unsigned char(weights[i]/allWeight*255))<<(i*8));
 						}
 
 						model.m_Mesh.bone.push_back(uBondID);
@@ -1756,7 +1756,7 @@ void Max2009ModelExporter::DumpMesh(IGameNode * child, IGameMesh * gm, CModelDat
 			else
 			{
 				IGameNode* pNodeBone = child->GetNodeParent();
-				uint8 uBoneID = 0;
+				unsigned char uBoneID = 0;
 				if (pNodeBone)
 				{
 					uBoneID = model.m_Skeleton.getIDByName(pNodeBone->GetName());

@@ -56,7 +56,7 @@ CRenderWindow* CD3D9RenderSystem::CreateRenderWindow(WNDPROC pWndProc, const std
 }
 
 //检查显卡能力
-HRESULT CheckResourceFormatSupport(IDirect3DDevice9* pd3dDevice, uint32 fmt, D3DRESOURCETYPE resType, uint32 dwUsage)
+HRESULT CheckResourceFormatSupport(IDirect3DDevice9* pd3dDevice, unsigned long fmt, D3DRESOURCETYPE resType, unsigned long dwUsage)
 {
 	HRESULT hr = S_OK;
 	IDirect3D9* tempD3D = NULL;
@@ -112,7 +112,7 @@ HRESULT CD3D9RenderSystem::OnResetDevice()
 	// flags will cause slower rendering since the shaders will be unoptimized and 
 	// forced into software.  See the DirectX documentation for more information about 
 	// using the shader debugger.
-//	uint32 dwShaderFlags = D3DXFX_NOT_CLONEABLE;
+//	unsigned long dwShaderFlags = D3DXFX_NOT_CLONEABLE;
 //#ifdef DEBUG_VS
 //	dwShaderFlags |= D3DXSHADER_FORCE_VS_SOFTWARE_NOOPT;
 //#endif
@@ -148,17 +148,17 @@ HRESULT CD3D9RenderSystem::OnResetDevice()
 	SetSamplerFilter(2, TEXF_LINEAR, TEXF_LINEAR, TEXF_LINEAR);
 
 	//r->SetRenderStateFV(D3DRS_POINTSIZE_MAX, maxSize);
-	SetRenderState(D3DRS_POINTSIZE_MIN, static_cast<uint32>(0.0f));
-	SetRenderState(D3DRS_POINTSCALE_A, static_cast<uint32>(0.0f));
-	SetRenderState(D3DRS_POINTSCALE_B, static_cast<uint32>(0.0f));
-	SetRenderState(D3DRS_POINTSCALE_C, static_cast<uint32>(1.0f));
+	SetRenderState(D3DRS_POINTSIZE_MIN, static_cast<unsigned long>(0.0f));
+	SetRenderState(D3DRS_POINTSCALE_A, static_cast<unsigned long>(0.0f));
+	SetRenderState(D3DRS_POINTSCALE_B, static_cast<unsigned long>(0.0f));
+	SetRenderState(D3DRS_POINTSCALE_C, static_cast<unsigned long>(1.0f));
 
 	SetRenderState(D3DRS_SPECULARENABLE, false);
 	SetRenderState(D3DRS_LOCALVIEWER, true);
 	SetRenderState(D3DRS_NORMALIZENORMALS, true);
 	SetRenderState(D3DRS_LOCALVIEWER, false);
 	
-	uint32 zFormat = D3DFMT_D16;//D3DFMT_D24S8;
+	unsigned long zFormat = D3DFMT_D16;//D3DFMT_D24S8;
 	//m_bitDepth = 24;
 
 	{
@@ -305,7 +305,7 @@ void CD3D9RenderSystem::getViewport(CRect<int>& rect)
 
 void CD3D9RenderSystem::ClearBuffer (bool bZBuffer, bool bTarget, Color32 color)
 {
-	uint32 dwFlags = 0;
+	unsigned long dwFlags = 0;
 
 	if (bZBuffer)
 		dwFlags |= D3DCLEAR_ZBUFFER;
@@ -356,9 +356,9 @@ void CD3D9RenderSystem::setProjectionMatrix(const Matrix& m)
 	D3DCheckHresult( m_pD3D9Device->SetTransform(D3DTS_PROJECTION, (D3DXMATRIX*)&mDx), L"SetTransform(D3DTS_PROJECTION,*)" );
 }
 
-void CD3D9RenderSystem::setTextureMatrix(uint8 uTexChannel, TextureTransformFlag flag, const Matrix& m)
+void CD3D9RenderSystem::setTextureMatrix(unsigned char uTexChannel, TextureTransformFlag flag, const Matrix& m)
 {
-	uint32 uD3D9Flag = D3DTTFF_DISABLE;
+	unsigned long uD3D9Flag = D3DTTFF_DISABLE;
 	switch(flag)
 	{
 	case TTF_COUNT1:
@@ -400,13 +400,13 @@ void CD3D9RenderSystem::getProjectionMatrix(Matrix& m)const
 	m.transpose();
 }
 
-void CD3D9RenderSystem::getTextureMatrix(uint8 uTexChannel, Matrix& m)const
+void CD3D9RenderSystem::getTextureMatrix(unsigned char uTexChannel, Matrix& m)const
 {
 	D3DCheckHresult( m_pD3D9Device->GetTransform((D3DTRANSFORMSTATETYPE)(D3DTS_TEXTURE0 + uTexChannel), (D3DXMATRIX*)&m) );
 	m.transpose();
 }
 
-inline uint32 CompareFunctionForD3D9(CompareFunction cmpFunc)
+inline unsigned long CompareFunctionForD3D9(CompareFunction cmpFunc)
 {
 	switch(cmpFunc)
 	{
@@ -453,7 +453,7 @@ void CD3D9RenderSystem::SetAlphaTestFunc(bool bAlphaTest, CompareFunction func, 
 	SetRenderState(D3DRS_ALPHAREF, value);
 }
 
-inline uint32 BlendOperationForD3D9(SceneBlendOperation op)
+inline unsigned long BlendOperationForD3D9(SceneBlendOperation op)
 {
 	switch(op)
 	{
@@ -477,7 +477,7 @@ inline uint32 BlendOperationForD3D9(SceneBlendOperation op)
 	}
 }
 
-inline uint32 BlendFactorForD3D9(SceneBlendFactor factor)
+inline unsigned long BlendFactorForD3D9(SceneBlendFactor factor)
 {
 	// 没有用到的D3D9的混合因素
 	//D3DBLEND_SRCALPHASAT        = 11,
@@ -532,7 +532,7 @@ void CD3D9RenderSystem::SetBlendFunc(bool bBlend, SceneBlendOperation op, SceneB
 
 void CD3D9RenderSystem::SetCullingMode(CullingMode mode)
 {
-	uint32 uCullingMode = D3DCULL_CCW;
+	unsigned long uCullingMode = D3DCULL_CCW;
 	switch(mode)
 	{
 	case CULL_NONE:
@@ -555,7 +555,7 @@ void CD3D9RenderSystem::SetTextureFactor(Color32 color)
 	SetRenderState(D3DRS_TEXTUREFACTOR, color.c);
 }
 
-inline uint32  TextureBlendOperationForD3D9(TextureBlendOperation op)
+inline unsigned long  TextureBlendOperationForD3D9(TextureBlendOperation op)
 {
 	//D3DTOP_ADDSIGNED2X          =  9,   // as above but left  1 bit
 	//// Linear alpha blend with pre-multiplied arg1 input: Arg1 + Arg2*(1-Alpha)
@@ -631,7 +631,7 @@ inline uint32  TextureBlendOperationForD3D9(TextureBlendOperation op)
 	}
 }
 
-inline uint32 TextureBlendSourceForD3D9(TextureBlendSource src)
+inline unsigned long TextureBlendSourceForD3D9(TextureBlendSource src)
 {
 //D3DTA_SELECTMASK        0x0000000f  // mask for arg selector
 //D3DTA_TEMP              0x00000005  // select temporary register color (read/write)
@@ -719,7 +719,7 @@ void CD3D9RenderSystem::SetSamplerFilter(size_t unit, TextureFilterType MagFilte
 	SetSamplerState(unit, D3DSAMP_MIPFILTER, TextureFilterTypeForD3D9(MipFilter));
 }
 
-inline uint32 AddressUVForD3D9(AddressUV addressUV)
+inline unsigned long AddressUVForD3D9(AddressUV addressUV)
 {
 	switch(addressUV)
 	{
@@ -830,7 +830,7 @@ void CD3D9RenderSystem::SetupRenderState()
 void CD3D9RenderSystem::SetTextureStageStateDecolor()
 {
 	//SetRenderState(D3DRS_ALPHABLENDENABLE, false);
-	const static uint32 dwLuminanceConv = ((int)(128+0.2125f*128)<<16)+((int)(128+0.7154f*128)<<8)+(int)(128+0.0721f*128);
+	const static unsigned long dwLuminanceConv = ((int)(128+0.2125f*128)<<16)+((int)(128+0.7154f*128)<<8)+(int)(128+0.0721f*128);
 	Color32 clrLuminanceConv((int)(0.2125f*255), (int)(0.2125f*255), (int)(0.7154f*255), (int)(0.0721f*255));
 	SetTextureFactor(dwLuminanceConv);
 
@@ -842,28 +842,28 @@ void CD3D9RenderSystem::SetTextureStageStateDecolor()
 	//SetTexture(1, GetTexture(0));
 }
 
-void CD3D9RenderSystem::SetRenderState(uint32 State, uint32 Value)
+void CD3D9RenderSystem::SetRenderState(unsigned long State, unsigned long Value)
 {
 	m_mapChangeRenderState[State] = Value;
 }
 
-void CD3D9RenderSystem::SetSamplerState(uint32 Sampler, uint32 Type, uint32 Value)
+void CD3D9RenderSystem::SetSamplerState(unsigned long Sampler, unsigned long Type, unsigned long Value)
 {
 	m_mapChangeSamplerState[Sampler * D3DSAMPLERSTATETYPE_NUM + Type] = Value;
 }
 
-void CD3D9RenderSystem::SetTextureStageState(uint32 Stage, uint32 Type, uint32 Value)
+void CD3D9RenderSystem::SetTextureStageState(unsigned long Stage, unsigned long Type, unsigned long Value)
 {
 	m_mapChangeTextureStage[Stage * D3DTEXTURESTAGESTATETYPE_NUM + Type] = Value;
 }
 
-void CD3D9RenderSystem::SetTexture(uint32 Stage, uint32 TextureID)
+void CD3D9RenderSystem::SetTexture(unsigned long Stage, unsigned long TextureID)
 {
 	CTexture* pTexture = GetTextureMgr().getLoadedTexture(TextureID);
 	SetTexture(Stage, pTexture);
 }
 
-void CD3D9RenderSystem::SetTexture(uint32 Stage, const CTexture* pTexture)
+void CD3D9RenderSystem::SetTexture(unsigned long Stage, const CTexture* pTexture)
 {
 	IDirect3DTexture9* pD3D9Texture = NULL;
 	if (pTexture)
@@ -873,12 +873,12 @@ void CD3D9RenderSystem::SetTexture(uint32 Stage, const CTexture* pTexture)
 	SetTexture(Stage, pD3D9Texture);
 }
 
-void CD3D9RenderSystem::SetTexture(uint32 Stage, IDirect3DTexture9* pD3D9Texture)
+void CD3D9RenderSystem::SetTexture(unsigned long Stage, IDirect3DTexture9* pD3D9Texture)
 {
 	m_mapChangeTexture[Stage] = pD3D9Texture;
 }
 
-CTexture* CD3D9RenderSystem::GetTexture(uint32 Stage)
+CTexture* CD3D9RenderSystem::GetTexture(unsigned long Stage)
 {
 	return NULL;
 }
@@ -930,12 +930,12 @@ void CD3D9RenderSystem::SetShader(CShader* pShader)
 	}*/
 }
 
-void CD3D9RenderSystem::SetShader(uint32 id)
+void CD3D9RenderSystem::SetShader(unsigned long id)
 {
 	SetShader(m_D3D9ShaderMgr.getItem(id));
 }
 
-void CD3D9RenderSystem::SetFVF(uint32 FVF)
+void CD3D9RenderSystem::SetFVF(unsigned long FVF)
 {
 	m_uChangeFVF = FVF;
 }
@@ -945,7 +945,7 @@ void CD3D9RenderSystem::SetVertexDeclaration(CVertexDeclaration* pDecl)
 	D3DCheckHresult( m_pD3D9Device->SetVertexDeclaration(((CD3D9VertexDeclaration*)pDecl)->GetD3D9Decl()) );
 }
 
-void CD3D9RenderSystem::SetStreamSource(uint32 StreamNumber,CHardwareVertexBuffer* pStreamData,uint32 OffsetInBytes,uint32 Stride)
+void CD3D9RenderSystem::SetStreamSource(unsigned long StreamNumber,CHardwareVertexBuffer* pStreamData,unsigned long OffsetInBytes,unsigned long Stride)
 {
 	D3D9StreamSource& d3D9StreamSource = m_mapChangeStreamSource[StreamNumber];
 	d3D9StreamSource.pStreamData = ((CD3D9HardwareVertexBuffer*)pStreamData)->getD3D9VertexBuffer();
@@ -972,7 +972,7 @@ inline D3DPRIMITIVETYPE VertexRenderOperationTypeForD3D9(VertexRenderOperationTy
 	}
 }
 
-void CD3D9RenderSystem::DrawPrimitive(VertexRenderOperationType PrimitiveType,uint32 StartVertex,uint32 PrimitiveCount)
+void CD3D9RenderSystem::DrawPrimitive(VertexRenderOperationType PrimitiveType,unsigned long StartVertex,unsigned long PrimitiveCount)
 {
 	if (commit())// 检测状态是否正确
 	{
@@ -980,7 +980,7 @@ void CD3D9RenderSystem::DrawPrimitive(VertexRenderOperationType PrimitiveType,ui
 	}
 }
 
-void CD3D9RenderSystem::DrawIndexedPrimitive(VertexRenderOperationType PrimitiveType,int32 BaseVertexIndex,uint32 MinVertexIndex,uint32 NumVertices,uint32 startIndex,uint32 primCount)
+void CD3D9RenderSystem::DrawIndexedPrimitive(VertexRenderOperationType PrimitiveType,int32 BaseVertexIndex,unsigned long MinVertexIndex,unsigned long NumVertices,unsigned long startIndex,unsigned long primCount)
 {
 	if (commit())// 检测状态是否正确
 	{
@@ -988,7 +988,7 @@ void CD3D9RenderSystem::DrawIndexedPrimitive(VertexRenderOperationType Primitive
 	}
 }
 
-void CD3D9RenderSystem::DrawPrimitiveUP(VertexRenderOperationType PrimitiveType,uint32 PrimitiveCount,const void* pVertexStreamZeroData,uint32 VertexStreamZeroStride)
+void CD3D9RenderSystem::DrawPrimitiveUP(VertexRenderOperationType PrimitiveType,unsigned long PrimitiveCount,const void* pVertexStreamZeroData,unsigned long VertexStreamZeroStride)
 {
 	if (commit())// 检测状态是否正确
 	{
@@ -996,7 +996,7 @@ void CD3D9RenderSystem::DrawPrimitiveUP(VertexRenderOperationType PrimitiveType,
 	}
 }
 
-void CD3D9RenderSystem::DrawIndexedPrimitiveUP(VertexRenderOperationType PrimitiveType,uint32 MinVertexIndex,uint32 NumVertices,uint32 PrimitiveCount,const void* pIndexData,const void* pVertexStreamZeroData,uint32 VertexStreamZeroStride)
+void CD3D9RenderSystem::DrawIndexedPrimitiveUP(VertexRenderOperationType PrimitiveType,unsigned long MinVertexIndex,unsigned long NumVertices,unsigned long PrimitiveCount,const void* pIndexData,const void* pVertexStreamZeroData,unsigned long VertexStreamZeroStride)
 {
 	if (commit())// 检测状态是否正确
 	{
@@ -1057,7 +1057,7 @@ void CD3D9RenderSystem::SetMaterial(const Vec4D& vAmbient, const Vec4D& vDiffuse
 	D3DCheckHresult( m_pD3D9Device->SetMaterial(&mtrl) );
 }
 
-void CD3D9RenderSystem::SetDirectionalLight(uint32 uIndex,const DirectionalLight& light)
+void CD3D9RenderSystem::SetDirectionalLight(unsigned long uIndex,const DirectionalLight& light)
 {
 	D3DLIGHT9 D3D9Light;
 	D3D9Light.Type		= D3DLIGHT_DIRECTIONAL;
@@ -1091,7 +1091,7 @@ void SetMesh(int nMeshID)
 //{
 //	LPDIRECT3DVERTEXBUFFER9 lpD3DBuffer;
 //	HRESULT hr =  m_pD3D9Device->CreateVertexBuffer(
-//		static_cast<uint32>(mSizeInBytes), 
+//		static_cast<unsigned long>(mSizeInBytes), 
 //		0, 
 //		0, // No FVF here, thankyou
 //		mD3DPool,
@@ -1112,7 +1112,7 @@ void SetMesh(int nMeshID)
 //	//}
 //}
 
-//void CD3D9RenderSystem::SetLight(uint32 Index, const D3DLIGHT9* Light)
+//void CD3D9RenderSystem::SetLight(unsigned long Index, const D3DLIGHT9* Light)
 //{
 //	m_pD3D9Device->SetLight(Index, Light);
 //
@@ -1131,7 +1131,7 @@ void SetMesh(int nMeshID)
 //	//}
 //}
 
-void CD3D9RenderSystem::LightEnable(uint32 Index, bool bEnable)
+void CD3D9RenderSystem::LightEnable(unsigned long Index, bool bEnable)
 {
 	//LEList.bChangeValue[Index] = Enable;
 	//LEList.nIndex.push_back(Index);
@@ -1143,7 +1143,7 @@ void CD3D9RenderSystem::SetLightingEnabled(bool bEnable)
 	SetRenderState(D3DRS_LIGHTING, bEnable);
 }
 
-void CD3D9RenderSystem::SetTexCoordIndex(uint32 stage, uint32 index)
+void CD3D9RenderSystem::SetTexCoordIndex(unsigned long stage, unsigned long index)
 {
 	DWORD uIndex=0;
 	if (index&TCI_CAMERASPACE_NORMAL)
@@ -1167,7 +1167,7 @@ void CD3D9RenderSystem::SetTexCoordIndex(uint32 stage, uint32 index)
 
 bool CD3D9RenderSystem::commitRenderState()
 {
-	for (std::map<uint32,uint32>::iterator it=m_mapChangeRenderState.begin(); it!=m_mapChangeRenderState.end(); ++it)
+	for (std::map<unsigned long,unsigned long>::iterator it=m_mapChangeRenderState.begin(); it!=m_mapChangeRenderState.end(); ++it)
 	{
 		DWORD dwOldValue = 0;
 		D3DCheckHresult( m_pD3D9Device->GetRenderState(static_cast<D3DRENDERSTATETYPE>(it->first), &dwOldValue),L"GetRenderState()" );
@@ -1182,7 +1182,7 @@ bool CD3D9RenderSystem::commitRenderState()
 
 bool CD3D9RenderSystem::commitSamplerstate()
 {
-	for (std::map<uint32,uint32>::iterator it=m_mapChangeSamplerState.begin(); it!=m_mapChangeSamplerState.end(); ++it)
+	for (std::map<unsigned long,unsigned long>::iterator it=m_mapChangeSamplerState.begin(); it!=m_mapChangeSamplerState.end(); ++it)
 	{
 		int nSamplerID			= it->first / D3DSAMPLERSTATETYPE_NUM;
 		int nTypeID				= it->first - D3DSAMPLERSTATETYPE_NUM * nSamplerID;
@@ -1199,7 +1199,7 @@ bool CD3D9RenderSystem::commitSamplerstate()
 
 bool CD3D9RenderSystem::commitTextureStageState()
 {
-	for (std::map<uint32,uint32>::iterator it=m_mapChangeTextureStage.begin(); it!=m_mapChangeTextureStage.end(); ++it)
+	for (std::map<unsigned long,unsigned long>::iterator it=m_mapChangeTextureStage.begin(); it!=m_mapChangeTextureStage.end(); ++it)
 	{
 		int nStageID			= it->first / D3DTEXTURESTAGESTATETYPE_NUM;
 		int nTypeID				= it->first - D3DTEXTURESTAGESTATETYPE_NUM * nStageID;
@@ -1216,7 +1216,7 @@ bool CD3D9RenderSystem::commitTextureStageState()
 
 bool CD3D9RenderSystem::commitTexture()
 {
-	for (std::map<uint32,IDirect3DTexture9*>::iterator it=m_mapChangeTexture.begin(); it!=m_mapChangeTexture.end(); ++it)
+	for (std::map<unsigned long,IDirect3DTexture9*>::iterator it=m_mapChangeTexture.begin(); it!=m_mapChangeTexture.end(); ++it)
 	{
 		IDirect3DTexture9* pOldD3D9Texture = NULL;
 		D3DCheckHresult( m_pD3D9Device->GetTexture(it->first,(IDirect3DBaseTexture9**) &pOldD3D9Texture),L"GetTexture()" );
@@ -1232,7 +1232,7 @@ bool CD3D9RenderSystem::commitTexture()
 
 bool CD3D9RenderSystem::commitStreamSource()
 {
-	for (std::map<uint32,D3D9StreamSource>::iterator it=m_mapChangeStreamSource.begin(); it!=m_mapChangeStreamSource.end(); ++it)
+	for (std::map<unsigned long,D3D9StreamSource>::iterator it=m_mapChangeStreamSource.begin(); it!=m_mapChangeStreamSource.end(); ++it)
 	{
 		D3D9StreamSource d3D9StreamSource;
 		D3DCheckHresult( m_pD3D9Device->GetStreamSource(it->first,&d3D9StreamSource.pStreamData,&d3D9StreamSource.uOffsetInBytes,&d3D9StreamSource.uStride),L"GetStreamSource()" );
@@ -1248,7 +1248,7 @@ bool CD3D9RenderSystem::commitStreamSource()
 
 bool CD3D9RenderSystem::commitLight()
 {
-	//for (std::map<uint32,D3DLIGHT9>::iterator it=m_mapChangeTexture.begin(); it!=m_mapChangeTexture.end(); ++it)
+	//for (std::map<unsigned long,D3DLIGHT9>::iterator it=m_mapChangeTexture.begin(); it!=m_mapChangeTexture.end(); ++it)
 	//{
 	//	int nIndex = it->first;
 	//	D3DLIGHT9& light = it->second;

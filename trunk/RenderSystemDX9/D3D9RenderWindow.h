@@ -8,7 +8,7 @@ public:
 	~CD3D9RenderWindow();
 public:
 	bool Create(WNDPROC pWndProc, const std::wstring& wstrWindowTitle, int32 nWidth, int32 nHeight, bool bFullScreen = false); 
-	void SetFullscreen(bool bFullScreen, uint32 width, uint32 height);
+	void SetFullscreen(bool bFullScreen, unsigned long width, unsigned long height);
 	double GetTime();
 	float GetElapsedTime();
 	bool FrameBegin();

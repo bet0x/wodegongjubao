@@ -18,7 +18,7 @@ void CUIComboObjListTile::OnListBoxObjectSelection()
 	{
 		return;
 	}
-	uint8 uTileIndex = (uint8)m_ListBoxObject.GetSelectedData();
+	unsigned char uTileIndex = (unsigned char)m_ListBoxObject.GetSelectedData();
 	((CTerrainEditor*)(m_pScene->getTerrain()))->GetBrushDecal().SetTileID(uTileIndex);
 	
 	std::string strMaterial = getSelectedTileMaterial();

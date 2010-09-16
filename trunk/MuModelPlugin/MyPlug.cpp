@@ -187,7 +187,7 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 			}
 			if (1<bmd.nFrameCount||bIsPlayerPart)
 			{
-				uint8 uBone = it->uBones&0xFF;
+				unsigned char uBone = it->uBones&0xFF;
 				if (bmd.bmdSkeleton.setBmdBone.size()<=uBone||bmd.bmdSkeleton.setBmdBone[uBone].bEmpty)
 				{
 					subMesh.addBone(0);
@@ -287,7 +287,7 @@ bool CMyPlug::exportData(iModelData * pModelData, const std::string& strFilename
 		return false;
 	}
 	// tag
-	uint32 uTag=0x0a444d42;
+	unsigned long uTag=0x0a444d42;
 	fwrite(&uTag,4,1,fp);
 	// head
 	CMUBmd::BmdHead bmdHead;
