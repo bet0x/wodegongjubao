@@ -79,7 +79,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="mathd.lib commond.lib fileiod.lib"
-				OutputFile="..\bin\Client\Pluginsd\$(ProjectName)d.dll"
+				OutputFile="..\..\bin\Client\Plugins\$(ProjectName)d.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\shared\lib;..\..\engine\lib"

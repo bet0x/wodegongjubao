@@ -149,11 +149,7 @@ bool CDlgMainEditor::OnInitDialog()
 	}
 
 	// create the dll of map data plugs
-#ifdef _DEBUG
-	m_DataPlugsMgr.createPlugFromPath("Pluginsd\\","Scene_Plug_CreateObject");
-#else
 	m_DataPlugsMgr.createPlugFromPath("Plugins\\","Scene_Plug_CreateObject");
-#endif
 //#if defined(_MU)
 	SetControlEnabled("IDC_BTN_NEW_FILE",false);
 //#endif
