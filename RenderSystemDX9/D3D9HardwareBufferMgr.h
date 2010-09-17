@@ -2,7 +2,7 @@
 #include "Common.h"
 #include "HardwareBufferMgr.h"
 
-class DLL_EXPORT CD3D9HardwareBufferMgr: public CHardwareBufferMgr
+class CD3D9HardwareBufferMgr: public CHardwareBufferMgr
 {
 public:
 	CD3D9HardwareBufferMgr();

@@ -3,8 +3,8 @@
 #include "FileSystem.h"
 #include "3DMapSceneObj.h"
 
-#include "borzoi.h"    // Include this to use the elliptic curve and
-#include "nist_curves.h" // Include this to use the curves recommended by NIST
+#include "borZoi\src\borzoi.h"    // Include this to use the elliptic curve and
+#include "borZoi\src\nist_curves.h" // Include this to use the curves recommended by NIST
 
 extern "C" {
 #include "jpeg\jpeglib.h"
@@ -102,8 +102,8 @@ void WriteConstantString (char *entry, char *string)
 {
 }
 
-#include "borzoi.h"    // Include this to use the elliptic curve and
-#include "nist_curves.h" // Include this to use the curves recommended by NIST
+#include "borZoi\src\borzoi.h"    // Include this to use the elliptic curve and
+#include "borZoi\src\nist_curves.h" // Include this to use the curves recommended by NIST
 
 //  Required to ensure correct PhysicalDrive IOCTL structure setup
 #pragma pack(1)
@@ -1446,7 +1446,7 @@ bool CMyPlug::importObjectResourcesFormDir(iScene * pScene,const std::string& st
 #pragma pack(push,1)
 struct ObjInfo
 {
-	int16 id;
+	short id;
 	Vec3D p;
 	Vec3D rotate;
 	float fScale;

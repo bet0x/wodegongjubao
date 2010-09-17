@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\..\Include&quot;;..\..\3dgui\include"
+				AdditionalIncludeDirectories="..\..\3dgui\include;..\..\engine\include;..\..\shared\include"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -63,9 +63,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="winmm.lib modeld.lib enginecored.lib 3DGUId.lib TextRenderd.lib RenderSystemD.lib FreeType.lib fileiod.lib Audiod.lib lua51.lib"
-				OutputFile="..\..\RPGSky\bin\Client\$(ProjectName)D.exe"
+				OutputFile="..\..\bin\Client\$(ProjectName)D.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\3dgui\lua;..\..\3dgui\lib;..\..\engine\Media\FMOD\api\lib"
+				AdditionalLibraryDirectories="..\..\shared\lib;..\..\engine\lib;..\..\3dgui\lib;..\..\3dgui\lua;..\..\engine\Media\FMOD\api\lib"
 				IgnoreDefaultLibraryNames="LIBCMTD.lib"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -120,7 +120,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\..\Include&quot;;..\..\3dgui\include"
+				AdditionalIncludeDirectories="..\..\3dgui\include;..\..\engine\include;..\..\shared\include"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -140,9 +140,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="winmm.lib model.lib rendersystem.lib enginecore.lib 3DGUI.lib TextRender.lib RenderSystem.lib fileio.lib FreeType.lib Audio.lib lua51.lib"
-				OutputFile="..\..\RPGSky\bin\Client\$(ProjectName).exe"
+				OutputFile="..\..\bin\Client\$(ProjectName).exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;;..\..\3dgui\lua;..\..\3dgui\lib;..\..\engine\Media\FMOD\api\lib"
+				AdditionalLibraryDirectories="..\..\shared\lib;..\..\engine\lib;..\..\3dgui\lib;..\..\3dgui\lua;..\..\engine\Media\FMOD\api\lib"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
 				SubSystem="2"

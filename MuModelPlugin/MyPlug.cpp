@@ -222,16 +222,17 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 				else if (".bmp"==strExtension)
 					strTexFileName = ChangeExtension(strTexFileName,".ozb");
 			}
-			std::string strMaterialName = Format("%s%d",ChangeExtension(GetFilename(strFilename),".sub").c_str(),i);
+			char szMaterialName[255];
+			sprintf(szMaterialName,"%s%d",ChangeExtension(GetFilename(strFilename),".sub").c_str(),i);
 			{
-				CMaterial& material = pModelData->getMaterial(strMaterialName);
+				CMaterial& material = pModelData->getMaterial(szMaterialName);
 				material.setDiffuse(strTexFileName);
 				material.bLightingEnabled=true;
 				material.uCull = 0;
 				material.bAlphaTest=true;
 				material.uAlphaTestValue = 0x80;
 			}
-			pModelData->setRenderPass(i,i,strMaterialName);
+			pModelData->setRenderPass(i,i,szMaterialName);
 		}
 	}
 

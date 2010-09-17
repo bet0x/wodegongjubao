@@ -1,13 +1,13 @@
 #pragma once
 #include "RenderWindow.h"
 
-class DLL_EXPORT CD3D9RenderWindow: public CRenderWindow
+class CD3D9RenderWindow: public CRenderWindow
 {
 public:
 	CD3D9RenderWindow();
 	~CD3D9RenderWindow();
 public:
-	bool Create(WNDPROC pWndProc, const std::wstring& wstrWindowTitle, int32 nWidth, int32 nHeight, bool bFullScreen = false); 
+	bool Create(WNDPROC pWndProc, const std::wstring& wstrWindowTitle, unsigned long uWidth, unsigned long uHeight, bool bFullScreen = false); 
 	void SetFullscreen(bool bFullScreen, unsigned long width, unsigned long height);
 	double GetTime();
 	float GetElapsedTime();

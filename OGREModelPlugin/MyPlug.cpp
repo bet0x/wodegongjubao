@@ -949,8 +949,8 @@ void readSubMesh(IOReadBase* pRead, iModelData* pModelData, const CSubMesh& shar
 					// float weight;
 					pRead->Read(&(assign.weight),sizeof(float));
 break;
-					unsigned int uBone = 0;
-					unsigned int uWeight = 0;
+					unsigned long uBone = 0;
+					unsigned long uWeight = 0;
 					// get
 					subMesh.getBone(assign.vertexIndex,uBone);
 					subMesh.getWeight(assign.vertexIndex,uWeight);

@@ -1,7 +1,7 @@
 #pragma once
 #include "TextureMgr.h"
 
-class DLL_EXPORT CD3D9TextureMgr : public CTextureMgr
+class CD3D9TextureMgr : public CTextureMgr
 {
 	friend class CD3D9Texture;
 public:

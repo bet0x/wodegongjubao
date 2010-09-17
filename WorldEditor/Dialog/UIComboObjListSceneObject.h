@@ -9,7 +9,7 @@ public:
 	~CUIComboObjListSceneObject();
 public:
 	void initObject(CScene& scene);
-	void SelectObjectByObjectID(int64 id);
+	void SelectObjectByObjectID(__int64 id);
 	size_t getSelectedObjectID();
 
 

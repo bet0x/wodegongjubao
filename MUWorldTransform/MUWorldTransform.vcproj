@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\..\Include&quot;"
+				AdditionalIncludeDirectories="..\..\shared\include;..\..\engine\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -63,9 +63,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="commond.lib mathd.lib tinyxmld.lib zlibd.lib fileiod.lib rendersystemd.lib"
-				OutputFile="$(SolutionDir)..\RPGSky\bin\Client\$(ProjectName)D.exe"
+				OutputFile="..\bin\Client\$(ProjectName)D.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(ProjectDir)..\..\lib"
+				AdditionalLibraryDirectories="..\..\shared\lib;..\..\engine\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
@@ -119,7 +119,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\..\Include&quot;"
+				AdditionalIncludeDirectories="..\..\shared\include;..\..\engine\include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -139,9 +139,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="common.lib math.lib tinyxml.lib zlib.lib fileio.lib"
-				OutputFile="$(SolutionDir)..\RPGSky\bin\Client\$(ProjectName).exe"
+				OutputFile="..\bin\Client\$(ProjectName).exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(ProjectDir)..\..\lib&quot;"
+				AdditionalLibraryDirectories="..\..\shared\lib;..\..\engine\lib"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				OptimizeReferences="2"
