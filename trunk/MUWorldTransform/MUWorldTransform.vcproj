@@ -63,7 +63,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="commond.lib mathd.lib tinyxmld.lib zlibd.lib fileiod.lib rendersystemd.lib"
-				OutputFile="..\bin\Client\$(ProjectName)D.exe"
+				OutputFile="..\..\bin\Client\$(ProjectName)D.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\shared\lib;..\..\engine\lib"
 				GenerateDebugInformation="true"
@@ -139,7 +139,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="common.lib math.lib tinyxml.lib zlib.lib fileio.lib"
-				OutputFile="..\bin\Client\$(ProjectName).exe"
+				OutputFile="..\..\bin\Client\$(ProjectName).exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\shared\lib;..\..\engine\lib"
 				GenerateDebugInformation="true"

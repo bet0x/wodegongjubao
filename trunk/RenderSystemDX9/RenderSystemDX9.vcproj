@@ -70,7 +70,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="fileio.lib"
-				OutputFile="..\bin\Client\Plugins\$(ProjectName).dll"
+				OutputFile="..\..\bin\Client\Plugins\$(ProjectName).dll"
 				AdditionalLibraryDirectories="..\..\shared\lib;..\..\engine\lib;DX9SDK\Lib\x86"
 				ModuleDefinitionFile=".\$(ProjectName).def"
 				RandomizedBaseAddress="1"
@@ -157,7 +157,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="fileiod.lib"
-				OutputFile="..\bin\Client\Pluginsd\$(ProjectName)d.dll"
+				OutputFile="..\..\bin\Client\Plugins\$(ProjectName)d.dll"
 				AdditionalLibraryDirectories="..\..\shared\lib;..\..\engine\lib;DX9SDK\Lib\x86"
 				ModuleDefinitionFile=".\$(ProjectName).def"
 				GenerateDebugInformation="true"
