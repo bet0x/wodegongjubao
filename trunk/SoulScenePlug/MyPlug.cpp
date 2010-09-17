@@ -159,7 +159,7 @@ bool CMyPlug::importObjectResources(iScene * pScene, const std::string& strFilen
 #pragma pack(push,1)
 struct ObjInfo
 {
-	int16 id;
+	short id;
 	Vec3D p;
 	Vec3D rotate;
 	float fScale;

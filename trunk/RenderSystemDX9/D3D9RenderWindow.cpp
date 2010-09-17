@@ -73,7 +73,7 @@ bool CD3D9RenderWindow::Init(bool bParseCommandLine, bool bShowMsgBoxOnError, bo
 	return true;
 }
 
-bool CD3D9RenderWindow::Create(WNDPROC pWndProc, const std::wstring& wstrWindowTitle, int32 nWidth, int32 nHeight, bool bFullScreen)
+bool CD3D9RenderWindow::Create(WNDPROC pWndProc, const std::wstring& wstrWindowTitle, unsigned long uWidth, unsigned long uHeight, bool bFullScreen)
 {
 	//////////////////////////////////////////////////////////////////////////
 #if defined(DEBUG) | defined(_DEBUG)
@@ -91,7 +91,7 @@ bool CD3D9RenderWindow::Create(WNDPROC pWndProc, const std::wstring& wstrWindowT
 	Init(true, true, true);
 	DXUTSetCursorSettings(true, true); // 全屏模式显示鼠标和夹子 Show the cursor and clip it when in full screen
 	DXUTCreateWindow(pWndProc, wstrWindowTitle);
-	DXUTCreateDevice(D3DADAPTER_DEFAULT, !bFullScreen, nWidth, nHeight);
+	DXUTCreateDevice(D3DADAPTER_DEFAULT, !bFullScreen, uWidth, uHeight);
 	return true;
 }
 

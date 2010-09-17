@@ -44,7 +44,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\..\Include&quot;;DX9SDK\Include"
+				AdditionalIncludeDirectories="..\..\shared\include;..\..\engine\include;DX9SDK\Include"
 				PreprocessorDefinitions="WIN32;NDEBUG"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -70,8 +70,8 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="fileio.lib"
-				OutputFile="..\..\RPGSky\bin\Client\Plugins\$(ProjectName).dll"
-				AdditionalLibraryDirectories="..\..\lib;DX9SDK\Lib\x86"
+				OutputFile="..\bin\Client\Plugins\$(ProjectName).dll"
+				AdditionalLibraryDirectories="..\..\shared\lib;..\..\engine\lib;DX9SDK\Lib\x86"
 				ModuleDefinitionFile=".\$(ProjectName).def"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -129,7 +129,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(ProjectDir)..\..\Include&quot;;DX9SDK\Include"
+				AdditionalIncludeDirectories="..\..\shared\include;..\..\engine\include;DX9SDK\Include"
 				PreprocessorDefinitions="WIN32;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -157,8 +157,8 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="fileiod.lib"
-				OutputFile="..\..\RPGSky\bin\Client\Pluginsd\$(ProjectName)d.dll"
-				AdditionalLibraryDirectories="..\..\lib;DX9SDK\Lib\x86"
+				OutputFile="..\bin\Client\Pluginsd\$(ProjectName)d.dll"
+				AdditionalLibraryDirectories="..\..\shared\lib;..\..\engine\lib;DX9SDK\Lib\x86"
 				ModuleDefinitionFile=".\$(ProjectName).def"
 				GenerateDebugInformation="true"
 				RandomizedBaseAddress="1"
@@ -255,6 +255,10 @@
 			</File>
 			<File
 				RelativePath=".\DXUTmisc.h"
+				>
+			</File>
+			<File
+				RelativePath=".\GrowableArray.h"
 				>
 			</File>
 		</Filter>

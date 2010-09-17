@@ -1,7 +1,7 @@
 #pragma once
 #include "ShaderMgr.h"
 
-class DLL_EXPORT CD3D9ShaderMgr : public CShaderMgr
+class CD3D9ShaderMgr : public CShaderMgr
 {
 public:
 	void OnResetDevice();

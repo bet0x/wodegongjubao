@@ -2,7 +2,7 @@
 #include "HardwareIndexBuffer.h"
 #include "D3D9RenderSystemCommon.h"
 
-class DLL_EXPORT CD3D9HardwareIndexBuffer : public CHardwareIndexBuffer
+class CD3D9HardwareIndexBuffer : public CHardwareIndexBuffer
 {
 protected:
 	LPDIRECT3DINDEXBUFFER9 mlpD3DBuffer;

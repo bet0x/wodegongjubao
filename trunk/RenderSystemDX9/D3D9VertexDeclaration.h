@@ -2,7 +2,7 @@
 #include "VertexDeclaration.h"
 #include "D3D9RenderSystemCommon.h"
 
-class DLL_EXPORT CD3D9VertexDeclaration : public CVertexDeclaration 
+class CD3D9VertexDeclaration : public CVertexDeclaration 
 {
 public:
 	CD3D9VertexDeclaration(LPDIRECT3DDEVICE9 pD3D9Device);

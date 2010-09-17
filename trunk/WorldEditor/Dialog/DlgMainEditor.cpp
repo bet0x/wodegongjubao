@@ -230,16 +230,16 @@ void CDlgMainEditor::OnFileNew()
 	std::wstring wstrPath = GetParentPath(wstrFilename);
 	std::wstring wstrSceneName = GetFilename(wstrFilename);
 	wstrSceneName=ChangeExtension(wstrSceneName,L"");
-	//fileCopy(L"Data\\default\\Default.rar",		wstrPath+L"Default.rar");
-	fileCopy(L"Data\\default\\Tile.csv",		wstrPath+L"Tile.csv");
-	fileCopy(L"Data\\default\\Object.csv",		wstrPath+L"Object.csv");
-	fileCopy(L"Data\\default\\TerrainLight.bmp",wstrPath+L"TerrainLight.bmp");
-	fileCopy(L"Data\\default\\Default.sce",		wstrPath+wstrSceneName+L".sce");
-	fileCopy(L"Data\\default\\Default.map",		wstrPath+wstrSceneName+L".map");
-	fileCopy(L"Data\\default\\Default.obj",		wstrPath+wstrSceneName+L".obj");
+	////fileCopy(L"Data\\default\\Default.rar",		wstrPath+L"Default.rar");
+	//fileCopy(L"Data\\default\\Tile.csv",		wstrPath+L"Tile.csv");
+	//fileCopy(L"Data\\default\\Object.csv",		wstrPath+L"Object.csv");
+	//fileCopy(L"Data\\default\\TerrainLight.bmp",wstrPath+L"TerrainLight.bmp");
+	//fileCopy(L"Data\\default\\Default.sce",		wstrPath+wstrSceneName+L".sce");
+	//fileCopy(L"Data\\default\\Default.map",		wstrPath+wstrSceneName+L".map");
+	//fileCopy(L"Data\\default\\Default.obj",		wstrPath+wstrSceneName+L".obj");
 
-	pathCopy(L"Data\\default\\Obj\\",		wstrPath+L"Obj\\");
-	pathCopy(L"Data\\default\\Tile\\",		wstrPath+L"Tile\\");
+	//pathCopy(L"Data\\default\\Obj\\",		wstrPath+L"Obj\\");
+	//pathCopy(L"Data\\default\\Tile\\",		wstrPath+L"Tile\\");
 	OnFileOpen();
 }
 

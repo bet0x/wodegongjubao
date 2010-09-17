@@ -402,7 +402,7 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 {
 	Vec3D vRayPos, vRayDir;
 	Vec3D vTargetPos;
-	m_Camera.GetPickRay( vRayPos, vRayDir, point.x, point.y,m_rcBoundingBox);
+	m_Camera.GetPickRay( vRayPos, vRayDir, point.x, point.y,m_rcBoundingBox.getRECT());
 	m_Terrain.Pick( vRayPos, vRayDir, &vTargetPos );
 	m_Scene.setTargetPos(vTargetPos);
 	m_Terrain.GetBrushDecal().SetPos(vTargetPos.x, vTargetPos.z);
@@ -506,7 +506,7 @@ void CUIWorldEditorDisplay::OnLButtonDown(POINT point)
 	if (m_Terrain.GetBrushDecal().GetBrushType()==CTerrainBrush::BRUSH_TYPE_SCENE_OBJECT)
 	{
 		Vec3D vRayPos, vRayDir;
-		m_Camera.GetPickRay( vRayPos, vRayDir, point.x, point.y,m_rcBoundingBox);
+		m_Camera.GetPickRay( vRayPos, vRayDir, point.x, point.y,m_rcBoundingBox.getRECT());
 		if (GetKeyState(VK_MENU)<0)// new oject
 		{
 			Vec3D vPos;
@@ -549,7 +549,7 @@ void CUIWorldEditorDisplay::OnLButtonDown(POINT point)
 	{
 		Vec3D vRayPos, vRayDir;
 		Vec3D vTargetPos;
-		m_Camera.GetPickRay( vRayPos, vRayDir, point.x, point.y,m_rcBoundingBox);
+		m_Camera.GetPickRay( vRayPos, vRayDir, point.x, point.y,m_rcBoundingBox.getRECT());
 		m_Terrain.Pick( vRayPos, vRayDir, &vTargetPos );
 
 		int nTargetX = (int)vTargetPos.x;
@@ -627,7 +627,7 @@ void CUIWorldEditorDisplay::OnLButtonDown(POINT point)
 		}
 		{
 			Vec3D vLastMouseRayPos, vLastMouseRayDir;
-			m_Camera.GetPickRay(vLastMouseRayPos, vLastMouseRayDir, m_ptLastMousePosition.x, m_ptLastMousePosition.y,m_rcBoundingBox);
+			m_Camera.GetPickRay(vLastMouseRayPos, vLastMouseRayDir, m_ptLastMousePosition.x, m_ptLastMousePosition.y,m_rcBoundingBox.getRECT());
 			float t = (m_vObjectLastPos.f[m_CoordPlanType]-vLastMouseRayPos.f[m_CoordPlanType])/vLastMouseRayDir.f[m_CoordPlanType];
 			m_vLastMousePos = vLastMouseRayDir*t+vLastMouseRayPos;
 		}

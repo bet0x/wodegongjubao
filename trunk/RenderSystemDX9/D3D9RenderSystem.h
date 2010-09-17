@@ -15,7 +15,7 @@ struct IDirect3DDevice9;
 struct IDirect3DVertexBuffer9;
 struct IDirect3DIndexBuffer9;
 
-class DLL_EXPORT CD3D9RenderSystem : public CRenderSystem
+class CD3D9RenderSystem : public CRenderSystem
 {
 public:
 	CD3D9RenderSystem();
@@ -170,8 +170,8 @@ protected:
 	struct D3D9StreamSource 
 	{
 		IDirect3DVertexBuffer9* pStreamData;
-		unsigned long uOffsetInBytes;
-		unsigned long uStride;
+		unsigned int uOffsetInBytes;
+		unsigned int uStride;
 		bool operator!= (const D3D9StreamSource &s) const
 		{
 			return pStreamData != s.pStreamData||

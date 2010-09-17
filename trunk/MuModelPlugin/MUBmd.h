@@ -5,6 +5,7 @@
 #include "Vec4D.h"
 #include "Matrix.h"
 #include "MemoryStream.h"
+#include <vector>
 
 //左右手转换就是 z轴负一下
 //Vec3D(v.x, v.y, -v.z)
@@ -81,7 +82,7 @@ public:
 			}
 			bool bEmpty;
 			char szName[32];
-			int16 nParent;
+			short nParent;
 			std::vector<Vec3D> setTrans;
 			std::vector<Vec3D> setRotate;
 

@@ -2,7 +2,7 @@
 #include "Shader.h"
 #include "dxstdafx.h"
 
-class DLL_EXPORT CD3D9Shader : public CShader
+class CD3D9Shader : public CShader
 {
 public:
 	CD3D9Shader();

@@ -2,7 +2,7 @@
 #include "Texture.h"
 #include "dxstdafx.h"
 
-class DLL_EXPORT CD3D9Texture : public CTexture
+class CD3D9Texture : public CTexture
 {
 	friend class CD3D9TextureMgr;
 	friend class CD3D9RenderSystem;

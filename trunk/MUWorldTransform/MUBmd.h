@@ -47,7 +47,7 @@ public:
 			}
 			bool bEmpty;
 			char szName[32];
-			int16 nParent;
+			short nParent;
 			std::vector<Vec3D> setTrans;
 			std::vector<Vec3D> setRotate;
 			Matrix	mLocal;
