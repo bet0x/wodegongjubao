@@ -67,7 +67,6 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(SolutionDir)..\lib\$(ProjectName).lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -139,7 +138,6 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(SolutionDir)..\lib\$(ProjectName)d.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool

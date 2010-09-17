@@ -4,6 +4,7 @@
 	Version="9.00"
 	Name="jpeg"
 	ProjectGUID="{4FAA0DB0-BC06-4265-B426-8D73D2BD15B8}"
+	RootNamespace="jpeg"
 	Keyword="MFCProj"
 	TargetFrameworkVersion="131072"
 	>
@@ -209,7 +210,6 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\Debug\jpeg.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
@@ -281,7 +281,6 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile=".\Release\jpeg.lib"
 				SuppressStartupBanner="true"
 			/>
 			<Tool
