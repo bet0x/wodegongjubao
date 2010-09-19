@@ -89,6 +89,11 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 		int nFrameCount = 0;
 		for (size_t uAnimID=0; uAnimID<bmd.head.uAnimCount; ++uAnimID)
 		{
+			bool bFixFrame = true;
+			if (uAnimID==2||uAnimID>8)
+			{
+				bFixFrame=false;
+			}
 			long uTotalFrames = bmd.bmdSkeleton.setBmdAnim[uAnimID].uFrameCount;
 			
 			long timeEnd = nFrameCount;
@@ -135,7 +140,7 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 						bonsAnim.trans.addValue(i*MU_BMD_ANIM_FRAME_TIME,fixCoordSystemPos(bmdBone.setTrans[i+nFrameCount]));// 可以设置关键帧播放速度来调控
 						bonsAnim.rot.addValue(i*MU_BMD_ANIM_FRAME_TIME,fixCoordSystemRotate(bmdBone.setRotate[i+nFrameCount]));
 					}
-					if (uAnimID<8) // fuck here
+					if (bFixFrame) // fuck here
 					{
 						// 补帧
 						bonsAnim.trans.addValue(uTotalFrames*MU_BMD_ANIM_FRAME_TIME,fixCoordSystemPos(bmdBone.setTrans[nFrameCount]));
@@ -144,7 +149,7 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 				}
 			}
 			nFrameCount+=uTotalFrames;
-			if (uAnimID<8) // fuck here
+			if (bFixFrame) // fuck here
 			{
 				// 补帧
 				skeletonAnim.uTotalFrames = uTotalFrames*MU_BMD_ANIM_FRAME_TIME;
