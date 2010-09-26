@@ -100,6 +100,12 @@ HRESULT CD3D9RenderSystem::OnResetDevice()
 
 //////////////////////////////////////////////////////////////////////////
 	SetAlphaTestFunc(false);
+	SetStencilFunc(false);
+	SetRenderState(D3DRS_STENCILREF,       0x0);
+	SetRenderState(D3DRS_STENCILMASK,      0xffffffff);
+	SetRenderState(D3DRS_STENCILWRITEMASK, 0xffffffff);
+	SetRenderState(D3DRS_STENCILZFAIL,     D3DSTENCILOP_KEEP);
+	SetRenderState(D3DRS_STENCILFAIL,      D3DSTENCILOP_KEEP);
 
 	// Define DEBUG_VS and/or DEBUG_PS to debug vertex and/or pixel shaders with the 
 	// shader debugger. Debugging vertex shaders requires either REF or software vertex 
@@ -178,10 +184,10 @@ HRESULT CD3D9RenderSystem::OnResetDevice()
 	{
 		MessageBoxW(NULL, L"Device does not support hardware D3DRTYPE_TEXTURE  D3DUSAGE_QUERY_SRGBWRITE!", L"ERROR", MB_OK|MB_SETFOREGROUND|MB_TOPMOST);
 	}	
-	if(FAILED(CheckResourceFormatSupport(m_pD3D9Device, zFormat, D3DRTYPE_TEXTURE, D3DUSAGE_DEPTHSTENCIL)))
+	if(FAILED(CheckResourceFormatSupport(m_pD3D9Device, D3DFMT_D24S8, D3DRTYPE_TEXTURE, D3DUSAGE_DEPTHSTENCIL)))
 	{
-		//::MessageBoxW(NULL, L"Device does not support hardware D3DRTYPE_TEXTURE  D3DUSAGE_DEPTHSTENCIL!", L"ERROR", MB_OK|MB_SETFOREGROUND|MB_TOPMOST);
-		//return E_FAIL;
+		::MessageBoxW(NULL, L"Device does not support hardware D3DRTYPE_TEXTURE  D3DUSAGE_DEPTHSTENCIL!", L"ERROR", MB_OK|MB_SETFOREGROUND|MB_TOPMOST);
+		return E_FAIL;
 	}
 
 	//SetRenderState(D3DSAMP_SRGBTEXTURE, 1);
@@ -305,8 +311,13 @@ void CD3D9RenderSystem::getViewport(CRect<int>& rect)
 
 void CD3D9RenderSystem::ClearBuffer (bool bZBuffer, bool bTarget, Color32 color)
 {
-	unsigned long dwFlags = 0;
-
+	unsigned long dwFlags = D3DCLEAR_STENCIL;
+	SetStencilFunc(false);
+	SetRenderState(D3DRS_STENCILREF,       0x1);
+	//SetRenderState(D3DRS_STENCILMASK,      0xffffffff);
+	//SetRenderState(D3DRS_STENCILWRITEMASK, 0xffffffff);
+	//SetRenderState(D3DRS_STENCILZFAIL,     D3DSTENCILOP_KEEP);
+	//SetRenderState(D3DRS_STENCILFAIL,      D3DSTENCILOP_KEEP);
 	if (bZBuffer)
 		dwFlags |= D3DCLEAR_ZBUFFER;
 	if (bTarget)
@@ -528,6 +539,13 @@ void CD3D9RenderSystem::SetBlendFunc(bool bBlend, SceneBlendOperation op, SceneB
 	SetRenderState(D3DRS_BLENDOP, BlendOperationForD3D9(op));
 	SetRenderState(D3DRS_SRCBLEND, BlendFactorForD3D9(src));
 	SetRenderState(D3DRS_DESTBLEND, BlendFactorForD3D9(dest));
+}
+
+void CD3D9RenderSystem::SetStencilFunc(bool bStencil, StencilOP op, CompareFunction stencilFunction)
+{
+	SetRenderState(D3DRS_STENCILENABLE, bStencil);
+	SetRenderState(D3DRS_STENCILFUNC, CompareFunctionForD3D9(stencilFunction));
+	SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP(op));
 }
 
 void CD3D9RenderSystem::SetCullingMode(CullingMode mode)

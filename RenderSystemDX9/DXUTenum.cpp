@@ -782,12 +782,12 @@ CD3DEnumDeviceInfo::~CD3DEnumDeviceInfo(void)
 void CD3DEnumeration::ResetPossibleDepthStencilFormats()
 {
     m_DepthStecilPossibleList.RemoveAll();
-    m_DepthStecilPossibleList.Add(D3DFMT_D16);
-    m_DepthStecilPossibleList.Add(D3DFMT_D15S1);
-    m_DepthStecilPossibleList.Add(D3DFMT_D24X8);
+   // m_DepthStecilPossibleList.Add(D3DFMT_D16);
+   // m_DepthStecilPossibleList.Add(D3DFMT_D15S1);
+   // m_DepthStecilPossibleList.Add(D3DFMT_D24X8);
     m_DepthStecilPossibleList.Add(D3DFMT_D24S8);
     m_DepthStecilPossibleList.Add(D3DFMT_D24X4S4);
-    m_DepthStecilPossibleList.Add(D3DFMT_D32);
+    //m_DepthStecilPossibleList.Add(D3DFMT_D32);
 }
 
 
