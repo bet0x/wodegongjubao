@@ -1325,7 +1325,7 @@ void DXUTBuildOptimalDeviceSettings(DXUTDeviceSettings* pOptimalDeviceSettings,
     {
         UINT nBackBufferBits = DXUTColorChannelBits(pOptimalDeviceSettings->pp.BackBufferFormat);
         if(nBackBufferBits >= 8)
-            pOptimalDeviceSettings->pp.AutoDepthStencilFormat = D3DFMT_D32; 
+            pOptimalDeviceSettings->pp.AutoDepthStencilFormat = D3DFMT_D24S8;//D3DFMT_D32; 
         else
             pOptimalDeviceSettings->pp.AutoDepthStencilFormat = D3DFMT_D16; 
     }
