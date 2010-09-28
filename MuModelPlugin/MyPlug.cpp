@@ -90,9 +90,14 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 		for (size_t uAnimID=0; uAnimID<bmd.head.uAnimCount; ++uAnimID)
 		{
 			bool bFixFrame = true;
+			bool bFixMove = false;
 			if (uAnimID==2||uAnimID>8)
 			{
 				bFixFrame=false;
+			}
+			if (uAnimID==15||uAnimID==2)// player & monster 3
+			{
+				bFixMove=true;
 			}
 			long uTotalFrames = bmd.bmdSkeleton.setBmdAnim[uAnimID].uFrameCount;
 			
@@ -146,6 +151,15 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 						bonsAnim.trans.addValue(uTotalFrames*MU_BMD_ANIM_FRAME_TIME,fixCoordSystemPos(bmdBone.setTrans[nFrameCount]));
 						bonsAnim.rot.addValue(uTotalFrames*MU_BMD_ANIM_FRAME_TIME,fixCoordSystemRotate(bmdBone.setRotate[nFrameCount]));
 					}
+				}
+			}
+			// Fix Move
+			if (bFixMove)
+			{
+				BoneAnim& bonsAnim = setBonesAnim[0];
+				for (size_t i=0;i<bonsAnim.trans.m_KeyData.size();++i)
+				{
+					bonsAnim.trans.m_KeyData[i].z+=(float)i/(float)(uTotalFrames-1)*2.35f;
 				}
 			}
 			nFrameCount+=uTotalFrames;

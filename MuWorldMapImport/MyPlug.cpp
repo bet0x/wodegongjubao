@@ -1322,11 +1322,11 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 				for (int x=0; x<254; ++x)
 				{
 					Color32 c = pTerrainData->getVertexColor(x,y);
-					c.b = *pImg;
+					c.r = *pImg;
 					pImg++;
 					c.g = *pImg;
 					pImg++;
-					c.r = *pImg;
+					c.b = *pImg;
 					pImg++;
 					pTerrainData->setVertexColor(x,y,c);
 				}
@@ -1971,11 +1971,11 @@ bool CMyPlug::exportTerrainLightmap(iTerrainData * pTerrainData, const std::stri
 		for (int x=0; x<254; ++x)
 		{
 			Color32 c = pTerrainData->getVertexColor(x,y);
-			*p = c.b;
+			*p = c.r;
 			p++;
 			*p = c.g;
 			p++;
-			*p = c.r;
+			*p = c.b;
 			p++;
 		}
 		for (int i=0;i<6;++i)
