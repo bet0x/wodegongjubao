@@ -91,7 +91,7 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 		{
 			bool bFixFrame = true;
 			bool bFixMove = false;
-			if (uAnimID==2||uAnimID>8)
+			if (uAnimID==2||uAnimID==6||uAnimID>8)
 			{
 				bFixFrame=false;
 			}
@@ -281,7 +281,7 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 	std::string strParentDir = GetParentPath(strFilename);
 	std::string strParentDirName = GetFilename(strParentDir);
 	
-	std::string strMyPath ="Data\\"+strParentDirName+"\\";
+	std::string strMyPath ="Plugins\\Data\\"+strParentDirName+"\\";
 	std::string strMatFilename = strMyPath+GetFilename(ChangeExtension(strFilename,".mat.csv"));
 	std::string strParFilename = strMyPath+GetFilename(ChangeExtension(strFilename,".par.csv"));
 	if (!IOReadBase::Exists(strMatFilename))
