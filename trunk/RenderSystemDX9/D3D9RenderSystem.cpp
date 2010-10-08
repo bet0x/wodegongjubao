@@ -1078,12 +1078,27 @@ void CD3D9RenderSystem::SetMaterial(const Vec4D& vAmbient, const Vec4D& vDiffuse
 void CD3D9RenderSystem::SetDirectionalLight(unsigned long uIndex,const DirectionalLight& light)
 {
 	D3DLIGHT9 D3D9Light;
+	ZeroMemory( &D3D9Light, sizeof(D3D9Light) );
 	D3D9Light.Type		= D3DLIGHT_DIRECTIONAL;
 	D3D9Light.Ambient	= *(D3DXCOLOR*)(&light.vAmbient);
 	D3D9Light.Diffuse	= *(D3DXCOLOR*)(&light.vDiffuse);
 	D3D9Light.Specular	= *(D3DXCOLOR*)(&light.vSpecular);
 	D3D9Light.Direction = *(D3DXVECTOR3*)(&light.vDirection);
-	D3DCheckHresult( m_pD3D9Device->SetLight(0, &D3D9Light) );
+	D3DCheckHresult( m_pD3D9Device->SetLight(uIndex, &D3D9Light) );
+}
+
+void CD3D9RenderSystem::setPointLight(unsigned long uIndex,const PointLight& light)
+{
+	D3DLIGHT9 D3D9Light;
+	ZeroMemory( &D3D9Light, sizeof(D3D9Light) );
+	D3D9Light.Attenuation1 = 1.0f/light.fRange;
+	D3D9Light.Type		= D3DLIGHT_POINT;
+	D3D9Light.Ambient	= *(D3DXCOLOR*)(&light.vAmbient);
+	D3D9Light.Diffuse	= *(D3DXCOLOR*)(&light.vDiffuse);
+	D3D9Light.Specular	= *(D3DXCOLOR*)(&light.vSpecular);
+	D3D9Light.Position = *(D3DXVECTOR3*)(&light.vPosition);
+	D3D9Light.Range = light.fRange;
+	D3DCheckHresult( m_pD3D9Device->SetLight(uIndex, &D3D9Light) );
 }
 
 void CD3D9RenderSystem::SetVB(int nVBID)

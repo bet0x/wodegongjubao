@@ -95,7 +95,7 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 			{
 				bFixFrame=false;
 			}
-			if (uAnimID==15||uAnimID==2)// player & monster 3
+			if (uAnimID==15||uAnimID==16||uAnimID==2)// player & monster 3
 			{
 				bFixMove=true;
 			}

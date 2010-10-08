@@ -394,7 +394,7 @@ void CUIWorldEditorDisplay::MoveCamera(int x,int y)
 	Matrix mCameraRot;
 	mCameraRot.rotationYawPitchRoll(m_Camera.getYawAngle(), 0, 0);
 	vPos += mCameraRot * Vec3D(x, 0, y)*0.001f*m_Camera.GetRadius();
-	vPos.y=m_Terrain.GetHeight(Vec2D(vPos.x,vPos.z));
+	vPos.y=m_Terrain.GetHeight(vPos.x,vPos.z);
 	m_Camera.setTargetPos(vPos);
 }
 
@@ -448,13 +448,13 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 						}
 					}
 					// Îü¸½µØ±í
-					if (m_vPosPressed.y==0.0f&&m_Terrain.GetHeight(Vec2D(m_vObjectLastPos.x,m_vObjectLastPos.z))==m_vObjectLastPos.y)
+					if (m_vPosPressed.y==0.0f&&m_Terrain.GetHeight(m_vObjectLastPos.x,m_vObjectLastPos.z)==m_vObjectLastPos.y)
 					{
-						m_vAfterCatchPos.y = m_Terrain.GetHeight(Vec2D(m_vAfterCatchPos.x,m_vAfterCatchPos.z));
+						m_vAfterCatchPos.y = m_Terrain.GetHeight(m_vAfterCatchPos.x,m_vAfterCatchPos.z);
 					}
-					else if(abs(m_Terrain.GetHeight(Vec2D(m_vAfterCatchPos.x,m_vAfterCatchPos.z))-m_vAfterCatchPos.y)<m_fFloorSnap)
+					else if(abs(m_Terrain.GetHeight(m_vAfterCatchPos.x,m_vAfterCatchPos.z)-m_vAfterCatchPos.y)<m_fFloorSnap)
 					{
-						m_vAfterCatchPos.y = m_Terrain.GetHeight(Vec2D(m_vAfterCatchPos.x,m_vAfterCatchPos.z));
+						m_vAfterCatchPos.y = m_Terrain.GetHeight(m_vAfterCatchPos.x,m_vAfterCatchPos.z);
 					}
 					m_Scene.setFocusObjectsPos(m_vAfterCatchPos);
 					GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");

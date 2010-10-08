@@ -1737,7 +1737,7 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 	std::string strTileFile = GetParentPath(strFilename)+"Tile.csv";
 	if (!IOReadBase::Exists(strTileFile))
 	{
-		strTileFile="Data\\default\\Tile.csv";
+		strTileFile="Plugins\\Data\\default\\Tile.csv";
 	}
 	importTiles(pScene->getTerrain(),strTileFile,GetParentPath(strFilename));
 	//
@@ -1749,7 +1749,7 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 	std::string strObjectPath = Format("%s%s%d\\",GetParentPath(GetParentPath(strFilename)).c_str(),"Object",nMapID);
 	if (nMapID==1)
 	{
-		importObjectResources(pScene,"Data\\World1\\Object.csv",strObjectPath); 
+		importObjectResources(pScene,"Plugins\\Data\\World1\\Object.csv",strObjectPath); 
 	}
 	else if (IOReadBase::Exists(GetParentPath(strFilename)+"Object.csv"))
 	{
