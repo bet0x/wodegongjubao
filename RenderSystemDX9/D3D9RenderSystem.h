@@ -97,6 +97,7 @@ public:
 	void SetMaterial(const Vec4D& vAmbient, const Vec4D& vDiffuse);
 	// Light
 	void SetDirectionalLight(unsigned long uIndex,const DirectionalLight& light);
+	void setPointLight(unsigned long uIndex,const PointLight& light);
 	void LightEnable(unsigned long Index, bool bEnable);
 	void SetLightingEnabled(bool bEnable);
 	//
