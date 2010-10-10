@@ -18,10 +18,10 @@ int CMyPlug::Execute(iModelData * pModelData, bool bShowDlg, bool bSpecifyFileNa
 	return -1;
 }
 
-bool importMaterial(iModelData * pModelData, const std::string& strFilename, const std::string& strPath)
+bool importMaterial(iModelData * pModelData, const char* szFilename, const std::string& strPath)
 {
 	CCsvFile csv;
-	if (!csv.Open(strFilename))
+	if (!csv.Open(szFilename))
 	{
 		return false;
 	}
@@ -293,8 +293,8 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 		strParFilename=strMyPath+strParentDirName+".par.csv";
 	}
 
-	importMaterial(pModelData, strMatFilename, strParentDir);
-	pModelData->loadParticleEmitters(strParFilename);
+	importMaterial(pModelData, strMatFilename.c_str(), strParentDir);
+	pModelData->loadParticleEmitters(strParFilename.c_str());
 	return true;
 }
 

@@ -19,8 +19,8 @@ public:
 	virtual void Release();
 private:
 	bool importTerrainData(iTerrainData * pTerrainData, const std::string& strFilename);
-	bool importTiles(iTerrainData * pTerrain, const std::string& strFilename, const std::string& strPath);
-	bool importObjectResources(iScene * pScene, const std::string& strFilename, const std::string& strPath);
+	bool importTiles(iTerrainData * pTerrain, const char* szFilename, const std::string& strPath);
+	bool importObjectResources(iScene * pScene, const char* szFilename, const std::string& strPath);
 	bool importObject(iScene * pScene, const std::string& strFilename);
 
 	bool exportTerrainData(iTerrainData * pTerrainData, const std::string& strFilename);
