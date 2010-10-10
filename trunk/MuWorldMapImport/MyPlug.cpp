@@ -1361,11 +1361,11 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 }
 #include "CsvFile.h"
 
-bool CMyPlug::importTiles(iTerrainData * pTerrain, const std::string& strFilename, const std::string& strPath)
+bool CMyPlug::importTiles(iTerrainData * pTerrain, const  char* szFilename, const std::string& strPath)
 {
 	pTerrain->clearAllTiles();
 	CCsvFile csv;
-	if (!csv.Open(strFilename))
+	if (!csv.Open(szFilename))
 	{
 		return false;
 	}
@@ -1402,11 +1402,11 @@ bool CMyPlug::importTiles(iTerrainData * pTerrain, const std::string& strFilenam
 	return true;
 }
 
-bool CMyPlug::importObjectResources(iScene * pScene, const std::string& strFilename, const std::string& strPath)
+bool CMyPlug::importObjectResources(iScene * pScene, const char* szFilename, const std::string& strPath)
 {
 	pScene->clearObjectResources();
 	CCsvFile csvObject;
-	if (csvObject.Open(strFilename))
+	if (csvObject.Open(szFilename))
 	{
 		while (csvObject.SeekNextLine())
 		{
@@ -1453,10 +1453,10 @@ struct ObjInfo
 };
 #pragma pack(pop)
 
-bool CMyPlug::importObject(iScene * pScene, const std::string& strFilename)
+bool CMyPlug::importObject(iScene * pScene, const char* szFilename)
 {
 	pScene->removeAllObjects();
-	IOReadBase* pRead = IOReadBase::autoOpen(strFilename);
+	IOReadBase* pRead = IOReadBase::autoOpen(szFilename);
 	if (pRead)
 	{
 		size_t fileSize = pRead->GetSize();
@@ -1739,7 +1739,7 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 	{
 		strTileFile="Plugins\\Data\\default\\Tile.csv";
 	}
-	importTiles(pScene->getTerrain(),strTileFile,GetParentPath(strFilename));
+	importTiles(pScene->getTerrain(),strTileFile.c_str(),GetParentPath(strFilename));
 	//
 	//pScene->getTerrain()->setLightMapTexture(strFilename+"TerrainLight.OZJ");
 	pScene->getTerrain()->create();
@@ -1753,7 +1753,7 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 	}
 	else if (IOReadBase::Exists(GetParentPath(strFilename)+"Object.csv"))
 	{
-		importObjectResources(pScene,GetParentPath(strFilename)+"Object.csv",GetParentPath(strFilename)); 
+		importObjectResources(pScene,(GetParentPath(strFilename)+"Object.csv").c_str(),GetParentPath(strFilename)); 
 	}
 	else
 	{
@@ -1764,7 +1764,7 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 	bboxObject.vMin = Vec3D(-10.0f,-fLength*0.5f-10.0f,-10.0f);
 	bboxObject.vMax = Vec3D(fLength+10.0f,fLength*0.5f+10.0f,fLength+10.0f);
 	pScene->createObjectTree(bboxObject,6);
-	importObject(pScene,ChangeExtension(strFilename,".obj"));
+	importObject(pScene,ChangeExtension(strFilename,".obj").c_str());
 	return true;
 }
 

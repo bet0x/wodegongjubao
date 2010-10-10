@@ -21,10 +21,10 @@ int CMyPlug::Execute(std::map<std::string, CMaterial>& mapItems, bool bShowDlg, 
 	return -1;
 }
 
-bool CMyPlug::importData(std::map<std::string, CMaterial>& mapItems, const std::string& strFilename)
+bool CMyPlug::importData(std::map<std::string, CMaterial>& mapItems, const char* szFilename)
 {
 	CCsvFile csv;
-	if (!csv.Open(strFilename))
+	if (!csv.Open(szFilename))
 	{
 		return false;
 	}
@@ -57,7 +57,7 @@ bool CMyPlug::importData(std::map<std::string, CMaterial>& mapItems, const std::
 	return true;
 }
 
-bool CMyPlug::exportData(std::map<std::string, CMaterial>& mapItems, const std::string& strFilename)
+bool CMyPlug::exportData(std::map<std::string, CMaterial>& mapItems, const char* szFilename)
 {
 	return true;
 }

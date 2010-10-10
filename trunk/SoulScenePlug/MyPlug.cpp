@@ -94,11 +94,11 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 	return true;
 }
 #include "CsvFile.h"
-bool CMyPlug::importTiles(iTerrainData * pTerrain, const std::string& strFilename, const std::string& strPath)
+bool CMyPlug::importTiles(iTerrainData * pTerrain, const char* szFilename, const std::string& strPath)
 {
 	pTerrain->clearAllTiles();
 	CCsvFile csv;
-	if (!csv.Open(strFilename))
+	if (!csv.Open(szFilename))
 	{
 		return false;
 	}
@@ -134,11 +134,11 @@ bool CMyPlug::importTiles(iTerrainData * pTerrain, const std::string& strFilenam
 	return true;
 }
 
-bool CMyPlug::importObjectResources(iScene * pScene, const std::string& strFilename, const std::string& strPath)
+bool CMyPlug::importObjectResources(iScene * pScene, const char* szFilename, const std::string& strPath)
 {
 	pScene->clearObjectResources();
 	CCsvFile csvObject;
-	if (csvObject.Open(strFilename))
+	if (csvObject.Open(szFilename))
 	{
 		while (csvObject.SeekNextLine())
 		{
@@ -213,11 +213,11 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 		}
 	}
 	importTerrainData(pScene->getTerrain(),ChangeExtension(strFilename,".map"));
-	importTiles(pScene->getTerrain(),GetParentPath(strFilename)+"Tile.csv",GetParentPath(strFilename));
+	importTiles(pScene->getTerrain(),(GetParentPath(strFilename)+"Tile.csv").c_str(),GetParentPath(strFilename));
 	//pScene->getTerrain()->setLightMapTexture(strFilename+"TerrainLight.OZJ");
 	pScene->getTerrain()->create();
 
-	importObjectResources(pScene,GetParentPath(strFilename)+"object.csv",GetParentPath(strFilename)); 
+	importObjectResources(pScene,(GetParentPath(strFilename)+"object.csv").c_str(),GetParentPath(strFilename)); 
 	BBox bboxObject;
 	bboxObject.vMin = Vec3D(-20.0f,-100.0f,-20.0f);
 	bboxObject.vMax = Vec3D(pScene->getTerrain()->GetWidth()+20.0f,100.0f,pScene->getTerrain()->GetHeight()+20.0f);
