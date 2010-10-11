@@ -95,7 +95,14 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 			{
 				bFixFrame=false;
 			}
-			if (uAnimID==15||uAnimID==16||uAnimID==2)// player & monster 3
+			if (bmd.head.uAnimCount>100)// player
+			{
+				if (uAnimID==15||uAnimID==16)
+				{
+					bFixMove=true;
+				}
+			}
+			else if (uAnimID==2)// player & monster 3
 			{
 				bFixMove=true;
 			}
@@ -157,9 +164,11 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 			if (bFixMove)
 			{
 				BoneAnim& bonsAnim = setBonesAnim[0];
-				for (size_t i=0;i<bonsAnim.trans.m_KeyData.size();++i)
+				size_t uSize = bonsAnim.trans.m_KeyData.size();
+				float fMoveLength = bonsAnim.trans.m_KeyData[uSize-1].z-bonsAnim.trans.m_KeyData[0].z;
+				for (size_t i=0;i<uSize;++i)
 				{
-					bonsAnim.trans.m_KeyData[i].z+=(float)i/(float)(uTotalFrames-1)*2.35f;
+					bonsAnim.trans.m_KeyData[i].z-=(float)i/(float)(uTotalFrames-1)*fMoveLength;
 				}
 			}
 			nFrameCount+=uTotalFrames;

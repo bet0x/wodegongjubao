@@ -151,5 +151,5 @@ public:
 
 };
 
-#define MU_BMD_ANIM_FRAME_TIME 200
+#define MU_BMD_ANIM_FRAME_TIME 150
 
