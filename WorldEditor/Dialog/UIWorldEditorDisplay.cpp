@@ -58,7 +58,7 @@ void CUIWorldEditorDisplay::OnFrameRender(const Matrix& mTransform, double fTime
 	pShader->setFloat("g_fTime",fTime);
 	pShader->setMatrix("g_mViewProj",m_Camera.GetProjXView());
 	pShader->setMatrix("g_mView",m_Camera.GetViewMatrix());
-	pShader->setVec3D("g_vLightDir",m_Scene.getTerrain()->GetLightDir());
+	pShader->setVec3D("g_vLightDir",m_Scene.getTerrainData()->GetLightDir());
 	pShader->setVec3D("g_vEyePot",m_Camera.GetEyePt());
 
 	R.SetupRenderState();

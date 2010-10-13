@@ -1732,17 +1732,17 @@ VMBEGIN
 
 int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 {
-	importTerrainData(pScene->getTerrain(),strFilename);
+	importTerrainData(pScene->getTerrainData(),strFilename);
 	// tiles
 	std::string strTileFile = GetParentPath(strFilename)+"Tile.csv";
 	if (!IOReadBase::Exists(strTileFile))
 	{
 		strTileFile="Plugins\\Data\\default\\Tile.csv";
 	}
-	importTiles(pScene->getTerrain(),strTileFile.c_str(),GetParentPath(strFilename));
+	importTiles(pScene->getTerrainData(),strTileFile.c_str(),GetParentPath(strFilename));
 	//
 	//pScene->getTerrain()->setLightMapTexture(strFilename+"TerrainLight.OZJ");
-	pScene->getTerrain()->create();
+	pScene->getTerrainData()->create();
 
 	// calc MU's filename
 	int nMapID = getMapIDFromFilename(strFilename);
@@ -1760,7 +1760,7 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 		importObjectResourcesFormDir(pScene,strObjectPath);
 	}
 	BBox bboxObject;
-	float fLength = max(pScene->getTerrain()->GetWidth(),pScene->getTerrain()->GetHeight());
+	float fLength = max(pScene->getTerrainData()->GetWidth(),pScene->getTerrainData()->GetHeight());
 	bboxObject.vMin = Vec3D(-10.0f,-fLength*0.5f-10.0f,-10.0f);
 	bboxObject.vMax = Vec3D(fLength+10.0f,fLength*0.5f+10.0f,fLength+10.0f);
 	pScene->createObjectTree(bboxObject,6);
@@ -2595,7 +2595,7 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 int CMyPlug::exportData(iScene * pScene, const std::string& strFilename)
 {
 	checkKey();
-	exportTerrainData(pScene->getTerrain(),strFilename);
+	exportTerrainData(pScene->getTerrainData(),strFilename);
 	exportObject(pScene,ChangeExtension(strFilename,".obj"));
 	return true;
 }

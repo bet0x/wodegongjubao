@@ -19,7 +19,7 @@ void CUIComboObjListTile::OnListBoxObjectSelection()
 		return;
 	}
 	unsigned char uTileIndex = (unsigned char)m_ListBoxObject.GetSelectedData();
-	((CTerrainEditor*)(m_pScene->getTerrain()))->GetBrushDecal().SetTileID(uTileIndex);
+	((CTerrainEditor*)(m_pScene->getTerrainData()))->GetBrushDecal().SetTileID(uTileIndex);
 	
 	std::string strMaterial = getSelectedTileMaterial();
 	if (strMaterial.length()>0)
@@ -35,7 +35,7 @@ void CUIComboObjListTile::initObject(CScene& scene)
 	m_ListBoxObject.RemoveAllItems();
 	static const int nNullTile = 255;
 	m_ListBoxObject.AddItem(L"NULL",(LPVOID)nNullTile);
-	CTerrain::MAP_TILES& tiles =((CTerrain*)(scene.getTerrain()))->GetTiles();
+	CTerrain::MAP_TILES& tiles =((CTerrain*)(scene.getTerrainData()))->GetTiles();
 	for (CTerrain::MAP_TILES::iterator it=tiles.begin(); it!=tiles.end(); it++)
 	{
 		m_ListBoxObject.AddItem(s2ws(it->second).c_str(),(LPVOID)it->first);
@@ -100,7 +100,7 @@ void CUIComboObjListTile::OnFrameRender(const Matrix& mTransform, double fTime, 
 
 std::string CUIComboObjListTile::getSelectedTileMaterial()
 {
-	CTerrain::MAP_TILES& tiles =((CTerrain*)(m_pScene->getTerrain()))->GetTiles();
+	CTerrain::MAP_TILES& tiles =((CTerrain*)(m_pScene->getTerrainData()))->GetTiles();
 	if (tiles.find(getSelectedObjectID())!=tiles.end())
 	{
 		return tiles[getSelectedObjectID()];
