@@ -91,20 +91,29 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 		{
 			bool bFixFrame = true;
 			bool bFixMove = false;
-			if (uAnimID==2||uAnimID==6||uAnimID>8)
+			if (bmd.head.uAnimCount>100) // player
 			{
-				bFixFrame=false;
-			}
-			if (bmd.head.uAnimCount>100)// player
-			{
-				if (uAnimID==15||uAnimID==16)
+				if (uAnimID>=15&&uAnimID<=20)
 				{
 					bFixMove=true;
+					bFixFrame=false;
 				}
+				//if (uAnimID==2||uAnimID==6||uAnimID>8)
+				//{
+				//	bFixFrame=false;
+				//}
 			}
-			else if (uAnimID==2)// player & monster 3
+			else
 			{
-				bFixMove=true;
+				if (uAnimID==2) // monster 3
+				{
+					bFixMove=true;
+					bFixFrame=false;
+				}
+				if (uAnimID==6) // die
+				{
+					bFixFrame=false;
+				}
 			}
 			long uTotalFrames = bmd.bmdSkeleton.setBmdAnim[uAnimID].uFrameCount;
 			

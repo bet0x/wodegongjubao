@@ -12,6 +12,7 @@ public:
 	void OnDestroyDevice();
 	bool create(IDirect3DDevice9* pD3D9Device, const std::string& strFilename);
 	bool createFromMemory(IDirect3DDevice9* pD3D9Device, void* pBuf, int nSize,LPD3DXINCLUDE pInclude);
+	ID3DXEffect* getD3DXEffect();
 public:
 	void setFloat(const std::string& strFloat, float val);
 	void setVec2D(const std::string& strVec2D, const Vec2D& val);

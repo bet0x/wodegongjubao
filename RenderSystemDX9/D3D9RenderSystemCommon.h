@@ -15,4 +15,4 @@ DWORD LockOptionsForD3D9(CHardwareBuffer::LockOptions options, CHardwareBuffer::
 
 void D3D9SafeRelease(LPDIRECT3DRESOURCE9& pRes);
 void D3D9CheckResRef(LPDIRECT3DRESOURCE9 pRes);
-bool D3DCheckHresult(HRESULT hr, const std::wstring& wstrInfo=L"Unknown");
+bool D3DCheckHresult(HRESULT hr, const char* szInfo = "Unknown");

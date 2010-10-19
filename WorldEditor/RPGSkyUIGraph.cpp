@@ -309,7 +309,7 @@ void RPGSkyUIGraph::playSound(const char * szFilename)
 
 CTextRender & RPGSkyUIGraph::getTextRender()
 {
-	static CRPGSkyTextRender s_RPGSkyTextRender;
+	static CRPGSkyTextRender3D s_RPGSkyTextRender;
 	// ----
 	return s_RPGSkyTextRender;
 }
