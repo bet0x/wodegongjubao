@@ -21,7 +21,7 @@ CD3D9HardwareIndexBuffer::CD3D9HardwareIndexBuffer(CHardwareIndexBuffer::IndexTy
 		mD3DPool,
 		&mlpD3DBuffer,
 		NULL
-		), L"Can't create D3D9 index buffer");
+		), __FUNCTION__);
 }
 //---------------------------------------------------------------------
 CD3D9HardwareIndexBuffer::~CD3D9HardwareIndexBuffer()
@@ -36,14 +36,14 @@ void* CD3D9HardwareIndexBuffer::lockImpl(size_t offset,
 	D3DCheckHresult( mlpD3DBuffer->Lock(
 		static_cast<UINT>(offset), 
 		static_cast<UINT>(length), 
-		&pBuf,
-		LockOptionsForD3D9(options, mUsage)),L"Cannot lock D3D9 Index buffer" );
+		&pBuf,options),
+		__FUNCTION__ );
 	return pBuf;
 }
 //---------------------------------------------------------------------
 void CD3D9HardwareIndexBuffer::unlockImpl(void)
 {
-	D3DCheckHresult( mlpD3DBuffer->Unlock(),L"Cannot unlock D3D9 Index buffer" );
+	D3DCheckHresult( mlpD3DBuffer->Unlock(),__FUNCTION__ );
 }
 //---------------------------------------------------------------------
 void CD3D9HardwareIndexBuffer::readData(size_t offset, size_t length, 
@@ -97,7 +97,7 @@ bool CD3D9HardwareIndexBuffer::recreateIfDefaultPool(LPDIRECT3DDEVICE9 pDev)
 			mD3DPool,
 			&mlpD3DBuffer,
 			NULL
-			),L"Cannot recreate D3D9 default pool index buffer" );
+			),__FUNCTION__ );
 	}
 	return false;
 }

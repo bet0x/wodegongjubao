@@ -201,10 +201,10 @@ void CD3D9RenderSystem::OnLostDevice()
 {
 	for (int i=0; i<8; ++i)
 	{
-		D3DCheckHresult( m_pD3D9Device->SetTexture(i, NULL),L"CD3D9RenderSystem::OnLostDevice SetTexture" );
-		D3DCheckHresult( m_pD3D9Device->SetStreamSource(i,NULL,0,0),L"CD3D9RenderSystem::OnLostDevice SetStreamSource" );
+		D3DCheckHresult( m_pD3D9Device->SetTexture(i, NULL),__FUNCTION__ );
+		D3DCheckHresult( m_pD3D9Device->SetStreamSource(i,NULL,0,0),__FUNCTION__ );
 	}
-	D3DCheckHresult( m_pD3D9Device->SetIndices(NULL),L"CD3D9RenderSystem::OnLostDevice SetIndices" );
+	D3DCheckHresult( m_pD3D9Device->SetIndices(NULL),__FUNCTION__ );
 	m_D3D9TextureMgr.OnLostDevice();
 	m_D3D9HardwareBufferMgr.OnLostDevice();
 	m_D3D9ShaderMgr.OnLostDevice();
@@ -222,7 +222,7 @@ CTexture* CD3D9RenderSystem::GetRenderTarget()
 	CD3D9Texture* pRenderTarget = (CD3D9Texture*)GetTextureMgr().createTexture();
 	if (pRenderTarget)
 	{
-		D3DCheckHresult( m_pD3D9Device->GetRenderTarget(0 , &pRenderTarget->m_pD3D9Surface),L"GetRenderTarget()" );
+		D3DCheckHresult( m_pD3D9Device->GetRenderTarget(0 , &pRenderTarget->m_pD3D9Surface),__FUNCTION__ );
 	}
 	return pRenderTarget;
 }
@@ -234,7 +234,7 @@ void CD3D9RenderSystem::SetRenderTarget(CTexture* pRenderTarget)
 	{
 		pD3D9Surface = ((CD3D9Texture*)pRenderTarget)->GetD3D9Surface();
 	}
-	D3DCheckHresult( m_pD3D9Device->SetRenderTarget(0, pD3D9Surface),L"SetRenderTarget()" );
+	D3DCheckHresult( m_pD3D9Device->SetRenderTarget(0, pD3D9Surface),__FUNCTION__ );
 	/*HRESULT hr = m_pD3D9Device->SetRenderTarget(0, pD3D9Surface);
 	if(FAILED(hr))
 	{
@@ -254,7 +254,7 @@ CTexture* CD3D9RenderSystem::GetDepthStencil()
 	CD3D9Texture* pDepthStencil = (CD3D9Texture*)GetTextureMgr().createTexture();
 	if (pDepthStencil)
 	{
-		D3DCheckHresult( m_pD3D9Device->GetDepthStencilSurface(&pDepthStencil->m_pD3D9Surface),L"GetDepthStencilSurface()" );
+		D3DCheckHresult( m_pD3D9Device->GetDepthStencilSurface(&pDepthStencil->m_pD3D9Surface),__FUNCTION__ );
 	}
 	return pDepthStencil;
 }
@@ -266,7 +266,7 @@ void CD3D9RenderSystem::SetDepthStencil(CTexture* pDepthStencil)
 	{
 		pD3D9Surface = ((CD3D9Texture*)pDepthStencil)->GetD3D9Surface();
 	}
-	D3DCheckHresult( m_pD3D9Device->SetDepthStencilSurface(pD3D9Surface), L"SetDepthStencilSurface()" );
+	D3DCheckHresult( m_pD3D9Device->SetDepthStencilSurface(pD3D9Surface), __FUNCTION__ );
 }
 
 void CD3D9RenderSystem::OnFrameMove()
@@ -278,7 +278,7 @@ void CD3D9RenderSystem::OnFrameMove()
 
 bool CD3D9RenderSystem::BeginFrame()
 {
-	if(D3DCheckHresult( m_pD3D9Device->BeginScene(), L"BeginScene()" ))
+	if(D3DCheckHresult( m_pD3D9Device->BeginScene(), __FUNCTION__ ))
 	{
 		return true;
 	}
@@ -287,7 +287,7 @@ bool CD3D9RenderSystem::BeginFrame()
 
 void CD3D9RenderSystem::EndFrame()
 {
-	D3DCheckHresult( m_pD3D9Device->EndScene(), L"EndScene()" );
+	D3DCheckHresult( m_pD3D9Device->EndScene(), __FUNCTION__ );
 }
 
 void CD3D9RenderSystem::setViewport(const CRect<int>& rect)
@@ -299,13 +299,13 @@ void CD3D9RenderSystem::setViewport(const CRect<int>& rect)
 	vp.Height = rect.getHeight();
 	vp.MinZ   = 0.0f;
 	vp.MaxZ   = 1.0f;
-	D3DCheckHresult( m_pD3D9Device->SetViewport(&vp), L"SetViewport()" );
+	D3DCheckHresult( m_pD3D9Device->SetViewport(&vp), __FUNCTION__ );
 }
 
 void CD3D9RenderSystem::getViewport(CRect<int>& rect)
 {
 	D3DVIEWPORT9 vp;
-	D3DCheckHresult( m_pD3D9Device->GetViewport(&vp), L"GetViewport()" );
+	D3DCheckHresult( m_pD3D9Device->GetViewport(&vp), __FUNCTION__ );
 	rect.set(vp.X,vp.Y,vp.X+vp.Width,vp.Y+vp.Height);
 }
 
@@ -325,7 +325,7 @@ void CD3D9RenderSystem::ClearBuffer (bool bZBuffer, bool bTarget, Color32 color)
 	D3DRECT rect;
 	{
 		D3DVIEWPORT9 vp;
-		D3DCheckHresult( m_pD3D9Device->GetViewport(&vp), L"GetViewport()" );
+		D3DCheckHresult( m_pD3D9Device->GetViewport(&vp), __FUNCTION__ );
 		rect.x1 = vp.X;
 		rect.y1 = vp.Y;
 		rect.x2 = vp.Width + rect.x1;
@@ -352,19 +352,25 @@ void CD3D9RenderSystem::SetFillMode(FillMode mode)
 void CD3D9RenderSystem::setWorldMatrix(const Matrix& m)
 {
 	Matrix mDx=m;mDx.transpose();
-	D3DCheckHresult( m_pD3D9Device->SetTransform(D3DTS_WORLD, (D3DXMATRIX*)&mDx), L"SetTransform(D3DTS_WORLD,*)" );
+	CD3D9Shader* shared = (CD3D9Shader*)m_D3D9ShaderMgr.getSharedShader();
+	shared->setMatrix("g_mWorld",m);
+	if (m_pOldShader)
+	{
+		((CD3D9Shader*)m_pOldShader)->getD3DXEffect()->CommitChanges();
+	}
+	D3DCheckHresult( m_pD3D9Device->SetTransform(D3DTS_WORLD, (D3DXMATRIX*)&mDx), __FUNCTION__ );
 }
 
 void CD3D9RenderSystem::setViewMatrix(const Matrix& m)
 {
 	Matrix mDx=m;mDx.transpose();
-	D3DCheckHresult( m_pD3D9Device->SetTransform(D3DTS_VIEW, (D3DXMATRIX*)&mDx), L"SetTransform(D3DTS_VIEW,*)" );
+	D3DCheckHresult( m_pD3D9Device->SetTransform(D3DTS_VIEW, (D3DXMATRIX*)&mDx), __FUNCTION__ );
 }
 
 void CD3D9RenderSystem::setProjectionMatrix(const Matrix& m)
 {
 	Matrix mDx=m;mDx.transpose();
-	D3DCheckHresult( m_pD3D9Device->SetTransform(D3DTS_PROJECTION, (D3DXMATRIX*)&mDx), L"SetTransform(D3DTS_PROJECTION,*)" );
+	D3DCheckHresult( m_pD3D9Device->SetTransform(D3DTS_PROJECTION, (D3DXMATRIX*)&mDx), __FUNCTION__ );
 }
 
 void CD3D9RenderSystem::setTextureMatrix(unsigned char uTexChannel, TextureTransformFlag flag, const Matrix& m)
@@ -388,26 +394,26 @@ void CD3D9RenderSystem::setTextureMatrix(unsigned char uTexChannel, TextureTrans
 		uD3D9Flag = D3DTTFF_PROJECTED;
 		break;
 	}
-	D3DCheckHresult( m_pD3D9Device->SetTextureStageState(uTexChannel, D3DTSS_TEXTURETRANSFORMFLAGS, uD3D9Flag), L"SetTextureStageState()" );
+	D3DCheckHresult( m_pD3D9Device->SetTextureStageState(uTexChannel, D3DTSS_TEXTURETRANSFORMFLAGS, uD3D9Flag), __FUNCTION__ );
 	Matrix mDx=m;mDx.transpose();
 	m_pD3D9Device->SetTransform((D3DTRANSFORMSTATETYPE)(D3DTS_TEXTURE0 + uTexChannel), (D3DXMATRIX*)&mDx);
 }
 
 void CD3D9RenderSystem::getWorldMatrix(Matrix& m)const
 {
-	D3DCheckHresult( m_pD3D9Device->GetTransform(D3DTS_WORLD, (D3DXMATRIX*)&m), L"GetTransform(D3DTS_WORLD,*)" );
+	D3DCheckHresult( m_pD3D9Device->GetTransform(D3DTS_WORLD, (D3DXMATRIX*)&m), __FUNCTION__ );
 	m.transpose();
 }
 
 void CD3D9RenderSystem::getViewMatrix(Matrix& m)const
 {
-	D3DCheckHresult( m_pD3D9Device->GetTransform(D3DTS_VIEW, (D3DXMATRIX*)&m), L"GetTransform(D3DTS_VIEW,*)" );
+	D3DCheckHresult( m_pD3D9Device->GetTransform(D3DTS_VIEW, (D3DXMATRIX*)&m), __FUNCTION__ );
 	m.transpose();
 }
 
 void CD3D9RenderSystem::getProjectionMatrix(Matrix& m)const
 {
-	D3DCheckHresult( m_pD3D9Device->GetTransform(D3DTS_PROJECTION, (D3DXMATRIX*)&m), L"GetTransform(D3DTS_VIEW,*)" );
+	D3DCheckHresult( m_pD3D9Device->GetTransform(D3DTS_PROJECTION, (D3DXMATRIX*)&m), __FUNCTION__ );
 	m.transpose();
 }
 
@@ -1203,10 +1209,10 @@ bool CD3D9RenderSystem::commitRenderState()
 	for (std::map<unsigned long,unsigned long>::iterator it=m_mapChangeRenderState.begin(); it!=m_mapChangeRenderState.end(); ++it)
 	{
 		DWORD dwOldValue = 0;
-		D3DCheckHresult( m_pD3D9Device->GetRenderState(static_cast<D3DRENDERSTATETYPE>(it->first), &dwOldValue),L"GetRenderState()" );
+		D3DCheckHresult( m_pD3D9Device->GetRenderState(static_cast<D3DRENDERSTATETYPE>(it->first), &dwOldValue),__FUNCTION__ );
 		if (dwOldValue != it->second)
 		{
-			D3DCheckHresult( m_pD3D9Device->SetRenderState(static_cast<D3DRENDERSTATETYPE>(it->first), it->second),L"SetRenderState()" );
+			D3DCheckHresult( m_pD3D9Device->SetRenderState(static_cast<D3DRENDERSTATETYPE>(it->first), it->second),__FUNCTION__ );
 		}
 	}
 	m_mapChangeRenderState.clear();
@@ -1252,10 +1258,10 @@ bool CD3D9RenderSystem::commitTexture()
 	for (std::map<unsigned long,IDirect3DTexture9*>::iterator it=m_mapChangeTexture.begin(); it!=m_mapChangeTexture.end(); ++it)
 	{
 		IDirect3DTexture9* pOldD3D9Texture = NULL;
-		D3DCheckHresult( m_pD3D9Device->GetTexture(it->first,(IDirect3DBaseTexture9**) &pOldD3D9Texture),L"GetTexture()" );
+		D3DCheckHresult( m_pD3D9Device->GetTexture(it->first,(IDirect3DBaseTexture9**) &pOldD3D9Texture),__FUNCTION__ );
 		if (pOldD3D9Texture != it->second)
 		{
-			D3DCheckHresult( m_pD3D9Device->SetTexture(it->first, it->second),L"SetTexture()" );
+			D3DCheckHresult( m_pD3D9Device->SetTexture(it->first, it->second),__FUNCTION__ );
 		}	
 		S_REL(pOldD3D9Texture);
 	}
@@ -1268,10 +1274,10 @@ bool CD3D9RenderSystem::commitStreamSource()
 	for (std::map<unsigned long,D3D9StreamSource>::iterator it=m_mapChangeStreamSource.begin(); it!=m_mapChangeStreamSource.end(); ++it)
 	{
 		D3D9StreamSource d3D9StreamSource;
-		D3DCheckHresult( m_pD3D9Device->GetStreamSource(it->first,&d3D9StreamSource.pStreamData,&d3D9StreamSource.uOffsetInBytes,&d3D9StreamSource.uStride),L"GetStreamSource()" );
+		D3DCheckHresult( m_pD3D9Device->GetStreamSource(it->first,&d3D9StreamSource.pStreamData,&d3D9StreamSource.uOffsetInBytes,&d3D9StreamSource.uStride),__FUNCTION__ );
 		if (d3D9StreamSource != it->second)
 		{
-			D3DCheckHresult( m_pD3D9Device->SetStreamSource(it->first,it->second.pStreamData,it->second.uOffsetInBytes,it->second.uStride),L"SetStreamSource()" );
+			D3DCheckHresult( m_pD3D9Device->SetStreamSource(it->first,it->second.pStreamData,it->second.uOffsetInBytes,it->second.uStride),__FUNCTION__ );
 		}
 		S_REL(d3D9StreamSource.pStreamData);
 	}
@@ -1304,10 +1310,10 @@ bool CD3D9RenderSystem::commitOther()
 	if (m_uChangeFVF!=0)
 	{
 		DWORD dwOldFVF = 0;
-		D3DCheckHresult( m_pD3D9Device->GetFVF(&dwOldFVF),L"GetFVF()" );
+		D3DCheckHresult( m_pD3D9Device->GetFVF(&dwOldFVF),__FUNCTION__ );
 		if (m_uChangeFVF != dwOldFVF)
 		{
-			D3DCheckHresult( m_pD3D9Device->SetFVF(m_uChangeFVF),L"SetFVF()" );
+			D3DCheckHresult( m_pD3D9Device->SetFVF(m_uChangeFVF),__FUNCTION__ );
 		}
 		m_uChangeFVF = 0;
 	}
@@ -1315,10 +1321,10 @@ bool CD3D9RenderSystem::commitOther()
 	if (m_pChangeIB)
 	{
 		IDirect3DIndexBuffer9* pOldIB = NULL;
-		D3DCheckHresult( m_pD3D9Device->GetIndices(&pOldIB),L"GetIndices()" );
+		D3DCheckHresult( m_pD3D9Device->GetIndices(&pOldIB),__FUNCTION__ );
 		if (pOldIB!=m_pChangeIB)
 		{
-			D3DCheckHresult( m_pD3D9Device->SetIndices(m_pChangeIB),L"SetIndices()" );
+			D3DCheckHresult( m_pD3D9Device->SetIndices(m_pChangeIB),__FUNCTION__ );
 		}
 		S_REL(pOldIB);
 		m_pChangeIB = NULL;

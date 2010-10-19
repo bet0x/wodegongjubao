@@ -96,17 +96,20 @@ void D3D9SafeRelease(LPDIRECT3DRESOURCE9& pRes)
 	if(pRes)
 	{
 		D3D9CheckResRef(pRes);
-		D3DCheckHresult(pRes->Release(),L"D3D9SafeRelease");
+		D3DCheckHresult(pRes->Release(),__FUNCTION__);
 		pRes = NULL;
 	}
 }
 
-bool D3DCheckHresult(HRESULT hr, const std::wstring& wstrInfo)
+bool D3DCheckHresult(HRESULT hr, const char* szInfo)
 {
 	if (FAILED(hr))
 	{
-		std::wstring msg = wstrInfo+L":"+DXGetErrorDescription9W(hr);
-		MessageBoxW(NULL,msg.c_str(),L"Error",MB_OK);
+		std::string msg;
+		msg.append(DXGetErrorDescription9A(hr));
+		msg.append(" : ");
+		msg.append(szInfo);
+		MessageBoxA(NULL,msg.c_str(),"error",MB_OK);
 		assert(false);
 		return false;
 	}

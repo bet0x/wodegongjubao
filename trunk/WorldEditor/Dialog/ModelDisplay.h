@@ -4,6 +4,7 @@
 #include "SkyBox.h"
 #include "ModelComplex.h"
 #include "SceneEffect.h"
+#include "..\RPGSkyTextRender.h"
 
 // œ‘ æ¿‡
 class CModelDisplay : public CUIDisplay
@@ -55,4 +56,6 @@ private:
 	bool g_bLeftButtonDown;
 	bool g_bRightButtonDown;
 	bool g_bMiddleButtonDown;
+
+	CRPGSkyTextRender	m_TextRender;
 };

@@ -110,6 +110,11 @@ bool CD3D9Shader::createFromMemory(IDirect3DDevice9* pD3D9Device, void* pBuf, in
 	return m_pEffect!=NULL;
 }
 
+ID3DXEffect* CD3D9Shader::getD3DXEffect()
+{
+	return m_pEffect;
+}
+
 void CD3D9Shader::setFloat(const std::string& strFloat, float val)
 {
 	m_pEffect->SetFloat(strFloat.c_str(),val);
@@ -154,9 +159,9 @@ bool CD3D9Shader::begin(const std::string& strTec)
 {
 	m_pEffect->SetTechnique(strTec.c_str());
 	UINT cPasses;
-	m_pEffect->CommitChanges();
 	m_pEffect->Begin(&cPasses, 0);
 	m_pEffect->BeginPass(0);
+	//m_pEffect->CommitChanges();
 	return true;
 }
 

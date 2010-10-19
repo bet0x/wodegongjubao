@@ -20,7 +20,7 @@ CD3D9HardwareVertexBuffer::CD3D9HardwareVertexBuffer(size_t vertexSize,
 		0, // No FVF here, thankyou
 		mD3DPool,
 		&mlpD3DBuffer,
-		NULL),L"Can't create D3D9 vertex buffer");
+		NULL),__FUNCTION__);
 }
 
 
@@ -38,13 +38,13 @@ void* CD3D9HardwareVertexBuffer::lockImpl(size_t offset,
 		static_cast<UINT>(offset), 
 		static_cast<UINT>(length), 
 		&pBuf,
-		LockOptionsForD3D9(options, mUsage)), L"Cannot lock D3D9 vertex buffer");
+		LockOptionsForD3D9(options, mUsage)), __FUNCTION__);
 	return pBuf;
 }
 //---------------------------------------------------------------------
 void CD3D9HardwareVertexBuffer::unlockImpl(void)
 {
-	D3DCheckHresult(  mlpD3DBuffer->Unlock(),L"Cannot unlock D3D9 vertex buffer");
+	D3DCheckHresult(  mlpD3DBuffer->Unlock(),__FUNCTION__);
 }
 //---------------------------------------------------------------------
 void CD3D9HardwareVertexBuffer::readData(size_t offset, size_t length, 

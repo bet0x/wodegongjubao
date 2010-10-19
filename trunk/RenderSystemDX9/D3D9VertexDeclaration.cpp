@@ -107,7 +107,7 @@ void CD3D9VertexDeclaration::EndElement()
 	d3delems[idx].Usage = 0;
 	d3delems[idx].UsageIndex = 0;
 
-	D3DCheckHresult( m_pD3D9Device->CreateVertexDeclaration(d3delems, &m_pD3DDecl), L"CreateVertexDeclaration" );
+	D3DCheckHresult( m_pD3D9Device->CreateVertexDeclaration(d3delems, &m_pD3DDecl), __FUNCTION__ );
 
 	delete [] d3delems;
 }
