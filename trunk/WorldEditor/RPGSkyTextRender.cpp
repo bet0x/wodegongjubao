@@ -49,7 +49,41 @@ void CRPGSkyTextRender::drawTextVertexBuffer(int nVertexCount, void* pBuffer)
 	// ----
 	R.SetFVF(FVF_XYZW | FVF_DIFFUSE | FVF_TEX1);
 	// ----
+	if (m_nShadowBorder>0)
+	{
+		static unsigned long s_uShader = R.GetShaderMgr().registerItem("data\\fx\\text.fx");
+		CShader* pShader = R.GetShaderMgr().getItem(s_uShader);
+		if (pShader)
+		{
+			pShader->setVec4D("g_vShadowColor",Color32(m_uShadowColor));
+			pShader->setTexture("g_texDiffuse",m_pTextTexture);
+			//pShader->setTexture("g_samText",m_pTextTexture);
+		}
+		R.SetShader(s_uShader);
+		/*R.SetTextureFactor(0x00FF0000);
+		R.SetTextureColorOP(0,TBOP_MODULATE,TBS_TEXTURE,TBS_DIFFUSE);
+		R.setResultARGToTemp(0,true);
+		R.SetTextureColorOP(1,TBOP_MODULATE,TBS_TEXTURE,TBS_TFACTOR);
+		R.SetTextureColorOP(2,TBOP_SUBTRACT,TBS_TFACTOR,TBS_CURRENT);
+		R.SetTextureColorOP(3,TBOP_ADD,TBS_TEMP,TBS_CURRENT);
+		R.SetTexCoordIndex(1,0);
+		R.SetTexture(1, m_pTextTexture);*/
+	}
+	else
+	{
+		/*R.SetTextureColorOP(0,TBOP_MODULATE,TBS_TEXTURE,TBS_DIFFUSE);
+		R.SetTextureColorOP(1,TBOP_DISABLE);
+		R.SetTextureColorOP(2,TBOP_DISABLE);*/
+	}
+	// ----
 	R.DrawIndexedPrimitiveUP(VROT_TRIANGLE_LIST, 0, nVertexCount, nVertexCount / 2, & s_DrawTextIB, pBuffer, sizeof(VERTEX_TEXT));
+	// ----
+	R.SetShader((CShader*)NULL);
+	/*R.setResultARGToTemp(0,false);
+	R.SetTextureColorOP(0,TBOP_MODULATE,TBS_TEXTURE,TBS_DIFFUSE);
+	R.SetTextureColorOP(1,TBOP_DISABLE);
+	R.SetTextureColorOP(2,TBOP_DISABLE);
+	R.SetTextureColorOP(4,TBOP_DISABLE);*/
 }
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
