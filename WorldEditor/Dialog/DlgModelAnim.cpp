@@ -101,7 +101,7 @@ void CDlgModelAnim::OnAnimChanged()
 	{
 		std::string strAnimName=ws2s(m_ComboBoxAnim.GetText());
 		long timeCount=0;
-		CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelObject()->SetAnim(strAnimName);
+		CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelObject()->setAnim(strAnimName.c_str());
 		if (CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelData()->getSkeleton().getAnimation(strAnimName,timeCount))
 		{
 			m_SliderFrame.SetRange(0, timeCount);

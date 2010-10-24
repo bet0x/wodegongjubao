@@ -93,65 +93,26 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 	}
 	return true;
 }
+
 #include "CsvFile.h"
-bool CMyPlug::importTiles(iTerrainData * pTerrain, const char* szFilename, const std::string& strPath)
-{
-	pTerrain->clearAllTiles();
-	CCsvFile csv;
-	if (!csv.Open(szFilename))
-	{
-		return false;
-	}
-	while (csv.SeekNextLine())
-	{
-		const std::string strMaterialName	= csv.GetStr("Name");
-		pTerrain->setTileMaterial(csv.GetInt("ID"), strMaterialName);
-		{
-			CMaterial& material = pTerrain->getMaterial(strMaterialName);
-
-			material.setDiffuse		(getRealFilename(strPath,csv.GetStr("Diffuse")));
-			material.setEmissive	(getRealFilename(strPath,csv.GetStr("Emissive")));
-			material.setSpecular	(getRealFilename(strPath,csv.GetStr("Specular")));
-			material.setNormal		(getRealFilename(strPath,csv.GetStr("Normal")));
-			material.setReflection	(getRealFilename(strPath,csv.GetStr("Reflection")));
-			material.setLightMap	(getRealFilename(strPath,csv.GetStr("LightMap")));
-			material.setShader		(getRealFilename(strPath,csv.GetStr("Shader")));
-
-			material.m_fOpacity		=csv.GetFloat("Opacity");
-			material.uCull			=csv.GetInt("Cull");
-			material.bDepthWrite	=csv.GetBool("IsDepthWrite");
-			material.bBlend			=csv.GetBool("IsBlend");
-			material.bAlphaTest		=csv.GetBool("IsAlphaTest");
-			material.uAlphaTestValue=csv.GetInt("AlphaTestValue");
-
-			material.vTexAnim.x		=csv.GetFloat("TexAnimX");
-			material.vTexAnim.y		=csv.GetFloat("TexAnimY");
-			material.vUVScale.x		=1.0f/csv.GetFloat("UScale");
-			material.vUVScale.y		=1.0f/csv.GetFloat("VScale");
-		}
-	}
-	csv.Close();
-	return true;
-}
-
 bool CMyPlug::importObjectResources(iScene * pScene, const char* szFilename, const std::string& strPath)
 {
 	pScene->clearObjectResources();
 	CCsvFile csvObject;
-	if (csvObject.Open(szFilename))
+	if (csvObject.open(szFilename))
 	{
-		while (csvObject.SeekNextLine())
+		while (csvObject.seekNextLine())
 		{
 			pScene->setObjectResources(
-				csvObject.GetInt("ID"),
-				csvObject.GetStr("Name"),
-				getRealFilename(strPath,csvObject.GetStr("Filename")));
+				csvObject.getInt("ID"),
+				csvObject.getStr("Name",""),
+				getRealFilename(strPath.c_str(), csvObject.getStr("Filename","")));
 				//Info.bbox				= 
 				//Info.bIsGround			= csvObject.GetBool("IsGround");
 				//Info.bHasShadow			= csvObject.GetBool("HasShadow");
 				//Info.strFilename	= csvObject.GetStr("ModelFilename");
 		}
-		csvObject.Close();
+		csvObject.close();
 	}
 	return true;
 }
@@ -213,7 +174,7 @@ int CMyPlug::importData(iScene * pScene, const std::string& strFilename)
 		}
 	}
 	importTerrainData(pScene->getTerrainData(),ChangeExtension(strFilename,".map"));
-	importTiles(pScene->getTerrainData(),(GetParentPath(strFilename)+"Tile.csv").c_str(),GetParentPath(strFilename));
+	pScene->getTerrainData()->loadTilesMaterial((GetParentPath(strFilename)+"Tile.csv").c_str(),GetParentPath(strFilename).c_str());
 	//pScene->getTerrainData()->setLightMapTexture(strFilename+"TerrainLight.OZJ");
 	pScene->getTerrainData()->create();
 

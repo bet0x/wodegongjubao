@@ -3,7 +3,6 @@
 #include "FileSystem.h"
 #include "MUBmd.h"
 #include "Material.h"
-#include "CSVFile.h"
 
 CMyPlug::CMyPlug(void)
 {
@@ -16,42 +15,6 @@ CMyPlug::~CMyPlug(void)
 int CMyPlug::Execute(iModelData * pModelData, bool bShowDlg, bool bSpecifyFileName)
 {
 	return -1;
-}
-
-bool importMaterial(iModelData * pModelData, const char* szFilename, const std::string& strPath)
-{
-	CCsvFile csv;
-	if (!csv.Open(szFilename))
-	{
-		return false;
-	}
-	while (csv.SeekNextLine())
-	{
-		const std::string strMaterialName = csv.GetStr("Name");
-		CMaterial& material = pModelData->getMaterial(strMaterialName);
-
-		material.setDiffuse		(getRealFilename(strPath,csv.GetStr("Diffuse")));
-		material.setEmissive	(getRealFilename(strPath,csv.GetStr("Emissive")));
-		material.setSpecular	(getRealFilename(strPath,csv.GetStr("Specular")));
-		material.setNormal		(getRealFilename(strPath,csv.GetStr("Normal")));
-		material.setReflection	(getRealFilename(strPath,csv.GetStr("Reflection")));
-		material.setLightMap	(getRealFilename(strPath,csv.GetStr("LightMap")));
-		material.setShader		(getRealFilename(strPath,csv.GetStr("Shader")));
-
-		material.m_fOpacity		=csv.GetFloat("Opacity");
-		material.uCull			=csv.GetInt("Cull");
-		material.bDepthWrite	=csv.GetBool("IsDepthWrite");
-		material.bBlend			=csv.GetBool("IsBlend");
-		material.bAlphaTest		=csv.GetBool("IsAlphaTest");
-		material.uAlphaTestValue=csv.GetInt("AlphaTestValue");
-
-		material.vTexAnim.x		=csv.GetFloat("TexAnimX");
-		material.vTexAnim.y		=csv.GetFloat("TexAnimY");
-		material.vUVScale.x		=1.0f/csv.GetFloat("UScale");
-		material.vUVScale.y		=1.0f/csv.GetFloat("VScale");
-	}
-	csv.Close();
-	return true;
 }
 
 bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
@@ -311,7 +274,7 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 		strParFilename=strMyPath+strParentDirName+".par.csv";
 	}
 
-	importMaterial(pModelData, strMatFilename.c_str(), strParentDir);
+	pModelData->loadMaterial(strMatFilename.c_str(), strParentDir.c_str());
 	pModelData->loadParticleEmitters(strParFilename.c_str());
 	return true;
 }

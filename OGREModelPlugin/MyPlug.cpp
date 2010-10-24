@@ -823,7 +823,7 @@ bool readMaterial(iModelData * pModelData, const std::string& strFilename)
 		{
 			if (setWords.size()>0)
 			{
-				CMaterial& material = pModelData->getMaterial(setWords[0]);
+				CMaterial& material = pModelData->getMaterial(setWords[0].c_str());
 				readMaterial(material,pRead,strFilename);
 			}
 		}

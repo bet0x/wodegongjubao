@@ -21,43 +21,44 @@ int CMyPlug::Execute(std::map<std::string, CMaterial>& mapItems, bool bShowDlg, 
 	return -1;
 }
 
-bool CMyPlug::importData(std::map<std::string, CMaterial>& mapItems, const char* szFilename)
+#include "FileSystem.h"
+bool CMyPlug::importData(std::map<std::string, CMaterial>& mapItems, const char* szFilename, const char* szParentDir)
 {
 	CCsvFile csv;
-	if (!csv.Open(szFilename))
+	if (!csv.open(szFilename))
 	{
 		return false;
 	}
-	while (csv.SeekNextLine())
+	while (csv.seekNextLine())
 	{
-		const std::string strMaterialName = csv.GetStr("Name");
-		CMaterial& material = mapItems[strMaterialName];
+		const char* szMaterial	= csv.getStr("Name","");
+		CMaterial& material		= mapItems[szMaterial];
 
-		material.setDiffuse		(csv.GetStr("Diffuse"));
-		material.setEmissive	(csv.GetStr("Emissive"));
-		material.setSpecular	(csv.GetStr("Specular"));
-		material.setNormal		(csv.GetStr("Normal"));
-		material.setReflection	(csv.GetStr("Reflection"));
-		material.setLightMap	(csv.GetStr("LightMap"));
-		material.setShader		(csv.GetStr("Shader"));
+		material.setDiffuse		(getRealFilename(szParentDir,csv.getStr("Diffuse","")));
+		material.setEmissive	(getRealFilename(szParentDir,csv.getStr("Emissive","")));
+		material.setSpecular	(getRealFilename(szParentDir,csv.getStr("Specular","")));
+		material.setNormal		(getRealFilename(szParentDir,csv.getStr("Normal","")));
+		material.setReflection	(getRealFilename(szParentDir,csv.getStr("Reflection","")));
+		material.setLightMap	(getRealFilename(szParentDir,csv.getStr("LightMap","")));
+		material.setShader		(getRealFilename(szParentDir,csv.getStr("Shader","")));
 
-		material.m_fOpacity		=csv.GetFloat("Opacity");
-		material.uCull			=csv.GetInt("Cull");
-		material.bDepthWrite	=csv.GetBool("IsDepthWrite");
-		material.bBlend			=csv.GetBool("IsBlend");
-		material.bAlphaTest		=csv.GetBool("IsAlphaTest");
-		material.uAlphaTestValue=csv.GetInt("AlphaTestValue");
+		material.m_fOpacity		=csv.getFloat("Opacity");
+		material.uCull			=csv.getInt("Cull");
+		material.bDepthWrite	=csv.getBool("IsDepthWrite");
+		material.bBlend			=csv.getBool("IsBlend");
+		material.bAlphaTest		=csv.getBool("IsAlphaTest");
+		material.uAlphaTestValue=csv.getInt("AlphaTestValue");
 
-		material.vTexAnim.x		=csv.GetFloat("TexAnimX");
-		material.vTexAnim.y		=csv.GetFloat("TexAnimY");
-		material.vUVScale.x		=1.0f/csv.GetFloat("UScale");
-		material.vUVScale.y		=1.0f/csv.GetFloat("VScale");
+		material.vTexAnim.x		=csv.getFloat("TexAnimX");
+		material.vTexAnim.y		=csv.getFloat("TexAnimY");
+		material.vUVScale.x		=1.0f/csv.getFloat("UScale");
+		material.vUVScale.y		=1.0f/csv.getFloat("VScale");
 	}
-	csv.Close();
+	csv.close();
 	return true;
 }
 
-bool CMyPlug::exportData(std::map<std::string, CMaterial>& mapItems, const char* szFilename)
+bool CMyPlug::exportData(std::map<std::string, CMaterial>& mapItems, const char* szFilename, const char* szParentDir)
 {
 	return true;
 }
