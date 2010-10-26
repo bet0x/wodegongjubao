@@ -77,7 +77,7 @@ void CDlgMaterial::setMaterial(const std::string& strMaterial, const std::string
 
 std::string CDlgMaterial::getEditBoxFilename(const CUIEditBox& editBox)
 {
-	return getRealFilename(m_strPath,ws2s(editBox.GetText()));
+	return getRealFilename(m_strPath.c_str(),ws2s(editBox.GetText()).c_str());
 }
 
 unsigned int CDlgMaterial::getTextureID(const CUIEditBox& editBox)
