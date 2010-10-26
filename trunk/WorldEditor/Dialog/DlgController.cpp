@@ -63,13 +63,13 @@ void CDlgController::C3Model()
 	m_ListBoxFolder.AddItem( L"D:/Miku/miku.sm");
 	//
 	CCsvFile csvFile;
-	if (csvFile.Open("csv/3DObj.csv"))
+	if (csvFile.open("csv/3DObj.csv"))
 	{
-		while (csvFile.SeekNextLine())
+		while (csvFile.seekNextLine())
 		{
-			m_ListBoxFolder.AddItem(s2ws(csvFile.GetStr("Name")).c_str());
+			m_ListBoxFolder.AddItem(s2ws(csvFile.getStr("Name","")).c_str());
 		}
-		csvFile.Close();
+		csvFile.close();
 	}
 }
 
