@@ -48,7 +48,7 @@ void CDlgMaterial::OnControlRegister()
 
 void CDlgMaterial::setMaterial(const std::string& strMaterial, const std::string& strPath)
 {
-	m_pSelectedMaterial = &GetRenderSystem().getMaterialMgr().getItem(strMaterial);
+	m_pSelectedMaterial = &GetRenderSystem().getMaterialMgr().getItem(strMaterial.c_str());
 	if (m_pSelectedMaterial)
 	{
 		CTextureMgr& TM=GetRenderSystem().GetTextureMgr();

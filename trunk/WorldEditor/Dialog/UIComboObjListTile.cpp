@@ -24,7 +24,7 @@ void CUIComboObjListTile::OnListBoxObjectSelection()
 	std::string strMaterial = getSelectedTileMaterial();
 	if (strMaterial.length()>0)
 	{
-		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(strMaterial);
+		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(strMaterial.c_str());
 		m_uTileTexID = material.uDiffuse;
 	}
 }
@@ -55,7 +55,7 @@ void CUIComboObjListTile::SelectObjectByObjectID(size_t id)
 	std::string strMaterial = getSelectedTileMaterial();
 	if (strMaterial.length()>0)
 	{
-		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(strMaterial);
+		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(strMaterial.c_str());
 		m_uTileTexID = material.uDiffuse;
 	}
 }
