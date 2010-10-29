@@ -104,15 +104,15 @@ void CDlgModelPlayer::OnUpdatePlayer()
 	std::string strDirMU = IniGetStr("WorldEditor.cfg","ResDir","mu");
 	std::string strPlayerPath = strDirMU+"Player\\";
 	CMainRoot::getInstance().getMainDialog().getModelDisplay().loadComplexModel(strPlayerPath+ws2s(m_ComboBoxSkeleton.GetText()));
-	CModelComplex* pModelComplex = (CModelComplex*)CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelObject();
-	if (pModelComplex)
+	CModelObject* pModelObject = CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelObject();
+	if (pModelObject)
 	{
 		std::string strModelFilename = strPlayerPath+ ws2s(m_ComboBoxHead.GetText());
-		pModelComplex->loadSkinModel("head",strModelFilename.c_str());
+		pModelObject->loadSkinModel("head",strModelFilename.c_str());
 		for (size_t i=0;i<ET_MAX;++i)
 		{
 			strModelFilename = strPlayerPath+ ws2s(m_ComboBoxEquips[i].GetText());
-			pModelComplex->loadSkinModel(g_EquipNames[i],strModelFilename.c_str());
+			pModelObject->loadSkinModel(g_EquipNames[i],strModelFilename.c_str());
 		}
 	}
 	CMainRoot::getInstance().getMainDialog().getDlgModelController().OnUpdate();

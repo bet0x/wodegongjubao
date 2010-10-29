@@ -2,7 +2,7 @@
 #include "UIDisplay.h"
 #include "Camera.h"
 #include "SkyBox.h"
-#include "ModelComplex.h"
+#include "ModelObject.h"
 #include "SceneEffect.h"
 #include "..\RPGSkyTextRender.h"
 
