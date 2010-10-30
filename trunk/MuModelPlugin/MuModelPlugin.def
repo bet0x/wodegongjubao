@@ -3,4 +3,4 @@
 LIBRARY      "MuModelPlugin"
 
 EXPORTS
-    Model_Plug_CreateObject	@1
+    Data_Plug_CreateObject	@1

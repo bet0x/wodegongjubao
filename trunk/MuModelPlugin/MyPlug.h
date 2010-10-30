@@ -6,14 +6,12 @@ class CMyPlug : public CModelPlugBase
 public:
 	CMyPlug(void);
 	~CMyPlug(void);
-	virtual const char * GetTitle(){return "Mu Model File";}
-	virtual const char * GetFormat() {return ".bmd";}
+	virtual const char * getTitle(){return "Mu Model File";}
+	virtual const char * getFormat() {return ".bmd";}
 	virtual int Execute(iModelData * pModelData, bool bShowDlg, bool bSpecifyFileName);
 	virtual bool importData(iModelData * pModelData, const std::string& strFilename);
 	virtual bool exportData(iModelData * pModelData, const std::string& strFilename);
 
-	virtual DWORD GetExportDataType(){return -1;}
-	virtual DWORD GetImportDataType(){return -1;}
-	virtual void Release();
+	virtual void release();
 private:
 };

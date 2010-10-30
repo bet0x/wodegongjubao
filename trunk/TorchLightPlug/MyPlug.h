@@ -7,16 +7,13 @@ public:
 	CMyPlug(void);
 	~CMyPlug(void);
 
-	virtual E_SCENE_PLUGIN_TYPE GetType(){return E_SCENE_PLUGIN_IMPORT;}
-	virtual const char * GetTitle(){return "Torch Light Scene File";}
-	virtual const char * GetFormat() {return ".layout";}
+	virtual const char * getTitle(){return "Torch Light Scene File";}
+	virtual const char * getFormat() {return ".layout";}
 	virtual int Execute(iScene * pTerrainData, bool bShowDlg, bool bSpecifyFileName);
 	virtual int importData(iScene * pScene, const std::string& strFilename);
 	virtual int exportData(iScene * pScene, const std::string& strFilename);
 
-	virtual DWORD GetExportDataType(){return -1;}
-	virtual DWORD GetImportDataType(){return -1;}
-	virtual void Release();
+	virtual void release();
 private:
 	bool importTileSet(iScene * pScene, const std::string& strFilename, const std::string& strPath);
 	bool importObject(iScene * pScene, const std::string& strFilename);

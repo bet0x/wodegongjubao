@@ -4,4 +4,4 @@ LIBRARY      "OGREModelPlugin"
 DESCRIPTION  'OGREModelPlugin Windows Dynamic Link Library'
 
 EXPORTS
-    Model_Plug_CreateObject	@1
+    Data_Plug_CreateObject	@1

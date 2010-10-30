@@ -2560,7 +2560,7 @@ int CMyPlug::exportData(iScene * pScene, const std::string& strFilename)
 	return true;
 }
 
-void CMyPlug::Release()
+void CMyPlug::release()
 {
 	delete this;
 }

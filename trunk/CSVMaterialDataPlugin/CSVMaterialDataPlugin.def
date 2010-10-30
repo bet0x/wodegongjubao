@@ -3,4 +3,4 @@
 LIBRARY      "MaterialDataPlugin"
 
 EXPORTS
-    Material_Data_Plug_CreateObject	@1
+    Data_Plug_CreateObject	@1

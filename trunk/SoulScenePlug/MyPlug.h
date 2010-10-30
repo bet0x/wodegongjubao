@@ -7,16 +7,13 @@ public:
 	CMyPlug(void);
 	~CMyPlug(void);
 
-	virtual E_SCENE_PLUGIN_TYPE GetType(){return E_SCENE_PLUGIN_IMPORT;}
-	virtual const char * GetTitle(){return "Soul Scene File";}
-	virtual const char * GetFormat() {return ".sce";}
+	virtual const char * getTitle(){return "Soul Scene File";}
+	virtual const char * getFormat() {return ".sce";}
 	virtual int Execute(iScene * pTerrainData, bool bShowDlg, bool bSpecifyFileName);
 	virtual int importData(iScene * pScene, const std::string& strFilename);
 	virtual int exportData(iScene * pScene, const std::string& strFilename);
 
-	virtual DWORD GetExportDataType(){return -1;}
-	virtual DWORD GetImportDataType(){return -1;}
-	virtual void Release();
+	virtual void release();
 private:
 	bool importTerrainData(iTerrainData * pTerrainData, const std::string& strFilename);
 	bool importObjectResources(iScene * pScene, const char* szFilename, const std::string& strPath);
