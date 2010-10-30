@@ -1,7 +1,7 @@
 #include "MyPlug.h"
 #include "CSVFile.h"
 
-BOOL WINAPI Material_Data_Plug_CreateObject(void ** pobj){
+BOOL WINAPI Data_Plug_CreateObject(void ** pobj){
 	*pobj = new CMyPlug;
 	return *pobj != NULL;
 }
@@ -63,7 +63,7 @@ bool CMyPlug::exportData(std::map<std::string, CMaterial>& mapItems, const char*
 	return true;
 }
 
-void CMyPlug::Release()
+void CMyPlug::release()
 {
 	delete this;
 }

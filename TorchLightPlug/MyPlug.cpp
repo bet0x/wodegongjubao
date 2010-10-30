@@ -5,7 +5,7 @@
 #include "3DMapSceneObj.h"
 #include "StringNodeFile.h"
 
-BOOL WINAPI Scene_Plug_CreateObject(void ** pobj)
+BOOL WINAPI Data_Plug_CreateObject(void ** pobj)
 {
 	*pobj = new CMyPlug;
 	return *pobj != NULL;
@@ -217,7 +217,7 @@ int CMyPlug::exportData(iScene * pScene, const std::string& strFilename)
 	return true;
 }
 
-void CMyPlug::Release()
+void CMyPlug::release()
 {
 	delete this;
 }

@@ -321,7 +321,7 @@ bool CMyPlug::exportData(iModelData * pModelData, const std::string& strFilename
 	return true;
 }
 
-void CMyPlug::Release()
+void CMyPlug::release()
 {
 	delete this;
 }

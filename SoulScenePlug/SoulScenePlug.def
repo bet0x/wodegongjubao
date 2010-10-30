@@ -3,4 +3,4 @@
 LIBRARY      "SoulScenePlug"
 
 EXPORTS
-    Scene_Plug_CreateObject	@1
+    Data_Plug_CreateObject	@1

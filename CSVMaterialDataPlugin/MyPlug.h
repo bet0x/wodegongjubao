@@ -6,14 +6,12 @@ class CMyPlug : public CMaterialDataPlugBase
 public:
 	CMyPlug(void);
 	~CMyPlug(void);
-	virtual const char * GetTitle(){return "CSV Materila Data File";}
-	virtual const char * GetFormat() {return ".csv";}
+	virtual const char * getTitle(){return "CSV Materila Data File";}
+	virtual const char * getFormat() {return ".csv";}
 	virtual int Execute(std::map<std::string, CMaterial>& mapItems, bool bShowDlg, bool bSpecifyFileName);
 	virtual bool importData(std::map<std::string, CMaterial>& mapItems, const char* szFilename, const char* szParentDir);
 	virtual bool exportData(std::map<std::string, CMaterial>& mapItems, const char* szFilename, const char* szParentDir);
 
-	virtual DWORD GetExportDataType(){return -1;}
-	virtual DWORD GetImportDataType(){return -1;}
-	virtual void Release();
+	virtual void release();
 private:
 };
