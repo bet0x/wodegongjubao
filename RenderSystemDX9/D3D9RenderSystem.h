@@ -1,8 +1,8 @@
 #pragma once
 #include "RenderSystem.h"
-#include "D3D9TextureMgr.h"
+//#include "TextureMgr.h"
 #include "D3D9HardwareBufferMgr.h"
-#include "D3D9ShaderMgr.h"
+//#include "D3D9ShaderMgr.h"
 
 #if defined(_DEBUG)
 #pragma comment(lib, "rendersystemd.lib")
@@ -33,6 +33,17 @@ public:
 	virtual HRESULT OnResetDevice();
 	void OnLostDevice();
 	void OnDestroyDevice();
+	// ----
+	// # new
+	// ----
+	virtual CTexture*	newTexture			();
+	virtual CShader*	newShader			();
+	// ----
+	void OnFrameMove();
+	// ----
+	bool BeginFrame();	// 帧渲染开始
+	void EndFrame();	// 帧渲染结束
+	// ----
 	//
 	CTexture* GetRenderTarget();
 	void SetRenderTarget(CTexture* pRenderTarget);
@@ -40,10 +51,7 @@ public:
 	CTexture* GetDepthStencil();
 	void SetDepthStencil(CTexture* pDepthStencil);
 
-	void OnFrameMove();
 
-	bool BeginFrame();	// 帧渲染开始
-	void EndFrame();	// 帧渲染结束
 
 	void setViewport(const CRect<int>& rect);
 	void getViewport(CRect<int>& rect);
@@ -161,9 +169,13 @@ protected:
 	void SetRenderState(unsigned long State, unsigned long Value);// 设置顶点渲染状态
 	//
 protected:
-	CD3D9TextureMgr				m_D3D9TextureMgr;
+	// ----
+	// # 非插件数据
+	// ----
+	CTextureMgr					m_TextureMgr;
 	CD3D9HardwareBufferMgr		m_D3D9HardwareBufferMgr;
-	CD3D9ShaderMgr				m_D3D9ShaderMgr;
+	CShaderMgr					m_ShaderMgr;
+	// ----
 	IDirect3DDevice9*			m_pD3D9Device;
 
 	//D3DLIGHT9					m_Lights[8];

@@ -70,8 +70,9 @@ protected:
 private:
 	std::string m_strParentFilename;
 };
-bool CD3D9Shader::create(IDirect3DDevice9* pD3D9Device, const std::string& strFilename)
+bool CD3D9Shader::create(const std::string& strFilename)
 {
+	IDirect3DDevice9* pD3D9Device = GetD3D9RenderSystem().GetD3D9Device();
 	bool bRet = false;
 	IOReadBase* pRead = IOReadBase::autoOpen(strFilename);
 	if (pRead)
@@ -83,7 +84,7 @@ bool CD3D9Shader::create(IDirect3DDevice9* pD3D9Device, const std::string& strFi
 			pRead->Read(pBuf, uFilesize);
 			CShaderIncludeManager shaderIncludeManager;
 			shaderIncludeManager.setParentFilename(strFilename);
-			bRet = createFromMemory(pD3D9Device,pBuf,uFilesize,&shaderIncludeManager);
+			bRet = createFromMemory(pBuf,uFilesize,&shaderIncludeManager);
 			delete[] pBuf;
 		}
 		IOReadBase::autoClose(pRead);
@@ -91,8 +92,9 @@ bool CD3D9Shader::create(IDirect3DDevice9* pD3D9Device, const std::string& strFi
 	return bRet;
 }
 
-bool CD3D9Shader::createFromMemory(IDirect3DDevice9* pD3D9Device, void* pBuf, int nSize,LPD3DXINCLUDE pInclude)
+bool CD3D9Shader::createFromMemory(void* pBuf, int nSize,LPD3DXINCLUDE pInclude)
 {
+	IDirect3DDevice9* pD3D9Device = GetD3D9RenderSystem().GetD3D9Device();
 	if (ms_pEffectPool==NULL)
 	{
 		D3DXCreateEffectPool( & ms_pEffectPool);

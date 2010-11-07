@@ -10,8 +10,8 @@ public:
 	void OnResetDevice();
 	void OnLostDevice();
 	void OnDestroyDevice();
-	bool create(IDirect3DDevice9* pD3D9Device, const std::string& strFilename);
-	bool createFromMemory(IDirect3DDevice9* pD3D9Device, void* pBuf, int nSize,LPD3DXINCLUDE pInclude);
+	bool create(const std::string& strFilename);
+	bool createFromMemory(void* pBuf, int nSize,LPD3DXINCLUDE pInclude);
 	ID3DXEffect* getD3DXEffect();
 public:
 	void setFloat(const std::string& strFloat, float val);

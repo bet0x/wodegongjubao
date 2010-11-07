@@ -35,7 +35,7 @@ CD3D9RenderSystem::~CD3D9RenderSystem()
 
 CTextureMgr& CD3D9RenderSystem::GetTextureMgr()
 {
-	return m_D3D9TextureMgr;
+	return m_TextureMgr;
 }
 
 CHardwareBufferMgr& CD3D9RenderSystem::GetHardwareBufferMgr()
@@ -45,7 +45,7 @@ CHardwareBufferMgr& CD3D9RenderSystem::GetHardwareBufferMgr()
 
 CShaderMgr& CD3D9RenderSystem::GetShaderMgr()
 {
-	return m_D3D9ShaderMgr;
+	return m_ShaderMgr;
 }
 
 CRenderWindow* CD3D9RenderSystem::CreateRenderWindow(WNDPROC pWndProc, const std::wstring& strWindowTitle, int32 nWidth, int32 nHeight, bool bFullScreen)
@@ -79,10 +79,25 @@ HRESULT CD3D9RenderSystem::OnResetDevice()
 	m_pD3D9Device = DXUTGetD3DDevice();
 	//HRESULT hr = S_OK;
 	// 备份清为0
-	m_D3D9TextureMgr.OnResetDevice();
-	m_D3D9HardwareBufferMgr.OnResetDevice();
-	m_D3D9ShaderMgr.OnResetDevice();
 
+	// ----
+	// # Reset All Texture
+	// ----
+	for (std::set<CTexture*>::iterator it = m_TextureMgr.getTextureList().begin();
+		it != m_TextureMgr.getTextureList().end(); it++)
+	{
+		((CD3D9Texture*)*it)->OnResetDevice();
+	}
+	// ----
+	m_D3D9HardwareBufferMgr.OnResetDevice();
+	// ----
+	// # Reset All Shader
+	// ----
+	for (std::map<unsigned long, CShaderMgr::CManagedItem>::iterator it=m_ShaderMgr.m_Items.begin(); it!=m_ShaderMgr.m_Items.end(); ++it)
+	{
+		((CD3D9Shader*)it->second.pItem)->OnResetDevice();
+	}
+	// ----
 	m_mapChangeRenderState.clear();
 	m_mapChangeSamplerState.clear();
 	m_mapChangeTextureStage.clear();
@@ -205,16 +220,45 @@ void CD3D9RenderSystem::OnLostDevice()
 		D3DCheckHresult( m_pD3D9Device->SetStreamSource(i,NULL,0,0),__FUNCTION__ );
 	}
 	D3DCheckHresult( m_pD3D9Device->SetIndices(NULL),__FUNCTION__ );
-	m_D3D9TextureMgr.OnLostDevice();
+
+	// ----
+	// # Lost All Texture
+	// ----
+	for (std::set<CTexture*>::iterator it = m_TextureMgr.getTextureList().begin();
+		it != m_TextureMgr.getTextureList().end(); it++)
+	{
+		((CD3D9Texture*)*it)->OnLostDevice();
+	}
+	// ----
 	m_D3D9HardwareBufferMgr.OnLostDevice();
-	m_D3D9ShaderMgr.OnLostDevice();
+	// ----
+	// # Lost All Shader
+	// ----
+	for (std::map<unsigned long, CShaderMgr::CManagedItem>::iterator it=m_ShaderMgr.m_Items.begin(); it!=m_ShaderMgr.m_Items.end(); ++it)
+	{
+		((CD3D9Shader*)it->second.pItem)->OnLostDevice();
+	}
 }
 
 void CD3D9RenderSystem::OnDestroyDevice()
 {
-	m_D3D9TextureMgr.OnDestroyDevice();
+	// ----
+	// # Destroy All Texture
+	// ----
+	for (std::set<CTexture*>::iterator it = m_TextureMgr.getTextureList().begin();
+		it != m_TextureMgr.getTextureList().end(); it++)
+	{
+		((CD3D9Texture*)*it)->OnDestroyDevice();
+	}
+	// ----
 	m_D3D9HardwareBufferMgr.OnDestroyDevice();
-	m_D3D9ShaderMgr.OnDestroyDevice();
+	// ----
+	// # Destroy All Shader
+	// ----
+	for (std::map<unsigned long, CShaderMgr::CManagedItem>::iterator it=m_ShaderMgr.m_Items.begin(); it!=m_ShaderMgr.m_Items.end(); ++it)
+	{
+		((CD3D9Shader*)it->second.pItem)->OnDestroyDevice();
+	}
 }
 
 CTexture* CD3D9RenderSystem::GetRenderTarget()
@@ -269,9 +313,19 @@ void CD3D9RenderSystem::SetDepthStencil(CTexture* pDepthStencil)
 	D3DCheckHresult( m_pD3D9Device->SetDepthStencilSurface(pD3D9Surface), __FUNCTION__ );
 }
 
+CTexture*	newTexture()
+{
+	return new CD3D9Texture;
+}
+
+CShader*	newShader()
+{
+	return new CD3D9Shader;
+}
+
 void CD3D9RenderSystem::OnFrameMove()
 {
-	//m_D3D9TextureMgr.OnFrameMove();
+	//m_TextureMgr.OnFrameMove();
 	//OnResetDevice();
 	//FillMemory(m_nTexture, 8*sizeof(IDirect3DTexture9*), NULL);
 }
@@ -352,7 +406,7 @@ void CD3D9RenderSystem::SetFillMode(FillMode mode)
 void CD3D9RenderSystem::setWorldMatrix(const Matrix& m)
 {
 	Matrix mDx=m;mDx.transpose();
-	CD3D9Shader* shared = (CD3D9Shader*)m_D3D9ShaderMgr.getSharedShader();
+	CD3D9Shader* shared = (CD3D9Shader*)m_ShaderMgr.getSharedShader();
 	shared->setMatrix("g_mWorld",m);
 	if (m_pOldShader)
 	{
@@ -956,7 +1010,7 @@ void CD3D9RenderSystem::SetShader(CShader* pShader)
 
 void CD3D9RenderSystem::SetShader(unsigned long id)
 {
-	SetShader(m_D3D9ShaderMgr.getItem(id));
+	SetShader(m_ShaderMgr.getItem(id));
 }
 
 void CD3D9RenderSystem::SetFVF(unsigned long FVF)
