@@ -226,15 +226,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\D3D9ShaderMgr.h"
-				>
-			</File>
-			<File
 				RelativePath=".\D3D9Texture.h"
-				>
-			</File>
-			<File
-				RelativePath=".\D3D9TextureMgr.h"
 				>
 			</File>
 			<File
@@ -295,15 +287,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\D3D9ShaderMgr.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\D3D9Texture.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\D3D9TextureMgr.cpp"
 				>
 			</File>
 			<File
