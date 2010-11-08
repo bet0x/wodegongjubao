@@ -79,8 +79,7 @@ void CUIComboObjListSceneObject::OnObjectListEdit()
 void CUIComboObjListSceneObject::OnFrameMove(double fTime, float fElapsedTime)
 {
 	CUIComboObjList::OnFrameMove(fTime, fElapsedTime);
-	m_ModelObject.OnFrameMove(fElapsedTime);
-	m_ModelObject.updateEmitters(Matrix::UNIT,fElapsedTime);
+	m_ModelObject.frameMove(Matrix::UNIT,fElapsedTime);
 }
 
 void CUIComboObjListSceneObject::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)

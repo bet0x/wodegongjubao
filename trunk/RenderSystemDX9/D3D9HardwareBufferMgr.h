@@ -12,10 +12,5 @@ public:
 		CHardwareBuffer::Usage usage=CHardwareBuffer::HBU_STATIC);
 	CHardwareIndexBuffer* CreateIndexBuffer(size_t numIndexes, CHardwareIndexBuffer::IndexType itype = CHardwareIndexBuffer::IT_16BIT,
 		CHardwareBuffer::Usage usage=CHardwareBuffer::HBU_STATIC);
-	void _notifyVertexBufferDestroyed(CHardwareVertexBuffer* pHardwareBuffer);
-	void _notifyIndexBufferDestroyed(CHardwareIndexBuffer* pHardwareBuffer);
-	void OnResetDevice();
-	void OnLostDevice();
-	void OnDestroyDevice();
 protected:
 };

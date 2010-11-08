@@ -149,7 +149,7 @@ bool CDlgMainEditor::OnInitDialog()
 	}
 
 	// create the dll of map data plugs
-	m_DataPlugsMgr.createPlugFromPath("Plugins\\","Scene_Plug_CreateObject");
+	m_DataPlugsMgr.loadPlugs("Plugins\\*.dsc");
 //#if defined(_MU)
 	SetControlEnabled("IDC_BTN_NEW_FILE",false);
 //#endif
@@ -243,7 +243,7 @@ void CDlgMainEditor::OnFileOpen()
 {
 	std::string strFilename = ws2s(m_DlgFile.GetFilename());
 	SetRegStr(L"software\\rpgsky\\worldeditor\\",L"recentpath",GetParentPath(m_DlgFile.GetFilename()).c_str());
-	CScenePlugBase* pScenePlug = (CScenePlugBase*)m_DataPlugsMgr.getPlugByExtension(ws2s(m_DlgFile.getFileType()));
+	CScenePlugBase* pScenePlug = (CScenePlugBase*)m_DataPlugsMgr.getPlugByExtension(ws2s(m_DlgFile.getFileType()).c_str());
 	if (pScenePlug)
 	{
 		pScenePlug->importData(&getDisplay().getScene(),strFilename);
@@ -256,7 +256,7 @@ void CDlgMainEditor::OnFileSave()
 {
 	std::string strFilename = ws2s(m_DlgFile.GetFilename());
 
-	CScenePlugBase* pScenePlug = (CScenePlugBase*)m_DataPlugsMgr.getPlugByExtension(ws2s(m_DlgFile.getFileType()));
+	CScenePlugBase* pScenePlug = (CScenePlugBase*)m_DataPlugsMgr.getPlugByExtension(ws2s(m_DlgFile.getFileType()).c_str());
 	if (pScenePlug)
 	{
 		pScenePlug->exportData(&getDisplay().getScene(),strFilename);
