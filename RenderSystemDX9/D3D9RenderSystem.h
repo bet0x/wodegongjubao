@@ -15,6 +15,26 @@ struct IDirect3DDevice9;
 struct IDirect3DVertexBuffer9;
 struct IDirect3DIndexBuffer9;
 
+template<class _InContainer, class T, class _Ret>
+inline
+void myTransform(_InContainer& _Container, _Ret (T::*_pFunc)(void))
+{
+	for (_InContainer::iterator it=_Container.begin(); it!=_Container.end(); it++)
+	{
+		(((T*)*it)->*_pFunc)();
+	}
+}
+
+template<class _InContainer, class T, class _Ret>
+inline
+void myMgrTransform(_InContainer& _Container, _Ret (T::*_pFunc)(void))
+{
+	for (_InContainer::iterator it=_Container.begin(); it!=_Container.end(); it++)
+	{
+		(((T*)it->second.pItem)->*_pFunc)();
+	}
+}
+
 class CD3D9RenderSystem : public CRenderSystem
 {
 public:
@@ -36,8 +56,8 @@ public:
 	// ----
 	// # new
 	// ----
-	virtual CTexture*	newTexture			();
-	virtual CShader*	newShader			();
+	CTexture*	newTexture			();
+	CShader*	newShader			();
 	// ----
 	void OnFrameMove();
 	// ----

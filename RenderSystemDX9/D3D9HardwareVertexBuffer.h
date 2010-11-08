@@ -21,11 +21,11 @@ public:
 	void writeData(size_t offset, size_t length, const void* pSource,
 		bool discardWholeBuffer = false);
 	//
-	void releaseBuffer();
+	void releaseBuffer(void);
 	/// For dealing with lost devices - release the resource if in the default pool
 	bool releaseIfDefaultPool(void);
 	/// For dealing with lost devices - recreate the resource if in the default pool
-	bool recreateIfDefaultPool(LPDIRECT3DDEVICE9 pDev);
+	bool recreateIfDefaultPool(void);
 
 	/// Get D3D9-specific vertex buffer
 	LPDIRECT3DVERTEXBUFFER9 getD3D9VertexBuffer(void) const { return mlpD3DBuffer; }

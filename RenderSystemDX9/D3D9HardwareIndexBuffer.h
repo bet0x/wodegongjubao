@@ -26,7 +26,7 @@ public:
 	/// For dealing with lost devices - release the resource if in the default pool
 	bool releaseIfDefaultPool();
 	/// For dealing with lost devices - recreate the resource if in the default pool
-	bool recreateIfDefaultPool(LPDIRECT3DDEVICE9 pDev);
+	bool recreateIfDefaultPool();
 
 	/// Get the D3D-specific index buffer
 	LPDIRECT3DINDEXBUFFER9 getD3DIndexBuffer(void) { return mlpD3DBuffer; }

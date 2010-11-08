@@ -1,4 +1,5 @@
 #include "D3D9HardwareVertexBuffer.h"
+#include "D3D9RenderSystem.h"
 
 CD3D9HardwareVertexBuffer::CD3D9HardwareVertexBuffer(size_t vertexSize, 
 												   size_t numVertices, CHardwareBuffer::Usage usage, LPDIRECT3DDEVICE9 pDev, 
@@ -86,8 +87,9 @@ bool CD3D9HardwareVertexBuffer::releaseIfDefaultPool(void)
 	return false;
 }
 //---------------------------------------------------------------------
-bool CD3D9HardwareVertexBuffer::recreateIfDefaultPool(LPDIRECT3DDEVICE9 pDev)
+bool CD3D9HardwareVertexBuffer::recreateIfDefaultPool(void)
 {
+	LPDIRECT3DDEVICE9 pDev = GetD3D9RenderSystem().GetD3D9Device();
 	if (mD3DPool == D3DPOOL_DEFAULT)
 	{
 		return D3DCheckHresult( pDev->CreateVertexBuffer(

@@ -25,7 +25,7 @@ CD3D9RenderSystem& GetD3D9RenderSystem()
 #define D3DSAMPLERSTATETYPE_NUM 14
 #define D3DTEXTURESTAGESTATETYPE_NUM 33
 
-CD3D9RenderSystem::CD3D9RenderSystem()
+CD3D9RenderSystem::CD3D9RenderSystem():m_TextureMgr(this)
 {
 }
 
@@ -74,6 +74,7 @@ HRESULT CheckResourceFormatSupport(IDirect3DDevice9* pd3dDevice, unsigned long f
 	return hr;
 }
 
+
 HRESULT CD3D9RenderSystem::OnResetDevice()
 {
 	m_pD3D9Device = DXUTGetD3DDevice();
@@ -83,20 +84,16 @@ HRESULT CD3D9RenderSystem::OnResetDevice()
 	// ----
 	// # Reset All Texture
 	// ----
-	for (std::set<CTexture*>::iterator it = m_TextureMgr.getTextureList().begin();
-		it != m_TextureMgr.getTextureList().end(); it++)
-	{
-		((CD3D9Texture*)*it)->OnResetDevice();
-	}
+	myTransform(m_TextureMgr.getTextureList(),	&CD3D9Texture::OnResetDevice);
 	// ----
-	m_D3D9HardwareBufferMgr.OnResetDevice();
+	// # Reset All Hardware Buffer
+	// ----
+	myTransform(m_D3D9HardwareBufferMgr.m_setVertexHardwareBuffer,	&CD3D9HardwareVertexBuffer::recreateIfDefaultPool);
+	myTransform(m_D3D9HardwareBufferMgr.m_setIndexHardwareBuffer,	&CD3D9HardwareIndexBuffer::recreateIfDefaultPool);
 	// ----
 	// # Reset All Shader
 	// ----
-	for (std::map<unsigned long, CShaderMgr::CManagedItem>::iterator it=m_ShaderMgr.m_Items.begin(); it!=m_ShaderMgr.m_Items.end(); ++it)
-	{
-		((CD3D9Shader*)it->second.pItem)->OnResetDevice();
-	}
+	myMgrTransform(m_ShaderMgr.m_Items, &CD3D9Shader::OnResetDevice);
 	// ----
 	m_mapChangeRenderState.clear();
 	m_mapChangeSamplerState.clear();
@@ -224,20 +221,16 @@ void CD3D9RenderSystem::OnLostDevice()
 	// ----
 	// # Lost All Texture
 	// ----
-	for (std::set<CTexture*>::iterator it = m_TextureMgr.getTextureList().begin();
-		it != m_TextureMgr.getTextureList().end(); it++)
-	{
-		((CD3D9Texture*)*it)->OnLostDevice();
-	}
+	myTransform(m_TextureMgr.getTextureList(),	&CD3D9Texture::OnLostDevice);
 	// ----
-	m_D3D9HardwareBufferMgr.OnLostDevice();
+	// # Lost All Hardware Buffer
+	// ----
+	myTransform(m_D3D9HardwareBufferMgr.m_setVertexHardwareBuffer,	&CD3D9HardwareVertexBuffer::releaseIfDefaultPool);
+	myTransform(m_D3D9HardwareBufferMgr.m_setIndexHardwareBuffer,	&CD3D9HardwareIndexBuffer::releaseIfDefaultPool);
 	// ----
 	// # Lost All Shader
 	// ----
-	for (std::map<unsigned long, CShaderMgr::CManagedItem>::iterator it=m_ShaderMgr.m_Items.begin(); it!=m_ShaderMgr.m_Items.end(); ++it)
-	{
-		((CD3D9Shader*)it->second.pItem)->OnLostDevice();
-	}
+	myMgrTransform(m_ShaderMgr.m_Items, &CD3D9Shader::OnLostDevice);
 }
 
 void CD3D9RenderSystem::OnDestroyDevice()
@@ -245,20 +238,16 @@ void CD3D9RenderSystem::OnDestroyDevice()
 	// ----
 	// # Destroy All Texture
 	// ----
-	for (std::set<CTexture*>::iterator it = m_TextureMgr.getTextureList().begin();
-		it != m_TextureMgr.getTextureList().end(); it++)
-	{
-		((CD3D9Texture*)*it)->OnDestroyDevice();
-	}
+	myTransform(m_TextureMgr.getTextureList(),	&CD3D9Texture::OnDestroyDevice);
 	// ----
-	m_D3D9HardwareBufferMgr.OnDestroyDevice();
+	// # Destroy All Hardware Buffer
+	// ----
+	myTransform(m_D3D9HardwareBufferMgr.m_setVertexHardwareBuffer,	&CD3D9HardwareVertexBuffer::releaseBuffer);
+	myTransform(m_D3D9HardwareBufferMgr.m_setIndexHardwareBuffer,	&CD3D9HardwareIndexBuffer::releaseBuffer);
 	// ----
 	// # Destroy All Shader
 	// ----
-	for (std::map<unsigned long, CShaderMgr::CManagedItem>::iterator it=m_ShaderMgr.m_Items.begin(); it!=m_ShaderMgr.m_Items.end(); ++it)
-	{
-		((CD3D9Shader*)it->second.pItem)->OnDestroyDevice();
-	}
+	myMgrTransform(m_ShaderMgr.m_Items, &CD3D9Shader::OnDestroyDevice);
 }
 
 CTexture* CD3D9RenderSystem::GetRenderTarget()
@@ -313,14 +302,16 @@ void CD3D9RenderSystem::SetDepthStencil(CTexture* pDepthStencil)
 	D3DCheckHresult( m_pD3D9Device->SetDepthStencilSurface(pD3D9Surface), __FUNCTION__ );
 }
 
-CTexture*	newTexture()
+CTexture* CD3D9RenderSystem::newTexture()
 {
-	return new CD3D9Texture;
+	CTexture* pTexture = new CD3D9Texture;
+	return pTexture;
 }
 
-CShader*	newShader()
+CShader* CD3D9RenderSystem::newShader()
 {
-	return new CD3D9Shader;
+	CShader* pShader = new CD3D9Shader;
+	return pShader;
 }
 
 void CD3D9RenderSystem::OnFrameMove()

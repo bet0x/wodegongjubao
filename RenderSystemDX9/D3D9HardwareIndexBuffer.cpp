@@ -1,4 +1,5 @@
 #include "D3D9HardwareIndexBuffer.h"
+#include "D3D9RenderSystem.h"
 
 CD3D9HardwareIndexBuffer::CD3D9HardwareIndexBuffer(CHardwareIndexBuffer::IndexType idxType, 
 												 size_t numIndexes, CHardwareBuffer::Usage usage, LPDIRECT3DDEVICE9 pDev, 
@@ -85,8 +86,9 @@ bool CD3D9HardwareIndexBuffer::releaseIfDefaultPool()
 
 }
 //---------------------------------------------------------------------
-bool CD3D9HardwareIndexBuffer::recreateIfDefaultPool(LPDIRECT3DDEVICE9 pDev)
+bool CD3D9HardwareIndexBuffer::recreateIfDefaultPool()
 {
+	LPDIRECT3DDEVICE9 pDev = GetD3D9RenderSystem().GetD3D9Device();
 	if (mD3DPool == D3DPOOL_DEFAULT)
 	{
 		// Create the Index buffer
