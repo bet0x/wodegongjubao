@@ -13,8 +13,6 @@ struct DXUTDeviceSettings
     D3DPRESENT_PARAMETERS pp;
 };
 
-
-
 // Error codes
 
 #define DXUTERR_NODIRECT3D              MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 0x0901)
@@ -121,28 +119,14 @@ void    DXUTShutdown(int nExitCode = 0);
 template< typename TYPE >
 class CGrowableArray;
 
-//extern CRITICAL_SECTION g_cs;  
-CRITICAL_SECTION& GetCriticalSection();
-//extern bool g_bThreadSafe;
-bool IsThreadSafe();
-
-// Automatically enters & leaves the CS upon object creation/deletion
-
-class DXUTLock
-{
-public:
-	inline DXUTLock()  { if(IsThreadSafe()) EnterCriticalSection(&GetCriticalSection()); }
-	inline ~DXUTLock() { if(IsThreadSafe()) LeaveCriticalSection(&GetCriticalSection()); }
-};
-
 // Helper macros to build member functions that access member variables with thread safety
 
-#define SET_ACCESSOR(x, y)       inline void Set##y(x t)  { DXUTLock l; m_state.m_##y = t; };
-#define GET_ACCESSOR(x, y)       inline x Get##y() { DXUTLock l; return m_state.m_##y; };
+#define SET_ACCESSOR(x, y)       inline void Set##y(x t)  { m_state.m_##y = t; };
+#define GET_ACCESSOR(x, y)       inline x Get##y() { return m_state.m_##y; };
 #define GET_SET_ACCESSOR(x, y)   SET_ACCESSOR(x, y) GET_ACCESSOR(x, y)
 
-#define SETP_ACCESSOR(x, y)      inline void Set##y(x* t)  { DXUTLock l; m_state.m_##y = *t; };
-#define GETP_ACCESSOR(x, y)      inline x* Get##y() { DXUTLock l; return &m_state.m_##y; };
+#define SETP_ACCESSOR(x, y)      inline void Set##y(x* t)  { m_state.m_##y = *t; };
+#define GETP_ACCESSOR(x, y)      inline x* Get##y() { return &m_state.m_##y; };
 #define GETP_SETP_ACCESSOR(x, y) SETP_ACCESSOR(x, y) GETP_ACCESSOR(x, y)
 
 
