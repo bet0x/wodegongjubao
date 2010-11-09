@@ -35,12 +35,6 @@ typedef HRESULT (CALLBACK *LPDXUTCALLBACKDEVICECREATED)(IDirect3DDevice9* pd3dDe
 typedef HRESULT (CALLBACK *LPDXUTCALLBACKDEVICERESET)(IDirect3DDevice9* pd3dDevice, const D3DSURFACE_DESC* pBackBufferSurfaceDesc, void* pUserContext);
 typedef void    (CALLBACK *LPDXUTCALLBACKDEVICEDESTROYED)(void* pUserContext);
 typedef void    (CALLBACK *LPDXUTCALLBACKDEVICELOST)(void* pUserContext);
-typedef void    (CALLBACK *LPDXUTCALLBACKFRAMEMOVE)(IDirect3DDevice9* pd3dDevice, double fTime, float fElapsedTime, void* pUserContext);
-typedef void    (CALLBACK *LPDXUTCALLBACKFRAMERENDER)(IDirect3DDevice9* pd3dDevice, double fTime, float fElapsedTime, void* pUserContext);
-typedef void    (CALLBACK *LPDXUTCALLBACKKEYBOARD)(UINT nChar, bool bKeyDown, bool bAltDown, void* pUserContext);
-typedef void    (CALLBACK *LPDXUTCALLBACKMOUSE)(bool bLeftButtonDown, bool bRightButtonDown, bool bMiddleButtonDown, bool bSideButton1Down, bool bSideButton2Down, int nMouseWheelDelta, int xPos, int yPos, void* pUserContext);
-typedef LRESULT (CALLBACK *LPDXUTCALLBACKMSGPROC)(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, bool* pbNoFurtherProcessing, void* pUserContext);
-typedef void    (CALLBACK *LPDXUTCALLBACKTIMER)(UINT idEvent, void* pUserContext);
 
 // Device callbacks
 void DXUTSetCallbackDeviceCreated(LPDXUTCALLBACKDEVICECREATED pCallbackDeviceCreated, void* pUserContext = NULL);
