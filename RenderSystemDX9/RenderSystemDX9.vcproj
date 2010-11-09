@@ -275,14 +275,6 @@
 			Name="Shit"
 			>
 			<File
-				RelativePath=".\D3D9HardwareBufferMgr.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\D3D9HardwareBufferMgr.h"
-				>
-			</File>
-			<File
 				RelativePath=".\dxstdafx.h"
 				>
 			</File>

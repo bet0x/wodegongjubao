@@ -12,15 +12,13 @@ protected:
 	/** See HardwareBuffer. */
 	void unlockImpl(void);
 public:
-	CD3D9HardwareIndexBuffer(IndexType idxType, size_t numIndexes, 
-		CHardwareBuffer::Usage usage, LPDIRECT3DDEVICE9 pDev, bool useSystemMem);
+	CD3D9HardwareIndexBuffer();
 	~CD3D9HardwareIndexBuffer();
+	bool create(IndexType idxType, size_t numIndexes, CHardwareBuffer::Usage usage, bool useSystemMem);
 	/** See HardwareBuffer. */
 	void readData(size_t offset, size_t length, void* pDest);
 	/** See HardwareBuffer. */
-	void writeData(size_t offset, size_t length, const void* pSource,
-		bool discardWholeBuffer = false);
-
+	void writeData(size_t offset, size_t length, const void* pSource, bool discardWholeBuffer = false);
 	// 
 	void releaseBuffer();
 	/// For dealing with lost devices - release the resource if in the default pool

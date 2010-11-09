@@ -1,11 +1,21 @@
 #include "D3D9HardwareVertexBuffer.h"
 #include "D3D9RenderSystem.h"
 
-CD3D9HardwareVertexBuffer::CD3D9HardwareVertexBuffer(size_t vertexSize, 
-												   size_t numVertices, CHardwareBuffer::Usage usage, LPDIRECT3DDEVICE9 pDev, 
-												   bool useSystemMemory)
-												   : CHardwareVertexBuffer(vertexSize, numVertices, usage, useSystemMemory)
+CD3D9HardwareVertexBuffer::CD3D9HardwareVertexBuffer()
 {
+	mlpD3DBuffer=NULL;
+}
+//---------------------------------------------------------------------
+
+CD3D9HardwareVertexBuffer::~CD3D9HardwareVertexBuffer()
+{
+	D3D9S_REL(mlpD3DBuffer);
+}
+//---------------------------------------------------------------------
+
+bool CD3D9HardwareVertexBuffer::create(size_t vertexSize, size_t numVertices, CHardwareBuffer::Usage usage, bool useSystemMemory)
+{
+	CHardwareVertexBuffer::create(vertexSize, numVertices, usage, useSystemMemory);
 	// Create the vertex buffer
 //#if D3D_MANAGE_BUFFERS
 	mD3DPool = useSystemMemory? D3DPOOL_SYSTEMMEM : 
@@ -15,22 +25,19 @@ CD3D9HardwareVertexBuffer::CD3D9HardwareVertexBuffer(size_t vertexSize,
 //#else
 //	mD3DPool = useSystemMemory? D3DPOOL_SYSTEMMEM : D3DPOOL_DEFAULT;
 //#endif
-	D3DCheckHresult(pDev->CreateVertexBuffer(
+	IDirect3DDevice9* pD3D9Device = GetD3D9RenderSystem().GetD3D9Device();
+	// ----
+	D3DCheckHresult(pD3D9Device->CreateVertexBuffer(
 		static_cast<UINT>(mSizeInBytes), 
 		UsageForD3D9(usage), 
 		0, // No FVF here, thankyou
 		mD3DPool,
 		&mlpD3DBuffer,
 		NULL),__FUNCTION__);
-}
-
-
-//---------------------------------------------------------------------
-CD3D9HardwareVertexBuffer::~CD3D9HardwareVertexBuffer()
-{
-	D3D9S_REL(mlpD3DBuffer);
+	return mlpD3DBuffer!=NULL;
 }
 //---------------------------------------------------------------------
+
 void* CD3D9HardwareVertexBuffer::lockImpl(size_t offset, 
 										 size_t length, LockOptions options)
 {
