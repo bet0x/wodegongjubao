@@ -39,15 +39,11 @@ CD3DEnumeration::CD3DEnumeration()
     m_nMaxWidth = UINT_MAX;
     m_nMaxHeight = UINT_MAX;
 
-    m_nRefreshMin = 0;
-    m_nRefreshMax = UINT_MAX;
-
     m_nMultisampleQualityMax = 0xFFFF;
 
     ResetPossibleDepthStencilFormats();
     ResetPossibleMultisampleTypeList();                                   
     ResetPossiblePresentIntervalList();
-    SetPossibleVertexProcessingList(true, true, true, false);
 }
 
 
@@ -116,9 +112,7 @@ HRESULT CD3DEnumeration::Enumerate(IDirect3D9* pD3D,
                 if(displayMode.Width < m_nMinWidth ||
                     displayMode.Height < m_nMinHeight || 
                     displayMode.Width > m_nMaxWidth ||
-                    displayMode.Height > m_nMaxHeight || 
-                    displayMode.RefreshRate < m_nRefreshMin ||
-                    displayMode.RefreshRate > m_nRefreshMax)
+                    displayMode.Height > m_nMaxHeight)
                 {
                     continue;
                 }
@@ -201,9 +195,6 @@ HRESULT CD3DEnumeration::Enumerate(IDirect3D9* pD3D,
     return S_OK;
 }
 
-
-
-
 // Enumerates D3D devices for a particular adapter.
 
 HRESULT CD3DEnumeration::EnumerateDevices(CD3DEnumAdapterInfo* pAdapterInfo, CGrowableArray<D3DFORMAT>* pAdapterFormatList)
@@ -278,10 +269,6 @@ HRESULT CD3DEnumeration::EnumerateDevices(CD3DEnumAdapterInfo* pAdapterInfo, CGr
 
     return S_OK;
 }
-
-
-
-
 // Enumerates DeviceCombos for a particular device.
 
 HRESULT CD3DEnumeration::EnumerateDeviceCombos(CD3DEnumAdapterInfo* pAdapterInfo, CD3DEnumDeviceInfo* pDeviceInfo, CGrowableArray<D3DFORMAT>* pAdapterFormatList)
@@ -373,9 +360,6 @@ HRESULT CD3DEnumeration::EnumerateDeviceCombos(CD3DEnumAdapterInfo* pAdapterInfo
     return S_OK;
 }
 
-
-
-
 // Adds all depth/stencil formats that are compatible with the device 
 //       and app to the given D3DDeviceCombo.
 
@@ -399,10 +383,6 @@ void CD3DEnumeration::BuildDepthStencilFormatList(CD3DEnumDeviceSettingsCombo* p
     }
 }
 
-
-
-
-
 // Adds all multisample types that are compatible with the device and app to
 //       the given D3DDeviceCombo.
 
@@ -424,10 +404,6 @@ void CD3DEnumeration::BuildMultiSampleTypeList(CD3DEnumDeviceSettingsCombo* pDev
         }
     }
 }
-
-
-
-
 
 // Find any conflicts between the available depth/stencil formats and
 //       multisample types.
@@ -454,9 +430,6 @@ void CD3DEnumeration::BuildDSMSConflictList(CD3DEnumDeviceSettingsCombo* pDevice
         }
     }
 }
-
-
-
 
 // Adds all present intervals that are compatible with the device and app 
 //       to the given D3DDeviceCombo.
@@ -488,9 +461,6 @@ void CD3DEnumeration::BuildPresentIntervalList(CD3DEnumDeviceInfo* pDeviceInfo,
     }
 }
 
-
-
-
 // Release all the allocated CD3DEnumAdapterInfo objects and empty the list
 
 void CD3DEnumeration::ClearAdapterInfoList()
@@ -505,9 +475,6 @@ void CD3DEnumeration::ClearAdapterInfoList()
     m_AdapterInfoList.RemoveAll();
 }
 
-
-
-
 // Call GetAdapterInfoList() after Enumerate() to get a STL vector of 
 //       CD3DEnumAdapterInfo* 
 
@@ -515,9 +482,6 @@ CGrowableArray<CD3DEnumAdapterInfo*>* CD3DEnumeration::GetAdapterInfoList()
 {
     return &m_AdapterInfoList;
 }
-
-
-
 
 CD3DEnumAdapterInfo* CD3DEnumeration::GetAdapterInfo(UINT AdapterOrdinal)
 {
@@ -530,8 +494,6 @@ CD3DEnumAdapterInfo* CD3DEnumeration::GetAdapterInfo(UINT AdapterOrdinal)
 
     return NULL;
 }
-
-
 
 CD3DEnumDeviceInfo* CD3DEnumeration::GetDeviceInfo(UINT AdapterOrdinal, D3DDEVTYPE DeviceType)
 {
@@ -548,8 +510,6 @@ CD3DEnumDeviceInfo* CD3DEnumeration::GetDeviceInfo(UINT AdapterOrdinal, D3DDEVTY
 
     return NULL;
 }
-
-
 
 // 
 
@@ -570,9 +530,6 @@ CD3DEnumDeviceSettingsCombo* CD3DEnumeration::GetDeviceSettingsCombo(UINT Adapte
 
     return NULL;
 }
-
-
-
 // Returns the number of color channel bits in the specified D3DFORMAT
 
 UINT DXUTColorChannelBits(D3DFORMAT fmt)
@@ -612,10 +569,6 @@ UINT DXUTColorChannelBits(D3DFORMAT fmt)
     }
 }
 
-
-
-
-
 // Returns the number of alpha channel bits in the specified D3DFORMAT
 
 UINT DXUTAlphaChannelBits(D3DFORMAT fmt)
@@ -654,11 +607,6 @@ UINT DXUTAlphaChannelBits(D3DFORMAT fmt)
             return 0;
     }
 }
-
-
-
-
-
 // Returns the number of depth bits in the specified D3DFORMAT
 
 UINT DXUTDepthBits(D3DFORMAT fmt)
@@ -687,10 +635,6 @@ UINT DXUTDepthBits(D3DFORMAT fmt)
     }
 }
 
-
-
-
-
 // Returns the number of stencil bits in the specified D3DFORMAT
 
 UINT DXUTStencilBits(D3DFORMAT fmt)
@@ -718,10 +662,6 @@ UINT DXUTStencilBits(D3DFORMAT fmt)
             return 0;
     }
 }
-
-
-
-
 // Used to sort D3DDISPLAYMODEs
 
 static int __cdecl SortModesCallback(const void* arg1, const void* arg2)
@@ -748,9 +688,6 @@ static int __cdecl SortModesCallback(const void* arg1, const void* arg2)
     return 0;
 }
 
-
-
-
 CD3DEnumAdapterInfo::~CD3DEnumAdapterInfo(void)
 {
     CD3DEnumDeviceInfo* pDeviceInfo;
@@ -761,10 +698,6 @@ CD3DEnumAdapterInfo::~CD3DEnumAdapterInfo(void)
     }
     deviceInfoList.RemoveAll();
 }
-
-
-
-
 
 CD3DEnumDeviceInfo::~CD3DEnumDeviceInfo(void)
 {
@@ -828,28 +761,6 @@ void CD3DEnumeration::ResetPossibleMultisampleTypeList()
     m_MultiSampleTypeList.Add(D3DMULTISAMPLE_16_SAMPLES);
 }
 
-
-
-void CD3DEnumeration::GetPossibleVertexProcessingList(bool* pbSoftwareVP, bool* pbHardwareVP, bool* pbPureHarewareVP, bool* pbMixedVP)
-{
-    *pbSoftwareVP = m_bSoftwareVP;
-    *pbHardwareVP = m_bHardwareVP;
-    *pbPureHarewareVP = m_bPureHarewareVP;
-    *pbMixedVP = m_bMixedVP;
-}
-
-
-
-void CD3DEnumeration::SetPossibleVertexProcessingList(bool bSoftwareVP, bool bHardwareVP, bool bPureHarewareVP, bool bMixedVP)
-{
-    m_bSoftwareVP = bSoftwareVP;
-    m_bHardwareVP = bHardwareVP;
-    m_bPureHarewareVP = bPureHarewareVP;
-    m_bMixedVP = bMixedVP;
-}
-
-
-
 CGrowableArray<UINT>* CD3DEnumeration::GetPossiblePresentIntervalList()
 {
     return &m_PresentIntervalList;
@@ -878,16 +789,6 @@ void CD3DEnumeration::SetResolutionMinMax(UINT nMinWidth, UINT nMinHeight,
     m_nMaxWidth = nMaxWidth;
     m_nMaxHeight = nMaxHeight;
 }
-
-
-
-void CD3DEnumeration::SetRefreshMinMax(UINT nMin, UINT nMax)
-{
-    m_nRefreshMin = nMin;
-    m_nRefreshMax = nMax;
-}
-
-
 
 void CD3DEnumeration::SetMultisampleQualityMax(UINT nMax)
 {

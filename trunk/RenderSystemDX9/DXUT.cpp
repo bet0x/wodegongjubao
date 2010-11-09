@@ -5,24 +5,6 @@
 #undef max // use __max instead inside this source file
 
 
-// Thread safety 
-
-CRITICAL_SECTION g_cs;
-
-CRITICAL_SECTION& GetCriticalSection()
-{
-	return g_cs;
-}
-bool g_bThreadSafe = true;
-
-bool IsThreadSafe()
-{
-	return g_bThreadSafe;
-}
-
-// Stores DXUT state and data access is done with thread safety (if g_bThreadSafe==true)
-
-
 DXUTState::DXUTState()
 {
 	Create();
@@ -39,8 +21,6 @@ void DXUTState::Create()
 	// destroyed last because DXUTState cleanup needs them
 
 	ZeroMemory(&m_state, sizeof(STATE)); 
-	g_bThreadSafe = true; 
-	InitializeCriticalSection(&g_cs); 
 	m_state.m_OverrideStartX = -1; 
 	m_state.m_OverrideStartY = -1; 
 	m_state.m_OverrideAdapterOrdinal = -1; 
@@ -54,7 +34,6 @@ void DXUTState::Create()
 void DXUTState::Destroy()
 {
 	DXUTShutdown();
-	DeleteCriticalSection(&g_cs); 
 }
 
 
@@ -66,7 +45,6 @@ DXUTState& GetDXUTState()
     static DXUTState state;
     return state;
 }
-
 
 
 // Internal functions forward declarations
@@ -2314,9 +2292,6 @@ HRESULT DXUTChangeDevice(DXUTDeviceSettings* pNewDeviceSettings, IDirect3DDevice
     // A WM_SIZE message might be sent when adjusting the window, so tell 
     // DXUTCheckForWindowSizeChange() to ignore size changes temporarily
     GetDXUTState().SetIgnoreSizeChange(true);
-
-    // Update thread safety on/off depending on Direct3D device's thread safety
-    g_bThreadSafe = ((pNewDeviceSettings->BehaviorFlags & D3DCREATE_MULTITHREADED) != 0);
 
     // Only apply the cmd line overrides if this is the first device created
     // and DXUTSetDevice() isn't used

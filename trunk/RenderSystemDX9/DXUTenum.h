@@ -17,10 +17,7 @@ public:
     // the enumeration object, which affects the device selection and the device settings dialog.
     void SetRequirePostPixelShaderBlending(bool bRequire) { m_bRequirePostPixelShaderBlending = bRequire; }
     void SetResolutionMinMax(UINT nMinWidth, UINT nMinHeight, UINT nMaxWidth, UINT nMaxHeight);  
-    void SetRefreshMinMax(UINT nMin, UINT nMax);
     void SetMultisampleQualityMax(UINT nMax);    
-    void GetPossibleVertexProcessingList(bool* pbSoftwareVP, bool* pbHardwareVP, bool* pbPureHarewareVP, bool* pbMixedVP);
-    void SetPossibleVertexProcessingList(bool bSoftwareVP, bool bHardwareVP, bool bPureHarewareVP, bool bMixedVP);
     CGrowableArray<D3DFORMAT>* GetPossibleDepthStencilFormatList();   
     CGrowableArray<D3DMULTISAMPLE_TYPE>* GetPossibleMultisampleTypeList();   
     CGrowableArray<UINT>* GetPossiblePresentIntervalList();
@@ -56,17 +53,10 @@ private:
     CGrowableArray<D3DMULTISAMPLE_TYPE> m_MultiSampleTypeList;
     CGrowableArray<UINT> m_PresentIntervalList;
 
-    bool m_bSoftwareVP;
-    bool m_bHardwareVP;
-    bool m_bPureHarewareVP;
-    bool m_bMixedVP;
-
     UINT m_nMinWidth;
     UINT m_nMaxWidth;
     UINT m_nMinHeight;
     UINT m_nMaxHeight;
-    UINT m_nRefreshMin;
-    UINT m_nRefreshMax;
     UINT m_nMultisampleQualityMax;
 
     // Array of CD3DEnumAdapterInfo* with unique AdapterOrdinals
