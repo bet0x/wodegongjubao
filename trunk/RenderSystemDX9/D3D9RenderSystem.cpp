@@ -314,6 +314,18 @@ CShader* CD3D9RenderSystem::newShader()
 	return pShader;
 }
 
+CHardwareVertexBuffer* CD3D9RenderSystem::newHardwareVertexBuffer()
+{
+	CHardwareVertexBuffer* pBuffer = new CD3D9HardwareVertexBuffer;
+	return pBuffer;
+}
+
+CHardwareIndexBuffer* CD3D9RenderSystem::newHardwareIndexBuffer()
+{
+	CHardwareIndexBuffer* pBuffer = new CD3D9HardwareIndexBuffer;
+	return pBuffer;
+}
+
 void CD3D9RenderSystem::OnFrameMove()
 {
 	//m_TextureMgr.OnFrameMove();

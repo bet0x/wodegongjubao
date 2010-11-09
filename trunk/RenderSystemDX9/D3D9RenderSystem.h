@@ -1,7 +1,7 @@
 #pragma once
 #include "RenderSystem.h"
 //#include "TextureMgr.h"
-#include "D3D9HardwareBufferMgr.h"
+//#include "HardwareBufferMgr.h"
 //#include "D3D9ShaderMgr.h"
 
 #if defined(_DEBUG)
@@ -58,6 +58,8 @@ public:
 	// ----
 	CTexture*	newTexture			();
 	CShader*	newShader			();
+	virtual CHardwareVertexBuffer*	newHardwareVertexBuffer	();
+	virtual CHardwareIndexBuffer*	newHardwareIndexBuffer	();
 	// ----
 	void OnFrameMove();
 	// ----
@@ -193,7 +195,7 @@ protected:
 	// # 非插件数据
 	// ----
 	CTextureMgr					m_TextureMgr;
-	CD3D9HardwareBufferMgr		m_D3D9HardwareBufferMgr;
+	CHardwareBufferMgr			m_D3D9HardwareBufferMgr;
 	CShaderMgr					m_ShaderMgr;
 	// ----
 	IDirect3DDevice9*			m_pD3D9Device;

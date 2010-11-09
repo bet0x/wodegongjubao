@@ -1,21 +1,33 @@
 #include "D3D9HardwareIndexBuffer.h"
 #include "D3D9RenderSystem.h"
 
-CD3D9HardwareIndexBuffer::CD3D9HardwareIndexBuffer(CHardwareIndexBuffer::IndexType idxType, 
-												 size_t numIndexes, CHardwareBuffer::Usage usage, LPDIRECT3DDEVICE9 pDev, 
-												 bool useSystemMemory)
-												 : CHardwareIndexBuffer(idxType, numIndexes, usage, useSystemMemory)
+
+CD3D9HardwareIndexBuffer::CD3D9HardwareIndexBuffer()
 {
-//#if OGRE_D3D_MANAGE_BUFFERS
+	mlpD3DBuffer=NULL;
+}
+//---------------------------------------------------------------------
+
+CD3D9HardwareIndexBuffer::~CD3D9HardwareIndexBuffer()
+{
+	D3D9S_REL(mlpD3DBuffer);
+}
+
+bool CD3D9HardwareIndexBuffer::create(CHardwareIndexBuffer::IndexType idxType, size_t numIndexes, CHardwareBuffer::Usage usage, bool useSystemMemory)
+{
+	CHardwareIndexBuffer::create(idxType, numIndexes, usage, useSystemMemory);
+	//#if OGRE_D3D_MANAGE_BUFFERS
 	mD3DPool = useSystemMemory? D3DPOOL_SYSTEMMEM : 
 		// If not system mem, use managed pool UNLESS buffer is discardable
 		// if discardable, keeping the software backing is expensive
 		(usage & CHardwareBuffer::HBU_DISCARDABLE)? D3DPOOL_DEFAULT : D3DPOOL_MANAGED;
-//#else
-//	mD3DPool = useSystemMemory? D3DPOOL_SYSTEMMEM : D3DPOOL_DEFAULT;
-//#endif
+	//#else
+	//	mD3DPool = useSystemMemory? D3DPOOL_SYSTEMMEM : D3DPOOL_DEFAULT;
+	//#endif
 	// Create the Index buffer
-	D3DCheckHresult( pDev->CreateIndexBuffer(
+	IDirect3DDevice9* pD3D9Device = GetD3D9RenderSystem().GetD3D9Device();
+	// ----
+	D3DCheckHresult( pD3D9Device->CreateIndexBuffer(
 		static_cast<UINT>(mSizeInBytes),
 		UsageForD3D9(mUsage),
 		(D3DFORMAT)IndexTypeForD3D9(mIndexType),
@@ -23,13 +35,10 @@ CD3D9HardwareIndexBuffer::CD3D9HardwareIndexBuffer(CHardwareIndexBuffer::IndexTy
 		&mlpD3DBuffer,
 		NULL
 		), __FUNCTION__);
+	return mlpD3DBuffer!=NULL;
 }
 //---------------------------------------------------------------------
-CD3D9HardwareIndexBuffer::~CD3D9HardwareIndexBuffer()
-{
-	D3D9S_REL(mlpD3DBuffer);
-}
-//---------------------------------------------------------------------
+
 void* CD3D9HardwareIndexBuffer::lockImpl(size_t offset, 
 										size_t length, LockOptions options)
 {

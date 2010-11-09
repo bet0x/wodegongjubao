@@ -12,9 +12,9 @@ protected:
 	/** See HardwareBuffer. */
 	void unlockImpl(void);
 public:
-	CD3D9HardwareVertexBuffer(size_t vertexSize, size_t numVertices, 
-		CHardwareBuffer::Usage usage, LPDIRECT3DDEVICE9 pDev, bool useSystemMem);
+	CD3D9HardwareVertexBuffer();
 	~CD3D9HardwareVertexBuffer();
+	bool create(size_t vertexSize, size_t numVertices, CHardwareBuffer::Usage usage, bool useSystemMem);
 	/** See HardwareBuffer. */
 	void readData(size_t offset, size_t length, void* pDest);
 	/** See HardwareBuffer. */
