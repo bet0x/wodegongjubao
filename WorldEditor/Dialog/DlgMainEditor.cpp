@@ -32,8 +32,7 @@ bool CDlgMainEditor::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	//.//
 	//m_DlgFPS.SetViewDir(m_WorldEditorDisplay.GetCamera().GetViewDir());
 	//
-	bool bNoFurtherProcessing = CUIMainDialog::MsgProc(hWnd, uMsg, wParam, lParam);
-	if ( bNoFurtherProcessing )
+	if (CUIMainDialog::MsgProc(hWnd, uMsg, wParam, lParam))
 	{
 		return true;
 	}

@@ -25,30 +25,15 @@ struct DXUTDeviceSettings
 #define DXUTERR_RESETTINGDEVICEOBJECTS  MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 0x0908)
 #define DXUTERR_INCORRECTVERSION        MAKE_HRESULT(SEVERITY_ERROR, FACILITY_ITF, 0x0909)
 
-
+void    DXUTSetupCursor();
 
 // Callback registration 
-
 typedef bool    (CALLBACK *LPDXUTCALLBACKISDEVICEACCEPTABLE)(D3DCAPS9* pCaps, D3DFORMAT AdapterFormat, D3DFORMAT BackBufferFormat, bool bWindowed, void* pUserContext);
-typedef bool    (CALLBACK *LPDXUTCALLBACKMODIFYDEVICESETTINGS)(DXUTDeviceSettings* pDeviceSettings, const D3DCAPS9* pCaps, void* pUserContext);
-typedef HRESULT (CALLBACK *LPDXUTCALLBACKDEVICECREATED)(IDirect3DDevice9* pd3dDevice, const D3DSURFACE_DESC* pBackBufferSurfaceDesc, void* pUserContext);
-typedef HRESULT (CALLBACK *LPDXUTCALLBACKDEVICERESET)(IDirect3DDevice9* pd3dDevice, const D3DSURFACE_DESC* pBackBufferSurfaceDesc, void* pUserContext);
-typedef void    (CALLBACK *LPDXUTCALLBACKDEVICEDESTROYED)(void* pUserContext);
-typedef void    (CALLBACK *LPDXUTCALLBACKDEVICELOST)(void* pUserContext);
-
-// Device callbacks
-void DXUTSetCallbackDeviceCreated(LPDXUTCALLBACKDEVICECREATED pCallbackDeviceCreated, void* pUserContext = NULL);
-void DXUTSetCallbackDeviceReset(LPDXUTCALLBACKDEVICERESET pCallbackDeviceReset, void* pUserContext = NULL);
-void DXUTSetCallbackDeviceLost(LPDXUTCALLBACKDEVICELOST pCallbackDeviceLost, void* pUserContext = NULL);
-void DXUTSetCallbackDeviceDestroyed(LPDXUTCALLBACKDEVICEDESTROYED pCallbackDeviceDestroyed, void* pUserContext = NULL);
-void DXUTSetCallbackDeviceChanging(LPDXUTCALLBACKMODIFYDEVICESETTINGS pCallbackModifyDeviceSettings, void* pUserContext = NULL);
 
 bool    CALLBACK IsDeviceAcceptable(D3DCAPS9* pCaps, D3DFORMAT AdapterFormat, D3DFORMAT BackBufferFormat, bool bWindowed, void* pUserContext);
 bool    CALLBACK ModifyDeviceSettings(DXUTDeviceSettings* pDeviceSettings, const D3DCAPS9* pCaps, void* pUserContext);
 
-
 // Initialization
-
 HRESULT DXUTInit(bool bParseCommandLine = true, bool bShowMsgBoxOnError = true, bool bHandleAltEnter = true);
 
 // Choose either DXUTCreateWindow or DXUTSetWindow.  If using DXUTSetWindow, consider using DXUTStaticWndProc
@@ -56,7 +41,6 @@ HRESULT DXUTCreateWindow(WNDPROC pWndProc = NULL, const std::wstring& strWindowT
                           HINSTANCE hInstance = NULL, HICON hIcon = NULL, HMENU hMenu = NULL,
                           int x = CW_USEDEFAULT, int y = CW_USEDEFAULT);
 HRESULT DXUTSetWindow(WNDPROC pWndProc, HWND hWndFocus, HWND hWndDeviceFullScreen, HWND hWndDeviceWindowed, bool bHandleMessages = true);
-LRESULT CALLBACK DXUTStaticWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 // Choose either DXUTCreateDevice or DXUTSetDevice or DXUTCreateDeviceFromSettings
 HRESULT DXUTCreateDevice(UINT AdapterOrdinal = D3DADAPTER_DEFAULT, bool bWindowed = true, 
@@ -103,8 +87,6 @@ struct DXUTMatchOptions
 HRESULT DXUTFindValidDeviceSettings(DXUTDeviceSettings* pOut, DXUTDeviceSettings* pIn = NULL, DXUTMatchOptions* pMatchOptions = NULL);
 
 // Common Tasks 
-void    DXUTSetCursorSettings(bool bShowCursorWhenFullScreen, bool bClipCursorWhenFullScreen);
-void    DXUTSetConstantFrameTime(bool bConstantFrameTime, float fTimePerFrame = 0.0333f);
 HRESULT DXUTToggleFullScreen();
 HRESULT DXUTToggleREF();
 void    DXUTResetFrameworkState();
@@ -155,26 +137,11 @@ protected:
 		bool  m_MinimizedWhileFullscreen;   // if true, the HWND is minimized due to a focus switch away when fullscreen mode
 		bool  m_IgnoreSizeChange;           // if true, DXUT won't reset the device upon HWND size change
 
-		double m_Time;                      // current time in seconds
-		double m_AbsoluteTime;              // absolute time in seconds
-		float m_ElapsedTime;                // time elapsed since last frame
-
 		HINSTANCE m_HInstance;              // handle to the app instance
-		double m_SleepTime;				    // Sleep
-		double m_LastStatsUpdateTime;       // last time the stats were updated
-		DWORD m_LastStatsUpdateFrames;      // frames count since last time the stats were updated
-		float m_FPS;                        // frames per second
-		int   m_CurrentFrameNumber;         // the current frame number
-		bool  m_CallDefWindowProc;          // if true, DXUTStaticWndProc will call DefWindowProc for unhandled messages. Applications rendering to a dialog may need to set this to false.
 
 		bool  m_HandleAltEnter;             // if true, then DXUT will handle Alt-Enter
 		bool  m_ShowMsgBoxOnError;          // if true, then msgboxes are displayed upon errors
 		bool  m_NoStats;                    // if true, then DXUTGetFrameStats() and DXUTGetDeviceStats() will return blank strings
-		bool  m_ClipCursorWhenFullScreen;   // if true, then DXUT will keep the cursor from going outside the window when full screen
-		bool  m_ShowCursorWhenFullScreen;   // if true, then DXUT will show a cursor when full screen
-		bool  m_ConstantFrameTime;          // if true, then elapsed frame time will always be 0.05f seconds which is good for debugging or automated capture
-		float m_TimePerFrame;               // the constant time per frame in seconds, only valid if m_ConstantFrameTime==true
-		bool  m_WireframeMode;              // if true, then D3DRS_FILLMODE==D3DFILL_WIREFRAME else D3DRS_FILLMODE==D3DFILL_SOLID 
 		bool  m_AutoChangeAdapter;          // if true, then the adapter will automatically change if the window is different monitor
 		bool  m_WindowCreatedWithDefaultPositions; // if true, then CW_USEDEFAULT was used and the window should be moved to the right adapter
 		int   m_ExitCode;                   // the exit code to be returned to the command line
@@ -194,7 +161,6 @@ protected:
 		bool  m_DeviceLost;                 // if true, then the device is lost and needs to be reset
 		bool  m_NotifyOnMouseMove;          // if true, include WM_MOUSEMOVE in mousecallback
 		bool  m_Automation;                 // if true, automation is enabled
-		UINT  m_TimerLastID;               // last ID of the DXUT timer
 
 		int   m_OverrideAdapterOrdinal;     // if != -1, then override to use this adapter ordinal
 		bool  m_OverrideWindowed;           // if true, then force to start windowed
@@ -208,19 +174,10 @@ protected:
 		bool  m_OverrideForcePureHWVP;      // if true, then force to use pure HWVP (failing if device doesn't support it)
 		bool  m_OverrideForceHWVP;          // if true, then force to use HWVP (failing if device doesn't support it)
 		bool  m_OverrideForceSWVP;          // if true, then force to use SWVP 
-		bool  m_OverrideConstantFrameTime;  // if true, then force to constant frame time
-		float m_OverrideConstantTimePerFrame; // the constant time per frame in seconds if m_OverrideConstantFrameTime==true
-		int   m_OverrideQuitAfterFrame;     // if != 0, then it will force the app to quit after that frame
 		int   m_OverrideForceVsync;         // if == 0, then it will force the app to use D3DPRESENT_INTERVAL_IMMEDIATE, if == 1 force use of D3DPRESENT_INTERVAL_DEFAULT
 
-		bool                         m_Keys[256];                       // array of key state
-		bool                         m_MouseButtons[5];                 // array of mouse states
-
 		WCHAR                        m_StaticFrameStats[256];           // static part of frames stats 
-		WCHAR                        m_FPSStats[64];                    // fps stats
-		WCHAR                        m_FrameStats[256];                 // frame stats (fps, width, etc)
 		WCHAR                        m_DeviceStats[256];                // device stats (description, device type, etc)
-		WCHAR                        m_WindowTitle[256];                // window title
 	};
 
 	STATE m_state;
@@ -257,26 +214,11 @@ public:
 	GET_SET_ACCESSOR(bool, MinimizedWhileFullscreen);
 	GET_SET_ACCESSOR(bool, IgnoreSizeChange);   
 
-	GET_SET_ACCESSOR(double, Time);
-	GET_SET_ACCESSOR(double, AbsoluteTime);
-	GET_SET_ACCESSOR(float, ElapsedTime);
-
 	GET_SET_ACCESSOR(HINSTANCE, HInstance);
-	GET_SET_ACCESSOR(double, SleepTime);  
-	GET_SET_ACCESSOR(double, LastStatsUpdateTime);   
-	GET_SET_ACCESSOR(DWORD, LastStatsUpdateFrames);   
-	GET_SET_ACCESSOR(float, FPS);    
-	GET_SET_ACCESSOR(int, CurrentFrameNumber);
-	GET_SET_ACCESSOR(bool, CallDefWindowProc);
 
 	GET_SET_ACCESSOR(bool, HandleAltEnter);
 	GET_SET_ACCESSOR(bool, ShowMsgBoxOnError);
 	GET_SET_ACCESSOR(bool, NoStats);
-	GET_SET_ACCESSOR(bool, ClipCursorWhenFullScreen);   
-	GET_SET_ACCESSOR(bool, ShowCursorWhenFullScreen);
-	GET_SET_ACCESSOR(bool, ConstantFrameTime);
-	GET_SET_ACCESSOR(float, TimePerFrame);
-	GET_SET_ACCESSOR(bool, WireframeMode);   
 	GET_SET_ACCESSOR(bool, AutoChangeAdapter);
 	GET_SET_ACCESSOR(bool, WindowCreatedWithDefaultPositions);
 	GET_SET_ACCESSOR(int, ExitCode);
@@ -291,7 +233,6 @@ public:
 	GET_SET_ACCESSOR(bool, DeviceLost);
 	GET_SET_ACCESSOR(bool, NotifyOnMouseMove);
 	GET_SET_ACCESSOR(bool, Automation);
-	GET_SET_ACCESSOR(UINT, TimerLastID);
 
 	GET_SET_ACCESSOR(int, OverrideAdapterOrdinal);
 	GET_SET_ACCESSOR(bool, OverrideWindowed);
@@ -305,18 +246,10 @@ public:
 	GET_SET_ACCESSOR(bool, OverrideForcePureHWVP);
 	GET_SET_ACCESSOR(bool, OverrideForceHWVP);
 	GET_SET_ACCESSOR(bool, OverrideForceSWVP);
-	GET_SET_ACCESSOR(bool, OverrideConstantFrameTime);
-	GET_SET_ACCESSOR(float, OverrideConstantTimePerFrame);
-	GET_SET_ACCESSOR(int, OverrideQuitAfterFrame);
 	GET_SET_ACCESSOR(int, OverrideForceVsync);
 
-	GET_ACCESSOR(bool*, Keys);
-	GET_ACCESSOR(bool*, MouseButtons);
 	GET_ACCESSOR(WCHAR*, StaticFrameStats);
-	GET_ACCESSOR(WCHAR*, FPSStats);
-	GET_ACCESSOR(WCHAR*, FrameStats);
 	GET_ACCESSOR(WCHAR*, DeviceStats);    
-	GET_ACCESSOR(WCHAR*, WindowTitle);
 };
 
 DXUTState& GetDXUTState();
@@ -335,22 +268,16 @@ HWND                    DXUTGetHWNDFocus();
 HWND                    DXUTGetHWNDDeviceFullScreen();
 HWND                    DXUTGetHWNDDeviceWindowed();
 RECT                    DXUTGetWindowClientRect();
-double                  DXUTGetTime();
-float                   DXUTGetElapsedTime();
 bool                    DXUTIsWindowed();
 float                   DXUTGetFPS();
-LPCWSTR                 DXUTGetWindowTitle();
-LPCWSTR                 DXUTGetFrameStats(bool bIncludeFPS = false);
 LPCWSTR                 DXUTGetDeviceStats();
 bool                    DXUTIsTimePaused();
 int                     DXUTGetExitCode();
 bool                    DXUTGetShowMsgBoxOnError();
 bool                    DXUTIsKeyDown(BYTE vKey); // Pass a virtual-key code, ex. VK_F1, 'A', VK_RETURN, VK_LSHIFT, etc
-bool                    DXUTIsMouseButtonDown(BYTE vButton); // Pass a virtual-key code: VK_LBUTTON, VK_RBUTTON, VK_MBUTTON, VK_XBUTTON1, VK_XBUTTON2
 
 
 HRESULT DXUTChangeDevice(DXUTDeviceSettings* pNewDeviceSettings, IDirect3DDevice9* pd3dDeviceFromApp, bool bForceRecreate, bool bClipWindowToSingleAdapter);
 void    DXUTCheckForWindowSizeChange();
 void    DXUTCheckForWindowChangingMonitors();
 HRESULT DXUTReset3DEnvironment();
-void    DXUTUpdateFrameStats();
