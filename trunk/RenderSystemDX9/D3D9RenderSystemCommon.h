@@ -9,6 +9,10 @@
 #define D3D9S_REL(p) D3D9SafeRelease(*(LPDIRECT3DRESOURCE9*)(&p));
 #endif
 
+#ifndef D3D9HR
+#define D3D9HR(_hr) D3DCheckHresult(_hr, __FUNCTION__)
+#endif
+
 DWORD UsageForD3D9(CHardwareBuffer::Usage usage);
 DWORD IndexTypeForD3D9(CHardwareIndexBuffer::IndexType itype);
 DWORD LockOptionsForD3D9(CHardwareBuffer::LockOptions options, CHardwareBuffer::Usage usage);

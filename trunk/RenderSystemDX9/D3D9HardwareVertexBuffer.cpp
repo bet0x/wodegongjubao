@@ -27,13 +27,13 @@ bool CD3D9HardwareVertexBuffer::create(size_t vertexSize, size_t numVertices, CH
 //#endif
 	IDirect3DDevice9* pD3D9Device = GetD3D9RenderSystem().GetD3D9Device();
 	// ----
-	D3DCheckHresult(pD3D9Device->CreateVertexBuffer(
-		static_cast<UINT>(mSizeInBytes), 
+	D3D9HR( pD3D9Device->CreateVertexBuffer(
+		static_cast<UINT>(m_uBufferSize), 
 		UsageForD3D9(usage), 
 		0, // No FVF here, thankyou
 		mD3DPool,
 		&mlpD3DBuffer,
-		NULL),__FUNCTION__);
+		NULL) );
 	return mlpD3DBuffer!=NULL;
 }
 //---------------------------------------------------------------------
@@ -42,17 +42,17 @@ void* CD3D9HardwareVertexBuffer::lockImpl(size_t offset,
 										 size_t length, LockOptions options)
 {
 	void* pBuf;
-	D3DCheckHresult( mlpD3DBuffer->Lock(
+	D3D9HR( mlpD3DBuffer->Lock(
 		static_cast<UINT>(offset), 
 		static_cast<UINT>(length), 
 		&pBuf,
-		LockOptionsForD3D9(options, mUsage)), __FUNCTION__);
+		LockOptionsForD3D9(options, m_Usage)) );
 	return pBuf;
 }
 //---------------------------------------------------------------------
 void CD3D9HardwareVertexBuffer::unlockImpl(void)
 {
-	D3DCheckHresult(  mlpD3DBuffer->Unlock(),__FUNCTION__);
+	D3D9HR( mlpD3DBuffer->Unlock());
 }
 //---------------------------------------------------------------------
 void CD3D9HardwareVertexBuffer::readData(size_t offset, size_t length, 
@@ -99,9 +99,9 @@ bool CD3D9HardwareVertexBuffer::recreateIfDefaultPool(void)
 	LPDIRECT3DDEVICE9 pDev = GetD3D9RenderSystem().GetD3D9Device();
 	if (mD3DPool == D3DPOOL_DEFAULT)
 	{
-		return D3DCheckHresult( pDev->CreateVertexBuffer(
-			static_cast<UINT>(mSizeInBytes), 
-			UsageForD3D9(mUsage), 
+		return D3D9HR( pDev->CreateVertexBuffer(
+			static_cast<UINT>(m_uBufferSize), 
+			UsageForD3D9(m_Usage), 
 			0, // No FVF here, thankyou
 			mD3DPool,
 			&mlpD3DBuffer,

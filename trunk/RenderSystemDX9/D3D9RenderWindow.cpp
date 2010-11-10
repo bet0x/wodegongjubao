@@ -89,7 +89,7 @@ bool CD3D9RenderWindow::Create(WNDPROC pWndProc, const std::wstring& wstrWindowT
 	pDSFormats->Add(D3DFMT_D15S1);
 	pDSFormats->Add(D3DFMT_D24FS8);*/
 	Init(true, true, true);
-	DXUTSetCursorSettings(true, true); // 全屏模式显示鼠标和夹子 Show the cursor and clip it when in full screen
+	DXUTSetupCursor();
 	DXUTCreateWindow(pWndProc, wstrWindowTitle);
 	DXUTCreateDevice(D3DADAPTER_DEFAULT, !bFullScreen, uWidth, uHeight);
 	return true;
@@ -102,12 +102,12 @@ void CD3D9RenderWindow::SetFullscreen(bool bFullScreen, unsigned long width, uns
 
 double CD3D9RenderWindow::GetTime()
 {
-	return GetDXUTState().GetTime();
+	return GetGlobalTimer().GetTime();
 }
 
 float CD3D9RenderWindow::GetElapsedTime()
 {
-	return GetDXUTState().GetElapsedTime();
+	return GetGlobalTimer().GetElapsedTime();
 }
 
 bool CD3D9RenderWindow::FrameBegin()
@@ -133,7 +133,6 @@ bool CD3D9RenderWindow::FrameBegin()
 			DXUTDeviceSettings deviceSettings = DXUTGetDeviceSettings();
 			DXUTChangeDevice(&deviceSettings, NULL, false, true);
 		}
-
 		return false;
 	}
 
@@ -238,13 +237,6 @@ bool CD3D9RenderWindow::FrameBegin()
 	double fTime, fAbsTime; float fElapsedTime, fSleepTime;
 	GetGlobalTimer().GetTimeValues(&fTime, &fAbsTime, &fElapsedTime, fSleepTime, 60);
 
-	// Store the time for the app
-	if(GetDXUTState().GetConstantFrameTime())
-	{
-		fElapsedTime = GetDXUTState().GetTimePerFrame();;
-		fTime     = DXUTGetTime() + fElapsedTime;
-	}
-
 	// 锁帧
 	//{
 	//	double fSleepTime = 1.0f/60.0f - fElapsedTime;
@@ -261,13 +253,6 @@ bool CD3D9RenderWindow::FrameBegin()
 	//	}
 	//	GetDXUTState().SetSleepTime(fSleepTime);
 	//}
-	GetDXUTState().SetSleepTime(fSleepTime);
-	GetDXUTState().SetTime(fTime);
-	GetDXUTState().SetAbsoluteTime(fAbsTime);
-	GetDXUTState().SetElapsedTime(fElapsedTime);
-
-	// 更新FPS状态
-	DXUTUpdateFrameStats();
 
 	return true;
 }
@@ -307,18 +292,6 @@ void CD3D9RenderWindow::FrameEnd()
 			GetDXUTState().SetDeviceLost(true);
 		}
 	}
-
-	// Update current frame #
-	int nFrame = GetDXUTState().GetCurrentFrameNumber();
-	nFrame++;
-	GetDXUTState().SetCurrentFrameNumber(nFrame);
-
-	// Check to see if the app should shutdown due to cmdline
-	if(GetDXUTState().GetOverrideQuitAfterFrame() != 0)
-	{
-		if(nFrame > GetDXUTState().GetOverrideQuitAfterFrame())
-			DXUTShutdown();
-	}
 }
 
 HWND CD3D9RenderWindow::GetHWND()
@@ -328,32 +301,6 @@ HWND CD3D9RenderWindow::GetHWND()
 
 LRESULT CD3D9RenderWindow::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	//// Consolidate the keyboard messages and pass them to the app's keyboard callback
-	//if(uMsg == WM_KEYDOWN ||
-	//	uMsg == WM_SYSKEYDOWN || 
-	//	uMsg == WM_KEYUP ||
-	//	uMsg == WM_SYSKEYUP)
-	//{
-	//	bool bKeyDown = (uMsg == WM_KEYDOWN || uMsg == WM_SYSKEYDOWN);
-	//	DWORD dwMask = (1 << 29);
-	//	bool bAltDown = ((lParam & dwMask) != 0);
-
-	//	bool* bKeys = GetDXUTState().GetKeys();
-	//	bKeys[ (BYTE) (wParam & 0xFF) ] = bKeyDown;
-
-	//	//GetRoot().KeyboardProc((UINT)wParam, bKeyDown, bAltDown);         
-	//}
-
-
-	//// Pass all messages to the app's MsgProc callback, and don't 
-	//// process further messages if the apps says not to.
-	//{
-	//	bool bNoFurtherProcessing = GetRoot().MsgProc(hWnd, uMsg, wParam, lParam);
-
-	//	LRESULT nResult = 0;
-	//	if(bNoFurtherProcessing)
-	//		return nResult;
-	//}
 	switch(uMsg)
 	{
 	case WM_PAINT:
@@ -363,10 +310,10 @@ LRESULT CD3D9RenderWindow::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 			if(pd3dDevice && m_bMoving)
 			{
 				HRESULT hr;
-				double fTime = DXUTGetTime();
-				float fElapsedTime = DXUTGetElapsedTime();
+				// double fTime = DXUTGetTime();
+				// float fElapsedTime = DXUTGetElapsedTime();
 
-				///			GetRoot().OnFrameRender(fTime, fElapsedTime);
+				// GetRoot().OnFrameRender(fTime, fElapsedTime);
 
 				hr = pd3dDevice->Present(NULL, NULL, NULL, NULL);
 				if(D3DERR_DEVICELOST == hr)
@@ -450,7 +397,7 @@ LRESULT CD3D9RenderWindow::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 		if(m_bActive && !DXUTIsWindowed())
 		{
 			IDirect3DDevice9* pd3dDevice = DXUTGetD3DDevice();
-			if(pd3dDevice && GetDXUTState().GetShowCursorWhenFullScreen())
+			if(pd3dDevice && 1/*GetDXUTState().GetShowCursorWhenFullScreen()*/)
 				pd3dDevice->ShowCursor(true);
 			return true; // prevent Windows from setting cursor to window class cursor
 		}
@@ -515,7 +462,6 @@ LRESULT CD3D9RenderWindow::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 		// QPC may lose consistency when suspending, so reset the timer
 		// upon resume.
 		GetGlobalTimer().Reset();                   
-		GetDXUTState().SetLastStatsUpdateTime(0);
 		return true;
 		}
 		break;
@@ -569,10 +515,8 @@ LRESULT CD3D9RenderWindow::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 
 				case VK_F8:
 					{
-						bool bWireFrame = GetDXUTState().GetWireframeMode();
+						static bool bWireFrame = false;
 						bWireFrame = !bWireFrame; 
-						GetDXUTState().SetWireframeMode(bWireFrame);
-
 						IDirect3DDevice9* pd3dDevice = DXUTGetD3DDevice();
 						if(pd3dDevice)
 							pd3dDevice->SetRenderState(D3DRS_FILLMODE, (bWireFrame) ? D3DFILL_WIREFRAME : D3DFILL_SOLID); 
@@ -612,8 +556,5 @@ LRESULT CD3D9RenderWindow::MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 		PostQuitMessage(WM_QUIT);
 		break;
 	}
-	if(!GetDXUTState().GetCallDefWindowProc())
-		return 0;
-	else
-		return DefWindowProcW(hWnd, uMsg, wParam, lParam);
+	return 0;
 }

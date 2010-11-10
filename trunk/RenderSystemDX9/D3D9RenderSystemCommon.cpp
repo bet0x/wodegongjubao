@@ -96,7 +96,7 @@ void D3D9SafeRelease(LPDIRECT3DRESOURCE9& pRes)
 	if(pRes)
 	{
 		D3D9CheckResRef(pRes);
-		D3DCheckHresult(pRes->Release(),__FUNCTION__);
+		D3D9HR( pRes->Release() );
 		pRes = NULL;
 	}
 }
