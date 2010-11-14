@@ -61,7 +61,6 @@ HRESULT DXUTFindAdapterFormat(UINT AdapterOrdinal, D3DDEVTYPE DeviceType, D3DFOR
 void    DXUTUpdateDeviceSettingsWithOverrides(DXUTDeviceSettings* pNewDeviceSettings);
 HRESULT DXUTCreate3DEnvironment(IDirect3DDevice9* pd3dDeviceFromApp);
 
-//void    DXUTRender3DEnvironment();
 void    DXUTCleanup3DEnvironment(bool bReleaseSettings = true);
 
 void    DXUTUpdateDeviceStats(D3DDEVTYPE DeviceType, DWORD BehaviorFlags, D3DADAPTER_IDENTIFIER9* pAdapterIdentifier);
@@ -2862,94 +2861,6 @@ void DXUTCheckForWindowSizeChange()
     }
 }
 
-
-
-// Handles app's message loop and rendering when idle.  If DXUTCreateDevice*() or DXUTSetDevice() 
-// has not already been called, it will call DXUTCreateWindow() with the default parameters.  
-
-HRESULT DXUTMainLoop(HACCEL hAccel)
-{
-    HRESULT hr;
-
-    // Not allowed to call this from inside the device callbacks or reenter
-    if(GetDXUTState().GetInsideMainloop())
-    {
-        if((GetDXUTState().GetExitCode() == 0) || (GetDXUTState().GetExitCode() == 11))
-            GetDXUTState().SetExitCode(1);
-        return DXUT_ERR_MSGBOX(L"DXUTMainLoop", E_FAIL);
-    }
-
-    GetDXUTState().SetInsideMainloop(true);
-
-    // If DXUTCreateDevice*() or DXUTSetDevice() has not already been called, 
-    // then call DXUTCreateDevice() with the default parameters.         
-    if(!GetDXUTState().GetDeviceCreated()) 
-    {
-        if(GetDXUTState().GetDeviceCreateCalled())
-        {
-            if((GetDXUTState().GetExitCode() == 0) || (GetDXUTState().GetExitCode() == 11))
-                GetDXUTState().SetExitCode(1);
-            return E_FAIL; // DXUTCreateDevice() must first succeed for this function to succeed
-        }
-
-        hr = DXUTCreateDevice();
-        if(FAILED(hr))
-        {
-            if((GetDXUTState().GetExitCode() == 0) || (GetDXUTState().GetExitCode() == 11))
-                GetDXUTState().SetExitCode(1);
-            return hr;
-        }
-    }
-
-    HWND hWnd = DXUTGetHWND();
-
-    // DXUTInit() must have been called and succeeded for this function to proceed
-    // DXUTCreateWindow() or DXUTSetWindow() must have been called and succeeded for this function to proceed
-    // DXUTCreateDevice() or DXUTCreateDeviceFromSettings() or DXUTSetDevice() must have been called and succeeded for this function to proceed
-    if(!GetDXUTState().GetDXUTInited() || !GetDXUTState().GetWindowCreated() || !GetDXUTState().GetDeviceCreated())
-    {
-        if((GetDXUTState().GetExitCode() == 0) || (GetDXUTState().GetExitCode() == 11))
-            GetDXUTState().SetExitCode(1);
-        return DXUT_ERR_MSGBOX(L"DXUTMainLoop", E_FAIL);
-    }
-
-    // Now we're ready to receive and process Windows messages.
-    bool bGotMsg;
-    MSG  msg;
-    msg.message = WM_NULL;
-    PeekMessage(&msg, NULL, 0U, 0U, PM_NOREMOVE);
-
-    while(WM_QUIT != msg.message)
-    {
-        // Use PeekMessage() so we can use idle time to render the scene. 
-        bGotMsg = (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE) != 0);
-
-        if(bGotMsg)
-        {
-            // Translate and dispatch the message
-            if(hAccel == NULL || hWnd == NULL || 
-                0 == TranslateAccelerator(hWnd, hAccel, &msg))
-            {
-                TranslateMessage(&msg);
-                DispatchMessage(&msg);
-            }
-        }
-        else
-        {
-            // Render a frame during idle time (no messages are waiting)
-           // DXUTRender3DEnvironment();
-        }
-    }
-
-    // Cleanup the accelerator table
-    if(hAccel != NULL)
-        DestroyAcceleratorTable(hAccel);
-
-    GetDXUTState().SetInsideMainloop(false);
-
-    return S_OK;
-}
-
 // Updates the string which describes the device 
 
 void DXUTUpdateDeviceStats(D3DDEVTYPE DeviceType, DWORD BehaviorFlags, D3DADAPTER_IDENTIFIER9* pAdapterIdentifier)
@@ -3156,7 +3067,6 @@ void DXUTCleanup3DEnvironment(bool bReleaseSettings)
 
 
 // Stores back buffer surface desc in GetDXUTState().GetBackBufferSurfaceDesc()
-
 void DXUTUpdateBackBufferDesc()
 {
     HRESULT hr;
@@ -3171,7 +3081,6 @@ void DXUTUpdateBackBufferDesc()
     }
 }
 
-
 // External state access functions
 
 IDirect3D9* DXUTGetD3DObject()                      { return GetDXUTState().GetD3D(); }        
@@ -3181,7 +3090,6 @@ HWND DXUTGetHWND()                                  { return DXUTIsWindowed() ? 
 HWND DXUTGetHWNDFocus()                             { return GetDXUTState().GetHWNDFocus(); }
 HWND DXUTGetHWNDDeviceFullScreen()                  { return GetDXUTState().GetHWNDDeviceFullScreen(); }
 HWND DXUTGetHWNDDeviceWindowed()                    { return GetDXUTState().GetHWNDDeviceWindowed(); }
-RECT DXUTGetWindowClientRect()                      { RECT rc; GetClientRect(DXUTGetHWND(), &rc); return rc; }
 LPCWSTR DXUTGetDeviceStats()                        { return GetDXUTState().GetDeviceStats(); }
 int DXUTGetExitCode()                               { return GetDXUTState().GetExitCode(); }
 bool DXUTGetShowMsgBoxOnError()                     { return GetDXUTState().GetShowMsgBoxOnError(); }

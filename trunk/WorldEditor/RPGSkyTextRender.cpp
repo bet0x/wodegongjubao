@@ -51,7 +51,7 @@ void CRPGSkyTextRender::drawTextVertexBuffer(int nVertexCount, void* pBuffer)
 	// ----
 	if (m_nShadowBorder>0)
 	{
-		static unsigned long s_uShader = R.GetShaderMgr().registerItem("data\\fx\\text.fx");
+		static unsigned long s_uShader = R.GetShaderMgr().registerItem("EngineRes\\fx\\text.fx");
 		CShader* pShader = R.GetShaderMgr().getItem(s_uShader);
 		if (pShader)
 		{

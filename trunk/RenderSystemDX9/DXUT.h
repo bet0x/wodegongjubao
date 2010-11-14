@@ -48,11 +48,6 @@ HRESULT DXUTCreateDevice(UINT AdapterOrdinal = D3DADAPTER_DEFAULT, bool bWindowe
 HRESULT DXUTCreateDeviceFromSettings(DXUTDeviceSettings* pDeviceSettings, bool bPreserveInput = false, bool bClipWindowToSingleAdapter = true);
 HRESULT DXUTSetDevice(IDirect3DDevice9* pd3dDevice);
 
-// Choose either DXUTMainLoop or implement your own main loop 
-HRESULT DXUTMainLoop(HACCEL hAccel = NULL);
-
-// If not using DXUTMainLoop consider using DXUTRender3DEnvironment
-//void DXUTRender3DEnvironment(); 
 
 void DXUTCloseWindow();
 
@@ -267,14 +262,10 @@ HWND                    DXUTGetHWND();
 HWND                    DXUTGetHWNDFocus();
 HWND                    DXUTGetHWNDDeviceFullScreen();
 HWND                    DXUTGetHWNDDeviceWindowed();
-RECT                    DXUTGetWindowClientRect();
 bool                    DXUTIsWindowed();
-float                   DXUTGetFPS();
 LPCWSTR                 DXUTGetDeviceStats();
-bool                    DXUTIsTimePaused();
 int                     DXUTGetExitCode();
 bool                    DXUTGetShowMsgBoxOnError();
-bool                    DXUTIsKeyDown(BYTE vKey); // Pass a virtual-key code, ex. VK_F1, 'A', VK_RETURN, VK_LSHIFT, etc
 
 
 HRESULT DXUTChangeDevice(DXUTDeviceSettings* pNewDeviceSettings, IDirect3DDevice9* pd3dDeviceFromApp, bool bForceRecreate, bool bClipWindowToSingleAdapter);

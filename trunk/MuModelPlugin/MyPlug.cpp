@@ -226,11 +226,33 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 			sprintf(szMaterialName,"%s%d",ChangeExtension(GetFilename(strFilename),".sub").c_str(),i);
 			{
 				CMaterial& material = pModelData->getMaterial(szMaterialName);
-				material.setDiffuse(strTexFileName);
-				material.bLightingEnabled=true;
-				material.uCull = 0;
-				material.bAlphaTest=true;
-				material.uAlphaTestValue = 0x80;
+				material.setTexture(0,strTexFileName.c_str());
+
+				material.bLightingEnabled = true;
+				// ----
+				material.uCull					= CULL_NONE;
+				// ----
+				material.bBlend					= false;
+				// ----
+				material.bAlphaTest				= true;
+				material.nAlphaTestCompare		= CMPF_GREATER_EQUAL;
+				material.uAlphaTestValue		= 0x80;
+				// ----
+				material.bDepthTest				= true;
+				material.bDepthWrite			= true;
+				// ----
+				CMaterial::TextureOP& texOP0	= material.textureOP[0];
+				CMaterial::TextureOP& texOP1	= material.textureOP[1];
+				// ----
+				texOP0.nColorOP					= TBOP_MODULATE;
+				texOP0.nColorSrc1				= TBS_CURRENT;
+				texOP0.nColorSrc2				= TBS_TEXTURE;
+				texOP0.nAlphaOP					= TBOP_MODULATE;
+				texOP0.nAlphaSrc1				= TBS_CURRENT;
+				texOP0.nAlphaSrc2				= TBS_TEXTURE;
+				// ----
+				texOP1.nColorOP					= TBOP_DISABLE;
+				texOP1.nAlphaOP					= TBOP_DISABLE;
 			}
 			pModelData->setRenderPass(i,i,szMaterialName);
 		}

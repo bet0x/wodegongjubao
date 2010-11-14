@@ -523,8 +523,11 @@ void CD3D9RenderSystem::SetDepthBufferFunc(bool bDepthTest, bool bDepthWrite, Co
 void CD3D9RenderSystem::SetAlphaTestFunc(bool bAlphaTest, CompareFunction func, unsigned char value)
 {
 	SetRenderState(D3DRS_ALPHATESTENABLE, bAlphaTest);
-	SetRenderState(D3DRS_ALPHAFUNC, CompareFunctionForD3D9(func));
-	SetRenderState(D3DRS_ALPHAREF, value);
+	if (bAlphaTest)
+	{
+		SetRenderState(D3DRS_ALPHAFUNC, CompareFunctionForD3D9(func));
+		SetRenderState(D3DRS_ALPHAREF, value);
+	}
 }
 
 inline unsigned long BlendOperationForD3D9(SceneBlendOperation op)
@@ -599,16 +602,22 @@ inline unsigned long BlendFactorForD3D9(SceneBlendFactor factor)
 void CD3D9RenderSystem::SetBlendFunc(bool bBlend, SceneBlendOperation op, SceneBlendFactor src, SceneBlendFactor dest)
 {
 	SetRenderState(D3DRS_ALPHABLENDENABLE, bBlend);
-	SetRenderState(D3DRS_BLENDOP, BlendOperationForD3D9(op));
-	SetRenderState(D3DRS_SRCBLEND, BlendFactorForD3D9(src));
-	SetRenderState(D3DRS_DESTBLEND, BlendFactorForD3D9(dest));
+	if (bBlend)
+	{
+		SetRenderState(D3DRS_BLENDOP, BlendOperationForD3D9(op));
+		SetRenderState(D3DRS_SRCBLEND, BlendFactorForD3D9(src));
+		SetRenderState(D3DRS_DESTBLEND, BlendFactorForD3D9(dest));
+	}
 }
 
 void CD3D9RenderSystem::SetStencilFunc(bool bStencil, StencilOP op, CompareFunction stencilFunction)
 {
 	SetRenderState(D3DRS_STENCILENABLE, bStencil);
-	SetRenderState(D3DRS_STENCILFUNC, CompareFunctionForD3D9(stencilFunction));
-	SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP(op));
+	if (bStencil)
+	{
+		SetRenderState(D3DRS_STENCILFUNC, CompareFunctionForD3D9(stencilFunction));
+		SetRenderState(D3DRS_STENCILPASS, D3DSTENCILOP(op));
+	}
 }
 
 void CD3D9RenderSystem::SetCullingMode(CullingMode mode)
@@ -755,15 +764,21 @@ void CD3D9RenderSystem::setResultARGToTemp(size_t unit, bool bResultARGToTemp)
 void CD3D9RenderSystem::SetTextureColorOP(size_t unit, TextureBlendOperation op, TextureBlendSource src1, TextureBlendSource src2)
 {
 	SetTextureStageState(unit, D3DTSS_COLOROP, TextureBlendOperationForD3D9(op));
-	SetTextureStageState(unit, D3DTSS_COLORARG1, TextureBlendSourceForD3D9(src1));
-	SetTextureStageState(unit, D3DTSS_COLORARG2, TextureBlendSourceForD3D9(src2));
+	if (TBOP_DISABLE != op)
+	{
+		SetTextureStageState(unit, D3DTSS_COLORARG1, TextureBlendSourceForD3D9(src1));
+		SetTextureStageState(unit, D3DTSS_COLORARG2, TextureBlendSourceForD3D9(src2));
+	}
 }
 
 void CD3D9RenderSystem::SetTextureAlphaOP(size_t unit, TextureBlendOperation op, TextureBlendSource src1, TextureBlendSource src2)
 {
 	SetTextureStageState(unit, D3DTSS_ALPHAOP, TextureBlendOperationForD3D9(op));
-	SetTextureStageState(unit, D3DTSS_ALPHAARG1, TextureBlendSourceForD3D9(src1));
-	SetTextureStageState(unit, D3DTSS_ALPHAARG2, TextureBlendSourceForD3D9(src2));
+	if (TBOP_DISABLE != op)
+	{
+		SetTextureStageState(unit, D3DTSS_ALPHAARG1, TextureBlendSourceForD3D9(src1));
+		SetTextureStageState(unit, D3DTSS_ALPHAARG2, TextureBlendSourceForD3D9(src2));
+	}
 }
 
 inline D3DTEXTUREFILTERTYPE TextureFilterTypeForD3D9(TextureFilterType filter)
