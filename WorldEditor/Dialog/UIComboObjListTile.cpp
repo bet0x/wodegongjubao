@@ -25,7 +25,7 @@ void CUIComboObjListTile::OnListBoxObjectSelection()
 	if (strMaterial.length()>0)
 	{
 		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(strMaterial.c_str());
-		m_uTileTexID = material.uDiffuse;
+		m_uTileTexID = material.uTexture[0];
 	}
 }
 
@@ -56,7 +56,7 @@ void CUIComboObjListTile::SelectObjectByObjectID(size_t id)
 	if (strMaterial.length()>0)
 	{
 		CMaterial& material = GetRenderSystem().getMaterialMgr().getItem(strMaterial.c_str());
-		m_uTileTexID = material.uDiffuse;
+		m_uTileTexID = material.uTexture[0];
 	}
 }
 

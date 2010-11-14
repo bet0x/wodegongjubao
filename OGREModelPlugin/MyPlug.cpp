@@ -245,7 +245,7 @@ int CMyPlug::Execute(iModelData * pModelData, bool bShowDlg, bool bSpecifyFileNa
 	return -1;
 }
 
-enum VertexElementType
+/*enum VertexElementType
 {
 	VET_FLOAT1,
 	VET_FLOAT2,
@@ -269,7 +269,7 @@ enum VertexElementSemantic
 	VES_TEXTURE_COORDINATES = 7,    // 纹理坐标
 	VES_BINORMAL = 8,               // 副法线 (如果法线是 Z 轴，副法线就是 Y 轴)
 	VES_TANGENT = 9                 // 切线 (如果法线是 Z 轴，切线就是 X 轴)
-};
+};*/
 
 struct GeometryVertexElement
 {
@@ -639,11 +639,12 @@ bool readMaterialTexture(CMaterial& material, IOReadBase* pRead, const std::stri
 	{
 		if (bAdd)
 		{
-			material.setEmissive(strTexture);
+			//material.setEmissive(strTexture);
+			material.setTexture(0,strTexture.c_str());
 		}
 		else
 		{
-			material.setDiffuse(strTexture);
+			material.setTexture(0,strTexture.c_str());
 		}
 	}
 	return true;
