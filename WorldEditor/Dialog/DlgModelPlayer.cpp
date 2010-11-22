@@ -108,11 +108,11 @@ void CDlgModelPlayer::OnUpdatePlayer()
 	if (pModelObject)
 	{
 		std::string strModelFilename = strPlayerPath+ ws2s(m_ComboBoxHead.GetText());
-		pModelObject->loadSkinModel("head",strModelFilename.c_str());
+	///	pModelObject->loadSkinModel("head",strModelFilename.c_str());
 		for (size_t i=0;i<ET_MAX;++i)
 		{
 			strModelFilename = strPlayerPath+ ws2s(m_ComboBoxEquips[i].GetText());
-			pModelObject->loadSkinModel(g_EquipNames[i],strModelFilename.c_str());
+	//		pModelObject->loadSkinModel(g_EquipNames[i],strModelFilename.c_str());
 		}
 	}
 	CMainRoot::getInstance().getMainDialog().getDlgModelController().OnUpdate();
