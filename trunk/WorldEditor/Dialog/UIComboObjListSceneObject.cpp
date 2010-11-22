@@ -19,7 +19,7 @@ void CUIComboObjListSceneObject::OnListBoxObjectSelection()
 	if (sceneObjectInfo.find(getSelectedObjectID())!=sceneObjectInfo.end())
 	{
 		const CScene::ObjectInfo& objectInfo = sceneObjectInfo[getSelectedObjectID()];
-		m_ModelObject.load(objectInfo.strFilename);
+		m_ModelObject.load(objectInfo.strFilename.c_str());
 	}
 }
 
@@ -46,7 +46,7 @@ void CUIComboObjListSceneObject::SelectObjectByObjectID(__int64 id)
 		if (sceneObjectInfo.find(id)!=sceneObjectInfo.end())
 		{
 			const CScene::ObjectInfo& objectInfo = sceneObjectInfo[id];
-			m_ModelObject.load(objectInfo.strFilename);
+			m_ModelObject.load(objectInfo.strFilename.c_str());
 		}
 	}
 	int nIndex = m_ListBoxObject.getItemIndexByData((void*)(id));
@@ -79,7 +79,7 @@ void CUIComboObjListSceneObject::OnObjectListEdit()
 void CUIComboObjListSceneObject::OnFrameMove(double fTime, float fElapsedTime)
 {
 	CUIComboObjList::OnFrameMove(fTime, fElapsedTime);
-	m_ModelObject.frameMove(Matrix::UNIT,fElapsedTime);
+	m_ModelObject.frameMove(Matrix::UNIT,fTime,fElapsedTime);
 }
 
 void CUIComboObjListSceneObject::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
@@ -103,10 +103,9 @@ void CUIComboObjListSceneObject::OnFrameRender(const Matrix& mTransform, double 
 	mProj.MatrixOrthoLH(fWidth,fHeight,0.1f, 256.0f);
 	R.setViewMatrix(mView);
 	R.setProjectionMatrix(mProj);
-	R.setWorldMatrix(Matrix::UNIT);
 	{
 		R.ClearBuffer(true,false,0x0);
-		m_ModelObject.render();
+		m_ModelObject.render(Matrix::UNIT);
 	}
 	R.SetupRenderState();
 	R.setViewport(GetParentDialog()->GetParentDialog()->GetParentDialog()->GetBoundingBox());
