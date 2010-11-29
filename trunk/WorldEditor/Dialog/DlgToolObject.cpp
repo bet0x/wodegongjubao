@@ -52,7 +52,8 @@ void CDlgToolObject::OnNumGridSnapChanged()
 
 void CDlgToolObject::OnFocusObjectValueChanged()
 {
-	if (WE_SCENE.getFocusObjects().size()>0)
+	CFocusNode& focusNode  = WE_SCENE.getFocusObjects();
+	if (focusNode.getChildObj()size()>0)
 	{
 		Vec3D vPos=m_Vec3DPos.getVec3D();
 		Vec3D vRotate=m_Vec3Rotate.getVec3D()*(PI/180);
@@ -64,20 +65,23 @@ void CDlgToolObject::OnFocusObjectValueChanged()
 			m_NumScale.setFloat(fScale,0,2);
 		}
 
-		WE_SCENE.setFocusObjectsPos(vPos);
-		WE_SCENE.setFocusObjectsRotate(vRotate);
-		WE_SCENE.setFocusObjectsScale(vScale);
+		focusNode.setCenterPos(vPos);
+		focusNode.setCenterRotate(vRotate);
+		focusNode.setCenterScale(vScale);
+		// ----
+		WE_SCENE.updateObjTreeByFocus();
 	}
 	OnFocusObjectUpdate();
 }
 
 void CDlgToolObject::OnFocusObjectUpdate()
 {
-	if (WE_SCENE.getFocusObjects().size()>0)
+	CFocusNode& focusNode  = WE_SCENE.getFocusObjects();
+	if (focusNode.getChildObj()size()>0)
 	{
-		Vec3D vPos = WE_SCENE.getFocusObjectsPos();
-		Vec3D vRotate = WE_SCENE.getFocusObjectsRotate();
-		Vec3D vScale = WE_SCENE.getFocusObjectsScale();
+		Vec3D vPos = focusNode.getCenterPos();
+		Vec3D vRotate = focusNode.getCenterRotate();
+		Vec3D vScale = focusNode.getCenterScale();
 
 		m_Vec3DPos.setVec3D(vPos);
 		m_Vec3Rotate.setVec3D(vRotate*180/PI);
