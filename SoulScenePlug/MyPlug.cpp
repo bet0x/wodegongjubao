@@ -261,6 +261,7 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 int CMyPlug::exportData(iScene * pScene, const std::string& strFilename)
 {
 	{
+		pScene->getFog()
 		CLumpFile lumpFile;
 		lumpFile.SetName("scene");
 		lumpFile.SetVal("fog",pScene->getFog());

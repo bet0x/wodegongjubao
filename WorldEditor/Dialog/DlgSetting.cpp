@@ -33,8 +33,7 @@ void CDlgSetting::OnControlRegister()
 	RegisterControlEvent("IDC_CHECKBOX_TERRAIN_LAYER2",	(PEVENT)&CDlgSetting::OnBtnTerrainLayer1Visible);
 	RegisterControlEvent("IDC_CHECKBOX_TERRAIN_GRID",	(PEVENT)&CDlgSetting::OnBtnTerrainGridVisible);
 	RegisterControlEvent("IDC_CHECKBOX_TERRAIN_BBOX",	(PEVENT)&CDlgSetting::OnBtnTerrainBBoxVisible);
-	RegisterControlEvent("IDC_CHECKBOX_STATIC_OBJECT",	(PEVENT)&CDlgSetting::OnBtnStaticObjectVisible);
-	RegisterControlEvent("IDC_CHECKBOX_ANIM_OBJECT",	(PEVENT)&CDlgSetting::OnBtnAnimObjectVisible);
+	RegisterControlEvent("IDC_CHECKBOX_STATIC_OBJECT",	(PEVENT)&CDlgSetting::OnBtnObjectVisible);
 	RegisterControlEvent("IDC_CHECKBOX_OBJECT_BBOX",	(PEVENT)&CDlgSetting::OnBtnObjectBBoxVisible);
 
 	RegisterControlEvent("IDC_BTN_TERRAIN_RESIZE",		(PEVENT)&CDlgSetting::OnBtnTerrainResize);
@@ -94,19 +93,14 @@ void CDlgSetting::OnBtnTerrainBBoxVisible()
 	WE_TERRAIN.ShowBox(!WE_TERRAIN.IsShowBox());
 }
 
-void CDlgSetting::OnBtnStaticObjectVisible()
+void CDlgSetting::OnBtnObjectVisible()
 {
-	WE_SCENE.showStaticObject(!WE_SCENE.isShowStaticObject());
-}
-
-void CDlgSetting::OnBtnAnimObjectVisible()
-{
-	WE_SCENE.showAnimObject(!WE_SCENE.isShowAnimObject());
+	WE_SCENE.setShowObject(!WE_SCENE.getShowObject());
 }
 
 void CDlgSetting::OnBtnObjectBBoxVisible()
 {
-	WE_SCENE.showObjectBBox(!WE_SCENE.isShowObjectBBox());
+	WE_SCENE.setShowObjectBBox(!WE_SCENE.getShowObjectBBox());
 }
 
 void CDlgSetting::OnBtnTerrainResize()
@@ -126,10 +120,10 @@ void CDlgSetting::OnCameraChanged()
 void CDlgSetting::OnFogChanged()
 {
 	Fog fog;
-	fog.fStart=m_SliderFogEnd.GetValue()*0.01f*m_SliderFogStart.GetValue();
-	fog.fEnd=m_SliderFogEnd.GetValue();
-	fog.fDensity=m_NumFogDensity.getFloat();
-	fog.color=m_ColorFog.getColor();
+	fog.fStart		= (float)m_SliderFogEnd.GetValue()*0.01f*m_SliderFogStart.GetValue();
+	fog.fEnd		= (float)m_SliderFogEnd.GetValue();
+	fog.fDensity	= m_NumFogDensity.getFloat();
+	fog.color		= m_ColorFog.getColor();
 	WE_SCENE.setFog(fog);
 }
 
@@ -146,8 +140,8 @@ void CDlgSetting::OnMaterialChanged()
 void CDlgSetting::init()
 {
 	const Fog& fog = WE_SCENE.getFog();
-	m_SliderFogStart.SetValue(fog.fStart*100/fog.fEnd);
-	m_SliderFogEnd.SetValue(fog.fEnd);
+	m_SliderFogStart.SetValue((int)(fog.fStart*100/fog.fEnd));
+	m_SliderFogEnd.SetValue((int)fog.fEnd);
 	m_NumFogDensity.setFloat(fog.fDensity,0,2);
 	m_ColorFog.setColor(fog.color);
 

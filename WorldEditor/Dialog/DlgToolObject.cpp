@@ -53,7 +53,7 @@ void CDlgToolObject::OnNumGridSnapChanged()
 void CDlgToolObject::OnFocusObjectValueChanged()
 {
 	CFocusNode& focusNode  = WE_SCENE.getFocusObjects();
-	if (focusNode.getChildObj()size()>0)
+	if (focusNode.getChildObj().size()>0)
 	{
 		Vec3D vPos=m_Vec3DPos.getVec3D();
 		Vec3D vRotate=m_Vec3Rotate.getVec3D()*(PI/180);
@@ -77,7 +77,8 @@ void CDlgToolObject::OnFocusObjectValueChanged()
 void CDlgToolObject::OnFocusObjectUpdate()
 {
 	CFocusNode& focusNode  = WE_SCENE.getFocusObjects();
-	if (focusNode.getChildObj()size()>0)
+	LIST_RENDER_NODE& listRenderNode = focusNode.getChildObj();
+	if (listRenderNode.size()>0)
 	{
 		Vec3D vPos = focusNode.getCenterPos();
 		Vec3D vRotate = focusNode.getCenterRotate();
@@ -87,9 +88,9 @@ void CDlgToolObject::OnFocusObjectUpdate()
 		m_Vec3Rotate.setVec3D(vRotate*180/PI);
 		m_NumScale.setFloat(vScale.x,0,2);
 
-		if (WE_SCENE.getFocusObjects().size()==1)
+		if (listRenderNode.size()==1)
 		{
-			CMapObj* pObject = WE_SCENE.getFocusObjects()[0];
+			CMapObj* pObject = (CMapObj*)(*listRenderNode.begin());
 			if (pObject->GetObjType()==MAP_3DSIMPLE)
 			{
 				m_ObjListSceneObject.SelectObjectByObjectID(((C3DMapSceneObj*)pObject)->getObjectID());
@@ -108,8 +109,7 @@ void CDlgToolObject::OnAddObject()
 		m_NumScale.setFloat(fScale,0,2);
 	}
 	Vec3D vScale=Vec3D(fScale,fScale,fScale);
-	CMapObj* pObject = WE_SCENE.add3DMapSceneObj(m_ObjListSceneObject.getSelectedObjectID(),WE_SCENE.getTargetPos(),vRotate,vScale);
-
-	WE_SCENE.addFocusObject(pObject);
+	CRenderNode * pObject = WE_SCENE.add3DMapSceneObj(m_ObjListSceneObject.getSelectedObjectID(),WE_SCENE.getTargetPos(),vRotate,vScale);
+	WE_SCENE.getFocusObjects().addChild(pObject);
 	OnFocusObjectUpdate();
 }
