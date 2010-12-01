@@ -14,8 +14,7 @@ public:
 	void OnBtnTerrainLayer1Visible();
 	void OnBtnTerrainGridVisible();
 	void OnBtnTerrainBBoxVisible();
-	void OnBtnStaticObjectVisible();
-	void OnBtnAnimObjectVisible();
+	void OnBtnObjectVisible();
 	void OnBtnObjectBBoxVisible();
 	void OnBtnTerrainResize();
 	void OnBtnCalcLightMap();

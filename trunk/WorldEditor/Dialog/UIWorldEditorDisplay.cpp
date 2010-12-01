@@ -17,7 +17,7 @@ m_fGridSnap(0.5f)
 	//m_Camera.setTargetPos(Vec3D(10,10,10));
 	m_Camera.setYawAngle(PI/4);
 	m_Camera.setPitchAngle(-PI/4);
-	m_Scene.SetTerrain(&m_Terrain);
+	m_Scene.setTerrain(&m_Terrain);
 }
 
 CUIWorldEditorDisplay::~CUIWorldEditorDisplay()
@@ -36,7 +36,7 @@ void CUIWorldEditorDisplay::OnFrameMove(double fTime, float fElapsedTime)
 	m_Camera.FrameMove(fElapsedTime);
 
 	CUIDisplay::OnFrameMove(fTime, fElapsedTime);
-	m_Scene.OnFrameMove(fTime, fElapsedTime);
+	m_Scene.frameMove(Matrix::UNIT, fTime, fElapsedTime);
 
 	if (IsFocus())
 	{
@@ -102,7 +102,7 @@ void CUIWorldEditorDisplay::OnFrameRender(const Matrix& mTransform, double fTime
 		R.setViewMatrix(m_Camera.GetViewMatrix());
 		R.setWorldMatrix(Matrix::UNIT);
 		m_Scene.UpdateRender(m_Camera.GetFrustum());
-		m_Scene.OnFrameRender(fTime,fElapsedTime);
+		m_Scene.render(Matrix::UNIT);
 
 		R.SetCullingMode(CULL_NONE);
 
@@ -123,15 +123,20 @@ void CUIWorldEditorDisplay::OnFrameRender(const Matrix& mTransform, double fTime
 	R.setWorldMatrix(Matrix::UNIT);
 
 
+	// ----
+	CFocusNode& focusNode = m_Scene.getFocusObjects();
 	R.ClearBuffer(true,false,0x0);
-	if (m_Scene.getFocusObjects().size()>0)
+	if (focusNode.getChildObj().size()>0)
 	{
-		m_MeshCoordinate.setPos(m_Scene.getFocusObjectsPos());
+		Vec3D vFocusPos = focusNode.getCenterPos();
+		m_MeshCoordinate.setPos(vFocusPos);
+		// ----
 		if (!IsPressed())
 		{
-			Vec3D vLength = m_Scene.getFocusObjectsPos()-m_Camera.GetEyePt();
+			Vec3D vLength = vFocusPos-m_Camera.GetEyePt();
 			m_MeshCoordinate.setScale(vLength.length()*m_fCoordScale);
 		}
+		// ----
 		if (m_vPosMoveOn.length()>0)
 		{
 			m_MeshCoordinate.render(m_vPosMoveOn);
@@ -298,7 +303,8 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 			//////////////////////////////////////////////////////////////////////////
 			if (m_Terrain.GetBrushDecal().GetBrushType()==CTerrainBrush::BRUSH_TYPE_SCENE_OBJECT)
 			{
-				if (m_Scene.getFocusObjects().size()>0)
+				CFocusNode& focusNode = m_Scene.getFocusObjects();
+				if (focusNode.size()>0)
 				{
 					if (GetKeyState(VK_CONTROL)<0)
 					{
@@ -306,33 +312,29 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 						{
 						case VK_UP:
 							{
-								Vec3D vPos=m_Scene.getFocusObjectsPos();
-								vPos.y+=m_fGridSnap;
-								m_Scene.setFocusObjectsPos(vPos);
+								focusNode.transformCenter(Vec3D(0.0f,m_fGridSnap,0.0f));
+								m_Scene.updateObjTreeByFocus();
 								GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 							}
 							return true;
 						case VK_DOWN:
 							{
-								Vec3D vPos=m_Scene.getFocusObjectsPos();
-								vPos.y-=m_fGridSnap;
-								m_Scene.setFocusObjectsPos(vPos);
+								focusNode.transformCenter(Vec3D(0.0f,-m_fGridSnap,0.0f));
+								m_Scene.updateObjTreeByFocus();
 								GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 							}
 							return true;
 						case VK_LEFT:
 							{
-								Vec3D vRotate=m_Scene.getFocusObjectsRotate();
-								vRotate.y+=PI/4;
-								m_Scene.setFocusObjectsRotate(vRotate);
+								focusNode.rotateCenter(Vec3D(0.0f,PI/4,0.0f));
+								m_Scene.updateObjTreeByFocus();
 								GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 							}
 							return true;
 						case VK_RIGHT:
 							{
-								Vec3D vRotate=m_Scene.getFocusObjectsRotate();
-								vRotate.y-=PI/4;
-								m_Scene.setFocusObjectsRotate(vRotate);
+								focusNode.rotateCenter(Vec3D(0.0f,-PI/4,0.0f));
+								m_Scene.updateObjTreeByFocus();
 								GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 							}
 							return true;
@@ -344,33 +346,29 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 						{
 						case VK_UP:
 							{
-								Vec3D vPos=m_Scene.getFocusObjectsPos();
-								vPos.z+=m_fGridSnap;
-								m_Scene.setFocusObjectsPos(vPos);
+								focusNode.transformCenter(Vec3D(0.0f,0.0f,m_fGridSnap));
+								m_Scene.updateObjTreeByFocus();
 								GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 							}
 							return true;
 						case VK_DOWN:
 							{
-								Vec3D vPos=m_Scene.getFocusObjectsPos();
-								vPos.z-=m_fGridSnap;
-								m_Scene.setFocusObjectsPos(vPos);
+								focusNode.transformCenter(Vec3D(0.0f,0.0f,-m_fGridSnap));
+								m_Scene.updateObjTreeByFocus();
 								GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 							}
 							return true;
 						case VK_LEFT:
 							{
-								Vec3D vPos=m_Scene.getFocusObjectsPos();
-								vPos.x-=m_fGridSnap;
-								m_Scene.setFocusObjectsPos(vPos);
+								focusNode.transformCenter(Vec3D(-m_fGridSnap£¬0.0f,0.0f));
+								m_Scene.updateObjTreeByFocus();
 								GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 							}
 							return true;
 						case VK_RIGHT:
 							{
-								Vec3D vPos=m_Scene.getFocusObjectsPos();
-								vPos.x+=m_fGridSnap;
-								m_Scene.setFocusObjectsPos(vPos);
+								focusNode.transformCenter(Vec3D(m_fGridSnap£¬0.0f,0.0f));
+								m_Scene.updateObjTreeByFocus();
 								GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 							}
 							return true;
