@@ -278,7 +278,7 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 			switch(wParam)
 			{
 			case VK_DELETE:
-				m_Scene.delMapObjsByFocusObjects();
+				m_Scene.delChildByFocus();
 				return true;
 			case VK_SUBTRACT:
 				m_fCoordScale=max(0.0f,m_fCoordScale-0.05f);
@@ -304,7 +304,7 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 			if (m_Terrain.GetBrushDecal().GetBrushType()==CTerrainBrush::BRUSH_TYPE_SCENE_OBJECT)
 			{
 				CFocusNode& focusNode = m_Scene.getFocusObjects();
-				if (focusNode.size()>0)
+				if (focusNode.getChildObj().size()>0)
 				{
 					if (GetKeyState(VK_CONTROL)<0)
 					{
@@ -360,14 +360,14 @@ bool CUIWorldEditorDisplay::HandleKeyboard(UINT uMsg, WPARAM wParam, LPARAM lPar
 							return true;
 						case VK_LEFT:
 							{
-								focusNode.transformCenter(Vec3D(-m_fGridSnap£¬0.0f,0.0f));
+								focusNode.transformCenter(Vec3D(-m_fGridSnap,0.0f,0.0f));
 								m_Scene.updateObjTreeByFocus();
 								GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 							}
 							return true;
 						case VK_RIGHT:
 							{
-								focusNode.transformCenter(Vec3D(m_fGridSnap£¬0.0f,0.0f));
+								focusNode.transformCenter(Vec3D(m_fGridSnap,0.0f,0.0f));
 								m_Scene.updateObjTreeByFocus();
 								GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 							}
@@ -420,7 +420,7 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 		{
 			if (m_Terrain.GetBrushDecal().GetBrushType()==CTerrainBrush::BRUSH_TYPE_SCENE_OBJECT)
 			{
-				if (m_Scene.getFocusObjects().size()>0)
+				if (m_Scene.getFocusObjects().getChildObj().size()>0)
 				{
 					{
 						float t = (m_vObjectLastPos.f[m_CoordPlanType]-vRayPos.f[m_CoordPlanType])/vRayDir.f[m_CoordPlanType];
@@ -431,7 +431,7 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 
 					if (m_vPosPressed.length()>1)
 					{
-						Vec3D vOldPos = m_Scene.getFocusObjectsPos();
+						Vec3D vOldPos = m_Scene.getFocusObjects().getCenterPos();
 						for (int i=0;i<3;i++)
 						{
 							float fSize = floorf((m_vAfterCatchPos.f[i]/m_fGridSnap+0.5f))*m_fGridSnap;
@@ -454,7 +454,7 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 					{
 						m_vAfterCatchPos.y = m_Terrain.GetHeight(m_vAfterCatchPos.x,m_vAfterCatchPos.z);
 					}
-					m_Scene.setFocusObjectsPos(m_vAfterCatchPos);
+					m_Scene.getFocusObjects().setCenterPos(m_vAfterCatchPos);
 					GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 				}
 			}
@@ -479,7 +479,7 @@ void CUIWorldEditorDisplay::OnMouseMove(POINT point)
 	}
 	else
 	{
-		if (m_Scene.getFocusObjects().size()>0)
+		if (m_Scene.getFocusObjects().getChildObj().size()>0)
 		{
 			if(!m_MeshCoordinate.intersect(vRayPos, vRayDir,m_vPosMoveOn))
 			{
@@ -516,28 +516,28 @@ void CUIWorldEditorDisplay::OnLButtonDown(POINT point)
 		if (GetKeyState(VK_CONTROL)<0)
 		{
 			CMapObj* pObject = m_Scene.pickObject(vRayPos, vRayDir);
-			if (m_Scene.findFocusObject(pObject))
+			if (m_Scene.getFocusObjects().contain(pObject))
 			{
-				m_Scene.delFocusObject(pObject);
+				m_Scene.getFocusObjects().removeChild(pObject);
 			}
 			else
 			{
-				m_Scene.addFocusObject(pObject);
+				m_Scene.getFocusObjects().addChild(pObject);
 			}
 			GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 		}
 		else
 		{
-			if (m_Scene.getFocusObjects().size()>0&&m_MeshCoordinate.intersect(vRayPos, vRayDir,m_vPosPressed))
+			if (m_Scene.getFocusObjects().getChildObj().size()>0&&m_MeshCoordinate.intersect(vRayPos, vRayDir,m_vPosPressed))
 			{
 			}
 			else
 			{
 				CMapObj* pObject = m_Scene.pickObject(vRayPos, vRayDir);
-				if (m_Scene.findFocusObject(pObject)==false)
+				if (m_Scene.getFocusObjects().contain(pObject)==false)
 				{
-					m_Scene.clearFocusObjects();
-					m_Scene.addFocusObject(pObject);
+					m_Scene.getFocusObjects().removeAllChild();
+					m_Scene.getFocusObjects().addChild(pObject);
 					GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 				}
 			}
@@ -557,10 +557,10 @@ void CUIWorldEditorDisplay::OnLButtonDown(POINT point)
 	}
 
 	SetPressed(true);
-	if (m_Scene.getFocusObjects().size()>0)
+	if (m_Scene.getFocusObjects().getChildObj().size()>0)
 	{
 		m_ptLastMousePosition=point;
-		m_vObjectLastPos = m_Scene.getFocusObjectsPos();
+		m_vObjectLastPos = m_Scene.getFocusObjects().getCenterPos();
 		{
 			m_CoordPlanType = CPT_XY;
 			if (m_vPosPressed[0]&&m_vPosPressed[1])
