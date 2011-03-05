@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ScenePlugs", "ScenePlugs", "{315A3DFE-3BAF-4B3B-AB9A-1CBAA94ACF06}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ModelPlugs", "ModelPlugs", "{F7A6C541-585E-411D-9499-26353DFA734E}"
@@ -15,39 +15,35 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MaterialDataPlugs", "Materi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RenderPlugs", "RenderPlugs", "{9206E042-19F7-4A04-9344-A1C49B56FDA0}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max2009ModelExporter", "Max2009ModelExporter\Max2009ModelExporter.vcproj", "{E7CB76AA-6113-46BA-8EBC-8AE1D2B81210}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WorldEditor", "WorldEditor\WorldEditor.vcproj", "{DAC0DCD2-228B-4050-AE74-64E9A57611BE}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FilePackage", "FilePackage\FilePackage.vcproj", "{0F149A82-64A5-429F-975C-CAD4A78DE734}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MuWorldMapPlugin", "MuWorldMapImport\MuWorldMapImport.vcproj", "{257217AD-AAF5-461D-9327-03891BA604A1}"
-	ProjectSection(ProjectDependencies) = postProject
-		{4FAA0DB0-BC06-4265-B426-8D73D2BD15B8} = {4FAA0DB0-BC06-4265-B426-8D73D2BD15B8}
-		{7F7BAAD4-C3DA-45D6-A51F-2753E5A48E0A} = {7F7BAAD4-C3DA-45D6-A51F-2753E5A48E0A}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MUFileDecrypt", "MUWorldTransform\MUWorldTransform.vcproj", "{6E710299-F74E-4F1C-93ED-25DD4522EECA}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SoulScenePlug", "SoulScenePlug\SoulScenePlug.vcproj", "{C382D9F0-08B5-44FE-9848-65E7C418AEEE}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MuModelPlugin", "MuModelPlugin\MuModelPlugin.vcproj", "{40AB2FE3-FD81-47B3-9D55-AC959D2F8B8D}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OGREModelPlugin", "OGREModelPlugin\OGREModelPlugin.vcproj", "{214B8B3A-CD4A-4B0C-8E92-9323A375C242}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TorchLightPlug", "TorchLightPlug\TorchLightPlug.vcproj", "{C1D1D884-7396-40D5-ABAE-73B0AE3C4EF5}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CSVMaterialDataPlugin", "CSVMaterialDataPlugin\CSVMaterialDataPlugin.vcproj", "{EEB7C1F2-C588-4924-909A-DF7326CC09FF}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RenderSystemDX9", "RenderSystemDX9\RenderSystemDX9.vcproj", "{6CBDDBA0-9652-41E5-8FB4-79CE71041D1C}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jpeg", "MuWorldMapImport\jpeg\jpeg.vcproj", "{4FAA0DB0-BC06-4265-B426-8D73D2BD15B8}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "borZoi", "MuWorldMapImport\borZoi\borZoi.vcproj", "{7F7BAAD4-C3DA-45D6-A51F-2753E5A48E0A}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MuWorldMap", "MuWorldMap", "{DCE02873-3D20-44FD-B18E-84B74C7C579E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ParticleEmitterMgr", "ParticleEmitterMgr", "{2776E955-E4B3-4D4C-BC81-FCADAE147746}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Max2009ModelExporter", "Max2009ModelExporter\Max2009ModelExporter.vcxproj", "{E7CB76AA-6113-46BA-8EBC-8AE1D2B81210}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WorldEditor", "WorldEditor\WorldEditor.vcxproj", "{DAC0DCD2-228B-4050-AE74-64E9A57611BE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FilePackage", "FilePackage\FilePackage.vcxproj", "{0F149A82-64A5-429F-975C-CAD4A78DE734}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MuWorldMapPlugin", "MuWorldMapImport\MuWorldMapImport.vcxproj", "{257217AD-AAF5-461D-9327-03891BA604A1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MUFileDecrypt", "MUWorldTransform\MUWorldTransform.vcxproj", "{6E710299-F74E-4F1C-93ED-25DD4522EECA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SoulScenePlug", "SoulScenePlug\SoulScenePlug.vcxproj", "{C382D9F0-08B5-44FE-9848-65E7C418AEEE}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MuModelPlugin", "MuModelPlugin\MuModelPlugin.vcxproj", "{40AB2FE3-FD81-47B3-9D55-AC959D2F8B8D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OGREModelPlugin", "OGREModelPlugin\OGREModelPlugin.vcxproj", "{214B8B3A-CD4A-4B0C-8E92-9323A375C242}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TorchLightPlug", "TorchLightPlug\TorchLightPlug.vcxproj", "{C1D1D884-7396-40D5-ABAE-73B0AE3C4EF5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CSVMaterialDataPlugin", "CSVMaterialDataPlugin\CSVMaterialDataPlugin.vcxproj", "{EEB7C1F2-C588-4924-909A-DF7326CC09FF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RenderSystemDX9", "RenderSystemDX9\RenderSystemDX9.vcxproj", "{6CBDDBA0-9652-41E5-8FB4-79CE71041D1C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jpeg", "MuWorldMapImport\jpeg\jpeg.vcxproj", "{4FAA0DB0-BC06-4265-B426-8D73D2BD15B8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "borZoi", "MuWorldMapImport\borZoi\borZoi.vcxproj", "{7F7BAAD4-C3DA-45D6-A51F-2753E5A48E0A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -208,8 +204,8 @@ Global
 		{C1D1D884-7396-40D5-ABAE-73B0AE3C4EF5} = {315A3DFE-3BAF-4B3B-AB9A-1CBAA94ACF06}
 		{EEB7C1F2-C588-4924-909A-DF7326CC09FF} = {BD8CEB65-3476-4848-B835-E9E8932BBA0D}
 		{6CBDDBA0-9652-41E5-8FB4-79CE71041D1C} = {9206E042-19F7-4A04-9344-A1C49B56FDA0}
+		{257217AD-AAF5-461D-9327-03891BA604A1} = {DCE02873-3D20-44FD-B18E-84B74C7C579E}
 		{4FAA0DB0-BC06-4265-B426-8D73D2BD15B8} = {DCE02873-3D20-44FD-B18E-84B74C7C579E}
 		{7F7BAAD4-C3DA-45D6-A51F-2753E5A48E0A} = {DCE02873-3D20-44FD-B18E-84B74C7C579E}
-		{257217AD-AAF5-461D-9327-03891BA604A1} = {DCE02873-3D20-44FD-B18E-84B74C7C579E}
 	EndGlobalSection
 EndGlobal

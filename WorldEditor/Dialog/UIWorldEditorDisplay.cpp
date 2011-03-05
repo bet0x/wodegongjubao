@@ -536,7 +536,7 @@ void CUIWorldEditorDisplay::OnLButtonDown(POINT point)
 				CMapObj* pObject = m_Scene.pickObject(vRayPos, vRayDir);
 				if (m_Scene.getFocusObjects().contain(pObject)==false)
 				{
-					m_Scene.getFocusObjects().removeAllChild();
+					m_Scene.getFocusObjects().removeChildren();
 					m_Scene.getFocusObjects().addChild(pObject);
 					GetParentDialog()->postMsg("MSG_FOCUS_OBJECT_UPDATE");
 				}
