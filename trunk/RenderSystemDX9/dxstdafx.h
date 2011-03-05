@@ -22,7 +22,7 @@
 
 // #define DXUT_AUTOLIB to automatically include the libs needed for DXUT 
 //#ifdef DXUT_AUTOLIB
-#pragma comment(lib, "dxerr9.lib")
+#pragma comment(lib, "dxerr.lib")
 #pragma comment(lib, "dxguid.lib")
 #if defined(_DEBUG)
 #pragma comment(lib, "d3dx9d.lib")
