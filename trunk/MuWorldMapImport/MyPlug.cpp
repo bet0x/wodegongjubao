@@ -1413,7 +1413,7 @@ struct ObjInfo
 
 bool CMyPlug::importObject(iScene * pScene, const char* szFilename)
 {
-	pScene->removeAllObjects();
+	pScene->clearAllObjects();
 	IOReadBase* pRead = IOReadBase::autoOpen(szFilename);
 	if (pRead)
 	{
@@ -2510,7 +2510,7 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 			if (f)
 			{
 				std::vector<ObjInfo> setObjInfo;
-				DEQUE_MAPOBJ setObject;
+				/*DEQUE_MAPOBJ setObject;
 				pScene->getAllObjects(setObject);
 				for (DEQUE_MAPOBJ::iterator it=setObject.begin();it!=setObject.end();it++)
 				{
@@ -2529,7 +2529,7 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 						objInfo.fScale = pObj->getScale().x;
 						setObjInfo.push_back(objInfo);
 					}
-				}
+				}*/
 				size_t fileSize = setObjInfo.size()*sizeof(ObjInfo)+4;
 				char* buffer = new char[fileSize];
 				*((unsigned char*)buffer)=0x0;

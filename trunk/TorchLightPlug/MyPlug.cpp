@@ -134,7 +134,7 @@ void importObjectByNodeData(iScene * pScene,const CNodeData* pParentNode)
 
 bool CMyPlug::importObject(iScene * pScene, const std::string& strFilename)
 {
-	pScene->removeAllObjects();
+	pScene->clearAllObjects();
 	CStringNodeFile file;
 	if (!file.LoadFile(strFilename))
 	{

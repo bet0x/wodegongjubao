@@ -129,7 +129,7 @@ struct ObjInfo
 
 bool CMyPlug::importObject(iScene * pScene, const std::string& strFilename)
 {
-	pScene->removeAllObjects();
+	pScene->clearAllObjects();
 	IOReadBase* pRead = IOReadBase::autoOpen(strFilename);
 	if (pRead)
 	{
@@ -226,7 +226,7 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 	{
 		std::vector<ObjInfo> setObjInfo;
 		DEQUE_MAPOBJ setObject;
-		pScene->getAllObjects(setObject);
+		/*pScene->getAllObjects(setObject);
 		for (DEQUE_MAPOBJ::iterator it=setObject.begin();it!=setObject.end();it++)
 		{
 			ObjInfo objInfo;
@@ -241,7 +241,7 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 			objInfo.rotate = vRotate;
 			objInfo.fScale = pObj->getScale().x;
 			setObjInfo.push_back(objInfo);
-		}
+		}*/
 		size_t fileSize = setObjInfo.size()*sizeof(ObjInfo)+4;
 		char* buffer = new char[fileSize];
 		*((unsigned short*)buffer) = 1;//m_uUnknow;
@@ -261,12 +261,12 @@ bool CMyPlug::exportObject(iScene * pScene, const std::string& strFilename)
 int CMyPlug::exportData(iScene * pScene, const std::string& strFilename)
 {
 	{
-		pScene->getFog()
+	/*	pScene->getFog()
 		CLumpFile lumpFile;
 		lumpFile.SetName("scene");
 		lumpFile.SetVal("fog",pScene->getFog());
 		lumpFile.SetVal("light",pScene->getLight());
-		lumpFile.SaveFile(ChangeExtension(strFilename,".sce"));
+		lumpFile.SaveFile(ChangeExtension(strFilename,".sce"));*/
 	}
 	exportTerrainData(pScene->getTerrainData(),ChangeExtension(strFilename,".map"));
 	exportObject(pScene,ChangeExtension(strFilename,".obj"));
