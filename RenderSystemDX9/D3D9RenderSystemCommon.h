@@ -3,7 +3,7 @@
 #include "HardwareIndexBuffer.h"
 #include <d3d9.h>
 #include <d3dx9.h>
-#include <dxerr9.h>
+//#include <dxerr9.h>
 
 #ifndef D3D9S_REL
 #define D3D9S_REL(p) D3D9SafeRelease(*(LPDIRECT3DRESOURCE9*)(&p));

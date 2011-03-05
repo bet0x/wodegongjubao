@@ -1,5 +1,6 @@
 #pragma once
 #include "D3D9RenderSystemCommon.h"
+#include <DxErr.h>
 
 
 DWORD UsageForD3D9(CHardwareBuffer::Usage usage)
@@ -106,7 +107,7 @@ bool D3DCheckHresult(HRESULT hr, const char* szInfo)
 	if (FAILED(hr))
 	{
 		std::string msg;
-		msg.append(DXGetErrorDescription9A(hr));
+		msg.append(DXGetErrorDescriptionA(hr));
 		msg.append(" : ");
 		msg.append(szInfo);
 		MessageBoxA(NULL,msg.c_str(),"error",MB_OK);

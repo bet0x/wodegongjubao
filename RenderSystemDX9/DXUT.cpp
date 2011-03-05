@@ -2782,7 +2782,7 @@ HRESULT DXUTCreate3DEnvironment(IDirect3DDevice9* pd3dDeviceFromApp)
 //      - Sets up the full screen Direct3D cursor if requested
 //      - Calls the device reset callback 
 
-#include "dxerr9.h"
+//#include "dxerr9.h"
 HRESULT DXUTReset3DEnvironment()
 {
     HRESULT hr;
@@ -2799,7 +2799,7 @@ HRESULT DXUTReset3DEnvironment()
     hr = pd3dDevice->Reset(&pDeviceSettings->pp);
     if(FAILED(hr))  
     {
-		std::wstring msg = DXGetErrorDescription9(hr);
+		std::wstring msg = DXGetErrorDescription(hr);
         if(hr == D3DERR_DEVICELOST)
             return D3DERR_DEVICELOST; // Reset could legitimately fail if the device is lost
         else
