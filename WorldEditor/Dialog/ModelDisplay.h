@@ -5,6 +5,7 @@
 #include "ModelObject.h"
 #include "SceneEffect.h"
 #include "..\RPGSkyTextRender.h"
+#include "MeshCoordinate.h"
 
 // œ‘ æ¿‡
 class CModelDisplay : public CUIDisplay

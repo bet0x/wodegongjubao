@@ -49,7 +49,7 @@ void RPGSkyUIGraph::FillRect(const CRect<float> & rcDest, Color32 color)
 	R.SetTextureColorOP(0, TBOP_SOURCE2);
 	R.SetTextureAlphaOP(0, TBOP_SOURCE2);
 	// ----
-	GetGraphics().FillRect3D(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, color.c);
+	GetGraphics().FillRect(rcDest.left, rcDest.top, rcDest.right, rcDest.bottom, color.c);
 	// ----
 	R.SetTextureColorOP(0, TBOP_MODULATE);
 	R.SetTextureAlphaOP(0, TBOP_MODULATE);
@@ -115,7 +115,7 @@ void RPGSkyUIGraph::DrawSprite3x3Grid(const CRect<float> & rcSrc, const CRect<fl
 {
 	if(color.a != 0)
 	{
-		GetGraphics().Draw3x3Grid3D(rcSrc, rcCenterSrc, rcDest, (int)pTexture, color);
+		GetGraphics().Draw3x3Grid(rcSrc, rcCenterSrc, rcDest, (int)pTexture, color);
 	}
 }
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -124,7 +124,7 @@ void RPGSkyUIGraph::DrawSprite(const CRect<float> & rcSrc, const CRect<float> & 
 {
 	if(color.a != 0)
 	{
-		GetGraphics().DrawTex3D(rcSrc, rcDest, (int)pTexture, color);
+		GetGraphics().DrawTex(rcSrc, rcDest, (int)pTexture, color);
 	}
 }
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
