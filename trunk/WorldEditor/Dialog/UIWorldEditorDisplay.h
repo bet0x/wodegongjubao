@@ -5,6 +5,7 @@
 #include "TerrainEditor.h"
 #include "SceneEffect.h"
 #include "Scene.h"
+#include "MeshCoordinate.h"
 
 class CUIWorldEditorDisplay: public CUIDisplay
 {

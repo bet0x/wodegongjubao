@@ -57,16 +57,16 @@ void CUIWorldEditorDisplay::OnFrameRender(const Matrix& mTransform, double fTime
 	CShader* pShader = R.GetShaderMgr().getSharedShader();
 	pShader->setFloat("g_fTime",fTime);
 	pShader->setMatrix("g_mViewProj",m_Camera.GetProjXView());
-	pShader->setMatrix("g_mView",m_Camera.GetViewMatrix());
+	pShader->setMatrix("g_mView",m_Camera.getViewMatrix());
 	pShader->setVec3D("g_vLightDir",m_Scene.getTerrainData()->GetLightDir());
-	pShader->setVec3D("g_vEyePot",m_Camera.GetEyePt());
+	pShader->setVec3D("g_vEyePot",m_Camera.getEyePt());
 
 	R.SetupRenderState();
 	R.setWorldMatrix(Matrix::UNIT);
 	R.SetSamplerFilter(0, TEXF_LINEAR, TEXF_LINEAR, TEXF_LINEAR);
 	R.SetSamplerFilter(1, TEXF_LINEAR, TEXF_LINEAR, TEXF_LINEAR);
-	R.setProjectionMatrix(m_Camera.GetProjMatrix());
-	R.setViewMatrix(m_Camera.GetViewMatrix());
+	R.setProjectionMatrix(m_Camera.getProjMatrix());
+	R.setViewMatrix(m_Camera.getViewMatrix());
 
 	bool bBloom = false;
 	bool bCamma = false;
@@ -83,7 +83,7 @@ void CUIWorldEditorDisplay::OnFrameRender(const Matrix& mTransform, double fTime
 	}
 
 	// ‰÷»æÃÏø’∫–
-	//m_SkyBox.Render(m_Camera.GetViewMatrix());
+	//m_SkyBox.Render(m_Camera.getViewMatrix());
 	//pShader->setTexture("g_texEnvironment",m_SkyBox.m_pCubeMap);
 	// À¢ŒÌ…´
 	//R.ClearBuffer(true, true, GetFog().dwColor);
@@ -98,8 +98,8 @@ void CUIWorldEditorDisplay::OnFrameRender(const Matrix& mTransform, double fTime
 		//GetBsp()->RenderBox(m_Camera.GetFrustum());
 		//g_SceneBsp.Pick(GetRoleMgr()->GetLeader()->GetPos(), &(*GetRoleMgr()->GetLeader()->GetPos()+m_Camera.GetViewDir()));
 		// µÿ–Œ‰÷»æ
-		R.setProjectionMatrix(m_Camera.GetProjMatrix());
-		R.setViewMatrix(m_Camera.GetViewMatrix());
+		R.setProjectionMatrix(m_Camera.getProjMatrix());
+		R.setViewMatrix(m_Camera.getViewMatrix());
 		R.setWorldMatrix(Matrix::UNIT);
 		m_Scene.UpdateRender(m_Camera.GetFrustum());
 		m_Scene.render(Matrix::UNIT);
@@ -133,7 +133,7 @@ void CUIWorldEditorDisplay::OnFrameRender(const Matrix& mTransform, double fTime
 		// ----
 		if (!IsPressed())
 		{
-			Vec3D vLength = vFocusPos-m_Camera.GetEyePt();
+			Vec3D vLength = vFocusPos-m_Camera.getEyePt();
 			m_MeshCoordinate.setScale(vLength.length()*m_fCoordScale);
 		}
 		// ----
@@ -235,8 +235,8 @@ void CUIWorldEditorDisplay::OnFrameRender(const Matrix& mTransform, double fTime
 		R.ClearBuffer(false, true, 0x00000000);
 		//m_SceneEffect.renderTargetViewportBegin();
 		{
-			R.setProjectionMatrix(m_Camera.GetProjMatrix());
-			R.setViewMatrix(m_Camera.GetViewMatrix());
+			R.setProjectionMatrix(m_Camera.getViewMatrix());
+			R.setViewMatrix(m_Camera.getViewMatrix());
 			//m_Scene.renderGlow();
 		}
 		//m_SceneEffect.renderTargetViewportEnd();
