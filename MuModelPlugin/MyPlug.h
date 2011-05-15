@@ -8,10 +8,7 @@ public:
 	~CMyPlug(void);
 	virtual const char * getTitle(){return "Mu Model File";}
 	virtual const char * getFormat() {return ".bmd";}
-	virtual int Execute(iModelData * pModelData, bool bShowDlg, bool bSpecifyFileName);
-	virtual bool importData(iModelData * pModelData, const std::string& strFilename);
-	virtual bool exportData(iModelData * pModelData, const std::string& strFilename);
-
+	virtual CRenderNode* importData(iRenderNodeMgr* pRenderNodeMgr, const char* szFilename);
 	virtual void release();
 private:
 };

@@ -16,11 +16,6 @@ CMyPlug::~CMyPlug(void)
 
 }
 
-int CMyPlug::Execute(std::map<std::string, CMaterial>& mapItems, bool bShowDlg, bool bSpecifyFileName)
-{
-	return -1;
-}
-
 #include "FileSystem.h"
 
 std::string getLineCommand(IOReadBase* pRead, std::vector<std::string>& setWords)
@@ -205,17 +200,18 @@ bool loadMaterialPass(CMaterial& material, const char* szFilename)
 	IOReadBase::autoClose(pRead);
 }
 
-bool CMyPlug::importData(std::map<std::string, CMaterial>& mapItems, const char* szFilename, const char* szParentDir)
+CRenderNode* CMyPlug::importData(iRenderNodeMgr* pRenderNodeMgr, const char* szFilename)
 {
+	char szParentDir[16]="";
 	CCsvFile csv;
 	if (!csv.open(szFilename))
 	{
-		return false;
+		return NULL;
 	}
 	while (csv.seekNextLine())
 	{
 		const char* szMaterial	= csv.getStr("Name","");
-		CMaterial& material		= mapItems[szMaterial];
+		CMaterial& material		= *pRenderNodeMgr->createMaterial(szMaterial);
 
 		material.setTexture(0,getRealFilename(szParentDir,csv.getStr("Diffuse","")).c_str());
 		//material.m_fOpacity		=csv.getFloat("Opacity");
@@ -254,12 +250,7 @@ bool CMyPlug::importData(std::map<std::string, CMaterial>& mapItems, const char*
 		}
 	}
 	csv.close();
-	return true;
-}
-
-bool CMyPlug::exportData(std::map<std::string, CMaterial>& mapItems, const char* szFilename, const char* szParentDir)
-{
-	return true;
+	return NULL;
 }
 
 void CMyPlug::release()
