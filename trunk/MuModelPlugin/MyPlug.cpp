@@ -12,24 +12,18 @@ CMyPlug::~CMyPlug(void)
 {
 }
 
-int CMyPlug::Execute(iModelData * pModelData, bool bShowDlg, bool bSpecifyFileName)
+CRenderNode* CMyPlug::importData(iRenderNodeMgr* pRenderNodeMgr, const char* szFilename)
 {
-	return -1;
-}
-
-bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename)
-{
-	assert(pModelData);
 	static CMUBmd* pPlayerBmd;
 	CMUBmd bmd;
 	bool bIsPlayerPart = false;
-	if (!bmd.LoadFile(strFilename))
+	if (!bmd.LoadFile(szFilename))
 	{
 		return false;
 	}
-	if (GetFilename(strFilename)!="player.bmd")
+	if (GetFilename(szFilename)!="player.bmd")
 	{
-		std::string str = GetFilename(GetParentPath(strFilename));
+		std::string str = GetFilename(GetParentPath(szFilename));
 		if (str=="player")
 		{
 			if (pPlayerBmd)
@@ -39,13 +33,13 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 			else
 			{
 				pPlayerBmd = new CMUBmd;
-				bIsPlayerPart = pPlayerBmd->LoadFile(GetParentPath(strFilename)+"player.bmd");
+				bIsPlayerPart = pPlayerBmd->LoadFile(GetParentPath(szFilename)+"player.bmd");
 			}
 		}
 	}
-
 	//////////////////////////////////////////////////////////////////////////
-	iLodMesh& mesh = pModelData->getMesh();
+	iLodMesh& mesh = *pRenderNodeMgr->createLodMesh(szFilename);
+	iSkeletonData& skeletonData = *pRenderNodeMgr->createSkeletonData(szFilename);
 	//m_Mesh.m_Lods.resize(1);
 	if (bmd.nFrameCount>1)// if there one frame only, free the animlist
 	{
@@ -110,7 +104,7 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 			
 			std::vector<CMUBmd::BmdSkeleton::BmdBone>& setBmdBone = bmd.bmdSkeleton.setBmdBone;
 			size_t uBoneSize = setBmdBone.size();
-			SkeletonAnim& skeletonAnim=pModelData->getSkeleton().m_Anims[strAnimName];
+			SkeletonAnim& skeletonAnim=skeletonData.m_Anims[strAnimName];
 			std::vector<BoneAnim>& setBonesAnim=skeletonAnim.setBonesAnim;
 			setBonesAnim.resize(uBoneSize);
 			for (size_t uBoneID = 0;uBoneID<uBoneSize;++uBoneID)
@@ -159,7 +153,7 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 	for (size_t i=0;  i<bmd.setBmdSub.size(); ++i)
 	{
 		CMUBmd::BmdSub& bmdSub = bmd.setBmdSub[i];
-		iLodMesh& mesh = pModelData->getMesh();
+		//iLodMesh& mesh = pModelData->getMesh();
 		CSubMesh& subMesh=mesh.addSubMesh();
 		VertexIndex vertexIndex;
 		for(std::vector<CMUBmd::BmdSub::BmdTriangle>::iterator it=bmdSub.setTriangle.begin(); it!=bmdSub.setTriangle.end(); it++)
@@ -211,54 +205,50 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 		{
 			subMesh.addTexcoord(*it);
 		}
+		char szMaterialName[255];
 		{
-			std::string strTexFileName = GetParentPath(strFilename) + bmdSub.szTexture;
+			sprintf(szMaterialName,"%s%d",ChangeExtension(GetFilename(szFilename),".sub").c_str(),i);
+			CMaterial& material = *pRenderNodeMgr->createMaterial(szMaterialName);
+			std::string strTexFileName = GetParentPath(szFilename) + bmdSub.szTexture;
 			{
-				std::string strExtension = GetExtension(bmdSub.szTexture); 
-				if (".jpg"==strExtension)
-					strTexFileName = ChangeExtension(strTexFileName,".ozj");
-				else if (".tga"==strExtension)
-					strTexFileName = ChangeExtension(strTexFileName,".ozt");
-				else if (".bmp"==strExtension)
-					strTexFileName = ChangeExtension(strTexFileName,".ozb");
+				std::string strExt = GetExtension(bmdSub.szTexture); 
+				if (".jpg"==strExt)			strExt = ".ozj";
+				else if (".tga"==strExt)	strExt = ".ozt";
+				else if (".bmp"==strExt)	strExt = ".ozb";
+				strTexFileName = ChangeExtension(strTexFileName,strExt);
 			}
-			char szMaterialName[255];
-			sprintf(szMaterialName,"%s%d",ChangeExtension(GetFilename(strFilename),".sub").c_str(),i);
-			{
-				CMaterial& material = pModelData->getMaterial(szMaterialName);
-				material.setTexture(0,strTexFileName.c_str());
+			material.setTexture(0,strTexFileName.c_str());
 
-				material.bLightingEnabled = true;
-				// ----
-				material.uCull					= CULL_NONE;
-				// ----
-				material.bBlend					= false;
-				// ----
-				material.bAlphaTest				= true;
-				material.nAlphaTestCompare		= CMPF_GREATER_EQUAL;
-				material.uAlphaTestValue		= 0x80;
-				// ----
-				material.bDepthTest				= true;
-				material.bDepthWrite			= true;
-				// ----
-				CMaterial::TextureOP& texOP0	= material.textureOP[0];
-				CMaterial::TextureOP& texOP1	= material.textureOP[1];
-				// ----
-				texOP0.nColorOP					= TBOP_MODULATE;
-				texOP0.nColorSrc1				= TBS_CURRENT;
-				texOP0.nColorSrc2				= TBS_TEXTURE;
-				texOP0.nAlphaOP					= TBOP_MODULATE;
-				texOP0.nAlphaSrc1				= TBS_CURRENT;
-				texOP0.nAlphaSrc2				= TBS_TEXTURE;
-				// ----
-				texOP1.nColorOP					= TBOP_DISABLE;
-				texOP1.nAlphaOP					= TBOP_DISABLE;
-			}
-			pModelData->setRenderPass(i,i,szMaterialName);
+			material.bLightingEnabled = true;
+			// ----
+			material.uCull					= CULL_NONE;
+			// ----
+			material.bBlend					= false;
+			// ----
+			material.bAlphaTest				= true;
+			material.nAlphaTestCompare		= CMPF_GREATER_EQUAL;
+			material.uAlphaTestValue		= 0x80;
+			// ----
+			material.bDepthTest				= true;
+			material.bDepthWrite			= true;
+			// ----
+			CMaterial::TextureOP& texOP0	= material.textureOP[0];
+			CMaterial::TextureOP& texOP1	= material.textureOP[1];
+			// ----
+			texOP0.nColorOP					= TBOP_MODULATE;
+			texOP0.nColorSrc1				= TBS_CURRENT;
+			texOP0.nColorSrc2				= TBS_TEXTURE;
+			texOP0.nAlphaOP					= TBOP_MODULATE;
+			texOP0.nAlphaSrc1				= TBS_CURRENT;
+			texOP0.nAlphaSrc2				= TBS_TEXTURE;
+			// ----
+			texOP1.nColorOP					= TBOP_DISABLE;
+			texOP1.nAlphaOP					= TBOP_DISABLE;
 		}
+		subMesh.setMaterial(szMaterialName);
 	}
 
-	std::vector<BoneInfo>& setBonesInfo = pModelData->getSkeleton().m_Bones;
+	std::vector<BoneInfo>& setBonesInfo = skeletonData.m_Bones;
 	for (std::vector<CMUBmd::BmdSkeleton::BmdBone>::iterator itBmdBone=bmd.bmdSkeleton.setBmdBone.begin();itBmdBone!=bmd.bmdSkeleton.setBmdBone.end();itBmdBone++)
 	{
 		BoneInfo boneInfo;
@@ -281,12 +271,12 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 
 	mesh.update();
 
-	std::string strParentDir = GetParentPath(strFilename);
+	std::string strParentDir = GetParentPath(szFilename);
 	std::string strParentDirName = GetFilename(strParentDir);
 	
 	std::string strMyPath ="Plugins\\Data\\"+strParentDirName+"\\";
-	std::string strMatFilename = strMyPath+GetFilename(ChangeExtension(strFilename,".mat.csv"));
-	std::string strParFilename = strMyPath+GetFilename(ChangeExtension(strFilename,".par.csv"));
+	std::string strMatFilename = strMyPath+GetFilename(ChangeExtension(szFilename,".mat.csv"));
+	std::string strParFilename = strMyPath+GetFilename(ChangeExtension(szFilename,".par.csv"));
 	if (!IOReadBase::Exists(strMatFilename))
 	{
 		strMatFilename=strMyPath+strParentDirName+".mat.csv";
@@ -296,15 +286,22 @@ bool CMyPlug::importData(iModelData * pModelData, const std::string& strFilename
 		strParFilename=strMyPath+strParentDirName+".par.csv";
 	}
 
-	pModelData->loadMaterial(strMatFilename.c_str(), strParentDir.c_str());
-	pModelData->loadParticleEmitters(strParFilename.c_str());
-	return true;
-}
+	//pModelData->loadMaterial(strMatFilename.c_str(), strParentDir.c_str());
+	pRenderNodeMgr->loadRenderNode(strMatFilename.c_str());
+	//pModelData->loadParticleEmitters(strParFilename.c_str());
+	pRenderNodeMgr->loadRenderNode(strParFilename.c_str());
 
-bool CMyPlug::exportData(iModelData * pModelData, const std::string& strFilename)
+	//////////////////////////////////////////////////////////////////////////
+	CRenderNode* pSkeletonNode = pRenderNodeMgr->createRenderNode(&skeletonData);
+	CRenderNode* pMeshNode = pRenderNodeMgr->createRenderNode(&mesh);
+	pSkeletonNode->addChild(pMeshNode);
+	return pSkeletonNode;
+}
+/*
+bool CMyPlug::exportData(iModelData * pModelData, const std::string& szFilename)
 {
 	assert(pModelData);
-	FILE* fp= fopen(strFilename.c_str(),"wb");
+	FILE* fp= fopen(szFilename.c_str(),"wb");
 	if (fp==NULL)
 	{
 		return false;
@@ -342,7 +339,7 @@ bool CMyPlug::exportData(iModelData * pModelData, const std::string& strFilename
 
 	return true;
 }
-
+*/
 void CMyPlug::release()
 {
 	delete this;
