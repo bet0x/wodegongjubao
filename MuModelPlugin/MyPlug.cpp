@@ -12,7 +12,7 @@ CMyPlug::~CMyPlug(void)
 {
 }
 
-CRenderNode* CMyPlug::importData(iRenderNodeMgr* pRenderNodeMgr, const char* szFilename)
+iRenderNode* CMyPlug::importData(iRenderNodeMgr* pRenderNodeMgr, const char* szFilename)
 {
 	static CMUBmd* pPlayerBmd;
 	CMUBmd bmd;
@@ -104,8 +104,12 @@ CRenderNode* CMyPlug::importData(iRenderNodeMgr* pRenderNodeMgr, const char* szF
 			
 			std::vector<CMUBmd::BmdSkeleton::BmdBone>& setBmdBone = bmd.bmdSkeleton.setBmdBone;
 			size_t uBoneSize = setBmdBone.size();
-			SkeletonAnim& skeletonAnim=skeletonData.m_Anims[strAnimName];
-			std::vector<BoneAnim>& setBonesAnim=skeletonAnim.setBonesAnim;
+			iSkeletonAnim* pSkeletonAnim = skeletonData.createAnimation(strAnimName);
+			if(NULL==pSkeletonAnim)
+			{
+				// do some thing!
+			}
+			std::vector<BoneAnim>& setBonesAnim = pSkeletonAnim->setBonesAnim;
 			setBonesAnim.resize(uBoneSize);
 			for (size_t uBoneID = 0;uBoneID<uBoneSize;++uBoneID)
 			{
@@ -141,11 +145,11 @@ CRenderNode* CMyPlug::importData(iRenderNodeMgr* pRenderNodeMgr, const char* szF
 			if (bFixFrame) // fuck here
 			{
 				// ฒนึก
-				skeletonAnim.uTotalFrames = uTotalFrames*MU_BMD_ANIM_FRAME_TIME;
+				pSkeletonAnim->setTotalFrames(uTotalFrames*MU_BMD_ANIM_FRAME_TIME);
 			}
 			else
 			{
-				skeletonAnim.uTotalFrames = (uTotalFrames-1)*MU_BMD_ANIM_FRAME_TIME;
+				pSkeletonAnim->setTotalFrames((uTotalFrames-1)*MU_BMD_ANIM_FRAME_TIME);
 			}
 		}
 	}
@@ -292,8 +296,8 @@ CRenderNode* CMyPlug::importData(iRenderNodeMgr* pRenderNodeMgr, const char* szF
 	pRenderNodeMgr->loadRenderNode(strParFilename.c_str());
 
 	//////////////////////////////////////////////////////////////////////////
-	CRenderNode* pSkeletonNode = pRenderNodeMgr->createRenderNode(&skeletonData);
-	CRenderNode* pMeshNode = pRenderNodeMgr->createRenderNode(&mesh);
+	iRenderNode* pSkeletonNode = pRenderNodeMgr->createRenderNode(&skeletonData);
+	iRenderNode* pMeshNode = pRenderNodeMgr->createRenderNode(&mesh);
 	pSkeletonNode->addChild(pMeshNode);
 	return pSkeletonNode;
 }
