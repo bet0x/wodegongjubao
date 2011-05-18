@@ -200,7 +200,7 @@ bool loadMaterialPass(CMaterial& material, const char* szFilename)
 	IOReadBase::autoClose(pRead);
 }
 
-CRenderNode* CMyPlug::importData(iRenderNodeMgr* pRenderNodeMgr, const char* szFilename)
+iRenderNode* CMyPlug::importData(iRenderNodeMgr* pRenderNodeMgr, const char* szFilename)
 {
 	char szParentDir[16]="";
 	CCsvFile csv;
