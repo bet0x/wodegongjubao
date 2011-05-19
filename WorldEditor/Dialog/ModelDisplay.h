@@ -2,7 +2,7 @@
 #include "UIDisplay.h"
 #include "Camera.h"
 #include "SkyBox.h"
-#include "ModelObject.h"
+#include "RenderNode.h"
 #include "SceneEffect.h"
 #include "..\RPGSkyTextRender.h"
 #include "MeshCoordinate.h"
@@ -35,8 +35,7 @@ public:
 
 	virtual void OnSize(const CRect<int>& rc);
 
-	CModelObject* getModelObject();
-	CModelData*  getModelData()const;
+	CRenderNode* getModelObject();
 public:
 	CCamera				m_Camera;
 	Vec3D				m_vEye;
@@ -52,7 +51,7 @@ public:
 
 	CMeshCoordinate		m_MeshCoordinate;
 private:
-	CModelObject* m_pModelObject;
+	CRenderNode*	m_pRenderNode;
 
 	bool g_bLeftButtonDown;
 	bool g_bRightButtonDown;

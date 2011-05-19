@@ -97,7 +97,7 @@ bool CDlgModelPlayer::OnInitDialog()
 
 void CDlgModelPlayer::OnUpdatePlayer()
 {
-	if (wcslen(m_ComboBoxSkeleton.GetText())==0)
+/*	if (wcslen(m_ComboBoxSkeleton.GetText())==0)
 	{
 		return;
 	}
@@ -115,7 +115,7 @@ void CDlgModelPlayer::OnUpdatePlayer()
 	//		pModelObject->loadSkinModel(g_EquipNames[i],strModelFilename.c_str());
 		}
 	}
-	CMainRoot::getInstance().getMainDialog().getDlgModelController().OnUpdate();
+	CMainRoot::getInstance().getMainDialog().getDlgModelController().OnUpdate();*/
 }
 
 void CDlgModelPlayer::OnSelectSet()

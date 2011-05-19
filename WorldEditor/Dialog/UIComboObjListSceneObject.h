@@ -1,6 +1,6 @@
 #pragma once
 #include "UIComboObjList.h"
-#include "ModelObject.h"
+#include "RenderNode.h"
 
 class CUIComboObjListSceneObject : public CUIComboObjList
 {
@@ -19,5 +19,5 @@ public:
 	virtual void OnFrameMove(double fTime, float fElapsedTime);
 	virtual void OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime);
 public:
-	CModelObject	m_ModelObject;
+	CRenderNode*	m_pRenderNode;
 };

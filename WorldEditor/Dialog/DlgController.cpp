@@ -4,10 +4,10 @@
 #include "CsvFile.h"
 #include "IORead.h"
 #include "DlgMainEditor.h"
-#include "ModelDataMgr.h"
 #include "FileSystem.h"
 #include "..\MainRoot.h"
 #include "RegData.h"
+#include "RenderNodeMgr.h"
 
 CDlgController::CDlgController()
 {
@@ -111,14 +111,14 @@ void CDlgController::initRecentPath()
 {
 	// read the recent path from reg.
 	std::wstring wstrRecentPath = GetRegStr(L"software\\rpgsky\\modelview\\",L"recentpath");
-	OpenPath(wstrRecentPath,s2ws(CModelDataMgr::getInstance().getDataPlugsMgr().getAllExtensions()));
+	OpenPath(wstrRecentPath,s2ws(CRenderNodeMgr::getInstance().getDataPlugsMgr().getAllExtensions()));
 }
 
 void CDlgController::OpenFile(const std::wstring& wstrFilename)
 {
 	if (IOReadBase::Exists(ws2s(wstrFilename)))
 	{
-		OpenPath(GetParentPath(wstrFilename),s2ws(CModelDataMgr::getInstance().getDataPlugsMgr().getAllExtensions()));
+		OpenPath(GetParentPath(wstrFilename),s2ws(CRenderNodeMgr::getInstance().getDataPlugsMgr().getAllExtensions()));
 		//m_ListBoxFolder.SetSelec()
 		//GetFilename(wstrFilename)
 		CMainRoot::getInstance().getMainDialog().getModelDisplay().LoadModel(ws2s(wstrFilename));
