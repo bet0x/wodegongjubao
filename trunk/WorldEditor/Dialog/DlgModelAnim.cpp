@@ -34,18 +34,18 @@ bool CDlgModelAnim::OnInitDialog()
 
 void CDlgModelAnim::OnFrameMove(double fTime, float fElapsedTime)
 {
-	if (CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelObject())
+	/*if (CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelObject())
 	{
 		m_SliderFrame.SetValue(CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelObject()->m_AnimMgr.uFrame);
 		std::wstring wstr = FormatW(L"%d/%d", m_SliderFrame.GetValue(),m_SliderFrame.getMax());
 		m_StaticFrame.SetText(wstr.c_str());
-	}
+	}*/
 	CUIDialog::OnFrameMove(fTime,fElapsedTime);
 }
 
 void CDlgModelAnim::ResetAnim()
 {
-	int nSelected = m_ComboBoxAnim.getListBox().GetSelectedIndex();
+	/*int nSelected = m_ComboBoxAnim.getListBox().GetSelectedIndex();
 	m_ComboBoxAnim.getListBox().RemoveAllItems();
 	if (CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelData())
 	{
@@ -68,7 +68,7 @@ void CDlgModelAnim::ResetAnim()
 		}
 		OnSpeedChanged();
 	}
-	//OnUpdateShow();
+	//OnUpdateShow();*/
 }
 
 void CDlgModelAnim::OnPlay()
@@ -97,7 +97,7 @@ void CDlgModelAnim::OnNext()
 
 void CDlgModelAnim::OnAnimChanged()
 {
-	if (CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelData())
+	/*if (CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelData())
 	{
 		std::string strAnimName=ws2s(m_ComboBoxAnim.GetText());
 		long timeCount=0;
@@ -106,24 +106,24 @@ void CDlgModelAnim::OnAnimChanged()
 		{
 			m_SliderFrame.SetRange(0, timeCount);
 		}
-	}
+	}*/
 }
 
 void CDlgModelAnim::OnSpeedChanged()
 {
-	float fSpeed = m_SliderSpeed.GetValue()*0.1f;
+	/*float fSpeed = m_SliderSpeed.GetValue()*0.1f;
 	if (CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelObject())
 	{
 		CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelObject()->m_AnimMgr.fSpeed=fSpeed;
 	}
-	m_StaticSpeed.SetFloat(fSpeed,0,1);
+	m_StaticSpeed.SetFloat(fSpeed,0,1);*/
 }
 
 void CDlgModelAnim::OnFrameChanged()
 {
-	if (CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelObject())
+	/*if (CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelObject())
 	{
 		int nFrame = m_SliderFrame.GetValue();
 		CMainRoot::getInstance().getMainDialog().getModelDisplay().getModelObject()->m_AnimMgr.uFrame=nFrame;
-	}
+	}*/
 }

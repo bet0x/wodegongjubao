@@ -1,5 +1,6 @@
 #include "UIComboObjListSceneObject.h"
 #include "Scene.h"
+#include "RenderNodeMgr.h"
 
 CUIComboObjListSceneObject::CUIComboObjListSceneObject()
 {
@@ -19,7 +20,7 @@ void CUIComboObjListSceneObject::OnListBoxObjectSelection()
 	if (sceneObjectInfo.find(getSelectedObjectID())!=sceneObjectInfo.end())
 	{
 		const CScene::ObjectInfo& objectInfo = sceneObjectInfo[getSelectedObjectID()];
-		m_ModelObject.load(objectInfo.strFilename.c_str());
+		m_pRenderNode = (CRenderNode *)CRenderNodeMgr::getInstance().loadRenderNode(objectInfo.strFilename.c_str());
 	}
 }
 
@@ -46,7 +47,7 @@ void CUIComboObjListSceneObject::SelectObjectByObjectID(__int64 id)
 		if (sceneObjectInfo.find(id)!=sceneObjectInfo.end())
 		{
 			const CScene::ObjectInfo& objectInfo = sceneObjectInfo[id];
-			m_ModelObject.load(objectInfo.strFilename.c_str());
+			m_pRenderNode = (CRenderNode *)CRenderNodeMgr::getInstance().loadRenderNode(objectInfo.strFilename.c_str());
 		}
 	}
 	int nIndex = m_ListBoxObject.getItemIndexByData((void*)(id));
@@ -79,22 +80,25 @@ void CUIComboObjListSceneObject::OnObjectListEdit()
 void CUIComboObjListSceneObject::OnFrameMove(double fTime, float fElapsedTime)
 {
 	CUIComboObjList::OnFrameMove(fTime, fElapsedTime);
-	m_ModelObject.frameMove(Matrix::UNIT,fTime,fElapsedTime);
+	if(m_pRenderNode)
+	{
+		m_pRenderNode->frameMove(Matrix::UNIT,fTime,fElapsedTime);
+	}
 }
 
 void CUIComboObjListSceneObject::OnFrameRender(const Matrix& mTransform, double fTime, float fElapsedTime)
 {
 	CUIComboObjList::OnFrameRender(mTransform,fTime, fElapsedTime);
+	if (!m_pRenderNode)
+	{
+		return;
+	}
 	CRenderSystem& R = GetRenderSystem();
 	R.setViewport(m_ListBoxDisplay.GetBoundingBox());
 	R.SetSamplerFilter(0, TEXF_LINEAR, TEXF_LINEAR, TEXF_LINEAR);
 	R.SetSamplerFilter(1, TEXF_LINEAR, TEXF_LINEAR, TEXF_LINEAR);
 	Matrix mView,mProj;
-	BBox bbox;
-	if (m_ModelObject.getModelData())
-	{
-		bbox = m_ModelObject.getModelData()->m_Mesh.m_bbox;
-	}
+	BBox bbox  = m_pRenderNode->getBBox();
 	Vec3D vCenter = (bbox.vMax+bbox.vMin)*0.5f;
 	float fWidth = (bbox.vMax-bbox.vMin).length();
 	float fHeight = fWidth*(m_ListBoxDisplay.GetBoundingBox().bottom-m_ListBoxDisplay.GetBoundingBox().top)/
@@ -105,7 +109,7 @@ void CUIComboObjListSceneObject::OnFrameRender(const Matrix& mTransform, double 
 	R.setProjectionMatrix(mProj);
 	{
 		R.ClearBuffer(true,false,0x0);
-		m_ModelObject.render(Matrix::UNIT);
+		m_pRenderNode->render(Matrix::UNIT);
 	}
 	R.SetupRenderState();
 	R.setViewport(GetParentDialog()->GetParentDialog()->GetParentDialog()->GetBoundingBox());
