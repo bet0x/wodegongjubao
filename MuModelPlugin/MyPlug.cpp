@@ -174,9 +174,10 @@ iRenderNode* CMyPlug::importData(iRenderNodeMgr* pRenderNodeMgr, const char* szF
 			pPlayerBmd = new CMUBmd;
 			bIsPlayerPart = pPlayerBmd->LoadFile(GetParentPath(szFilename)+"player.bmd");
 		}
-		// ----
+	// ----
 	// # Mesh
 	// ----
+		BBox bbox;
 	for (size_t i=0;  i<bmd.setBmdSub.size(); ++i)
 	{
 		CMUBmd::BmdSub& bmdSub = bmd.setBmdSub[i];
@@ -211,12 +212,19 @@ iRenderNode* CMyPlug::importData(iRenderNodeMgr* pRenderNodeMgr, const char* szF
 			{
 				vPos = bmd.bmdSkeleton.getLocalMatrix(it->uBones)*vPos;
 			}
+			bbox.vMin.x = min(vPos.x,bbox.vMin.x);
+			bbox.vMin.y = min(vPos.y,bbox.vMin.y);
+			bbox.vMin.z = min(vPos.z,bbox.vMin.z);
+
+			bbox.vMax.x = max(vPos.x,bbox.vMax.x);
+			bbox.vMax.y = max(vPos.y,bbox.vMax.y);
+			bbox.vMax.z = max(vPos.z,bbox.vMax.z);
 			if (1<bmd.nFrameCount||bIsPlayerPart)
 			{
 				unsigned char uBone = it->uBones&0xFF;
 				if (bmd.bmdSkeleton.setBmdBone.size()<=uBone||bmd.bmdSkeleton.setBmdBone[uBone].bEmpty)
 				{
-					subMesh.addBone(0);
+					subMesh.addBone(0);// 想办法把bmd的骨骼ID都设置为0的去掉
 				}
 				else
 				{
@@ -288,6 +296,7 @@ iRenderNode* CMyPlug::importData(iRenderNodeMgr* pRenderNodeMgr, const char* szF
 		}
 		subMesh.setMaterial(szMaterialName);
 	}
+		mesh.setBBox(bbox);
 		mesh.update();
 	}
 	// ----
