@@ -1,8 +1,6 @@
 #pragma once
 #include "DlgModelAnim.h"
-#include "DlgModelShow.h"
 #include "DlgModelPlayer.h"
-#include "DlgModelRenderPass.h"
 
 class CDlgController :public CUIDialog
 {

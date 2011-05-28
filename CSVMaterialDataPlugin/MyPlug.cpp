@@ -1,5 +1,6 @@
 #include "MyPlug.h"
 #include "CSVFile.h"
+#include "Material.h"
 
 BOOL WINAPI Data_Plug_CreateObject(void ** pobj){
 	*pobj = new CMyPlug;

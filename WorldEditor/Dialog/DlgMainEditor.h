@@ -49,6 +49,7 @@ public:
 	CDlgMaterial& getMaterialDialog();
 	CDlgModelController& getDlgModelController(){return m_DlgModelController;}
 private:
+	void OnUpdateShow();
 	void updateDisplay();
 
 	CUIButton		m_BtnShow;
@@ -73,4 +74,11 @@ private:
 
 
 	CDlgMaterial m_DlgMaterialEdit;
+
+	CUICheckBox m_CheckBoxBones;
+	CUICheckBox	m_CheckBoxBounds;
+	CUICheckBox m_CheckBoxModel;
+	CUICheckBox m_CheckBoxWireframe;
+	CUICheckBox m_CheckBoxMaterial;
+	CUICheckBox	m_CheckBoxParticles;
 };

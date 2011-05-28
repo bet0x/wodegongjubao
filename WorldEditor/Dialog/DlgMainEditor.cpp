@@ -55,6 +55,19 @@ void CDlgMainEditor::OnControlRegister()
 	m_DlgHelp.Create("IDD_HELP", this);
 	m_DlgFile.Create("IDD_FILE", this);
 
+	RegisterControl("IDC_CHECKBOX_BONES",		m_CheckBoxBones);
+	RegisterControl("IDC_CHECKBOX_BOUNDS",		m_CheckBoxBounds);
+	RegisterControl("IDC_CHECKBOX_MODEL",		m_CheckBoxModel);
+	RegisterControl("IDC_CHECKBOX_WIREFRAME",	m_CheckBoxWireframe);
+	RegisterControl("IDC_CHECKBOX_MATERIAL",	m_CheckBoxMaterial);
+	RegisterControl("IDC_CHECKBOX_PARTICLES",	m_CheckBoxParticles);
+
+	RegisterControlEvent("IDC_CHECKBOX_BONES",		(PEVENT)&CDlgMainEditor::OnUpdateShow);
+	RegisterControlEvent("IDC_CHECKBOX_BOUNDS",		(PEVENT)&CDlgMainEditor::OnUpdateShow);
+	RegisterControlEvent("IDC_CHECKBOX_MODEL",		(PEVENT)&CDlgMainEditor::OnUpdateShow);
+	RegisterControlEvent("IDC_CHECKBOX_WIREFRAME",	(PEVENT)&CDlgMainEditor::OnUpdateShow);
+	RegisterControlEvent("IDC_CHECKBOX_MATERIAL",	(PEVENT)&CDlgMainEditor::OnUpdateShow);
+	RegisterControlEvent("IDC_CHECKBOX_PARTICLES",	(PEVENT)&CDlgMainEditor::OnUpdateShow);
 
 	RegisterControl( "IDC_STATIC_POS_X", m_StaticPosX);
 	RegisterControl( "IDC_STATIC_POS_Y", m_StaticPosY);
@@ -322,4 +335,14 @@ void CDlgMainEditor::OnBtnFaceDetect()
 	{
 	m_DlgFaceDetect.SetAR(false);
 	}*/
+}
+
+void CDlgMainEditor::OnUpdateShow()
+{
+	getModelDisplay().m_bShowBones		= m_CheckBoxBones.IsChecked();
+	getModelDisplay().m_bShowBounds		= m_CheckBoxBounds.IsChecked();
+	getModelDisplay().m_bShowModel		= m_CheckBoxModel.IsChecked();
+	getModelDisplay().m_bShowWireframe	= m_CheckBoxWireframe.IsChecked();
+	getModelDisplay().m_bShowMaterial	= m_CheckBoxMaterial.IsChecked();
+	getModelDisplay().m_bShowParticles	= m_CheckBoxParticles.IsChecked();
 }

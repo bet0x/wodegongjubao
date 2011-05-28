@@ -130,8 +130,6 @@
     <ClInclude Include="Dialog\DlgModelAnim.h" />
     <ClInclude Include="Dialog\DlgModelController.h" />
     <ClInclude Include="Dialog\DlgModelPlayer.h" />
-    <ClInclude Include="Dialog\DlgModelRenderPass.h" />
-    <ClInclude Include="Dialog\DlgModelShow.h" />
     <ClInclude Include="Dialog\ModelDisplay.h" />
     <ClInclude Include="Dialog\DlgMaterial.h" />
   </ItemGroup>
@@ -165,8 +163,6 @@
     <ClCompile Include="Dialog\DlgModelAnim.cpp" />
     <ClCompile Include="Dialog\DlgModelController.cpp" />
     <ClCompile Include="Dialog\DlgModelPlayer.cpp" />
-    <ClCompile Include="Dialog\DlgModelRenderPass.cpp" />
-    <ClCompile Include="Dialog\DlgModelShow.cpp" />
     <ClCompile Include="Dialog\ModelDisplay.cpp" />
     <ClCompile Include="Dialog\DlgMaterial.cpp" />
     <ClCompile Include="Main.cpp" />
