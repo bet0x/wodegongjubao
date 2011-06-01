@@ -1362,20 +1362,13 @@ bool CMyPlug::importTerrainData(iTerrainData * pTerrainData, const std::string& 
 #include "CsvFile.h"
 bool CMyPlug::importObjectResources(iScene * pScene, const char* szFilename, const std::string& strPath)
 {
-	pScene->clearObjectResources();
+	m_mapObjectName.clear();
 	CCsvFile csvObject;
 	if (csvObject.open(szFilename))
 	{
 		while (csvObject.seekNextLine())
 		{
-			pScene->setObjectResources(
-				csvObject.getInt("ID"),
-				csvObject.getStr("Name", ""),
-				getRealFilename(strPath.c_str(),csvObject.getStr("Filename", "")));
-				//Info.bbox				= 
-				//Info.bIsGround			= csvObject.GetBool("IsGround");
-				//Info.bHasShadow			= csvObject.GetBool("HasShadow");
-				//Info.strFilename	= csvObject.GetStr("ModelFilename");
+			m_mapObjectName[csvObject.getInt("ID")] = getRealFilename(strPath.c_str(),csvObject.getStr("Filename", ""));
 		}
 		csvObject.close();
 	}
@@ -1384,7 +1377,7 @@ bool CMyPlug::importObjectResources(iScene * pScene, const char* szFilename, con
 
 bool CMyPlug::importObjectResourcesFormDir(iScene * pScene,const std::string& strPath)
 {
-	pScene->clearObjectResources();
+	m_mapObjectName.clear();
 	for (size_t i=0; i<256; i++)
 	{
 		std::string strFilename = "Object";
@@ -1395,7 +1388,7 @@ bool CMyPlug::importObjectResourcesFormDir(iScene * pScene,const std::string& st
 		strFilename+=ws2s(i2ws(i+1))+".bmd";
 		if (IOReadBase::Exists(strPath+strFilename))
 		{
-			pScene->setObjectResources(i,strFilename,strPath+strFilename);
+			m_mapObjectName[i] = strPath+strFilename;
 		}
 	}
 	return true;
@@ -1430,7 +1423,15 @@ bool CMyPlug::importObject(iScene * pScene, const char* szFilename)
 			Vec3D vPos = Vec3D(pObjInfo->p.x,pObjInfo->p.z,pObjInfo->p.y)*0.01f;
 			Vec3D vRotate = Vec3D(pObjInfo->rotate.x,pObjInfo->rotate.z,pObjInfo->rotate.y)*PI/180.0f;
 			Vec3D vScale= Vec3D(pObjInfo->fScale,pObjInfo->fScale,pObjInfo->fScale);
-			if (false==pScene->add3DMapSceneObj(pObjInfo->id,vPos,vRotate,vScale))
+			iRenderNode* pRenderNode = pScene->getRenderNodeMgr()->loadRenderNode(m_mapObjectName[pObjInfo->id].c_str());
+			if(pRenderNode)
+			{
+				pRenderNode->setPos(vPos);
+				pRenderNode->setRotate(vRotate);
+				pRenderNode->setScale(vScale);
+				pScene->addChild(pRenderNode);
+			}
+			else
 			{
 				//MessageBoxA(NULL,"cannot find ID!","Error",0);
 			}
