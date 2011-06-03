@@ -357,8 +357,12 @@ iRenderNode* CMyPlug::importData(iRenderNodeMgr* pRenderNodeMgr, const char* szF
 	pRenderNodeMgr->loadRenderNode(strMatFilename.c_str());
 	pRenderNodeMgr->loadRenderNode(strParFilename.c_str());
 	//////////////////////////////////////////////////////////////////////////
-	iRenderNode* pSkeletonNode = pRenderNodeMgr->createRenderNode(pSkeletonData);
-	iRenderNode* pMeshNode = pRenderNodeMgr->createRenderNode(pMesh);
+	iRenderNode* pSkeletonNode = pRenderNodeMgr->createRenderNode("Skeleton");
+	pSkeletonNode->init(pSkeletonData);
+	//----
+	iRenderNode* pMeshNode = pRenderNodeMgr->createRenderNode("Mesh");
+	pMeshNode->init(pMesh);
+	//----
 	pSkeletonNode->addChild(pMeshNode);
 	return pSkeletonNode;
 }
